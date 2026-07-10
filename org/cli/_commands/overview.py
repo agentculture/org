@@ -1,7 +1,7 @@
 """``org overview`` — read-only descriptive snapshot of the agent.
 
 Describes the agent to an agent reader: identity (from culture.yaml), the verb
-surface, and the sibling-pattern artifacts this template carries. The shared
+surface, and the sibling-pattern artifacts this repo carries. The shared
 section/render helpers here are reused by the ``cli`` noun's ``overview`` (see
 :mod:`org.cli._commands.cli`).
 
@@ -21,7 +21,7 @@ _ARTIFACTS = [
     "culture.yaml + AGENTS.colleague.md — mesh identity (suffix + backend)",
     ".claude/skills/ — the canonical guildmaster skill kit (cite-don't-import)",
     "docs/skill-sources.md — skill provenance ledger",
-    "pyproject.toml + .github/workflows/ — buildable, deployable package baseline",
+    "pyproject.toml + .github/workflows/ — test/lint/rubric CI baseline (no PyPI publishing)",
 ]
 
 _VERBS = [

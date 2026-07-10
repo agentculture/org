@@ -12,14 +12,16 @@ from org import __version__
 from org.cli._output import emit_result
 
 _TEXT = """\
-org — a clonable template for AgentCulture mesh agents.
+org — the AgentCulture org site agent.
 
 Purpose
 -------
-Scaffold for a new Culture mesh agent: an agent-first CLI (cited from the teken
-`python-cli` reference), an identity (culture.yaml + CLAUDE.md), the canonical
-guildmaster skill kit under .claude/skills/, and a deploy/CI baseline. Clone it,
-rename the package, and edit culture.yaml to mint a new agent.
+Source of the web presence published to AgentCulture.org. This CLI is the site's
+operator surface: it stays repo-local (run it as `uv run org`) and is never
+published to PyPI. The repo also carries this agent's mesh identity
+(culture.yaml + AGENTS.colleague.md, since it runs backend: colleague) and the
+guildmaster skill kit under .claude/skills/. The site itself is not built yet —
+the build brief is https://github.com/agentculture/org/issues/2.
 
 Commands
 --------
@@ -52,7 +54,7 @@ def _as_json_payload() -> dict[str, object]:
     return {
         "tool": "org",
         "version": __version__,
-        "purpose": "Clonable scaffold for a new AgentCulture mesh agent.",
+        "purpose": "Source of the AgentCulture.org web presence; this CLI is its operator surface.",
         "commands": [
             {"path": ["whoami"], "summary": "Identity probe from culture.yaml."},
             {"path": ["learn"], "summary": "Self-teaching prompt."},

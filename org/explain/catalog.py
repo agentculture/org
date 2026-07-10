@@ -12,11 +12,14 @@ from __future__ import annotations
 _ROOT = """\
 # org
 
-A clonable template for AgentCulture mesh agents. It carries an agent-first CLI
-(cited from the teken `python-cli` reference), a mesh identity (`culture.yaml` +
-`CLAUDE.md`), the canonical guildmaster skill kit under `.claude/skills/`, and a
-buildable/deployable package baseline. Clone it, rename the package, edit
-`culture.yaml`, and you have a new agent.
+The AgentCulture org site — source of the web presence published to
+AgentCulture.org. This CLI is the site's operator surface: it stays repo-local
+(`uv run org …`) and is never published to PyPI. The repo also carries this
+agent's mesh identity (`culture.yaml` + `AGENTS.colleague.md`, since it runs
+`backend: colleague`) and the guildmaster skill kit under `.claude/skills/`.
+
+The site itself is not built yet — the build brief is
+<https://github.com/agentculture/org/issues/2>.
 
 ## Verbs
 
@@ -81,7 +84,7 @@ _OVERVIEW = """\
 # org overview
 
 Read-only descriptive snapshot of the agent: identity (from `culture.yaml`), the
-verb surface, and the sibling-pattern artifacts the template carries. Accepts an
+verb surface, and the sibling-pattern artifacts this repo carries. Accepts an
 ignored `target` so a stray path never hard-fails.
 
 ## Usage

@@ -85,7 +85,7 @@ and `write` now **previews by default** (a throwaway worktree, no side effects)
 instead of committing to a branch unless you pass `--apply` / `--pr`.
 
 guildmaster has **not** re-broadcast the rename yet — its kit still ships the old
-`outsource`. So this template's `outsource/` was removed and `ask-colleague/`
+`outsource`. So org's `outsource/` was removed and `ask-colleague/`
 vendored **directly from the sibling `colleague` checkout**
 (`../colleague/.claude/skills/ask-colleague/`), not from guildmaster. This is a
 tracked exception to "cite guildmaster's copy", parallel to the `agex` → `devex`
