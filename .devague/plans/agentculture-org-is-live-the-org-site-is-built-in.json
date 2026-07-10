@@ -1,0 +1,461 @@
+{
+  "slug": "agentculture-org-is-live-the-org-site-is-built-in",
+  "title": "AgentCulture.org is live: the org site is built in the org repo and deployed to Cloudflare Pages at the apex, and both open org issues are closed out \u2014 issue #2's build brief is delivered end to end, and issue #4's fleet-audit findings are dispatched as downstream issues to their real owners.",
+  "frame_slug": "agentculture-org-is-live-the-org-site-is-built-in",
+  "schema_version": 2,
+  "status": "exported",
+  "created": "2026-07-10T16:05:16Z",
+  "updated": "2026-07-10T16:09:49Z",
+  "targets": [
+    {
+      "id": "c1",
+      "kind": "announcement",
+      "text": "AgentCulture.org is live: the org site is built in the org repo and deployed to Cloudflare Pages at the apex, and both open org issues are closed out \u2014 issue #2's build brief is delivered end to end, and issue #4's fleet-audit findings are dispatched as downstream issues to their real owners."
+    },
+    {
+      "id": "h9",
+      "kind": "honesty",
+      "text": "the three deliverables are all independently checkable: the apex serves the site (curl, no 301), org#2's checklist items are each closed by a linked artifact (proposal comment, merged site PR, live domain), and org#4 carries the comment linking every downstream issue"
+    },
+    {
+      "id": "c2",
+      "kind": "audience",
+      "text": "Two audiences: humans and agents landing on AgentCulture.org to understand the organization (what AgentCulture is, the agent fleet, how to engage), and the sibling-repo maintainers who receive issue #4's downstream issues."
+    },
+    {
+      "id": "h11",
+      "kind": "honesty",
+      "text": "the site answers both audiences' first question within one click: a visitor can say what AgentCulture is from the home page alone, and each downstream issue is actionable by its repo maintainer without reading org#4 in full"
+    },
+    {
+      "id": "c3",
+      "kind": "before_state",
+      "text": "agentculture.org 301-redirects every path to culture.dev via the 'claudeflare managed redirect' dynamic-redirect rule (the apex A 192.0.2.1 is a proxied dummy); the org repo has no site directory; issues #2 and #4 are open with no downstream issues filed."
+    },
+    {
+      "id": "h12",
+      "kind": "honesty",
+      "text": "verified live 2026-07-10: curl -sI https://agentculture.org returns 301 location https://culture.dev/; the zone's http_request_dynamic_redirect entrypoint holds exactly one rule, matching apex+www; gh issue list shows only #2 and #4 open"
+    },
+    {
+      "id": "c4",
+      "kind": "after_state",
+      "text": "https://agentculture.org serves the org site from a Direct Upload Cloudflare Pages project with the apex and www attached as custom domains; the redirect rule no longer captures agentculture.org; the org repo holds the site source plus a GitHub Actions deploy workflow; issue #2's owed checklist is complete and issue #4 has a downstream issue filed with each owner."
+    },
+    {
+      "id": "h13",
+      "kind": "honesty",
+      "text": "every element is independently observable: curl shows 200 from Pages at apex and www; the redirect entrypoint no longer matches agentculture.org; deploy.yml exists on org main; issues #2/#4 carry their linking comments"
+    },
+    {
+      "id": "c5",
+      "kind": "why_it_matters",
+      "text": "org is the organization's public front door \u2014 until the site exists the domain bounces visitors to culture.dev and AgentCulture has no self-description; and #4's devex lint break keeps the documented PR lane unusable in 29 repos until the fix is dispatched to devex."
+    },
+    {
+      "id": "h14",
+      "kind": "honesty",
+      "text": "both pains are reproducible today, not asserted: curl -sI shows the 301 bounce, and devex pr lint exits 2 with 'unknown backend colleague' in any of the 29 colleague repos"
+    },
+    {
+      "id": "c6",
+      "kind": "boundary",
+      "text": "No PyPI, ever: the deploy workflow publishes a static site to Cloudflare Pages and nothing else \u2014 no uv build/uv publish steps, no Trusted Publisher (org#1 is settled law)."
+    },
+    {
+      "id": "h15",
+      "kind": "honesty",
+      "text": "deploy.yml contains no uv build / uv publish / pypa publish action steps, and no Trusted Publisher registration exists for org"
+    },
+    {
+      "id": "c7",
+      "kind": "boundary",
+      "text": "None of issue #4's fixes land in the org repo \u2014 org files the downstream issues and updates the tracking issue; the code changes belong to devex, culture-agent-template, devague, culture, katvan, and culture-sonar-cli."
+    },
+    {
+      "id": "h16",
+      "kind": "honesty",
+      "text": "the org diff for this work contains no code change driven by a #4 finding; every fix lands as an issue on the owning repo"
+    },
+    {
+      "id": "c8",
+      "kind": "boundary",
+      "text": "The zone's live email routing (MX, SPF, DKIM records) and the chat.agentculture.org tunnel CNAME are untouched by the cutover \u2014 only the redirect rule's capture of the apex/www changes."
+    },
+    {
+      "id": "h17",
+      "kind": "honesty",
+      "text": "post-cutover: dig MX agentculture.org still returns the three route*.mx.cloudflare.net hosts, the SPF and DKIM TXT records are byte-identical, and chat.agentculture.org still resolves through its cfargotunnel CNAME"
+    },
+    {
+      "id": "c10",
+      "kind": "success_signal",
+      "text": "curl -sI https://agentculture.org returns 200 serving the org site (no 301 to culture.dev); www reaches the same site; a push to org main triggers a redeploy; issues #2 and #4 each carry a closing/linking comment."
+    },
+    {
+      "id": "h18",
+      "kind": "honesty",
+      "text": "each signal is a single command an agent can run unattended: curl -sI on apex and www, gh run list --workflow deploy.yml, gh issue view 2 and 4"
+    },
+    {
+      "id": "c11",
+      "kind": "requirement",
+      "text": "Stack: Astro with output:'static' and no adapter, site source in site-astro/ \u2014 the house direction (culture-tools precedent, katvan mid-migration), and the directory name sidesteps the /site gitignore trap."
+    },
+    {
+      "id": "h1",
+      "kind": "honesty",
+      "text": "astro build emits a pure-static dist/ (no adapter, no SSR), site-astro/ is tracked by git (not swallowed by the /site or dist/ ignore stanzas), and the site builds green in CI before any deploy step exists"
+    },
+    {
+      "id": "c12",
+      "kind": "requirement",
+      "text": "The information-architecture + stack proposal is posted as a comment on org#2 BEFORE any site code is merged \u2014 the brief makes the proposal-on-issue an explicit gate."
+    },
+    {
+      "id": "h2",
+      "kind": "honesty",
+      "text": "a comment on org#2 containing the stack choice, its rationale, and the IA exists and predates the merge of the first site PR"
+    },
+    {
+      "id": "c13",
+      "kind": "requirement",
+      "text": "IA v1, four sections: Home (what AgentCulture is), the Organic Development framework (culture mesh, cite-don't-import, awareness agents), Agents & Repos (the fleet directory), and Engage (how to interact \u2014 GitHub org, culture.dev, sibling sites). Every fact on the site is derivable from repos/docs that exist today."
+    },
+    {
+      "id": "h3",
+      "kind": "honesty",
+      "text": "every named agent, repo, and framework fact on the site is checkable against a live repo or doc \u2014 nothing is invented for the page"
+    },
+    {
+      "id": "c14",
+      "kind": "requirement",
+      "text": "Deploy: a GitHub Actions workflow in the slot the removed publish.yml vacated \u2014 builds the Astro site and uploads dist/ with wrangler pages deploy (Direct Upload), authenticated by a single CLOUDFLARE_API_TOKEN repo secret, per the house sub-site pattern; CF's GitHub integration is not used."
+    },
+    {
+      "id": "h4",
+      "kind": "honesty",
+      "text": "the workflow triggers on push to main (site paths), holds zero PyPI/uv-publish steps, and a green run ends with the new deployment live on the *.pages.dev subdomain"
+    },
+    {
+      "id": "c15",
+      "kind": "requirement",
+      "text": "Provisioning via cultureflare: create the Direct Upload Pages project (cf-pages-project-create.sh, recording the real *.pages.dev subdomain from apply output), then attach agentculture.org and www.agentculture.org as custom domains (cf-pages-domain-add.sh). All mutations dry-run first, --apply to commit."
+    },
+    {
+      "id": "h5",
+      "kind": "honesty",
+      "text": "every cultureflare mutation is shown as a dry-run plan before --apply, and the project's real *.pages.dev subdomain is recorded from the apply output rather than assumed (CF auto-suffixes name collisions)"
+    },
+    {
+      "id": "c16",
+      "kind": "requirement",
+      "text": "Cutover: edit the 'claudeflare managed redirect' ruleset so its rule no longer matches agentculture.org/www (other zones' redirects untouched), letting the proxied apex resolve to the Pages custom domain. This is the operator-owned go-live step and happens only with explicit operator authorization."
+    },
+    {
+      "id": "h6",
+      "kind": "honesty",
+      "text": "the operator explicitly authorizes the redirect-rule edit before --apply; after cutover, culture.dev and every other zone's redirect behavior is verified unchanged, and agentculture.org email routing still validates (MX/SPF/DKIM untouched)"
+    },
+    {
+      "id": "c17",
+      "kind": "requirement",
+      "text": "The org CLI grows the site operator verbs (site build / preview / deploy / link-check) obeying the three stable contracts (stdout/stderr split, CliError, exit-code policy), each with --json and a catalog entry; mutating verbs dry-run by default with --apply; teken cli doctor --strict stays green."
+    },
+    {
+      "id": "h7",
+      "kind": "honesty",
+      "text": "uv run pytest, all four linters, and teken cli doctor . --strict are green with the new verbs; each verb has an explain-catalog entry (test_every_catalog_path_resolves passes)"
+    },
+    {
+      "id": "c18",
+      "kind": "requirement",
+      "text": "Issue #4 dispatch via the communicate skill: file downstream issues on devex (D \u2014 teach it colleague + gemini backends; the one-liner that unbreaks the PR lane in 29 repos), culture-agent-template (A \u2014 fix the false seed sentence), devague (C \u2014 claude-code to claude), and culture / katvan / culture-sonar-cli (B \u2014 restore each missing prompt file), then comment on #4 linking them all."
+    },
+    {
+      "id": "h8",
+      "kind": "honesty",
+      "text": "each downstream issue names the concrete defect, cites the audit's verified evidence/repro for that repo alone, and is signed per the communicate skill; #4 gets one comment linking all of them"
+    },
+    {
+      "id": "c21",
+      "kind": "requirement",
+      "text": "The site is exceptionally beautiful: a smooth, wholesome experience that reflects peace and awe. Design is a first-class deliverable, not a template default."
+    },
+    {
+      "id": "h10",
+      "kind": "honesty",
+      "text": "beauty is gated twice: an objective floor \u2014 deliberate design direction (intentional typography, palette, spacing, restrained motion; no template defaults), responsive, light and dark themes, WCAG AA contrast, prefers-reduced-motion respected, Lighthouse >=95 on performance and accessibility \u2014 and a subjective gate: the operator reviews the live *.pages.dev preview and approves the aesthetic before the apex cutover"
+    },
+    {
+      "id": "c26",
+      "kind": "requirement",
+      "text": "The site is animated: smooth, gentle motion is a core part of the experience \u2014 the animated smoothness itself should evoke relief in the visitor. (User, mid-frame: 'Animated site and smooth experience makes me feel relief.')"
+    },
+    {
+      "id": "h19",
+      "kind": "honesty",
+      "text": "motion is pervasive but calm: entrance/scroll transitions with gentle easing, steady 60fps with no jank on mid-range hardware, fully honoring prefers-reduced-motion (the still site must remain complete), and the relief feeling is judged by the operator at the same preview gate as h10"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "t1",
+      "summary": "Post the IA + stack proposal as a comment on org#2 (the brief's explicit gate)",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "a comment on org#2 states the stack (Astro output:'static', no adapter, site-astro/), the rationale (house direction, culture-tools precedent, gitignore trap), the four-section IA, the deploy shape (Direct Upload Pages + deploy.yml + wrangler), and the cutover plan; it is signed per convention and predates the merge of any site PR"
+      ],
+      "deps": [],
+      "covers": [
+        "c12",
+        "h2"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t2",
+      "summary": "Dispatch issue #4: file the six downstream issues and the tracker comment",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "issues exist on devex (teach colleague + gemini backends \u2014 reproduce the exit-2 lint break in a colleague repo when filing), culture-agent-template (false seed sentence), devague (claude-code \u2192 claude), and culture / katvan / culture-sonar-cli (each missing prompt file); each issue names only its repo's defect and cites the audit's verified evidence/repro for that repo",
+        "org#4 gets exactly one comment with a checklist linking all six issues and stays open as the tracker; the org diff for this work contains zero code changes driven by #4 findings"
+      ],
+      "deps": [],
+      "covers": [
+        "c18",
+        "h8",
+        "c7",
+        "h16",
+        "c5",
+        "h14"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t3",
+      "summary": "Provision Cloudflare via cultureflare: Pages project agentculture-org + custom domains",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "cf-pages-project-create.sh agentculture-org --direct-upload runs as dry-run first, then --apply; the real *.pages.dev subdomain is recorded from the apply output into a deploy runbook (docs/), never assumed",
+        "agentculture.org and www.agentculture.org are attached as custom domains via cf-pages-domain-add.sh (dry-run then --apply); the redirect rule still winning at this stage is expected and verified (apex still 301s to culture.dev \u2014 no premature go-live)"
+      ],
+      "deps": [],
+      "covers": [
+        "c15",
+        "h5"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t4",
+      "summary": "Scaffold the Astro site in site-astro/ (static, no adapter, CI-built)",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "astro build emits a pure-static dist/ (no adapter, no SSR); git ls-files confirms site-astro/ is tracked (only its dist/ ignored); a CI job builds the site green on the PR"
+      ],
+      "deps": [
+        "t1"
+      ],
+      "covers": [
+        "c11",
+        "h1"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t5",
+      "summary": "Site content: the four IA sections, every fact checkable against a live repo",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "Home answers 'what is AgentCulture' on its own; Framework covers Organic Development (culture mesh, cite-don't-import, awareness agents); Agents & Repos lists the fleet; Engage links GitHub org, culture.dev, sibling sites \u2014 and every named agent, repo, and framework fact is checkable against a live repo or doc, nothing invented",
+        "content lives in site-astro/src/content/ (data/markdown), disjoint from the design task's layout/style/component files"
+      ],
+      "deps": [
+        "t4"
+      ],
+      "covers": [
+        "c13",
+        "h3",
+        "c2",
+        "h11"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t6",
+      "summary": "Design + motion system: exceptionally beautiful, animated, calm",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "deliberate design direction, not template defaults: intentional typography scale, palette, spacing; light and dark themes; WCAG AA contrast validated; owns site-astro/src/{layouts,styles,components,pages}",
+        "motion layer: entrance/scroll transitions with gentle easing, steady 60fps with no jank on mid-range hardware; prefers-reduced-motion fully honored with the still site remaining complete; Lighthouse >=95 on performance and accessibility against the built site"
+      ],
+      "deps": [
+        "t4"
+      ],
+      "covers": [
+        "c21",
+        "h10",
+        "c26",
+        "h19"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t7",
+      "summary": "org CLI site verbs + self-description realignment",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "site build / preview / deploy / link-check land as a noun group obeying the three contracts (stdout/stderr split, CliError, exit codes), each with --json and an explain-catalog entry (test_every_catalog_path_resolves green); site deploy is dry-run by default with --apply",
+        "uv run pytest -n auto, black, isort, flake8, bandit, markdownlint, and teken cli doctor . --strict are all green; README/learn/explain no longer claim the site is unbuilt (doc-test-alignment)"
+      ],
+      "deps": [
+        "t4"
+      ],
+      "covers": [
+        "c17",
+        "h7"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t8",
+      "summary": "deploy.yml: the site's GitHub Actions deploy in the vacated slot",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "triggers on push to main scoped to site paths (+ the workflow itself); builds the Astro site and uploads with wrangler pages deploy dist/ --project-name agentculture-org; contains zero uv build / uv publish / PyPI steps; a branch run publishes a branch preview deployment",
+        "CLOUDFLARE_API_TOKEN (and CLOUDFLARE_ACCOUNT_ID) are configured as repo Actions secrets by the operator; a green run ends with the deployment live on the recorded *.pages.dev subdomain"
+      ],
+      "deps": [
+        "t4",
+        "t3"
+      ],
+      "covers": [
+        "c14",
+        "h4",
+        "c6",
+        "h15"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t9",
+      "summary": "Preview gate: operator reviews the live *.pages.dev preview",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "the operator (Ori) reviews the live preview URL and explicitly approves the aesthetic \u2014 beautiful, smooth, wholesome, peace-and-awe, and the animated smoothness evoking relief \u2014 before any apex cutover; the Lighthouse >=95 perf+a11y report is attached to the approval"
+      ],
+      "deps": [
+        "t5",
+        "t6",
+        "t8"
+      ],
+      "covers": [
+        "c21",
+        "h10",
+        "c26",
+        "h19"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t10",
+      "summary": "Merge the org PR through the cicd lane",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "version bumped via /version-bump; PR opened with cicd open; review threads resolved and SonarCloud quality gate green (cicd await clean); merged to main; the post-merge deploy.yml run is green and the production *.pages.dev deployment serves the site"
+      ],
+      "deps": [
+        "t5",
+        "t6",
+        "t7",
+        "t8"
+      ],
+      "covers": [
+        "c4",
+        "h13"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t11",
+      "summary": "Cutover: re-scope the redirect rule so the apex serves the site",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "the operator explicitly authorizes before --apply; the 'claudeflare managed redirect' rule (zone-scoped, single rule \u2014 verified) is edited/removed so agentculture.org and www no longer match; culture.dev and every other zone's redirect behavior verified unchanged",
+        "post-cutover: curl -sI on apex and www return 200 serving the org site; dig MX still returns the three route*.mx.cloudflare.net hosts; SPF and DKIM TXT byte-identical; chat.agentculture.org still resolves through its cfargotunnel CNAME"
+      ],
+      "deps": [
+        "t9",
+        "t10"
+      ],
+      "covers": [
+        "c16",
+        "h6",
+        "c8",
+        "h17"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t12",
+      "summary": "Close-out: verification sweep + issue comments",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "each success signal runs unattended and green: curl -sI apex + www (200, no location: culture.dev), gh run list --workflow deploy.yml (green), gh issue view 2 and 4 (linking comments present); the before-state 301 evidence and after-state checks are recorded in the closing comment on #2",
+        "org#2's owed checklist is fully accounted: proposal comment, merged site PR, live domain each linked; #2 closes, #4 stays open as tracker"
+      ],
+      "deps": [
+        "t2",
+        "t11"
+      ],
+      "covers": [
+        "c1",
+        "h9",
+        "c3",
+        "h12",
+        "c10",
+        "h18"
+      ],
+      "instruction": ""
+    }
+  ],
+  "risks": [
+    {
+      "id": "r1",
+      "text": "cultureflare token scopes can't be preflighted (CF API limitation) \u2014 a missing Pages/ruleset write scope surfaces as a 403 only at --apply time; remediation: operator re-mints per cultureflare docs/SETUP.md",
+      "kind": "unknown_nonblocking",
+      "task_id": "t3"
+    },
+    {
+      "id": "r2",
+      "text": "attaching the apex/www custom domains may require CF to repoint the zone's A/CNAME records at the Pages project; harmless while the redirect rule wins, but every DNS mutation must be recorded in the runbook",
+      "kind": "unknown_nonblocking",
+      "task_id": "t3"
+    },
+    {
+      "id": "r3",
+      "text": "CI needs a pinned Node toolchain for astro build alongside uv; unpinned versions drift",
+      "kind": "unknown_nonblocking",
+      "task_id": "t8"
+    },
+    {
+      "id": "r4",
+      "text": "Sonar coverage gate (fail_under=60) with new CLI verbs \u2014 the deploy verb's network path needs mockable seams or coverage sinks below the gate",
+      "kind": "unknown_nonblocking",
+      "task_id": "t7"
+    }
+  ]
+}
