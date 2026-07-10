@@ -5,9 +5,10 @@ The AgentCulture org site — source of the web presence published to AgentCultu
 ## What you get
 
 - **An agent-first CLI** cited from [teken](https://github.com/agentculture/teken)
-  (`afi-cli`) — the runtime package has no third-party dependencies.
+  (`afi-cli`) — the runtime package has no third-party dependencies. It is the
+  site's operator surface and stays repo-local: run it as `uv run org …`.
 - **A mesh identity** — `culture.yaml` (`suffix` + `backend`) and the matching
-  resident prompt file (`AGENTS.colleague.md`, since this template runs
+  resident prompt file (`AGENTS.colleague.md`, since this agent runs
   `backend: colleague`).
 - **The canonical guildmaster skill kit** under `.claude/skills/`,
   vendored cite-don't-import. See [`docs/skill-sources.md`](docs/skill-sources.md).
@@ -40,20 +41,26 @@ Every command supports `--json`. Results go to stdout, errors/diagnostics to
 stderr (never mixed). Exit codes: `0` success, `1` user error, `2` environment
 error, `3+` reserved.
 
-## Make it your own
+## The site
 
-1. Rename the package `org/` and the `org`
-   CLI/dist name throughout `pyproject.toml`, the package, `tests/`,
-   `sonar-project.properties`, and this `README.md`. The name is hard-coded in
-   ~100 places, so list every occurrence first — see the `git grep` discovery
-   command in [`CLAUDE.md`](CLAUDE.md), the authoritative rename procedure.
-2. Edit `culture.yaml` with your `suffix` and `backend`.
-3. Rewrite `CLAUDE.md` for your agent and run `/init`.
-4. Re-vendor only the skills you need from guildmaster (see
-   [`docs/skill-sources.md`](docs/skill-sources.md)).
+**Not built yet.** The stack, information architecture, and deploy target are
+open decisions owed to
+[org#2](https://github.com/agentculture/org/issues/2), which asks for a proposal
+on the issue before any code lands. DNS for AgentCulture.org is operator-owned,
+so a cutover is coordinated, not self-serve.
 
-See [`CLAUDE.md`](CLAUDE.md) for the full conventions (version-bump-every-PR,
-the `cicd` PR lane, deploy setup).
+Two things worth knowing before you start: the sibling repos' `publish.yml` are
+all **PyPI** workflows, not deploy templates — the deploy workflow has to be
+written fresh. And a top-level `site/` directory is silently ignored by
+`.gitignore`; the house name is `site-astro/`. Both are explained in
+[`CLAUDE.md`](CLAUDE.md).
+
+## Contributing
+
+Every PR bumps the version (CI enforces it) — use the `version-bump` skill. See
+[`CLAUDE.md`](CLAUDE.md) for the full conventions: the three stable CLI
+contracts, the agent-first rubric gate, the `cicd` PR lane, and the
+cite-don't-import rule for `.claude/skills/`.
 
 ## License
 

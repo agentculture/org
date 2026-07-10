@@ -5,22 +5,71 @@ All notable changes to this project will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/). This project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.4.1] - 2026-07-10
+## [0.4.2] - 2026-07-10
 
 ### Added
 
+- **`CLAUDE.md`: expanded the bootstrap seed into a real runtime prompt** (`/init`,
+  the first owed step on [org#2](https://github.com/agentculture/org/issues/2)).
+  Documents the CLI architecture (a registry of `register()`-ing command modules,
+  the three stable contracts, the `explain`-catalog invariant), the constructs
+  that exist only to pass `teken cli doctor --strict` and must not be
+  "simplified" away, the enforced conventions (version-bump-every-PR, Sonar's
+  `relative_files`, cite-don't-import skills, the `cicd` PR lane), and a
+  **Building the site** section recording what org#2 leaves open.
+- **Two `.gitignore` traps documented** ahead of the site build: a top-level
+  `site/` is silently ignored by the inherited mkdocs `/site` stanza (verified
+  with `git check-ignore`), and `site-astro/dist/` is ignored by the `dist/`
+  rule. The house directory name is `site-astro/`.
+- **Recorded that no deploy-workflow template exists.** org#2 says to add the
+  deploy workflow "in the slot the removed `publish.yml` vacated" — but every
+  sibling's `publish.yml` (`culture-tools`, `katvan`,
+  `league-of-agents-platform`) is a **PyPI publishing** workflow, exactly what
+  [org#1](https://github.com/agentculture/org/pull/1) removed. It is a filename
+  slot, not a precedent; the deploy workflow must be authored fresh.
+
 ### Changed
 
+- **Self-description now names org, not the template it was scaffolded from.**
+  `culture-agent-template`'s prose described a *clonable template*; org is a real
+  agent. Corrected in `learn` (text + JSON `purpose`), the argparse
+  `description`, the `explain` root entry, the `overview` artifact list, and the
+  `whoami` / `overview` / `explain` module docstrings.
+- **`explain`'s root entry cited `CLAUDE.md` as the mesh identity file.** For
+  `backend: colleague` that is `AGENTS.colleague.md`. (`overview` and
+  `explain doctor` were already corrected in 0.3.4; this finishes the sweep.)
+  `CLAUDE.md` now states plainly that it guides Claude Code in the repo and is
+  *not* this agent's resident prompt.
+- **`README.md`:** replaced the template-leftover "Make it your own" section —
+  which pointed at a rename procedure that never existed in any version of
+  `CLAUDE.md` — with "The site" (status + the two traps above) and
+  "Contributing".
+- **`docs/skill-sources.md`:** "this template's `outsource/`" → "org's".
+
 ### Fixed
+
+- **`uv.lock` was stale.** It recorded `org 0.4.0` while `pyproject.toml`
+  declared `0.4.1` — the 0.4.1 bump never relocked.
+
+## [0.4.1] - 2026-07-10
+
+### Changed
+
+- **Stripped PyPI publishing** ([org#1](https://github.com/agentculture/org/pull/1)).
+  org ships a site, not a package: deleted `publish.yml`, dropped the vendored
+  `pypi-maintainer` skill and its `docs/skill-sources.md` row. org is excluded
+  from guildmaster's `pypi-maintainer` ledger row, and no Trusted Publisher is
+  or will be registered. The CLI stays repo-local (`uv run org …`).
 
 ## [0.4.0] - 2026-06-23
 
 ### Added
 
 - **Vendored the `remember` + `recall` memory skills from eidetic-cli**
-  (cite-don't-import) — the write/read halves of eidetic's shared
-  `~/.eidetic/memory` surface, so this agent (Claude and its colleague backend)
-  can persist facts across sessions and recall them later, sharing one store.
+  (cite-don't-import) — the write/read halves of eidetic's shared memory store
+  (a home-directory path outside any git worktree), so this agent (Claude and
+  its colleague backend) can persist facts across sessions and recall them
+  later, sharing one store.
   `remember` drives `eidetic remember` (idempotent upsert of one JSON record or
   an NDJSON batch on stdin, dedup by id + content hash); `recall` drives
   `eidetic recall` with four search modes — exact / approximate / keyword /
