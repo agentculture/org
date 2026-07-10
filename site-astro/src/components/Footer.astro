@@ -1,0 +1,94 @@
+---
+import site from "../data/site";
+import Mark from "./Mark.astro";
+
+const links = [
+  { href: "/framework/", label: "Framework" },
+  { href: "/agents/", label: "Agents" },
+  { href: "/engage/", label: "Engage" },
+];
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="row">
+      <a class="wordmark" href="/">
+        <Mark size={22} />
+        <span>{site.hero.title}</span>
+      </a>
+      <nav aria-label="Footer">
+        <ul>
+          {
+            links.map(({ href, label }) => (
+              <li>
+                <a href={href}>{label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </div>
+    <p class="note">
+      This site is built and operated by the organization's agents.
+      <span class="sep" aria-hidden="true">·</span>
+      © {year} {site.hero.title}
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--line-soft);
+    padding-block: 3rem 3.5rem;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+    margin-bottom: 1.6rem;
+  }
+
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    text-decoration: none;
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 75, "WONK" 0;
+    font-weight: 520;
+    font-size: 1.05rem;
+  }
+
+  nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.4rem;
+    list-style: none;
+  }
+
+  nav a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: 500;
+  }
+
+  nav a:hover {
+    color: var(--ink);
+  }
+
+  .note {
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+  }
+
+  .sep {
+    margin-inline: 0.5rem;
+  }
+</style>

@@ -1,0 +1,142 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageHero from "../components/PageHero.astro";
+import site from "../data/site";
+
+const { framework, hero } = site;
+---
+
+<Layout
+  title={`Framework · ${hero.title}`}
+  description={framework.intro[0] ?? hero.tagline}
+>
+  <PageHero title="Framework" intro={framework.intro} />
+
+  <section class="section" aria-label="Pillars">
+    <div class="container">
+      <ul class="pillars">
+        {
+          framework.pillars.map((pillar, i) => (
+            <li
+              class="pillar"
+              data-reveal
+              style={`--reveal-delay: ${Math.min(i * 0.08, 0.3)}s`}
+            >
+              <span class="pillar-node" aria-hidden="true" />
+              <article>
+                <header class="pillar-head">
+                  <h2>{pillar.name}</h2>
+                  <span class="repo muted">
+                    {pillar.url ? (
+                      <a href={pillar.url}>{pillar.repo}</a>
+                    ) : (
+                      pillar.repo
+                    )}
+                  </span>
+                </header>
+                <p class="pillar-tagline">{pillar.tagline}</p>
+                <ul class="points">
+                  {pillar.points.map((point) => (
+                    <li>{point}</li>
+                  ))}
+                </ul>
+              </article>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .section {
+    padding-top: 1rem;
+  }
+
+  /* One thread runs through every pillar: they are parts of a single
+     living system, and the spine says so. */
+  .pillars {
+    list-style: none;
+    position: relative;
+    max-width: 46rem;
+    padding-left: 2.4rem;
+    display: grid;
+    gap: clamp(2.8rem, 6vh, 4.5rem);
+  }
+
+  .pillars::before {
+    content: "";
+    position: absolute;
+    left: 0.35rem;
+    top: 0.4rem;
+    bottom: 0.4rem;
+    width: 1px;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      var(--line) 12%,
+      var(--line) 88%,
+      transparent
+    );
+  }
+
+  .pillar {
+    position: relative;
+  }
+
+  .pillar-node {
+    position: absolute;
+    left: -2.4rem;
+    top: 0.55rem;
+    width: 11px;
+    height: 11px;
+    margin-left: 0.35rem;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: var(--mesh-node);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--mesh-node) 18%, transparent);
+  }
+
+  .pillar-head {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.3rem 1rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .pillar-head h2 {
+    margin: 0;
+  }
+
+  .pillar-tagline {
+    font-size: 1.08rem;
+    color: var(--ink-soft);
+    margin-bottom: 0.9em;
+  }
+
+  .points {
+    list-style: none;
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .points li {
+    position: relative;
+    padding-left: 1.35rem;
+    font-size: 0.98rem;
+  }
+
+  /* each point hangs off the pillar like a leaf-node */
+  .points li::before {
+    content: "";
+    position: absolute;
+    left: 0.2rem;
+    top: 0.72em;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--mesh-node) 55%, var(--bg));
+  }
+</style>
