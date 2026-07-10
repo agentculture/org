@@ -16,6 +16,10 @@ config:
 
 ignores:
   - "node_modules/**"
+  # Recursive form too: without a leading `**/` the pattern above only
+  # matches a top-level node_modules — it misses nested ones like
+  # site-astro/node_modules (npm-managed, sibling to the Python tree).
+  - "**/node_modules/**"
   - ".local/**"
   - ".afi/**"
   - ".teken/**"
