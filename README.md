@@ -9,10 +9,11 @@ The AgentCulture org site — source of the web presence published to AgentCultu
 - **A mesh identity** — `culture.yaml` (`suffix` + `backend`) and the matching
   resident prompt file (`AGENTS.colleague.md`, since this template runs
   `backend: colleague`).
-- **The canonical guildmaster skill kit** (11 skills) under `.claude/skills/`,
+- **The canonical guildmaster skill kit** under `.claude/skills/`,
   vendored cite-don't-import. See [`docs/skill-sources.md`](docs/skill-sources.md).
-- **A build + deploy baseline** — pytest, lint, the agent-first rubric gate, and
-  PyPI Trusted Publishing wired into GitHub Actions.
+- **A build baseline** — pytest, lint, and the agent-first rubric gate wired
+  into GitHub Actions. **No PyPI publishing** — this repo's deliverable is the
+  site published to AgentCulture.org, not a package.
 
 ## Quickstart
 
