@@ -1,4 +1,4 @@
-# Build Plan — AgentCulture.org is live: the org site is built in the org repo and deployed to Cloudflare Pages at the apex, and both open org issues are closed out — issue #2's build brief is delivered end to end, and issue #4's fleet-audit findings are dispatched as downstream issues to their real owners.
+# Build Plan — AgentCulture.org is live: the org site is built in the org repo and deployed to Cloudflare Pages at the apex, and both open org issues are closed out — issue #2's build brief is delivered end to end, and issue #4's fleet-audit findings are dispatched as downstream issues to their real owners
 
 slug: `agentculture-org-is-live-the-org-site-is-built-in` · status: `exported` · from frame: `agentculture-org-is-live-the-org-site-is-built-in`
 
@@ -24,7 +24,7 @@ slug: `agentculture-org-is-live-the-org-site-is-built-in` · status: `exported` 
 - covers: c15, h5
 - acceptance:
   - cf-pages-project-create.sh agentculture-org --direct-upload runs as dry-run first, then --apply; the real *.pages.dev subdomain is recorded from the apply output into a deploy runbook (docs/), never assumed
-  - agentculture.org and www.agentculture.org are attached as custom domains via cf-pages-domain-add.sh (dry-run then --apply); the redirect rule still winning at this stage is expected and verified (apex still 301s to culture.dev — no premature go-live)
+  - agentculture.org and <www.agentculture.org> are attached as custom domains via cf-pages-domain-add.sh (dry-run then --apply); the redirect rule still winning at this stage is expected and verified (apex still 301s to culture.dev — no premature go-live)
 
 ### t4 — Scaffold the Astro site in site-astro/ (static, no adapter, CI-built)
 

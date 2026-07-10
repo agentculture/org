@@ -1,7 +1,7 @@
-# AgentCulture.org is live: the org site is built in the org repo and deployed to Cloudflare Pages at the apex, and both open org issues are closed out — issue #2's build brief is delivered end to end, and issue #4's fleet-audit findings are dispatched as downstream issues to their real owners.
+# AgentCulture.org is live: the org site is built in the org repo and deployed to Cloudflare Pages at the apex, and both open org issues are closed out — issue #2's build brief is delivered end to end, and issue #4's fleet-audit findings are dispatched as downstream issues to their real owners
 
 > AgentCulture.org is live: the org site is built in the org repo and deployed to Cloudflare Pages at the apex, and both open org issues are closed out — issue #2's build brief is delivered end to end, and issue #4's fleet-audit findings are dispatched as downstream issues to their real owners.
-> instruction: Verify by: curl -sI https://agentculture.org (expect 200, org site, no location: culture.dev); gh issue view 2 and 4 --repo agentculture/org showing the closing/linking comments; a push to main on org redeploying via the Actions workflow
+> instruction: Verify by: curl -sI <https://agentculture.org> (expect 200, org site, no location: culture.dev); gh issue view 2 and 4 --repo agentculture/org showing the closing/linking comments; a push to main on org redeploying via the Actions workflow
 
 ## Audience
 
@@ -10,7 +10,7 @@
 ## Before → After
 
 - Before: agentculture.org 301-redirects every path to culture.dev via the 'claudeflare managed redirect' dynamic-redirect rule (the apex A 192.0.2.1 is a proxied dummy); the org repo has no site directory; issues #2 and #4 are open with no downstream issues filed.
-- After: https://agentculture.org serves the org site from a Direct Upload Cloudflare Pages project with the apex and www attached as custom domains; the redirect rule no longer captures agentculture.org; the org repo holds the site source plus a GitHub Actions deploy workflow; issue #2's owed checklist is complete and issue #4 has a downstream issue filed with each owner.
+- After: <https://agentculture.org> serves the org site from a Direct Upload Cloudflare Pages project with the apex and www attached as custom domains; the redirect rule no longer captures agentculture.org; the org repo holds the site source plus a GitHub Actions deploy workflow; issue #2's owed checklist is complete and issue #4 has a downstream issue filed with each owner.
 
 ## Why it matters
 
@@ -26,7 +26,7 @@
   - honesty: every named agent, repo, and framework fact on the site is checkable against a live repo or doc — nothing is invented for the page
 - Deploy: a GitHub Actions workflow in the slot the removed publish.yml vacated — builds the Astro site and uploads dist/ with wrangler pages deploy (Direct Upload), authenticated by a single CLOUDFLARE_API_TOKEN repo secret, per the house sub-site pattern; CF's GitHub integration is not used.
   - honesty: the workflow triggers on push to main (site paths), holds zero PyPI/uv-publish steps, and a green run ends with the new deployment live on the *.pages.dev subdomain
-- Provisioning via cultureflare: create the Direct Upload Pages project (cf-pages-project-create.sh, recording the real *.pages.dev subdomain from apply output), then attach agentculture.org and www.agentculture.org as custom domains (cf-pages-domain-add.sh). All mutations dry-run first, --apply to commit.
+- Provisioning via cultureflare: create the Direct Upload Pages project (cf-pages-project-create.sh, recording the real *.pages.dev subdomain from apply output), then attach agentculture.org and <www.agentculture.org> as custom domains (cf-pages-domain-add.sh). All mutations dry-run first, --apply to commit.
   - honesty: every cultureflare mutation is shown as a dry-run plan before --apply, and the project's real *.pages.dev subdomain is recorded from the apply output rather than assumed (CF auto-suffixes name collisions)
 - Cutover: edit the 'claudeflare managed redirect' ruleset so its rule no longer matches agentculture.org/www (other zones' redirects untouched), letting the proxied apex resolve to the Pages custom domain. This is the operator-owned go-live step and happens only with explicit operator authorization.
   - honesty: the operator explicitly authorizes the redirect-rule edit before --apply; after cutover, culture.dev and every other zone's redirect behavior is verified unchanged, and agentculture.org email routing still validates (MX/SPF/DKIM untouched)
@@ -43,7 +43,7 @@
 
 - the three deliverables are all independently checkable: the apex serves the site (curl, no 301), org#2's checklist items are each closed by a linked artifact (proposal comment, merged site PR, live domain), and org#4 carries the comment linking every downstream issue
 - the site answers both audiences' first question within one click: a visitor can say what AgentCulture is from the home page alone, and each downstream issue is actionable by its repo maintainer without reading org#4 in full
-- verified live 2026-07-10: curl -sI https://agentculture.org returns 301 location https://culture.dev/; the zone's http_request_dynamic_redirect entrypoint holds exactly one rule, matching apex+www; gh issue list shows only #2 and #4 open
+- verified live 2026-07-10: curl -sI <https://agentculture.org> returns 301 location <https://culture.dev/>; the zone's http_request_dynamic_redirect entrypoint holds exactly one rule, matching apex+www; gh issue list shows only #2 and #4 open
 - every element is independently observable: curl shows 200 from Pages at apex and www; the redirect entrypoint no longer matches agentculture.org; deploy.yml exists on org main; issues #2/#4 carry their linking comments
 - both pains are reproducible today, not asserted: curl -sI shows the 301 bounce, and devex pr lint exits 2 with 'unknown backend colleague' in any of the 29 colleague repos
 - deploy.yml contains no uv build / uv publish / pypa publish action steps, and no Trusted Publisher registration exists for org
@@ -53,7 +53,7 @@
 
 ## Success signals
 
-- curl -sI https://agentculture.org returns 200 serving the org site (no 301 to culture.dev); www reaches the same site; a push to org main triggers a redeploy; issues #2 and #4 each carry a closing/linking comment.
+- curl -sI <https://agentculture.org> returns 200 serving the org site (no 301 to culture.dev); www reaches the same site; a push to org main triggers a redeploy; issues #2 and #4 each carry a closing/linking comment.
 
 ## Scope / boundaries
 
@@ -75,7 +75,7 @@
 - Deploy workflow filename: deploy.yml (resolves v1 — clearer intent than reusing the publish.yml name org must never regrow).
 - Issue #4 stays open as the tracking issue after dispatch, carrying a checklist that links every downstream issue (resolves v3).
 - Cloudflare Pages project name: agentculture-org (resolves v2); the real *.pages.dev subdomain is still recorded from apply output.
-- www.agentculture.org is attached as a Pages custom domain alongside the apex (resolves v4).
+- <www.agentculture.org> is attached as a Pages custom domain alongside the apex (resolves v4).
 
 ## Hard questions
 

@@ -25,3 +25,5 @@ ignores:
   - ".teken/**"
   # Vendored skills are cited verbatim from guildmaster — do not reformat them.
   - ".claude/skills/**"
+  # devague working state (reviews/ is gitignored, so CI checkouts never see it).
+  - ".devague/**"
