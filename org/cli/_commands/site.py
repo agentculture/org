@@ -28,9 +28,11 @@ from __future__ import annotations
 import argparse
 import os
 import shutil
-import subprocess  # noqa: S404 - no shell=True; argv lists only (bandit skips B404/B603)
+import subprocess  # no shell=True anywhere; argv lists only
+import sys
 from html.parser import HTMLParser
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from org.cli._commands.overview import emit_overview
 from org.cli._commands.whoami import find_culture_yaml
@@ -40,7 +42,10 @@ from org.cli._output import emit_diagnostic, emit_result
 _SITE_DIR_NAME = "site-astro"
 _PROJECT_NAME = "agentculture-org"
 _REQUIRED_ENV = ("CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID")
-_EXTERNAL_PREFIXES = ("http://", "https://", "//", "mailto:", "tel:", "javascript:")
+# Pinned to the same major as .github/workflows/deploy.yml so local deploys
+# and CI deploys can't drift across a wrangler major release.
+_WRANGLER_SPEC = "wrangler@4"
+_JSON_HELP = "Emit structured JSON."
 
 _VERBS = [
     "site build — run the Astro production build (npm run build in site-astro/)",
@@ -98,7 +103,8 @@ def _require_npm() -> str:
 def _run_streaming(argv: list[str], *, cwd: Path) -> int:
     """Run ``argv``, echoing its combined output to stderr as diagnostics."""
     try:
-        proc = subprocess.run(  # noqa: S603 - argv is a fixed list, no shell
+        # argv is a fixed list, no shell involved.
+        proc = subprocess.run(
             argv,
             cwd=cwd,
             stdout=subprocess.PIPE,
@@ -200,10 +206,17 @@ def cmd_site_preview(args: argparse.Namespace) -> int:
         f"org site preview: running `npm run preview` in {site_dir} "
         "— serves until interrupted (Ctrl-C to stop)"
     )
+    status = "stopped"
     try:
-        proc = subprocess.run(  # noqa: S603 - argv is a fixed list, no shell
+        # argv is a fixed list, no shell involved. npm's server chatter is
+        # diagnostics, never results: route the child's stdout (and its
+        # stderr, folded into it) onto our stderr so `--json` stdout stays
+        # machine-parseable (the stdout/stderr contract in cli/_output.py).
+        proc = subprocess.run(
             [npm, "run", "preview"],
             cwd=site_dir,
+            stdout=sys.stderr,
+            stderr=subprocess.STDOUT,
             check=False,
         )
     except OSError as err:
@@ -214,17 +227,17 @@ def cmd_site_preview(args: argparse.Namespace) -> int:
         ) from err
     except KeyboardInterrupt:
         emit_diagnostic("org site preview: interrupted, server stopped")
-        return 0
+        status = "interrupted"
+    else:
+        if proc.returncode != 0:
+            raise CliError(
+                EXIT_ENV_ERROR,
+                f"`npm run preview` exited {proc.returncode}",
+                remediation="inspect npm's own output above",
+            )
 
-    if proc.returncode != 0:
-        raise CliError(
-            EXIT_ENV_ERROR,
-            f"`npm run preview` exited {proc.returncode}",
-            remediation="inspect npm's own output above",
-        )
-
-    payload = {"site_dir": str(site_dir), "status": "stopped"}
-    emit_result(payload if json_mode else "preview server stopped", json_mode=json_mode)
+    payload = {"site_dir": str(site_dir), "status": status}
+    emit_result(payload if json_mode else f"preview server {status}", json_mode=json_mode)
     return 0
 
 
@@ -254,11 +267,22 @@ class _LinkCollector(HTMLParser):
 
 
 def _is_external(href: str) -> bool:
-    return href.startswith(_EXTERNAL_PREFIXES)
+    """A link is external when it carries a scheme (https:, mailto:, tel:,
+    javascript:, …) or a network location (``//host/…``) — everything the
+    dist/ walk can't vouch for. Scheme detection over prefix literals so no
+    scheme is special-cased."""
+    parts = urlsplit(href)
+    return bool(parts.scheme or parts.netloc)
 
 
 def _resolve_target(dist_dir: Path, source_file: Path, href: str) -> tuple[Path, str | None]:
-    """Resolve ``href`` (found in ``source_file``) to a file under ``dist_dir``."""
+    """Resolve ``href`` (found in ``source_file``) to a file under ``dist_dir``.
+
+    Candidates that resolve to a path *outside* ``dist_dir`` (e.g. a
+    ``/../README.md`` traversal) are never accepted — the caller re-checks
+    containment, so an escaping link reports as broken instead of silently
+    passing because some unrelated file happens to exist on disk.
+    """
     path_part, _, fragment = href.partition("#")
     fragment = fragment or None
     if not path_part:
@@ -277,11 +301,38 @@ def _resolve_target(dist_dir: Path, source_file: Path, href: str) -> tuple[Path,
         if base.suffix == "":
             candidates += [base.with_suffix(".html"), base / "index.html"]
 
-    for candidate in candidates:
-        resolved = candidate.resolve()
-        if resolved.is_file():
-            return resolved, fragment
-    return candidates[0].resolve(), fragment
+    dist_root = dist_dir.resolve()
+    resolved = [candidate.resolve() for candidate in candidates]
+    for candidate in resolved:
+        if candidate.is_file() and candidate.is_relative_to(dist_root):
+            return candidate, fragment
+    return resolved[0], fragment
+
+
+def _collect_pages(html_files: list[Path]) -> tuple[dict[Path, set[str]], dict[Path, list[str]]]:
+    """Parse every page once: anchor ids and outbound links, keyed by resolved path."""
+    page_ids: dict[Path, set[str]] = {}
+    page_links: dict[Path, list[str]] = {}
+    for html_file in html_files:
+        parser = _LinkCollector()
+        parser.feed(html_file.read_text(encoding="utf-8", errors="replace"))
+        page_ids[html_file.resolve()] = parser.ids
+        page_links[html_file] = parser.links
+    return page_ids, page_links
+
+
+def _link_problem(
+    dist_dir: Path, page_ids: dict[Path, set[str]], html_file: Path, href: str
+) -> str | None:
+    """Reason ``href`` is broken, or ``None`` when it checks out."""
+    target, fragment = _resolve_target(dist_dir, html_file, href)
+    if not target.is_file():
+        return "missing file"
+    if not target.is_relative_to(dist_dir.resolve()):
+        return "escapes dist"
+    if fragment and fragment not in page_ids.get(target, set()):
+        return f"missing anchor #{fragment}"
+    return None
 
 
 def cmd_site_link_check(args: argparse.Namespace) -> int:
@@ -296,39 +347,22 @@ def cmd_site_link_check(args: argparse.Namespace) -> int:
         )
 
     html_files = sorted(dist_dir.rglob("*.html"))
-    page_ids: dict[Path, set[str]] = {}
-    page_links: dict[Path, list[str]] = {}
-    for html_file in html_files:
-        parser = _LinkCollector()
-        parser.feed(html_file.read_text(encoding="utf-8", errors="replace"))
-        page_ids[html_file] = parser.ids
-        page_links[html_file] = parser.links
+    page_ids, page_links = _collect_pages(html_files)
 
     broken: list[dict[str, str]] = []
     for html_file in html_files:
         for href in page_links[html_file]:
             if not href or _is_external(href):
                 continue
-            target, fragment = _resolve_target(dist_dir, html_file, href)
-            if not target.is_file():
+            reason = _link_problem(dist_dir, page_ids, html_file, href)
+            if reason is not None:
                 broken.append(
                     {
                         "file": str(html_file.relative_to(dist_dir)),
                         "link": href,
-                        "reason": "missing file",
+                        "reason": reason,
                     }
                 )
-                continue
-            if fragment:
-                ids = page_ids.get(target, set())
-                if fragment not in ids:
-                    broken.append(
-                        {
-                            "file": str(html_file.relative_to(dist_dir)),
-                            "link": href,
-                            "reason": f"missing anchor #{fragment}",
-                        }
-                    )
 
     if broken:
         lines = [f"{b['file']}: {b['link']} ({b['reason']})" for b in broken]
@@ -360,7 +394,8 @@ def _current_git_branch(root: Path) -> str | None:
     if git is None:
         return None
     try:
-        proc = subprocess.run(  # noqa: S603 - argv is a fixed list, no shell
+        # argv is a fixed list, no shell involved.
+        proc = subprocess.run(
             [git, "-C", str(root), "rev-parse", "--abbrev-ref", "HEAD"],
             capture_output=True,
             text=True,
@@ -376,47 +411,50 @@ def _current_git_branch(root: Path) -> str | None:
 
 
 def _wrangler_argv(dist_dir: Path, branch: str | None) -> list[str]:
-    argv = ["npx", "wrangler", "pages", "deploy", str(dist_dir), "--project-name", _PROJECT_NAME]
+    argv = [
+        "npx",
+        _WRANGLER_SPEC,
+        "pages",
+        "deploy",
+        str(dist_dir),
+        "--project-name",
+        _PROJECT_NAME,
+    ]
     if branch:
         argv += ["--branch", branch]
     return argv
 
 
-def cmd_site_deploy(args: argparse.Namespace) -> int:
-    json_mode = bool(getattr(args, "json", False))
-    apply_ = bool(getattr(args, "apply", False))
-    root = _require_repo_root()
-    site_dir = root / _SITE_DIR_NAME
-    dist_dir = site_dir / "dist"
-    branch = _current_git_branch(root)
-    argv = _wrangler_argv(dist_dir, branch)
-    missing_env = [name for name in _REQUIRED_ENV if not os.environ.get(name)]
+def _emit_deploy_plan(
+    dist_dir: Path, argv: list[str], missing_env: list[str], *, json_mode: bool
+) -> None:
+    plan = {
+        "mode": "dry-run",
+        "project": _PROJECT_NAME,
+        "source": str(dist_dir),
+        "command": argv,
+        "required_env": list(_REQUIRED_ENV),
+        "missing_env": missing_env,
+    }
+    if json_mode:
+        emit_result(plan, json_mode=True)
+        return
+    lines = [
+        "org site deploy — dry-run (pass --apply to commit)",
+        f"  project: {_PROJECT_NAME}",
+        f"  source: {dist_dir}",
+        f"  command: {' '.join(argv)}",
+        f"  required env: {', '.join(_REQUIRED_ENV)}",
+    ]
+    if missing_env:
+        lines.append(f"  currently unset: {', '.join(missing_env)}")
+    emit_result("\n".join(lines), json_mode=False)
 
-    if not apply_:
-        plan = {
-            "mode": "dry-run",
-            "project": _PROJECT_NAME,
-            "source": str(dist_dir),
-            "command": argv,
-            "required_env": list(_REQUIRED_ENV),
-            "missing_env": missing_env,
-        }
-        if json_mode:
-            emit_result(plan, json_mode=True)
-        else:
-            lines = [
-                "org site deploy — dry-run (pass --apply to commit)",
-                f"  project: {_PROJECT_NAME}",
-                f"  source: {dist_dir}",
-                f"  command: {' '.join(argv)}",
-                f"  required env: {', '.join(_REQUIRED_ENV)}",
-            ]
-            if missing_env:
-                lines.append(f"  currently unset: {', '.join(missing_env)}")
-            emit_result("\n".join(lines), json_mode=False)
-        return 0
 
-    # --apply: validate preconditions, then actually deploy.
+def _apply_deploy(
+    root: Path, dist_dir: Path, argv: list[str], missing_env: list[str], *, json_mode: bool
+) -> None:
+    """Validate preconditions, then actually deploy."""
     if not dist_dir.is_dir():
         raise CliError(
             EXIT_ENV_ERROR,
@@ -455,6 +493,20 @@ def cmd_site_deploy(args: argparse.Namespace) -> int:
         payload if json_mode else f"deployed {dist_dir} to {_PROJECT_NAME}",
         json_mode=json_mode,
     )
+
+
+def cmd_site_deploy(args: argparse.Namespace) -> int:
+    json_mode = bool(getattr(args, "json", False))
+    apply_ = bool(getattr(args, "apply", False))
+    root = _require_repo_root()
+    dist_dir = root / _SITE_DIR_NAME / "dist"
+    argv = _wrangler_argv(dist_dir, _current_git_branch(root))
+    missing_env = [name for name in _REQUIRED_ENV if not os.environ.get(name)]
+
+    if not apply_:
+        _emit_deploy_plan(dist_dir, argv, missing_env, json_mode=json_mode)
+    else:
+        _apply_deploy(root, dist_dir, argv, missing_env, json_mode=json_mode)
     return 0
 
 
@@ -468,7 +520,7 @@ def register(sub: argparse._SubParsersAction) -> None:
             "Operate the Astro site (build, preview, link-check, deploy; see 'org site overview')."
         ),
     )
-    p.add_argument("--json", action="store_true", help="Emit structured JSON.")
+    p.add_argument("--json", action="store_true", help=_JSON_HELP)
     p.set_defaults(func=_no_verb, json=False)
     # `p` is a _CliArgumentParser (the top-level subparsers were built with that
     # parser_class); propagate it so nested parse errors route through the
@@ -476,25 +528,25 @@ def register(sub: argparse._SubParsersAction) -> None:
     noun_sub = p.add_subparsers(dest="site_command", parser_class=type(p))
 
     overview = noun_sub.add_parser("overview", help="Describe the site operator surface.")
-    overview.add_argument("--json", action="store_true", help="Emit structured JSON.")
+    overview.add_argument("--json", action="store_true", help=_JSON_HELP)
     overview.set_defaults(func=cmd_site_overview)
 
     build = noun_sub.add_parser("build", help="Run the Astro production build (npm run build).")
-    build.add_argument("--json", action="store_true", help="Emit structured JSON.")
+    build.add_argument("--json", action="store_true", help=_JSON_HELP)
     build.set_defaults(func=cmd_site_build)
 
     preview = noun_sub.add_parser(
         "preview",
         help="Serve the built site locally (npm run preview; runs until interrupted).",
     )
-    preview.add_argument("--json", action="store_true", help="Emit structured JSON.")
+    preview.add_argument("--json", action="store_true", help=_JSON_HELP)
     preview.set_defaults(func=cmd_site_preview)
 
     link_check = noun_sub.add_parser(
         "link-check",
         help="Walk site-astro/dist/ for internal links/anchors that 404 within dist.",
     )
-    link_check.add_argument("--json", action="store_true", help="Emit structured JSON.")
+    link_check.add_argument("--json", action="store_true", help=_JSON_HELP)
     link_check.set_defaults(func=cmd_site_link_check)
 
     deploy = noun_sub.add_parser(
@@ -506,5 +558,5 @@ def register(sub: argparse._SubParsersAction) -> None:
         action="store_true",
         help="Actually run the deploy (default is a dry-run plan).",
     )
-    deploy.add_argument("--json", action="store_true", help="Emit structured JSON.")
+    deploy.add_argument("--json", action="store_true", help=_JSON_HELP)
     deploy.set_defaults(func=cmd_site_deploy)

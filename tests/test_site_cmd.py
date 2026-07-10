@@ -375,7 +375,7 @@ def test_site_deploy_apply_success(
     assert payload["deployed"] is True
     assert calls
     assert calls[0][0] == "/usr/bin/npx"
-    assert calls[0][1:4] == ["wrangler", "pages", "deploy"]
+    assert calls[0][1:4] == ["wrangler@4", "pages", "deploy"]
 
 
 def test_site_deploy_apply_failure(
@@ -426,3 +426,56 @@ def test_explain_site_link_check(capsys: pytest.CaptureFixture[str]) -> None:
     rc = main(["explain", "site", "link-check"])
     assert rc == 0
     assert "org site link-check" in capsys.readouterr().out
+
+
+# --- review regressions (PR #5: Qodo inline findings + Sonar) -----------------
+
+
+def test_site_link_check_flags_dist_escape(
+    fake_repo: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """A traversal href that resolves to an existing file OUTSIDE dist/ is broken."""
+    dist = fake_repo / "site-astro" / "dist"
+    _write(fake_repo / "site-astro" / "outside.html", "<html><body>not in dist</body></html>")
+    _write(dist / "index.html", '<html><body><a href="/../outside.html">out</a></body></html>')
+    rc = main(["site", "link-check"])
+    assert rc == 1
+    err = capsys.readouterr().err
+    assert "escapes dist" in err
+
+
+def test_site_link_check_treats_schemes_as_external(
+    fake_repo: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """Scheme-carrying links (https:, mailto:, tel:) are skipped, not resolved."""
+    dist = fake_repo / "site-astro" / "dist"
+    _write(
+        dist / "index.html",
+        "<html><body>"
+        '<a href="https://example.com/x">a</a>'
+        '<a href="mailto:x@example.com">b</a>'
+        '<a href="tel:+1234">c</a>'
+        "</body></html>",
+    )
+    rc = main(["site", "link-check"])
+    assert rc == 0
+
+
+def test_site_preview_routes_child_output_to_stderr(
+    fake_repo: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """npm's server chatter must land on stderr so --json stdout stays parseable."""
+    monkeypatch.setattr(site_cmd.shutil, "which", lambda name: f"/usr/bin/{name}")
+    seen: dict[str, object] = {}
+
+    def fake_run(argv: list[str], **kwargs: object) -> _FakeCompletedProcess:
+        seen.update(kwargs)
+        return _FakeCompletedProcess(returncode=0)
+
+    monkeypatch.setattr(site_cmd.subprocess, "run", fake_run)
+    rc = main(["site", "preview", "--json"])
+    assert rc == 0
+    assert seen["stdout"] is site_cmd.sys.stderr
+    assert seen["stderr"] is site_cmd.subprocess.STDOUT
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["status"] == "stopped"

@@ -57,24 +57,24 @@ jobs:
       # a pull_request run passes the PR's head branch and gets a preview
       # deployment alias instead.
       - name: Deploy to Cloudflare Pages
-        if: env.CLOUDFLARE_API_TOKEN != ''
+        if: env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != ''
         run: >-
           npx wrangler@4 pages deploy site-astro/dist
           --project-name agentculture-org
           --branch "${{ github.head_ref || github.ref_name }}"
 
       - name: Skip notice (Cloudflare secrets not configured)
-        if: env.CLOUDFLARE_API_TOKEN == ''
+        if: env.CLOUDFLARE_API_TOKEN == '' || env.CLOUDFLARE_ACCOUNT_ID == ''
         run: |
-          echo "::notice::CLOUDFLARE_API_TOKEN is not configured on this repo yet — skipping the Cloudflare Pages deploy. The build above still ran, so this validates the site builds cleanly."
+          echo "::notice::CLOUDFLARE_API_TOKEN and/or CLOUDFLARE_ACCOUNT_ID are not configured on this repo yet — skipping the Cloudflare Pages deploy. The build above still ran, so this validates the site builds cleanly."
           {
             echo '### Deploy skipped'
             echo ''
-            echo '`CLOUDFLARE_API_TOKEN` is not set as a repo secret yet, so the Cloudflare Pages deploy step was skipped. The site build above still ran and validated cleanly.'
+            echo 'The Cloudflare secrets (`CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`) are not both set on this repo yet, so the Cloudflare Pages deploy step was skipped. The site build above still ran and validated cleanly.'
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Deployment summary
-        if: env.CLOUDFLARE_API_TOKEN != ''
+        if: env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != ''
         run: |
           BRANCH="${{ github.head_ref || github.ref_name }}"
           {
