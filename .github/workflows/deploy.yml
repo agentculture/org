@@ -1,0 +1,89 @@
+name: Deploy site
+
+# Fills the slot the removed PyPI publish.yml vacated. This workflow deploys
+# the static site (site-astro/dist) to Cloudflare Pages — nothing here builds
+# or publishes a Python package (org#1 settled that; see CLAUDE.md "No PyPI").
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'site-astro/**'
+      - '.github/workflows/deploy.yml'
+  pull_request:
+    paths:
+      - 'site-astro/**'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    concurrency:
+      group: pages-deploy-${{ github.ref }}
+      cancel-in-progress: true
+    # Mapped here so later steps can gate with `if: env.CLOUDFLARE_API_TOKEN
+    # != ''` — secrets.* isn't usable directly in an `if:` conditional.
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version-file: site-astro/.nvmrc
+          cache: npm
+          cache-dependency-path: site-astro/package-lock.json
+
+      - name: Install dependencies
+        working-directory: site-astro
+        run: npm ci
+
+      - name: Build site
+        working-directory: site-astro
+        run: npm run build
+
+      # No cloudflare/wrangler-action — invoking wrangler directly via npx
+      # keeps the deploy dependency-light and auditable, matching the repo's
+      # zero-runtime-dependency temperament. site-astro/package.json is not
+      # touched: wrangler is fetched on demand, not installed as a devDep.
+      #
+      # --branch selects production vs. preview: the Cloudflare Pages project
+      # (agentculture-org) has production branch "main", so pushing to main
+      # (or a manual workflow_dispatch off main) deploys to production, while
+      # a pull_request run passes the PR's head branch and gets a preview
+      # deployment alias instead.
+      - name: Deploy to Cloudflare Pages
+        if: env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != ''
+        run: >-
+          npx wrangler@4 pages deploy site-astro/dist
+          --project-name agentculture-org
+          --branch "${{ github.head_ref || github.ref_name }}"
+
+      - name: Skip notice (Cloudflare secrets not configured)
+        if: env.CLOUDFLARE_API_TOKEN == '' || env.CLOUDFLARE_ACCOUNT_ID == ''
+        run: |
+          echo "::notice::CLOUDFLARE_API_TOKEN and/or CLOUDFLARE_ACCOUNT_ID are not configured on this repo yet — skipping the Cloudflare Pages deploy. The build above still ran, so this validates the site builds cleanly."
+          {
+            echo '### Deploy skipped'
+            echo ''
+            echo 'The Cloudflare secrets (`CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`) are not both set on this repo yet, so the Cloudflare Pages deploy step was skipped. The site build above still ran and validated cleanly.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Deployment summary
+        if: env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != ''
+        run: |
+          BRANCH="${{ github.head_ref || github.ref_name }}"
+          {
+            echo '### Deployed to Cloudflare Pages'
+            echo ''
+            if [ "$BRANCH" = "main" ]; then
+              echo '- Production: https://agentculture-org.pages.dev'
+              echo '- Production (custom domain, once cutover lands): https://agentculture.org'
+            else
+              echo "- Preview: https://${BRANCH}.agentculture-org.pages.dev"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

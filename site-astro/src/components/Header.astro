@@ -1,0 +1,110 @@
+---
+import site from "../data/site";
+import Mark from "./Mark.astro";
+
+const links = [
+  { href: "/framework/", label: "Framework" },
+  { href: "/agents/", label: "Agents" },
+  { href: "/engage/", label: "Engage" },
+];
+
+// Normalize so `/framework` and `/framework/` both mark the item current.
+const here = Astro.url.pathname.replace(/\/?$/, "/");
+---
+
+<header class="site-header">
+  <div class="container bar">
+    <a class="wordmark" href="/">
+      <Mark />
+      <span>{site.hero.title}</span>
+    </a>
+    <nav aria-label="Primary">
+      <ul>
+        {
+          links.map(({ href, label }) => (
+            <li>
+              <a href={href} aria-current={here === href ? "page" : undefined}>
+                {label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    padding-block: 1.4rem;
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.5rem;
+  }
+
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 75, "WONK" 0;
+    font-weight: 520;
+    font-size: 1.22rem;
+    letter-spacing: -0.01em;
+  }
+
+  nav ul {
+    display: flex;
+    align-items: center;
+    gap: clamp(1.1rem, 3vw, 2.2rem);
+    list-style: none;
+  }
+
+  nav a {
+    position: relative;
+    display: inline-block;
+    padding-block: 0.35rem;
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+
+  nav a:hover {
+    color: var(--ink);
+  }
+
+  /* the current page carries its own small node on the thread */
+  nav a::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -0.2rem;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    transform: translateX(-50%) scale(0);
+  }
+
+  nav a[aria-current="page"] {
+    color: var(--ink);
+  }
+
+  nav a[aria-current="page"]::after {
+    transform: translateX(-50%) scale(1);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    nav a::after {
+      transition: transform 0.35s var(--ease-out);
+    }
+  }
+</style>

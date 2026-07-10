@@ -1,0 +1,306 @@
+---
+import Layout from "../layouts/Layout.astro";
+import HeroMesh from "../components/HeroMesh.astro";
+import site from "../data/site";
+
+const { hero } = site;
+
+// Wayfinding only — the pages themselves carry the real content.
+const teasers = [
+  {
+    href: "/framework/",
+    label: "Framework",
+    copy: "The ideas the organization grows by, and the pillars that carry them.",
+    glyph: "framework",
+  },
+  {
+    href: "/agents/",
+    label: "Agents",
+    copy: "Who tends the mesh — a directory of the organization's agents.",
+    glyph: "agents",
+  },
+  {
+    href: "/engage/",
+    label: "Engage",
+    copy: "Where to follow along, ask questions, or take part.",
+    glyph: "engage",
+  },
+] as const;
+---
+
+<Layout title={hero.title} description={hero.tagline}>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="container hero-copy">
+      <h1 id="hero-title" data-reveal>{hero.title}</h1>
+      <p class="tagline" data-reveal style="--reveal-delay: 0.14s">
+        {hero.tagline}
+      </p>
+    </div>
+    <div class="hero-scene" data-reveal style="--reveal-delay: 0.3s">
+      <HeroMesh />
+      <div class="horizon" aria-hidden="true"></div>
+    </div>
+    <div class="scroll-hint" aria-hidden="true">
+      <span class="hint-thread"></span>
+      <span class="hint-node"></span>
+    </div>
+  </section>
+
+  <section class="section" aria-label="About">
+    <div class="container prose">
+      {
+        hero.intro.map((paragraph, i) => (
+          <p class={i === 0 ? "lede" : undefined} data-reveal>
+            {paragraph}
+          </p>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section explore" aria-label="Explore">
+    <div class="container">
+      <ul class="teasers">
+        {
+          teasers.map(({ href, label, copy, glyph }, i) => (
+            <li data-reveal style={`--reveal-delay: ${i * 0.12}s`}>
+              <a class="card teaser" href={href}>
+                <span class="glyph" aria-hidden="true">
+                  {glyph === "framework" && (
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                      <path
+                        d="M8 32 Q 12 22 14 12 M20 32 Q 20 20 20 8 M32 32 Q 28 24 26 14"
+                        stroke="currentColor"
+                        stroke-width="1.6"
+                        stroke-linecap="round"
+                      />
+                      <circle cx="14" cy="12" r="3" fill="currentColor" />
+                      <circle cx="20" cy="8" r="3.4" fill="currentColor" />
+                      <circle cx="26" cy="14" r="2.7" fill="currentColor" />
+                    </svg>
+                  )}
+                  {glyph === "agents" && (
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                      <path
+                        d="M10 28 Q 15 20 20 13 M20 13 Q 26 20 31 26 M10 28 Q 20 30 31 26"
+                        stroke="currentColor"
+                        stroke-width="1.6"
+                        stroke-linecap="round"
+                      />
+                      <circle cx="10" cy="28" r="3.2" fill="currentColor" />
+                      <circle cx="20" cy="13" r="3.6" fill="currentColor" />
+                      <circle cx="31" cy="26" r="3" fill="currentColor" />
+                    </svg>
+                  )}
+                  {glyph === "engage" && (
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                      <circle cx="20" cy="22" r="3.4" fill="currentColor" />
+                      <path
+                        d="M11 15 a12 12 0 0 1 18 0"
+                        stroke="currentColor"
+                        stroke-width="1.6"
+                        stroke-linecap="round"
+                      />
+                      <path
+                        d="M7 10 a18 18 0 0 1 26 0"
+                        stroke="currentColor"
+                        stroke-width="1.6"
+                        stroke-linecap="round"
+                        opacity="0.55"
+                      />
+                    </svg>
+                  )}
+                </span>
+                <h2>{label}</h2>
+                <p class="muted">{copy}</p>
+                <span class="go" aria-hidden="true">→</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .hero {
+    padding-top: clamp(4rem, 10vh, 8rem);
+  }
+
+  .hero-copy {
+    text-align: center;
+    max-width: 46rem;
+  }
+
+  .hero-copy h1 {
+    font-size: clamp(3rem, 8.5vw, 5.75rem);
+    margin-bottom: 0.35em;
+  }
+
+  .tagline {
+    font-size: clamp(1.15rem, 2.2vw, 1.45rem);
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin-inline: auto;
+    max-width: 34em;
+  }
+
+  .hero-scene {
+    position: relative;
+    max-width: 76rem;
+    margin: clamp(1.5rem, 5vh, 3.5rem) auto 0;
+    padding-inline: 1rem;
+  }
+
+  /* the sun just under the horizon — home carries the dawn itself.
+     A wide, shallow band hugging the horizon line, not a ball. */
+  .hero-scene::before,
+  .hero-scene::after {
+    content: "";
+    position: absolute;
+    inset: -18% -12% -55%;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .hero-scene::before {
+    background: radial-gradient(
+      74% 38% at 50% 60%,
+      var(--sky-horizon),
+      transparent 70%
+    );
+  }
+
+  .hero-scene::after {
+    background: radial-gradient(
+      52% 28% at 50% 61%,
+      var(--sky-glow),
+      transparent 68%
+    );
+    opacity: 0.55;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-scene::after {
+      animation: glow-breathe 12s var(--ease-gentle) infinite alternate;
+    }
+
+    @keyframes glow-breathe {
+      from {
+        opacity: 0.35;
+        transform: scale(1);
+      }
+
+      to {
+        opacity: 0.8;
+        transform: scale(1.04);
+      }
+    }
+  }
+
+  .horizon {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--line) 18%,
+      var(--line) 82%,
+      transparent
+    );
+  }
+
+  /* a single agent descending its thread, inviting the scroll */
+  .scroll-hint {
+    position: relative;
+    width: 1px;
+    height: 3rem;
+    margin: 2.2rem auto 0;
+  }
+
+  .hint-thread {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, var(--line), transparent);
+  }
+
+  .hint-node {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    transform: translateX(-50%);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hint-node {
+      animation: hint-drift 3s var(--ease-gentle) infinite alternate;
+    }
+
+    @keyframes hint-drift {
+      from {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+      }
+
+      to {
+        transform: translateX(-50%) translateY(1.6rem);
+        opacity: 0.35;
+      }
+    }
+  }
+
+  .explore {
+    padding-top: 0;
+  }
+
+  .teasers {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15.5rem, 1fr));
+    gap: 1.4rem;
+  }
+
+  .teaser {
+    position: relative;
+    height: 100%;
+    padding-bottom: 3.2rem;
+  }
+
+  .teaser .glyph {
+    display: inline-block;
+    color: var(--accent);
+    margin-bottom: 1.1rem;
+  }
+
+  .teaser h2 {
+    font-size: 1.45rem;
+    margin-bottom: 0.4em;
+  }
+
+  .teaser p {
+    font-size: 0.97rem;
+    line-height: 1.6;
+  }
+
+  .teaser .go {
+    position: absolute;
+    left: 2rem;
+    bottom: 1.6rem;
+    color: var(--accent);
+    font-size: 1.15rem;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .teaser .go {
+      transition: transform 0.35s var(--ease-out);
+    }
+
+    .teaser:hover .go {
+      transform: translateX(6px);
+    }
+  }
+</style>

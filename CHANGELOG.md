@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/). This project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-07-10
+
+### Added
+
+- The AgentCulture.org site: Astro static build in site-astro/ — four pages (Home, Framework, Agents & Repos, Engage), the "First light over the mesh" design system (dawn-sky light/dark themes, breathing constellation-mycelium hero, WCAG AA contrast, prefers-reduced-motion honored end to end), all content verified against live repos.
+- site noun group on the org CLI: site overview / build / preview / link-check / deploy — deploy is dry-run by default with --apply, link-check is zero-dep stdlib.
+- deploy.yml in the slot the removed publish.yml vacated: builds the site and deploys site-astro/dist to the Cloudflare Pages project agentculture-org via wrangler (production on main, previews on PRs, skip-guard while secrets are unset). Zero PyPI steps.
+- docs/deploy-runbook.md: the provisioned Cloudflare state (project, real subdomain, custom domains), the operator-gated cutover + rollback procedure.
+- docs/specs/ and docs/plans/: the devague-converged spec and 12-task build plan behind this release.
+
+### Changed
+
+- Self-description realigned: README, learn, and the explain root no longer claim the site is unbuilt (doc-test-alignment).
+- site-build CI job added to tests.yml; markdownlint config now ignores nested node_modules and .devague working state.
+
 ## [0.4.2] - 2026-07-10
 
 ### Added

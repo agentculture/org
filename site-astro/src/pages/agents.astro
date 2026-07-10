@@ -1,0 +1,103 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageHero from "../components/PageHero.astro";
+import site from "../data/site";
+
+const { agents, hero } = site;
+
+// Preserve the data layer's group order; skip groups with no entries.
+const groups = agents.groups
+  .map((label) => ({
+    label,
+    entries: agents.entries.filter((entry) => entry.group === label),
+  }))
+  .filter((group) => group.entries.length > 0);
+---
+
+<Layout
+  title={`Agents · ${hero.title}`}
+  description={agents.intro[0] ?? hero.tagline}
+>
+  <PageHero title="Agents" intro={agents.intro} />
+
+  {
+    groups.map((group) => (
+      <section class="group" aria-label={group.label}>
+        <div class="container">
+          <h2 class="group-label" data-reveal>
+            {group.label}
+          </h2>
+          <ul class="grid">
+            {group.entries.map((agent, i) => (
+              <li data-reveal style={`--reveal-delay: ${Math.min(i * 0.08, 0.32)}s`}>
+                <div class="card entry">
+                  <h3>
+                    {agent.url ? <a href={agent.url}>{agent.name}</a> : agent.name}
+                  </h3>
+                  <p class="role muted">{agent.role}</p>
+                  <span class="repo muted">{agent.repo}</span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    ))
+  }
+</Layout>
+
+<style>
+  .group {
+    padding-block: 1.2rem 2.6rem;
+  }
+
+  .group-label {
+    font-size: 1.05rem;
+    font-family: var(--font-body);
+    font-variation-settings: normal;
+    font-weight: 620;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 1.3rem;
+  }
+
+  .grid {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 1.2rem;
+  }
+
+  .entry {
+    height: 100%;
+    padding: 1.5rem 1.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .entry h3 {
+    margin: 0;
+    font-size: 1.18rem;
+  }
+
+  .entry h3 a {
+    color: inherit;
+    text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+
+  .entry h3 a:hover {
+    color: var(--accent);
+  }
+
+  .role {
+    font-size: 0.94rem;
+    line-height: 1.55;
+    flex-grow: 1;
+  }
+
+  .entry .repo {
+    font-size: 0.76rem;
+  }
+</style>

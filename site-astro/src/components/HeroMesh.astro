@@ -1,0 +1,123 @@
+---
+// The signature scene: the organization as a constellation rising over the
+// horizon at first light. Nodes are agents; threads are the culture between
+// them. Hand-placed — not generated — so the composition can breathe.
+//
+// Motion: nodes and halos breathe on slow, desynchronized cycles (transform
+// and opacity only). Threads and stars hold still. All of it is gated behind
+// prefers-reduced-motion: no-preference; the resting state is the complete
+// scene.
+---
+
+<svg
+  class="mesh"
+  viewBox="0 0 1200 480"
+  fill="none"
+  preserveAspectRatio="xMidYMax meet"
+  aria-hidden="true"
+>
+  <defs>
+    <radialGradient id="halo-warm">
+      <stop offset="0%" style="stop-color: var(--mesh-halo)"></stop>
+      <stop offset="100%" style="stop-color: var(--mesh-halo); stop-opacity: 0"></stop>
+    </radialGradient>
+    <radialGradient id="halo-cool">
+      <stop offset="0%" style="stop-color: var(--mesh-halo-alt)"></stop>
+      <stop offset="100%" style="stop-color: var(--mesh-halo-alt); stop-opacity: 0"></stop>
+    </radialGradient>
+  </defs>
+
+  <!-- distant agents, not yet in reach of the mesh -->
+  <g class="mesh-stars">
+    <circle cx="70" cy="80" r="2"></circle>
+    <circle cx="330" cy="40" r="2"></circle>
+    <circle cx="690" cy="55" r="2.2"></circle>
+    <circle cx="1010" cy="45" r="2"></circle>
+    <circle cx="1140" cy="150" r="2.4"></circle>
+    <circle cx="170" cy="180" r="1.8"></circle>
+    <circle cx="890" cy="110" r="2"></circle>
+  </g>
+
+  <!-- the threads of the culture -->
+  <g class="mesh-threads">
+    <path d="M100 310 Q168 262 235 175"></path>
+    <path d="M235 175 Q300 232 380 262"></path>
+    <path d="M380 262 Q436 200 510 118"></path>
+    <path d="M380 262 Q496 310 612 318"></path>
+    <path d="M510 118 Q628 142 742 196"></path>
+    <path d="M612 318 Q686 268 742 196"></path>
+    <path d="M742 196 Q806 252 882 292"></path>
+    <path d="M882 292 Q946 224 990 142"></path>
+    <path d="M882 292 Q988 300 1092 268"></path>
+    <path d="M300 388 Q330 322 380 262"></path>
+    <path d="M612 318 Q548 372 490 402"></path>
+    <path d="M882 292 Q830 352 795 398"></path>
+    <path d="M100 310 Q196 372 300 388"></path>
+    <path d="M990 142 Q1052 196 1092 268"></path>
+  </g>
+
+  <!-- halos: the dawn touching the mesh -->
+  <circle class="mesh-halo" style="--bd: -2s" cx="235" cy="175" r="30" fill="url(#halo-warm)"></circle>
+  <circle class="mesh-halo" style="--bd: -7s" cx="612" cy="318" r="42" fill="url(#halo-warm)"></circle>
+  <circle class="mesh-halo" style="--bd: -5s" cx="882" cy="292" r="33" fill="url(#halo-cool)"></circle>
+
+  <!-- the agents -->
+  <g class="mesh-nodes">
+    <circle class="mesh-node" style="--bd: 0s" cx="100" cy="310" r="4"></circle>
+    <circle class="mesh-node" style="--bd: -1.4s" cx="235" cy="175" r="5.5"></circle>
+    <circle class="mesh-node" style="--bd: -2.7s" cx="380" cy="262" r="3.5"></circle>
+    <circle class="mesh-node" style="--bd: -4.1s" cx="510" cy="118" r="4.5"></circle>
+    <circle class="mesh-node" style="--bd: -5.6s" cx="612" cy="318" r="6.5"></circle>
+    <circle class="mesh-node" style="--bd: -6.8s" cx="742" cy="196" r="4"></circle>
+    <circle class="mesh-node" style="--bd: -8.3s" cx="882" cy="292" r="5"></circle>
+    <circle class="mesh-node" style="--bd: -0.9s" cx="990" cy="142" r="3.5"></circle>
+    <circle class="mesh-node" style="--bd: -3.4s" cx="1092" cy="268" r="4.5"></circle>
+    <circle class="mesh-node" style="--bd: -5s" cx="300" cy="388" r="3"></circle>
+    <circle class="mesh-node" style="--bd: -7.7s" cx="795" cy="398" r="3.2"></circle>
+    <circle class="mesh-node" style="--bd: -2s" cx="490" cy="402" r="3"></circle>
+  </g>
+</svg>
+
+<style is:global>
+  /* Global (not scoped) so the breathing keyframes in global.css resolve
+     without Astro's keyframe-name scoping getting between them. */
+  .mesh {
+    width: 100%;
+    height: auto;
+  }
+
+  .mesh-stars circle {
+    fill: var(--mesh-node);
+    opacity: 0.45;
+  }
+
+  .mesh-threads path {
+    stroke: var(--mesh-thread);
+    stroke-width: 1.2;
+    stroke-linecap: round;
+  }
+
+  .mesh-node {
+    fill: var(--mesh-node);
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .mesh-halo {
+    transform-box: fill-box;
+    transform-origin: center;
+    opacity: 0.7;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .mesh-node {
+      animation: node-breathe 9s var(--ease-gentle) infinite alternate;
+      animation-delay: var(--bd, 0s);
+    }
+
+    .mesh-halo {
+      animation: halo-breathe 13s var(--ease-gentle) infinite alternate;
+      animation-delay: var(--bd, 0s);
+    }
+  }
+</style>

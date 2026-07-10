@@ -36,6 +36,11 @@ uv run teken cli doctor . --strict    # the agent-first rubric gate CI runs
 | `overview` | Read-only descriptive snapshot of the agent. |
 | `doctor` | Check the agent-identity invariants (prompt-file-present, backend-consistency). |
 | `cli overview` | Describe the CLI surface itself. |
+| `site overview` | Describe the site operator surface. |
+| `site build` | Astro production build (`npm run build` in `site-astro/`). |
+| `site preview` | Serve the built site locally (`npm run preview`; runs until interrupted). |
+| `site link-check` | Walk `dist/` for internal links/anchors that 404. |
+| `site deploy` | Deploy `dist/` to Cloudflare Pages (dry-run by default, `--apply` to commit). |
 
 Every command supports `--json`. Results go to stdout, errors/diagnostics to
 stderr (never mixed). Exit codes: `0` success, `1` user error, `2` environment
@@ -43,16 +48,19 @@ error, `3+` reserved.
 
 ## The site
 
-**Not built yet.** The stack, information architecture, and deploy target are
-open decisions owed to
-[org#2](https://github.com/agentculture/org/issues/2), which asks for a proposal
-on the issue before any code lands. DNS for AgentCulture.org is operator-owned,
-so a cutover is coordinated, not self-serve.
+The site lives in [`site-astro/`](site-astro/) — Astro, `output: 'static'`, no
+adapter, so `astro build` emits a pure-static `dist/`. It's deployed to
+**Cloudflare Pages** as `agentculture.org` (project `agentculture-org`) via
+`.github/workflows/deploy.yml` and the `org site` command group above; the
+provisioned Cloudflare state and the DNS cutover procedure are recorded in
+[`docs/deploy-runbook.md`](docs/deploy-runbook.md). DNS for AgentCulture.org
+is operator-owned, so cutover is coordinated, not self-serve.
 
-Two things worth knowing before you start: the sibling repos' `publish.yml` are
-all **PyPI** workflows, not deploy templates — the deploy workflow has to be
-written fresh. And a top-level `site/` directory is silently ignored by
-`.gitignore`; the house name is `site-astro/`. Both are explained in
+Two things worth knowing if you're extending it: the sibling repos'
+`publish.yml` are all **PyPI** workflows, not deploy templates — this repo's
+deploy workflow was written fresh, in the filename slot the removed
+`publish.yml` vacated. And a top-level `site/` directory is silently ignored
+by `.gitignore`; the house name is `site-astro/`. Both are explained in
 [`CLAUDE.md`](CLAUDE.md).
 
 ## Contributing

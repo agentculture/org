@@ -16,8 +16,14 @@ config:
 
 ignores:
   - "node_modules/**"
+  # Recursive form too: without a leading `**/` the pattern above only
+  # matches a top-level node_modules — it misses nested ones like
+  # site-astro/node_modules (npm-managed, sibling to the Python tree).
+  - "**/node_modules/**"
   - ".local/**"
   - ".afi/**"
   - ".teken/**"
   # Vendored skills are cited verbatim from guildmaster — do not reformat them.
   - ".claude/skills/**"
+  # devague working state (reviews/ is gitignored, so CI checkouts never see it).
+  - ".devague/**"

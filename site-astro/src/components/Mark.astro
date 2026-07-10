@@ -1,0 +1,27 @@
+---
+// The organization's mark: three agents, two threads — the smallest mesh
+// that is still a culture. Echoes the hero constellation and the favicon.
+interface Props {
+  size?: number;
+}
+const { size = 26 } = Astro.props;
+---
+
+<svg
+  class="mark"
+  width={size}
+  height={size}
+  viewBox="0 0 64 64"
+  fill="none"
+  aria-hidden="true"
+>
+  <path
+    d="M14 46 Q 24 38 33 21 M33 21 Q 40 36 51 41"
+    stroke="var(--mesh-thread)"
+    stroke-width="2.5"
+    stroke-linecap="round"
+  ></path>
+  <circle cx="14" cy="46" r="5" fill="var(--mesh-node)"></circle>
+  <circle cx="33" cy="21" r="6.5" fill="var(--mesh-node)"></circle>
+  <circle cx="51" cy="41" r="4.5" fill="var(--mesh-node)"></circle>
+</svg>
