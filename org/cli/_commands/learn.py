@@ -20,8 +20,10 @@ Source of the web presence published to AgentCulture.org. This CLI is the site's
 operator surface: it stays repo-local (run it as `uv run org`) and is never
 published to PyPI. The repo also carries this agent's mesh identity
 (culture.yaml + AGENTS.colleague.md, since it runs backend: colleague) and the
-guildmaster skill kit under .claude/skills/. The site itself is not built yet —
-the build brief is https://github.com/agentculture/org/issues/2.
+guildmaster skill kit under .claude/skills/. The site itself lives in
+site-astro/ (Astro, output: 'static') and is deployed to Cloudflare Pages as
+agentculture.org; the `site` command group below is its build/preview/
+link-check/deploy operator surface.
 
 Commands
 --------
@@ -31,6 +33,12 @@ Commands
   org overview           Descriptive snapshot of the agent.
   org doctor             Check the agent-identity invariants.
   org cli overview       Describe the CLI surface itself.
+  org site overview      Describe the site operator surface.
+  org site build         Astro production build (npm run build).
+  org site preview       Serve the built site locally (npm run preview).
+  org site link-check    Walk dist/ for internal links/anchors that 404.
+  org site deploy        Deploy dist/ to Cloudflare Pages (dry-run by
+                          default, --apply to commit).
 
 Machine-readable output
 -----------------------
@@ -62,6 +70,17 @@ def _as_json_payload() -> dict[str, object]:
             {"path": ["overview"], "summary": "Descriptive snapshot of the agent."},
             {"path": ["doctor"], "summary": "Check the agent-identity invariants."},
             {"path": ["cli", "overview"], "summary": "Describe the CLI surface."},
+            {"path": ["site", "overview"], "summary": "Describe the site operator surface."},
+            {"path": ["site", "build"], "summary": "Astro production build (npm run build)."},
+            {"path": ["site", "preview"], "summary": "Serve the built site locally."},
+            {
+                "path": ["site", "link-check"],
+                "summary": "Walk dist/ for internal links/anchors that 404.",
+            },
+            {
+                "path": ["site", "deploy"],
+                "summary": "Deploy dist/ to Cloudflare Pages (dry-run by default).",
+            },
         ],
         "exit_codes": {
             "0": "success",
