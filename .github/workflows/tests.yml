@@ -110,7 +110,7 @@ jobs:
 
           if [ "$PR_VERSION" = "$MAIN_VERSION" ]; then
             MARKER="<!-- version-check -->"
-            BODY="⚠️ **Version not bumped** — \`pyproject.toml\` still has \`$PR_VERSION\` (same as main). Bump before merging to avoid a failed PyPI publish.
+            BODY="⚠️ **Version not bumped** — \`pyproject.toml\` still has \`$PR_VERSION\` (same as main). Bump before merging.
 
           $MARKER"
 
