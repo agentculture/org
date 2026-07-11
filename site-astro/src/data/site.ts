@@ -274,7 +274,7 @@ const site: SiteData = {
       {
         name: "learn-cli",
         repo: "agentculture/learn-cli",
-        url: "https://github.com/agentculture/learn-cli",
+        url: "https://agentculture.org/learn/",
         role: "A hosted site where humans and agents learn a subject step by step; fronts the language tutors.",
         group: "Learning & play",
       },

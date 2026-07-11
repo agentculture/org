@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/). This project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.1] - 2026-07-11
+
+### Added
+
+- Learn nav link (header + footer) and a learn-cli directory entry pointing at /learn/ — opens public discovery of the learning hub now that the same-origin agentculture.org/learn/ route is live (signed-out + signed-in verified).
+
 ## [0.5.0] - 2026-07-10
 
 ### Added
