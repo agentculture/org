@@ -13,6 +13,8 @@ import lobes from "../../data/lobes";
 import {
   singleMachine,
   profileDryRun,
+  shapeTax,
+  shapeDryRun,
   meshSpark,
   meshThor,
   meshAsk,
@@ -168,16 +170,22 @@ import {
   <section class="section" aria-label="The Mesh-brain">
     <div class="container">
       <span class="eyebrow" data-reveal>the mesh-brain</span>
-      <h2 data-reveal>The same idea, at two scales</h2>
+      <h2 data-reveal>The brain shape you choose</h2>
       <div class="prose" data-reveal style="--reveal-delay: 0.1s">
         {lobes.meshBrain.intro.map((p) => <p class="muted">{p}</p>)}
       </div>
+      <div class="term-grid">
+        <div data-reveal>
+          <LobesTerminal session={shapeTax} />
+        </div>
+        <div data-reveal style="--reveal-delay: 0.12s">
+          <LobesTerminal session={shapeDryRun} start={1.2} />
+        </div>
+      </div>
       <div class="diagram-wrap" data-reveal>
         <LobesDiagram
-          todayCaption={lobes.meshBrain.todayLabel +
-            " — every machine runs the full stack behind its own gateway."}
-          directionCaption={lobes.meshBrain.directionLabel +
-            " — each machine leans into a role, and the mesh composes them."}
+          todayCaption={lobes.meshBrain.todayLabel}
+          directionCaption={lobes.meshBrain.directionLabel}
         />
       </div>
       <div class="term-grid">
@@ -191,6 +199,12 @@ import {
       <div class="ask-wrap" data-reveal>
         <LobesTerminal session={meshAsk} start={0.5} wrap />
       </div>
+      <div class="prose endstate" data-reveal>
+        {lobes.meshBrain.endState.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <p class="next-step muted" data-reveal>
+        {lobes.meshBrain.nextStep}
+      </p>
     </div>
   </section>
 
@@ -418,6 +432,20 @@ import {
     margin-block: 2.6rem 2.8rem;
     max-width: 46rem;
     margin-inline: auto;
+  }
+
+  /* mesh-brain end-state + next step */
+  .endstate {
+    margin-top: 2.4rem;
+  }
+
+  .next-step {
+    margin-top: 1.4rem;
+    max-width: 42rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    padding-left: 1rem;
+    border-left: 2px solid var(--accent);
   }
 
   /* benchmarks */
