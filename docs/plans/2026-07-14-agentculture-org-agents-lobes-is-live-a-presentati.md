@@ -82,3 +82,15 @@ slug: `agentculture-org-agents-lobes-is-live-a-presentati` · status: `exported`
 
 - [unknown_nonblocking] Deploy is a credentialed operator step (cultureflare) — timing depends on the operator being available after sign-off (task t9)
 - [follow_up] lobes-cli docs/tuning-profiles.md still marks thor as 'configured' while the page says validated (live-probe evidence); consider an upstream doc refresh in lobes-cli after this ships
+
+## Clarification — hostname wording (post-review)
+
+Review of PR #10 surfaced a contradiction between the instruction to show real multi-machine
+examples that curl `http://thor:8000` as displayed transcript text and the wording that the built
+page contains no `thor`/`spark` hostnames, verifiable by grepping `dist/`. The operative invariant,
+per the user's direction ("calls to lobes/spark/thor only locally for the demo plan/recording"), is
+zero runtime network calls to those hosts from the published page — no fetch, XHR, or WebSocket —
+verified by a network audit of the served page and by grepping the built JS for fetch/XHR usage and
+those hostnames. LAN-local mesh names (`thor`, `spark`) appearing as displayed transcript text is
+deliberate demo content, not a leak. Public tunnel hostnames and API keys remain forbidden on the
+published page, and none appear.

@@ -72,3 +72,15 @@
 
 - The 'live, moving examples' take two forms: (1) a centerpiece animated lobes diagram that morphs between the two framings — models as specialized lobes inside one machine, then whole machines as specialized lobes in the Mesh-brain; (2) animated terminal panes that replay real captured sessions — a single-machine 'lobes' command sequence and a multi-machine sequence (spark + thor), typed/streamed with the site's calm motion language.
 - Page facts pinned to captured reality: install as 'uv tool install lobes-cli', repo agentculture/lobes-cli, binary 'lobes'; profiles = machine (spark/thor/blackwell/generic) x purpose (balanced/prompt-heavy/decode-heavy) with explicit flag overrides = the 'open for extension and override' story; fleet gateway routes by model field with role aliases (cortex/senses/embedder/reranker).
+
+## Clarification — hostname wording (post-review)
+
+Review of PR #10 surfaced a contradiction between the instruction to show real multi-machine
+examples that curl `http://thor:8000` as displayed transcript text and the wording that the built
+page contains no `thor`/`spark` hostnames, verifiable by grepping `dist/`. The operative invariant,
+per the user's direction ("calls to lobes/spark/thor only locally for the demo plan/recording"), is
+zero runtime network calls to those hosts from the published page — no fetch, XHR, or WebSocket —
+verified by a network audit of the served page and by grepping the built JS for fetch/XHR usage and
+those hostnames. LAN-local mesh names (`thor`, `spark`) appearing as displayed transcript text is
+deliberate demo content, not a leak. Public tunnel hostnames and API keys remain forbidden on the
+published page, and none appear.
