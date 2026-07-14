@@ -1,0 +1,225 @@
+{
+  "slug": "the-agents-lobes-page-on-agentculture-org-now-pres",
+  "title": "The /agents/lobes page on AgentCulture.org now presents the Mesh-brain as shipped infrastructure, not vision: deployment shapes let specialized devices act as a single brain \u2014 one safe command gives a box the lobes it is best at, with measured budget reclaim and honest capabilities \u2014 and the one-lobe-per-box end-state is presented as the converged spec it is",
+  "schema_version": 2,
+  "status": "exported",
+  "created": "2026-07-14T11:07:24Z",
+  "updated": "2026-07-14T11:13:53Z",
+  "claims": [
+    {
+      "id": "c1",
+      "kind": "announcement",
+      "text": "The /agents/lobes page on AgentCulture.org now presents the Mesh-brain as shipped infrastructure, not vision: deployment shapes let specialized devices act as a single brain \u2014 one safe command gives a box the lobes it is best at, with measured budget reclaim and honest capabilities \u2014 and the one-lobe-per-box end-state is presented as the converged spec it is",
+      "origin": "user",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h4",
+          "text": "The merged page presents deployment shapes as shipped-and-validated mesh-mind infrastructure and the one-lobe end-state + Orin as future \u2014 and a reader who then opens lobes-cli finds every claim true at main",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": "Update site-astro/src/data/lobes.ts (Mesh-brain section, machine table, facts, header note) and any lobes.astro structure the new content needs; verify with astro build + grep-traceable numbers"
+    },
+    {
+      "id": "c2",
+      "kind": "audience",
+      "text": "Visitors to agentculture.org/agents/lobes \u2014 mesh operators sizing up the Culture local-brain stack, and readers following the AgentCulture agents' work \u2014 plus the page's future maintainers, who rely on its 'lobes-cli is the single source of truth; when it moves, this file follows' contract",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h5",
+          "text": "Each audience leg is served by the merged page: an operator can follow the shapes story to the lobes-cli commands and repo; a maintainer finds the data-file header naming the artifacts each fact came from and the date it was verified",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c3",
+      "kind": "before_state",
+      "text": "The page presents the Mesh-brain as vision: 'the Mesh-brain is the direction that setup points at' \u2014 today-vs-direction framing, no deployment shapes, no --shape command, no reclaim numbers, no dropped-lobe honesty; facts verified against lobes-cli as of the /agents/lobes PR (org#10), before lobes-cli 0.41.x/0.42.0 landed",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h6",
+          "text": "The before-state is checkable in git: org main @ 70779ba renders the Mesh-brain section as direction/vision copy and site-astro/src contains no occurrence of '--shape', 'spark-lobe', or 'thor-lobe'",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c4",
+      "kind": "after_state",
+      "text": "The Mesh-brain section presents shipped infrastructure: deployment shapes (machine-as-brain default, spark-lobe, thor-lobe) selected by one safe command (lobes init --shape, dry-run by default, --apply to commit), measured budget reclaim (spark-lobe cortex 0.44 util / 262144 ctx vs co-resident 0.30/131072; thor-lobe senses 0.30/131072 vs the 32768 co-resident trim), and dropped-lobe honesty (capabilities flag it, /v1/models omits it, requests get 404 role_infeasible \u2014 never silent rerouting); the one-lobe-per-box end-state (#112) is presented as what it is \u2014 a converged spec with recorded decisions (direct + honest referral, cheap gears co-reside, orin declared-but-unvalidated), not shipped code",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h7",
+          "text": "The merged page renders the shapes as shipped with the exact measured values from the shape TOMLs (0.44/262144, 0.30/131072) and labels the #112 end-state as a converged spec, the Orin as future \u2014 verified by reading the built page",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c5",
+      "kind": "decision",
+      "text": "The page's 'next steps' / future-plans framing centers on adding the Jetson AGX Orin (JetPack 7.2) to the mesh brain \u2014 the declared-but-unvalidated orin small-model lobe becomes the named next box, presented as future work per the user's direction",
+      "origin": "user",
+      "status": "confirmed",
+      "honesty_conditions": [],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c6",
+      "kind": "why_it_matters",
+      "text": "The page's own header contract says lobes-cli is the single source of truth and 'when it moves, this file follows' \u2014 lobes moved (0.41.x profiles, 0.42.0 shapes, both merged 2026-07-14) and the page now undersells shipped, physically-validated work as vision; the mesh-mind story (specialized devices acting as a single brain, lobes split for device/model efficiency) is the site's strongest proof that the mesh direction is real",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h8",
+          "text": "'lobes moved' is evidenced in lobes-cli main: CHANGELOG 0.41.0\u20130.42.0 entries dated 2026-07-13/14, commits 6e47b61\u20268aa2d2f merged",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c7",
+      "kind": "boundary",
+      "text": "Content update within the existing page structure and components \u2014 no page redesign, no new page; org repo only (no lobes-cli changes); no claim that the #112 end-state or Orin support has shipped: Orin stays future work and #112 stays a converged spec; the existing real-captures discipline holds \u2014 no fabricated terminal output",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h9",
+          "text": "The PR diff touches only the org repo, within site-astro content/data plus version/changelog bookkeeping; every terminal-capture line on the page traces to a real recorded run",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c8",
+      "kind": "success_signal",
+      "text": "The updated page builds clean (astro build) and every number on it is traceable to a shipped lobes-cli artifact: shape TOMLs (0.44/262144, 0.30/131072), CHANGELOG 0.42.0, or the #112/#113 spec docs; the Mesh-brain section reads shipped-vs-specced honestly; lint + existing checks green on the PR",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h10",
+          "text": "astro build exits 0 on the branch; each named number greps in both the page data and its lobes-cli source artifact; the PR's CI checks are green",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c9",
+      "kind": "requirement",
+      "text": "The shipped-vs-future split is explicit on the page: deployment shapes (machine-as-brain / spark-lobe / thor-lobe, lobes init --shape, measured reclaim, dropped-lobe honesty) are presented as shipped in lobes-cli 0.42.0 and validated live on the physical Spark and Thor 2026-07-14; the one-lobe-per-box end-state (#112: direct + honest referral, cheap gears co-reside) is presented as a converged spec; the Orin (JetPack 7.2) joining the mesh brain is presented as the named next step",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h1",
+          "text": "A reader of the rendered page alone can tell which Mesh-brain facts are shipped (0.42.0, validated live 2026-07-14 on the physical Spark and Thor) and which are future (#112 converged spec; Orin JetPack 7.2 as next step) \u2014 no sentence blurs the line",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c10",
+      "kind": "requirement",
+      "text": "Every number and mechanism named on the page is sourced from lobes-cli shipped artifacts, not from memory: shape TOML overrides (spark-lobe cortex gpu_mem_util 0.44 / max_model_len 262144; thor-lobe senses 0.30 / 131072), the co-resident values they reclaim from (cortex 0.30/131072, senses trimmed to 32768), CHANGELOG 0.42.0, and the two 2026-07-14 spec docs",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h2",
+          "text": "Every number in the updated content diffs clean against its named source in lobes-cli main @ 8aa2d2f: spark-lobe.toml (0.44/262144), thor-lobe.toml (0.30/131072), the co-resident values they cite, and CHANGELOG 0.42.0 \u2014 checkable by grep, no remembered values",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c11",
+      "kind": "requirement",
+      "text": "Stale facts elsewhere on the page are reconciled in the same pass \u2014 the machine-profile table (e.g. thor context 32768, which is the co-resident senses trim, not a shape-aware value), the facts strip's 'planned' chip, and the data-file header's verified-on date \u2014 so the page doesn't contradict its own new Mesh-brain section",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h3",
+          "text": "After the update, no element of the page contradicts the new Mesh-brain content: the machine-profile table, fact chips, hero copy, and the data-file header's verified-on note are all consistent with the shapes story",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c12",
+      "kind": "assumption",
+      "text": "lobes-cli main at 0.42.0 (commit 8aa2d2f) is the content source; the page update does not wait for the #112 implementation or the Orin boot \u2014 future items are presented as future",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c13",
+      "kind": "decision",
+      "text": "A fresh live terminal capture of the shape move ships on the page: a real 'lobes init --shape spark-lobe' dry-run executed on this box (dry-run changes zero bytes) \u2014 recorded, not fabricated, per the page's existing captures bar",
+      "origin": "user",
+      "status": "confirmed",
+      "honesty_conditions": [],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    }
+  ],
+  "open_vagueness": [],
+  "scope_entries": []
+}

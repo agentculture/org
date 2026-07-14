@@ -1,9 +1,11 @@
 // Real transcripts for /agents/lobes — captured 2026-07-14 from the live
 // deployments this page describes: `lobes` 0.40.1 running locally on spark
 // (DGX Spark, GB10) and the gateway on thor (Jetson Thor), reached over the
-// LAN. Nothing here is invented; outputs are trimmed (marked "…") but not
-// rewritten. No tokens, no keys, no public hostnames — `thor` and `spark`
-// are local mesh names.
+// LAN. The two shape sessions (shapeTax, shapeDryRun) were captured the same
+// day with `lobes` 0.42.0 run from the lobes-cli checkout at main (`uv run
+// lobes …`; the `uv run` prefix is trimmed for display). Nothing here is
+// invented; outputs are trimmed (marked "…") but not rewritten. No tokens,
+// no keys, no public hostnames — `thor` and `spark` are local mesh names.
 //
 // The page REPLAYS these strings. It never dials the machines: every call
 // below was made locally, once, while authoring.
@@ -118,6 +120,57 @@ export const meshThor: CaptureSession = {
     { kind: "out", text: ' "senses":   {"model": "…gemma-4-12B…", "ready": true},' },
     { kind: "out", text: ' "embedder": {"ready": true}, "reranker": {"ready": true},' },
     { kind: "out", text: ' "stt": {…}, "tts": {…}}' },
+  ],
+};
+
+/** The co-residency tax, read live off this box's deployed .env. */
+export const shapeTax: CaptureSession = {
+  machine: "spark",
+  title: "the co-residency tax, live",
+  captured: capturedOn,
+  lines: [
+    { kind: "cmd", text: "grep -E '^(PRIMARY|MULTIMODAL)_(GPU_MEM_UTIL|MAX_MODEL_LEN)' \\" },
+    { kind: "cont", text: "  ~/.lobes/.env" },
+    { kind: "out", text: "PRIMARY_MAX_MODEL_LEN=131072    # cortex: 128K served …" },
+    { kind: "out", text: "PRIMARY_GPU_MEM_UTIL=0.30       # reduced from 0.45 …" },
+    {
+      kind: "out",
+      text: "MULTIMODAL_MAX_MODEL_LEN=32768  # senses: 32K served … trimmed from 128K to free KV for cortex@128K",
+    },
+    { kind: "out", text: "MULTIMODAL_GPU_MEM_UTIL=0.14    # senses@32K provisional …" },
+  ],
+};
+
+/** The shape move, dry-run first: spark-lobe gives the box back to cortex. */
+export const shapeDryRun: CaptureSession = {
+  machine: "spark",
+  title: "one safe command reclaims it",
+  captured: capturedOn,
+  lines: [
+    { kind: "cmd", text: "lobes init --shape spark-lobe" },
+    { kind: "out", text: "DRY RUN — would scaffold the fleet duo (main + multimodal) into /home/spark/.lobes:" },
+    { kind: "out", text: "  docker-compose.yml (exists; needs --force to overwrite)" },
+    { kind: "out", text: "  …" },
+    {
+      kind: "out",
+      text: "Profile: spark (auto-detected: device_name='NVIDIA GB10', compute_capability='sm_121', total_memory_gb=121.7)",
+    },
+    {
+      kind: "out",
+      text: "Shape: spark-lobe (hosts=['cortex', 'embedder', 'reranker', 'stt', 'tts'])",
+    },
+    { kind: "out", text: "  would set 16 env var(s) in .env" },
+    {
+      kind: "out",
+      text: "  docker-compose.shape.yml (parks vllm-multimodal in the inert 'shape-dropped' profile; …)",
+    },
+    { kind: "out", text: "Re-run with --apply to write." },
+    { kind: "cmd", text: "lobes init --shape spark-lobe --json | python3 -m json.tool" },
+    { kind: "out", text: "  …" },
+    { kind: "out", text: '        "PRIMARY_GPU_MEM_UTIL": "0.44",' },
+    { kind: "out", text: '        "PRIMARY_MAX_MODEL_LEN": "262144",' },
+    { kind: "out", text: "  …" },
+    { kind: "out", text: '        "MULTIMODAL_FEASIBLE": "false",' },
   ],
 };
 
