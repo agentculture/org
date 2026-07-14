@@ -1,4 +1,4 @@
-# agentculture.org/agents/lobes is live — a presentation-grade page introducing lobes: the local thinking engine, its command surface, its profiles, its validated hardware, and the Mesh-brain direction — good enough that Ori can present by just showing the page.
+# agentculture.org/agents/lobes is live — a presentation-grade page introducing lobes: the local thinking engine, its command surface, its profiles, its validated hardware, and the Mesh-brain direction — good enough that Ori can present by just showing the page
 
 > agentculture.org/agents/lobes is live — a presentation-grade page introducing lobes: the local thinking engine, its command surface, its profiles, its validated hardware, and the Mesh-brain direction — good enough that Ori can present by just showing the page.
 
@@ -27,7 +27,7 @@
   - instruction: Implement animations with transform/opacity only, IntersectionObserver reveals in the existing pattern, and a prefers-reduced-motion path that swaps every animation for its final still frame.
   - honesty: Motion meets the established bar: calm easing, compositor-only (transform/opacity), 60fps, and fully honors prefers-reduced-motion with a still-presentable static fallback.
 - Command examples for the single-machine story, and separate multi-machine command examples for the mesh story.
-  - instruction: Copy command sequences from real runs: single-machine from spark's local lobes install; multi-machine by curling thor's gateway (http://thor:8000) and showing spark+thor side by side; sanitize nothing that isn't secret, and keep secrets/hostnames-that-shouldn't-leak out.
+  - instruction: Copy command sequences from real runs: single-machine from spark's local lobes install; multi-machine by curling thor's gateway (`http://thor:8000`) and showing spark+thor side by side; sanitize nothing that isn't secret, and keep secrets/hostnames-that-shouldn't-leak out.
   - honesty: Every command shown exists in the shipped lobes-cli surface (verifiable via the README / lobes --help); no invented verbs or flags.
 - The page includes a benchmarking area: what was benchmarked, how, and on what setup — with git links so the setup is downloadable/reproducible (lobes-cli repo: docs/tuning-profiles.md, per-model result docs under docs/, the packaged compose templates; plus the shahizat cross-machine NVFP4 reference on the NVIDIA forums).
   - instruction: Benchmark section: name lobes benchmark + lobes assess as the 'how', the purpose x machine profile tables as the 'what setup', link docs/tuning-profiles.md, the per-model docs, and the shahizat NVIDIA-forums report; every link is a public GitHub URL a reader can clone/download.
@@ -50,7 +50,7 @@
 ## Success signals
 
 - During the build, the command examples are validated against real hardware — e.g. curl over 'thor' — so what the page shows is authentic output, not invented.
-  - instruction: During authoring, run the shown commands for real (lobes status/overview on spark; curl thor:8000/health, /v1/models, and one chat completion) and paste captured output into the page verbatim minus secrets.
+  - instruction: During authoring, run the shown commands for real (lobes status/overview on spark; curl `thor:8000/health`, /v1/models, and one chat completion) and paste captured output into the page verbatim minus secrets.
 - Presentation-readiness gate: Ori reviews the page in a live preview and signs off that it is presentable as-is, before it merges/deploys — same preview gate the site itself had.
 - Measurable floor (same bar as the site itself): Lighthouse performance and accessibility both >= 95 on the built /agents/lobes page, light and dark themes both pass WCAG AA, animations are compositor-only at 60fps, and the page ships zero client-side requests to lobes endpoints (0 external API calls in the network panel).
 
@@ -66,7 +66,7 @@
 
 ## Assumptions
 
-- Probed live 2026-07-14: http://thor:8000/health returns model-gear-gateway 0.40.1 and /v1/models lists 4 warm models (Qwen3.6-27B primary, Gemma 4 12B multimodal, Qwen3 embedder + reranker) — Jetson Thor is running the lobes fleet right now, which is the evidence behind the page's 'validated on Jetson Thor' wording (the tuning-profiles doc still says 'configured' for thor).
+- Probed live 2026-07-14: `http://thor:8000/health` returns model-gear-gateway 0.40.1 and /v1/models lists 4 warm models (Qwen3.6-27B primary, Gemma 4 12B multimodal, Qwen3 embedder + reranker) — Jetson Thor is running the lobes fleet right now, which is the evidence behind the page's 'validated on Jetson Thor' wording (the tuning-profiles doc still says 'configured' for thor).
 
 ## Decisions
 

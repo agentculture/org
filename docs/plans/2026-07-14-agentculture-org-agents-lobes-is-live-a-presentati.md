@@ -1,4 +1,4 @@
-# Build Plan — agentculture.org/agents/lobes is live — a presentation-grade page introducing lobes: the local thinking engine, its command surface, its profiles, its validated hardware, and the Mesh-brain direction — good enough that Ori can present by just showing the page.
+# Build Plan — agentculture.org/agents/lobes is live — a presentation-grade page introducing lobes: the local thinking engine, its command surface, its profiles, its validated hardware, and the Mesh-brain direction — good enough that Ori can present by just showing the page
 
 slug: `agentculture-org-agents-lobes-is-live-a-presentati` · status: `exported` · from frame: `agentculture-org-agents-lobes-is-live-a-presentati`
 
@@ -76,7 +76,7 @@ slug: `agentculture-org-agents-lobes-is-live-a-presentati` · status: `exported`
 - depends on: t8
 - covers: c1, h7
 - acceptance:
-  - https://agentculture.org/agents/lobes returns the page in production after sign-off; deploy performed through the established operator lane, not from a checkout
+  - <https://agentculture.org/agents/lobes> returns the page in production after sign-off; deploy performed through the established operator lane, not from a checkout
 
 ## Risks
 
