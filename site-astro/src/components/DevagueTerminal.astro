@@ -1,0 +1,345 @@
+---
+// A terminal pane that REPLAYS one captured devague session pane from
+// ../data/devague-captures.ts. This is the lobes replay technique
+// (LobesTerminal.astro) reapplied, deliberately NOT shared: the whole
+// performance is pre-scheduled at build time — command characters stream in
+// on a duration-capped per-character stagger, real output settles in as
+// blocks, and a curator's ellipsis cut fades in as its own distinct,
+// clearly-not-terminal-output marker. Every animated property is
+// opacity/transform; the full-height transcript is already in the DOM at
+// first paint (characters merely change opacity in place), so nothing
+// reflows while it plays. Not a single network call: every string replayed
+// here was captured once, verbatim, while authoring — this component only
+// ever reads the imported CapturePane, never devague itself.
+//
+// No JS or reduced motion -> the completed transcript renders immediately
+// (hidden states are gated behind html.js + no-preference, same convention
+// as the rest of the site and LobesTerminal).
+import type { CapturePane } from "../data/devague-captures";
+
+interface Props {
+  pane: CapturePane;
+  /** Seconds before this pane starts playing once it scrolls into view. */
+  start?: number;
+  /** Soft-wrap long lines instead of horizontal scroll. Defaults on: captured
+   * devague commands quote whole announcement/claim prose and run long. */
+  wrap?: boolean;
+}
+
+const { pane, start = 0.3, wrap = true } = Astro.props;
+
+// Which leg of the pipeline this pane replays — legible in the chrome via a
+// color-coded dot, a text tag, and a top accent stripe, on top of the
+// provenance line already naming it. Derived from the pane's own stable id
+// prefix (t1's data module), not guessed from prose.
+type Leg = "frame" | "plan" | "check";
+const leg: Leg = pane.id.startsWith("frame-")
+  ? "frame"
+  : pane.id.startsWith("plan-")
+    ? "plan"
+    : "check";
+const legLabel: Record<Leg, string> = {
+  frame: "frame leg",
+  plan: "plan leg",
+  check: "fresh check",
+};
+
+// The transcript is rendered to an HTML string here (with explicit
+// escaping) and injected with set:html: inside <pre> any template
+// whitespace renders literally, and astro-check's TSX transform rejects the
+// branching-JSX forms this needs — a plain string has neither problem. Same
+// approach as LobesTerminal.astro.
+const esc = (s: string) =>
+  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+// Pre-compute the timeline: when each line begins, when each character of a
+// command lands. Calm pace, per the site's motion language — but devague's
+// captured commands quote whole sentences (some run past 300 characters),
+// so a constant per-character rate is capped: long lines still visibly
+// stream in, they just don't drag a single line past MAX_TYPE seconds.
+const LEAD = 0.2;
+const CHAR = 0.03;
+const MAX_TYPE = 1.5;
+const CMD_PAUSE = 0.5;
+const OUT_STEP = 0.15;
+// A curator's cut gets its own, slightly longer beat — a breath, not a line.
+const ELLIPSIS_STEP = 0.42;
+
+let clock = start;
+const rendered = pane.lines
+  .map((line) => {
+    const at = clock;
+    const ld = `--ld: ${at.toFixed(2)}s`;
+
+    if (line.kind === "cmd") {
+      const per =
+        line.text.length > 0
+          ? Math.min(CHAR, MAX_TYPE / line.text.length)
+          : CHAR;
+      clock += LEAD + line.text.length * per + CMD_PAUSE;
+      const chars = [...line.text]
+        .map(
+          (ch, i) =>
+            `<span class="ch" style="--cd: ${(LEAD + i * per).toFixed(3)}s">${esc(ch)}</span>`,
+        )
+        .join("");
+      return `<span class="tl tl-cmd" style="${ld}"><span class="ch prompt" style="--cd: 0s">$ </span>${chars}\n</span>`;
+    }
+
+    if (line.kind === "ellipsis") {
+      clock += ELLIPSIS_STEP;
+      // Not typed, not faded in as if it were real output: a curator's
+      // note about a cut, set apart with its own glyph and italic voice.
+      return `<span class="tl tl-ellipsis" style="${ld}"><span class="cut-mark" aria-hidden="true">&#8942;</span><span class="cut-text">${esc(line.text)}</span>\n</span>`;
+    }
+
+    clock += OUT_STEP;
+    return `<span class="tl tl-out" style="${ld}">${esc(line.text)}\n</span>`;
+  })
+  .join("");
+---
+
+<figure class:list={["term", `leg-${leg}`, { wrap }]} data-devague-term>
+  <figcaption class="term-head">
+    <span class="dot" aria-hidden="true"></span>
+    <span class="leg-tag">{legLabel[leg]}</span>
+    <span class="title">{pane.title}</span>
+    <span class="context muted-ctx">{pane.context}</span>
+    <span class="stamp">devague {pane.devagueVersion} &middot; captured {pane.capturedDate}</span>
+  </figcaption>
+  <pre
+    tabindex="0"
+    role="region"
+    aria-label={`captured terminal session: ${pane.title} — ${pane.context}, devague ${pane.devagueVersion}, captured ${pane.capturedDate}`}
+  ><code set:html={rendered}></code></pre>
+</figure>
+
+<style>
+  /* One terminal, both themes: a patch of the pre-dawn sky, same fixed dark
+     ground as LobesTerminal so the two replay components read as one
+     family when they appear on sibling pages. Text pairs are AA on this
+     ground in both site themes. */
+  .term {
+    margin: 0;
+    background: #10142b;
+    border: 1px solid rgba(233, 236, 248, 0.12);
+    border-top-width: 3px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  /* leg accent: a stripe plus a dot/tag color, so the frame leg and the plan
+     leg read as visually distinct panes at a glance, before a single word
+     is read. */
+  .term.leg-frame {
+    border-top-color: #7fdcc9;
+  }
+
+  .term.leg-plan {
+    border-top-color: #f2b774;
+  }
+
+  .term.leg-check {
+    border-top-color: #a9b0cf;
+  }
+
+  .term-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    padding: 0.7rem 1.15rem;
+    border-bottom: 1px solid rgba(233, 236, 248, 0.1);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.03em;
+    color: #a9b0cf;
+    flex-wrap: wrap;
+    row-gap: 0.35rem;
+  }
+
+  .dot {
+    flex: none;
+    align-self: center;
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: #7fdcc9;
+  }
+
+  .leg-frame .dot {
+    background: #7fdcc9;
+  }
+
+  .leg-plan .dot {
+    background: #f2b774;
+  }
+
+  .leg-check .dot {
+    background: #a9b0cf;
+  }
+
+  .leg-tag {
+    flex: none;
+    padding: 0.1rem 0.55rem;
+    border-radius: 999px;
+    border: 1px solid currentColor;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: 0.62rem;
+  }
+
+  .leg-frame .leg-tag {
+    color: #7fdcc9;
+  }
+
+  .leg-plan .leg-tag {
+    color: #f2b774;
+  }
+
+  .leg-check .leg-tag {
+    color: #a9b0cf;
+  }
+
+  .title {
+    color: #e9ecf8;
+    font-weight: 600;
+  }
+
+  .context {
+    flex-basis: 100%;
+    opacity: 0.8;
+  }
+
+  .muted-ctx {
+    color: #a9b0cf;
+  }
+
+  .stamp {
+    margin-left: auto;
+    opacity: 0.75;
+    white-space: nowrap;
+  }
+
+  pre {
+    margin: 0;
+    padding: 1.05rem 1.15rem 1.2rem;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    line-height: 1.7;
+    color: #c7cde8;
+  }
+
+  /* NOTE on :global() below: the transcript (.tl / .tl-cmd / .tl-out /
+     .tl-ellipsis / .ch / .prompt / .cut-mark / .cut-text) is injected via
+     set:html as a plain string — Astro's compiler only stamps its
+     scoping attribute onto elements it parses from this file's own
+     template, never onto markup arriving through set:html. A bare
+     scoped selector like `.tl-out { … }` would compile to
+     `.tl-out[data-astro-cid-xxx]`, which can never match that injected
+     markup and would silently no-op — no color, no reveal, no typing.
+     Wrapping each of those class names in :global() keeps them
+     unscoped while `.term` (a real templated element) still carries
+     the scoping attribute, so the rule as a whole stays scoped to only
+     this component's own terminals via the ancestor. */
+  .term :global(.tl) {
+    display: block;
+    white-space: pre;
+  }
+
+  .term.wrap :global(.tl) {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .term :global(.tl-cmd) {
+    color: #e9ecf8;
+  }
+
+  .term :global(.prompt) {
+    color: #7fdcc9;
+  }
+
+  /* the curator's cut: styled to read as a note ABOUT the transcript, not
+     as a line of it — italic, muted, a small glyph standing in for
+     scissors, never the terminal's own foreground color. */
+  .term :global(.tl-ellipsis) {
+    display: flex;
+    gap: 0.5rem;
+    align-items: baseline;
+    color: #8790b8;
+    font-style: italic;
+    font-size: 0.85em;
+  }
+
+  .term :global(.cut-mark) {
+    flex: none;
+    opacity: 0.75;
+  }
+
+  .term :global(.cut-text) {
+    opacity: 0.9;
+  }
+
+  /* The performance — only under JS + motion. Everything else sees the
+     finished transcript. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) .term :global(.tl-out),
+    :global(html.js) .term :global(.tl-ellipsis) {
+      opacity: 0;
+      transform: translateY(0.35rem);
+      transition:
+        opacity 0.55s var(--ease-out),
+        transform 0.55s var(--ease-out);
+      transition-delay: var(--ld, 0s);
+    }
+
+    :global(html.js) .term.is-playing :global(.tl-out),
+    :global(html.js) .term.is-playing :global(.tl-ellipsis) {
+      opacity: 1;
+      transform: none;
+    }
+
+    :global(html.js) .term :global(.ch) {
+      opacity: 0;
+      transition: opacity 0.03s linear;
+      transition-delay: calc(var(--ld, 0s) + var(--cd, 0s));
+    }
+
+    :global(html.js) .term.is-playing :global(.ch) {
+      opacity: 1;
+    }
+  }
+</style>
+
+<script>
+  // Start each pane's replay the first time it scrolls into view. Class
+  // toggle only — the transcript is already in the DOM, and nothing here
+  // touches the network. If IntersectionObserver is missing this no-ops,
+  // which is safe only because Layout.astro strips `html.js` in that case
+  // and the hidden states above are gated behind it. Scoped to this
+  // component's own `data-devague-term` marker, distinct from
+  // LobesTerminal's `data-term` — the two replay components never share
+  // state, a selector, or a script, even when both ship on the site.
+  if (
+    matchMedia("(prefers-reduced-motion: no-preference)").matches &&
+    "IntersectionObserver" in window
+  ) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-playing");
+            io.unobserve(entry.target);
+          }
+        }
+      },
+      { threshold: 0.3, rootMargin: "0px 0px -40px 0px" },
+    );
+    document
+      .querySelectorAll("[data-devague-term]")
+      .forEach((el) => io.observe(el));
+  }
+</script>
