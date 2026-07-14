@@ -290,6 +290,15 @@ import {
     white-space: nowrap;
   }
 
+  /* The shapes chip is the longest value on the row — let pills wrap on
+     narrow viewports instead of overflowing the facts row. */
+  @media (max-width: 480px) {
+    .fact-value {
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+  }
+
   /* roles */
   .roles {
     list-style: none;
