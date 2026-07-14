@@ -1,13 +1,18 @@
 ---
-// /agents/devague — the presentation page for devague: the pipeline, the
-// announcement-frame method, the human review loop, the operator skills,
-// real captured sessions, and a what's-next from the open tracker. All copy
-// lives in ../../data/devague.ts — including each section's eyebrow and
-// headline, a deliberate departure from lobes.ts documented there: this page
-// is a presentation Ori talks over, so the headlines are spoken copy and
-// live in the content model. Every terminal below replays a real captured
-// session from ../../data/devague-captures.ts — nothing on this page runs
-// devague in the browser.
+// /agents/devague — the presentation page for devague: the six-leg arc
+// (scope → think → spec-to-plan → assign-to-workforce → deviate →
+// summarize-delivery) with the execution seam where the CLI hands the build
+// to operators, the announcement-frame method (scope now its opening move),
+// the human review loop extended onto the deviation ledger, the six operator
+// skills — one per leg — real captured sessions from two runs (the frame
+// that specced this page, then the update that re-specced it through all
+// six legs), and a what's-next from the open tracker. All copy lives in
+// ../../data/devague.ts — including each section's eyebrow and headline, a
+// deliberate departure from lobes.ts documented there: this page is a
+// presentation Ori talks over, so the headlines are spoken copy and live in
+// the content model. Every terminal below replays a real captured session
+// from ../../data/devague-captures.ts — nothing on this page runs devague
+// in the browser.
 import Layout from "../../layouts/Layout.astro";
 import PageHero from "../../components/PageHero.astro";
 import DevagueFlow from "../../components/DevagueFlow.astro";
@@ -19,7 +24,10 @@ import {
   frameInterrogateReviewShift,
   frameGateConvergeExport,
   planTaskConvergeExport,
-  freshRecheck,
+  scopeSurveySeeds,
+  frameGateLiveRefusal,
+  deviateLedgerRead,
+  summarySkeletonRead,
 } from "../../data/devague-captures";
 ---
 
@@ -61,7 +69,7 @@ import {
       </div>
       <div class="flow-wrap" data-reveal>
         <DevagueFlow
-          caption="The whole arc in one pass: claims arrive proposed, a human confirms them, and the converge gate stays shut until the frame closes — then the spec exports and fans out into waves a workforce builds."
+          caption="The whole arc in one pass: claims arrive proposed, a human confirms them, and the converge gate stays shut until the frame closes — then the spec exports and fans out into waves a workforce builds. Where the build must leave that plan, the run stops and the approved departure lands on the deviate ledger; the closing summary reconciles planned against actual — the accountability artifact."
         />
       </div>
       <ul class="stages">
@@ -171,7 +179,8 @@ import {
       <div class="prose" data-reveal style="--reveal-delay: 0.1s">
         {devague.captures.intro.map((p) => <p class="muted">{p}</p>)}
       </div>
-      <!-- the frame leg opens: the announcement, then the mid-session shift -->
+      <!-- story one, the original run — the frame leg opens: the
+           announcement, then the mid-session shift -->
       <div class="term-grid">
         <div data-reveal>
           <DevagueTerminal pane={frameAnnounceCapture} />
@@ -189,9 +198,26 @@ import {
           <DevagueTerminal pane={planTaskConvergeExport} start={1.4} />
         </div>
       </div>
-      <!-- the coda: a fresh, read-only re-check on 0.17.2 -->
-      <div class="coda-wrap" data-reveal>
-        <DevagueTerminal pane={freshRecheck} start={0.5} />
+      <!-- story two, this update's run — the scope survey seeds the frame,
+           then the gate refuses live and Ori decides mid-session -->
+      <div class="term-grid">
+        <div data-reveal>
+          <DevagueTerminal pane={scopeSurveySeeds} />
+        </div>
+        <div data-reveal style="--reveal-delay: 0.12s">
+          <DevagueTerminal pane={frameGateLiveRefusal} start={1.4} />
+        </div>
+      </div>
+      <!-- the execution seam closes the loop: the ledger read is four lines
+           on purpose (no deviation occurred — honesty over padding), so it
+           takes the narrow column beside the summary skeleton -->
+      <div class="term-grid seam">
+        <div data-reveal>
+          <DevagueTerminal pane={deviateLedgerRead} />
+        </div>
+        <div data-reveal style="--reveal-delay: 0.12s">
+          <DevagueTerminal pane={summarySkeletonRead} start={1.4} />
+        </div>
       </div>
       <p class="provenance muted" data-reveal>{devague.captures.provenance}</p>
     </div>
@@ -348,10 +374,23 @@ import {
     list-style: none;
     margin-top: 2.2rem;
     display: grid;
-    /* 18rem floor lands the six moves as two rows of three on desktop —
-       the arc reads in order: new/capture/interrogate, park/converge/export */
+    /* 18rem floor lands three tracks on desktop. The seven moves read in
+       spoken order: scope — the opening move, ahead of the frame — takes
+       the full first row, and the frame's six keep their two rows of three
+       underneath: new/capture/interrogate, park/converge/export */
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
     gap: 1.1rem;
+  }
+
+  .moves .move-card:first-child {
+    grid-column: 1 / -1;
+  }
+
+  /* full-row card, prose-width text — the lead move shouldn't run edge
+     to edge */
+  .moves .move-card:first-child .move-ask,
+  .moves .move-card:first-child .move-detail {
+    max-width: 42rem;
   }
 
   .move-card {
@@ -477,8 +516,17 @@ import {
     margin-top: 1.3rem;
   }
 
-  .coda-wrap {
-    margin-top: 1.3rem;
+  /* the seam row: the deliberately short ledger read takes the narrow
+     column, the summary skeleton the wide one; below the sibling grids'
+     natural two-column width it stacks like every other row */
+  .term-grid.seam {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  }
+
+  @media (max-width: 52rem) {
+    .term-grid.seam {
+      grid-template-columns: 1fr;
+    }
   }
 
   .provenance {
