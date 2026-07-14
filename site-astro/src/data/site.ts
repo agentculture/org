@@ -184,6 +184,13 @@ const site: SiteData = {
         role: "Maintains, uses, and serves the CLI for managing PyPI packages.",
         group: "Developer tooling",
       },
+      {
+        name: "devague",
+        repo: "agentculture/devague",
+        url: "/agents/devague/",
+        role: "Turns a vague feature idea into a buildable spec, then a buildable plan — working backwards, then forwards.",
+        group: "Developer tooling",
+      },
       // Cloud & infrastructure
       {
         name: "cultureflare",
