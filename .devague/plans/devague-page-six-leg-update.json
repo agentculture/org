@@ -1,0 +1,311 @@
+{
+  "slug": "devague-page-six-leg-update",
+  "title": "devague page: six-leg update",
+  "frame_slug": "devague-page-six-leg-update",
+  "schema_version": 2,
+  "status": "exported",
+  "created": "2026-07-14T23:11:18Z",
+  "updated": "2026-07-14T23:14:38Z",
+  "targets": [
+    {
+      "id": "c1",
+      "kind": "announcement",
+      "text": "agentculture.org/agents/devague now presents devague as the complete six-leg method \u2014 scope, think, spec-to-plan, assign-to-workforce, deviate, summarize-delivery \u2014 as a pure product presentation: the pipeline and method arc carry the execution seam (scope entries on the frame, the deviation ledger, the delivery summary), the operator-skills section shows all six legs, real captured sessions demonstrate the new legs, launch-day meta (public-since dates, dated version chips) is gone, and what's-next is re-verified against the live tracker \u2014 good enough that Ori presents the product by just showing the page"
+    },
+    {
+      "id": "h8",
+      "kind": "honesty",
+      "text": "The built /agents/devague page, scrolled once top to bottom, presents the six-leg method in order as a product: concepts, demos, and real captures \u2014 with no launch-day meta anywhere in the copy."
+    },
+    {
+      "id": "c2",
+      "kind": "audience",
+      "text": "A live-presentation audience first: Ori presents devague by showing this page. Secondarily, humans and agents browsing agentculture.org/agents/ who should leave knowing what the tool delivers."
+    },
+    {
+      "id": "h9",
+      "kind": "honesty",
+      "text": "The page reads as a presentation: each section leads with a spoken headline, one idea per viewport \u2014 Ori can talk over it top to bottom without a separate deck."
+    },
+    {
+      "id": "c3",
+      "kind": "before_state",
+      "text": "The live page presents a three-skill pipeline (/think, /spec-to-plan, /assign-to-workforce) per site-astro/src/data/devague.ts; its facts carry 'public since 2026-07-14' and 'version 0.17.2 \u2014 2026-07-14' chips; the hero says 'Until today, this site never mentioned it'; and whatsNext links issues #62, #68, #69, #70 \u2014 all closed by devague 0.18.0."
+    },
+    {
+      "id": "h10",
+      "kind": "honesty",
+      "text": "The before-state is checkable against git: the cited chips, hero paragraph, three-card skills section, and closed-issue links all exist in the committed devague.ts on main."
+    },
+    {
+      "id": "c4",
+      "kind": "after_state",
+      "text": "The page presents the full six-leg method: the pipeline section and DevagueFlow arc carry the execution seam, the operator-skills section shows six cards (/scope, /think, /spec-to-plan, /assign-to-workforce, /deviate, /summarize-delivery), the method section includes the scope move, real captures demonstrate the new legs, and whatsNext reflects only issues open on the live tracker at authoring time."
+    },
+    {
+      "id": "h4",
+      "kind": "honesty",
+      "text": "One scroll pass of the built page encounters all six legs by name, the execution seam in the arc diagram, six operator-skill cards, and at least one real capture for each new leg (scope, deviate, summary)."
+    },
+    {
+      "id": "c5",
+      "kind": "requirement",
+      "text": "Launch-day meta is dropped from the presentation: the 'public since' fact chip, the dated 'version 0.17.2 \u2014 2026-07-14' chip, and the hero paragraph about the repo going public \u2014 the copy carries only what devague delivers, its demos, and its concepts (per Ori's instruction this session)."
+    },
+    {
+      "id": "h1",
+      "kind": "honesty",
+      "text": "A grep of the shipped page source finds no 'public since' chip, no dated version chip, and no went-public hero paragraph; the install / repo / PyPI / license chips remain."
+    },
+    {
+      "id": "c6",
+      "kind": "requirement",
+      "text": "Pipeline, diagram, and skills copy reflect the devague 0.18 surface verified against the installed CLI and CHANGELOG: the scope verb (pre-frame scoping recorded on the frame), the deviate verb (append-only deviation ledger under .devague/deliveries/), the summary verb (render-only eight-section skeleton, --pr variant), and plan deliverables/amend."
+    },
+    {
+      "id": "h2",
+      "kind": "honesty",
+      "text": "Every verb and flag the copy names exists on the installed devague 0.18.0 --help surface: scope, deviate (--list / --confirm / --reject / --classification), summary (--pr), plan deliverables, plan amend."
+    },
+    {
+      "id": "c7",
+      "kind": "requirement",
+      "text": "Every new capture pane replayed on the page comes from a real devague run \u2014 this session's own frame/plan/deviate/summary run is the primary material \u2014 stored verbatim in devague-captures.ts, trimmed only for length, cuts marked with first-class ellipsis lines, no invented output."
+    },
+    {
+      "id": "h3",
+      "kind": "honesty",
+      "text": "Each new pane's lines are copy-pasted verbatim from this session's own transcript (or a labeled read-only re-run against real state); every omission is an explicit ellipsis line; each pane header carries its devague version and capture date."
+    },
+    {
+      "id": "c8",
+      "kind": "boundary",
+      "text": "The page stays replay-only: it never runs devague in the browser, makes zero client-side network calls, and DevagueTerminal's pre-scheduled replay technique is reused unchanged (per its authored contract in DevagueTerminal.astro)."
+    },
+    {
+      "id": "h11",
+      "kind": "honesty",
+      "text": "The built page's client JS performs no network calls and never invokes devague; every terminal pane renders from build-time strings imported from devague-captures.ts."
+    },
+    {
+      "id": "c9",
+      "kind": "boundary",
+      "text": "No new global styles: Layout/PageHero/Header/Footer and existing tokens only; motion stays compositor-only (transform/opacity) with the full prefers-reduced-motion still-legible fallback, matching DevagueFlow.astro's authored contract."
+    },
+    {
+      "id": "h12",
+      "kind": "honesty",
+      "text": "The PR diff touches no global stylesheet and adds no new global tokens; every animated property added is transform or opacity, gated behind prefers-reduced-motion: no-preference and html.js."
+    },
+    {
+      "id": "c11",
+      "kind": "success_signal",
+      "text": "Same measurable floor as the page's original frame: Lighthouse performance and accessibility >= 95 on the built page, WCAG AA in light and dark, compositor-only animation honoring prefers-reduced-motion, zero client-side network calls, astro build clean \u2014 plus Ori's presentable-as-is sign-off at the final PR gate."
+    },
+    {
+      "id": "h13",
+      "kind": "honesty",
+      "text": "Lighthouse against the built page reports performance and accessibility >= 95 in both themes' rendering, and the reduced-motion render shows the complete composed content with nothing hidden."
+    },
+    {
+      "id": "c12",
+      "kind": "why_it_matters",
+      "text": "The page is the product's face for presentations: a three-leg story undersells a six-leg product, and a page whose subject is honesty gates cannot cite closed issues as open direction \u2014 the facts must hold to the page's own standard."
+    },
+    {
+      "id": "h14",
+      "kind": "honesty",
+      "text": "Every factual statement in the shipped copy traces to a public artifact \u2014 the repo, PyPI, the installed CLI's own output, or the live tracker \u2014 nothing invented, matching the page's existing provenance bar."
+    },
+    {
+      "id": "c15",
+      "kind": "requirement",
+      "text": "whatsNext is re-distilled from the live tracker at authoring time (gh issue list on agentculture/devague, 2026-07-15): the resolution-moves cluster (#60, #57, #55, #52, #49, #48, #45) and the consolidated board (#36) remain open; #62, #68, #69, #70 are closed and must not be linked as direction."
+    },
+    {
+      "id": "h5",
+      "kind": "honesty",
+      "text": "Every issue linked on the page is open on agentculture/devague at the moment the copy lands, re-checked with gh issue list the same day."
+    },
+    {
+      "id": "c16",
+      "kind": "requirement",
+      "text": "The three new origin skills (scope, deviate, summarize-delivery) copied from agentculture/devague into org/.claude/skills/ this session are committed with provenance recorded in docs/skill-sources.md, matching how think/spec-to-plan/assign-to-workforce already live here."
+    },
+    {
+      "id": "h6",
+      "kind": "honesty",
+      "text": "org/.claude/skills/{scope,deviate,summarize-delivery}/SKILL.md are byte-identical to ../devague's copies, each carries type: command, and docs/skill-sources.md gains a row for each naming devague as origin (direct vendor, ask-colleague precedent)."
+    },
+    {
+      "id": "c17",
+      "kind": "requirement",
+      "text": "The devague directory card in site-astro/src/data/site.ts gains the delivery side: its role line currently stops at 'working backwards, then forwards' and should say the method now closes the loop through execution."
+    },
+    {
+      "id": "h7",
+      "kind": "honesty",
+      "text": "The site.ts devague role line names the delivery/execution side of the method and the card still routes to /agents/devague/."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "t1",
+      "summary": "Capture real material for the new legs: extend site-astro/src/data/devague-captures.ts with panes captured verbatim from this session's own run \u2014 the scope leg (devague new + scope entries with --seeds), the frame gate with the mid-session animation decision, and the execution seam via labeled read-only reads of real state (devague deviate --list on this plan's ledger, devague summary skeleton)",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "Every line in each new pane is verbatim from this session's transcript or a labeled read-only run against real state on devague 0.18.0; every omission is an explicit ellipsis line; pane headers carry devague 0.18.0 and the capture date",
+        "New panes cover the scope leg, the frame gate, and the execution seam (deviate ledger read + summary skeleton read); the module compiles (astro build type-checks it); no secrets or private URLs"
+      ],
+      "deps": [],
+      "covers": [
+        "c7",
+        "h3"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t2",
+      "summary": "Rewrite the content model site-astro/src/data/devague.ts as the six-leg product presentation: hero without the went-public paragraph, facts without 'public since' and dated version chips, pipeline reshaped around the six legs and the execution seam, method section gains the scope move, review loop gains the deviate confirm surface, six operator-skill cards, captures copy updated, whatsNext re-distilled from the live tracker, closing updated",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "grep of devague.ts finds no 'public since', no dated version chip, and no went-public hero paragraph; install / repo / PyPI / license chips remain",
+        "Copy names all six legs and only 0.18.0-verified surfaces: scope; deviate --list/--confirm/--reject/--classification; summary --pr; plan deliverables; plan amend \u2014 each checked against devague --help output",
+        "Skills section carries six cards; whatsNext links only issues verified open via gh issue list on authoring day; every stated fact traces to the repo, PyPI, the CLI's own output, or the tracker",
+        "Section headlines stay spoken copy (presentation idiom documented in the module header); one idea per section"
+      ],
+      "deps": [],
+      "covers": [
+        "c2",
+        "h9",
+        "c3",
+        "h10",
+        "c5",
+        "h1",
+        "c6",
+        "h2",
+        "c12",
+        "c15",
+        "h5"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t3",
+      "summary": "Extend site-astro/src/components/DevagueFlow.astro with the execution seam: after the build beat, a deviate beat (a ledger amendment moment) and a closing summary beat (the accountability artifact), animated in the same compositor-only language and holding the composed arc",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "All new animation is transform/opacity only, gated behind prefers-reduced-motion: no-preference and html.js; with reduced motion or no JS the complete composed arc renders as a legible still",
+        "No global stylesheet changes; the extended arc stacks vertically on narrow screens with no horizontal overflow; existing beats (claims flip, gate refuses then opens) are preserved unchanged"
+      ],
+      "deps": [],
+      "covers": [
+        "c9",
+        "h12"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t4",
+      "summary": "Teach site-astro/src/components/DevagueTerminal.astro the new pane families: scope-, deviate-, and summary- id prefixes get their own leg tags and accent colors in the pane chrome, falling back safely for unknown prefixes; the replay technique is untouched",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "Panes with scope-/deviate-/summary- id prefixes render a deliberate leg tag; existing frame-/plan-/check panes render exactly as before",
+        "The component performs zero network calls and never invokes devague; the pre-scheduled replay (set:html, escaped strings, html.js guards) is unchanged"
+      ],
+      "deps": [],
+      "covers": [
+        "c8",
+        "h11"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t5",
+      "summary": "Assemble the updated page site-astro/src/pages/agents/devague.astro: wire the reshaped content model, the extended flow arc, the six skill cards, and the new capture panes in spoken-narrative order, keeping the reveal pattern",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "One scroll pass encounters all six legs by name, the execution seam in the arc, six operator-skill cards, and real capture panes for scope, deviate, and summary",
+        "astro build passes; the page uses Layout/PageHero/Header/Footer and existing tokens only; every section keeps the data-reveal pattern and one-idea-per-viewport order"
+      ],
+      "deps": [
+        "t1",
+        "t2",
+        "t3",
+        "t4"
+      ],
+      "covers": [
+        "c1",
+        "h8",
+        "c4",
+        "h4"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t6",
+      "summary": "Close the provenance seam: update the devague directory card role line in site-astro/src/data/site.ts to name the closed execution loop, and add docs/skill-sources.md rows for the three directly-vendored devague origin skills (scope, deviate, summarize-delivery)",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "site.ts devague role line names the delivery/execution side and the card still routes to /agents/devague/",
+        "docs/skill-sources.md gains one row per new skill naming devague as origin (direct vendor, ask-colleague precedent); the vendored SKILL.md files are byte-identical to ../devague's and carry type: command"
+      ],
+      "deps": [],
+      "covers": [
+        "c16",
+        "h6",
+        "c17",
+        "h7"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t7",
+      "summary": "Verification and release pass: build, lint, grep the built page for dropped meta, re-verify every linked issue open via gh, audit performance/accessibility on the built page, and bump the version with a CHANGELOG entry",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "astro build clean; markdownlint-cli2 and the repo's lint suite pass; grep of the built page HTML finds no 'public since' and no dated version chip",
+        "gh issue list re-verification on landing day: every issue linked from the page is open; any closed one is removed before merge",
+        "Lighthouse (or an equivalent audit of the built page) reports performance and accessibility >= 95; the reduced-motion render shows the complete composed content",
+        "Version bumped via the version-bump skill with a Keep-a-Changelog entry (version-check CI blocks without it)"
+      ],
+      "deps": [
+        "t5",
+        "t6"
+      ],
+      "covers": [
+        "c11",
+        "h13",
+        "h14"
+      ],
+      "instruction": ""
+    }
+  ],
+  "risks": [
+    {
+      "id": "r1",
+      "text": "Whether the fan-out produces a real deviation is unknowable in advance; if none occurs, the deviate pane is a labeled read-only ledger read (real state, real output) rather than a recorded deviation",
+      "kind": "unknown_nonblocking",
+      "task_id": "t1"
+    },
+    {
+      "id": "r2",
+      "text": "Deploy is a credentialed operator step via agentculture/cultureflare \u2014 publish timing is operator-owned and outside this plan",
+      "kind": "unknown_nonblocking",
+      "task_id": "t7"
+    },
+    {
+      "id": "r3",
+      "text": "Lighthouse tooling may be unavailable in this environment; the audit degrades to an equivalent measurable check, stated honestly in the delivery summary",
+      "kind": "unknown_nonblocking",
+      "task_id": "t7"
+    }
+  ]
+}
