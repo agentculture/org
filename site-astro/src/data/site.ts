@@ -108,7 +108,7 @@ const site: SiteData = {
       {
         name: "lobes-cli",
         repo: "agentculture/lobes-cli",
-        url: "https://github.com/agentculture/lobes-cli",
+        url: "/agents/lobes/",
         role: "A local thinking agent for the Culture ecosystem.",
         group: "Mesh & platform",
       },

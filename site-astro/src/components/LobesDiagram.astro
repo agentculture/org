@@ -1,0 +1,348 @@
+---
+// The centerpiece of /agents/lobes: two hand-placed scenes of the same idea
+// at two scales. Scene A — one machine, its models as specialized lobes
+// behind a gateway. Scene B — the Mesh-brain direction: whole machines as
+// specialized lobes of something larger.
+//
+// Motion: the scenes crossfade on a slow shared cycle (opacity + a gentle
+// scale drift — compositor-only); nodes breathe on the site's shared
+// keyframes. Under prefers-reduced-motion (or in print) there is no overlay
+// at all: both scenes render stacked and still, each with its caption, so
+// the two framings stay legible without a single moving pixel.
+interface Props {
+  /** Caption for scene A — today: same setup, standalone brains. */
+  todayCaption: string;
+  /** Caption for scene B — the direction: specialized machines. */
+  directionCaption: string;
+}
+const { todayCaption, directionCaption } = Astro.props;
+---
+
+<figure class="lobes-stage" aria-label="How lobes composes: models as lobes of one machine, and machines as lobes of a mesh">
+  <!-- Scene A: one machine, many lobes -->
+  <div class="scene scene-a">
+    <svg viewBox="0 0 640 430" fill="none" aria-hidden="true">
+      <!-- These defs are shared: scene B's halos reference them across the
+           two inline SVGs (same document, so url(#id) resolves). The ids
+           must stay page-unique — render this component once per page. -->
+      <defs>
+        <radialGradient id="lobe-halo-warm">
+          <stop offset="0%" style="stop-color: var(--mesh-halo)"></stop>
+          <stop offset="100%" style="stop-color: var(--mesh-halo); stop-opacity: 0"></stop>
+        </radialGradient>
+        <radialGradient id="lobe-halo-cool">
+          <stop offset="0%" style="stop-color: var(--mesh-halo-alt)"></stop>
+          <stop offset="100%" style="stop-color: var(--mesh-halo-alt); stop-opacity: 0"></stop>
+        </radialGradient>
+      </defs>
+
+      <!-- the machine -->
+      <rect x="56" y="30" width="528" height="330" rx="30" class="machine-box"></rect>
+      <text x="552" y="66" text-anchor="end" class="diagram-label">one machine — spark, or thor</text>
+
+      <!-- threads: every lobe reports to the gateway -->
+      <g class="diagram-threads">
+        <path d="M320 168 Q320 235 320 294"></path>
+        <path d="M180 112 Q236 216 308 298"></path>
+        <path d="M152 210 Q226 272 306 302"></path>
+        <path d="M232 300 Q268 306 308 306"></path>
+        <path d="M408 300 Q372 306 332 306"></path>
+        <path d="M478 222 Q414 274 334 302"></path>
+      </g>
+
+      <!-- halo: the warm one belongs to the cortex -->
+      <circle class="lobe-halo" style="--bd: -3s" cx="320" cy="140" r="52" fill="url(#lobe-halo-warm)"></circle>
+
+      <!-- the lobes -->
+      <g>
+        <circle class="lobe-node" style="--bd: 0s" cx="320" cy="140" r="26"></circle>
+        <circle class="lobe-node" style="--bd: -2.2s" cx="148" cy="196" r="17"></circle>
+        <circle class="lobe-node" style="--bd: -4.5s" cx="490" cy="208" r="14"></circle>
+        <circle class="lobe-node" style="--bd: -6.4s" cx="174" cy="100" r="11"></circle>
+        <circle class="lobe-node" style="--bd: -6.1s" cx="220" cy="296" r="11"></circle>
+        <circle class="lobe-node" style="--bd: -7.4s" cx="420" cy="296" r="11"></circle>
+        <!-- the gateway: one front door -->
+        <circle class="lobe-node gateway" style="--bd: -3.8s" cx="320" cy="306" r="10"></circle>
+      </g>
+
+      <g class="diagram-label-group">
+        <text x="320" y="140" dy="4" class="diagram-name on-node">cortex</text>
+        <text x="148" y="230">senses</text>
+        <text x="490" y="240">embedder</text>
+        <text x="174" y="80">reranker</text>
+        <text x="220" y="328">stt</text>
+        <text x="420" y="328">tts</text>
+        <text x="320" y="392">gateway :8000 — routed by model</text>
+      </g>
+    </svg>
+    <p class="scene-caption muted">{todayCaption}</p>
+  </div>
+
+  <!-- Scene B: machines as lobes — the Mesh-brain -->
+  <div class="scene scene-b">
+    <svg viewBox="0 0 640 430" fill="none" aria-hidden="true">
+      <!-- distant machines, not yet on the mesh -->
+      <g class="diagram-stars">
+        <circle cx="80" cy="60" r="2"></circle>
+        <circle cx="560" cy="48" r="2.2"></circle>
+        <circle cx="608" cy="210" r="1.8"></circle>
+        <circle cx="46" cy="250" r="2"></circle>
+        <circle cx="350" cy="34" r="1.8"></circle>
+      </g>
+
+      <!-- threads between machines; the planned one is dashed -->
+      <g class="diagram-threads">
+        <path d="M226 168 Q320 130 404 158"></path>
+        <path d="M212 226 Q262 292 296 310" class="thread-planned"></path>
+        <path d="M414 206 Q360 258 354 310" class="thread-planned"></path>
+      </g>
+
+      <circle class="lobe-halo" style="--bd: -2s" cx="180" cy="190" r="72" fill="url(#lobe-halo-warm)"></circle>
+      <circle class="lobe-halo" style="--bd: -8s" cx="450" cy="176" r="62" fill="url(#lobe-halo-cool)"></circle>
+
+      <!-- spark: leaning into reasoning — its cortex dot is the big one -->
+      <g>
+        <circle cx="180" cy="190" r="48" class="machine-orb"></circle>
+        <circle class="lobe-node" style="--bd: -0.6s" cx="180" cy="180" r="13"></circle>
+        <circle class="lobe-node" style="--bd: -3.1s" cx="160" cy="210" r="6"></circle>
+        <circle class="lobe-node" style="--bd: -5.4s" cx="202" cy="212" r="5"></circle>
+      </g>
+
+      <!-- thor: leaning into perception -->
+      <g>
+        <circle cx="450" cy="176" r="42" class="machine-orb"></circle>
+        <circle class="lobe-node" style="--bd: -1.8s" cx="450" cy="168" r="11"></circle>
+        <circle class="lobe-node" style="--bd: -4.2s" cx="432" cy="194" r="6"></circle>
+        <circle class="lobe-node" style="--bd: -6.6s" cx="468" cy="192" r="5"></circle>
+      </g>
+
+      <!-- orin: the planned lobe, sketched in -->
+      <g class="planned">
+        <circle cx="330" cy="330" r="34" class="machine-orb orb-planned"></circle>
+        <circle cx="330" cy="330" r="7" class="node-planned"></circle>
+      </g>
+
+      <g class="diagram-label-group">
+        <text x="180" y="262">spark — reasoning</text>
+        <text x="450" y="242">thor — perception</text>
+        <text x="330" y="390">orin — edge, planned (JetPack 7.2)</text>
+      </g>
+    </svg>
+    <p class="scene-caption muted">{directionCaption}</p>
+  </div>
+</figure>
+
+<style>
+  .lobes-stage {
+    margin: 0;
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  .scene {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  .scene svg {
+    width: 100%;
+    height: auto;
+  }
+
+  .scene-caption {
+    font-size: 0.94rem;
+    line-height: 1.55;
+    text-align: center;
+    max-width: 34rem;
+    margin: 0 auto;
+  }
+
+  .machine-box {
+    fill: color-mix(in srgb, var(--surface) 55%, transparent);
+    stroke: var(--line);
+    stroke-width: 1.4;
+  }
+
+  .machine-orb {
+    fill: color-mix(in srgb, var(--surface) 55%, transparent);
+    stroke: var(--line);
+    stroke-width: 1.4;
+  }
+
+  .orb-planned {
+    stroke-dasharray: 5 7;
+    stroke-linecap: round;
+  }
+
+  .node-planned {
+    fill: none;
+    stroke: var(--mesh-node);
+    stroke-width: 1.5;
+    stroke-dasharray: 3 5;
+    stroke-linecap: round;
+  }
+
+  .planned {
+    opacity: 0.75;
+  }
+
+  .diagram-stars circle {
+    fill: var(--mesh-node);
+    opacity: 0.45;
+  }
+
+  .diagram-threads path {
+    stroke: var(--mesh-thread);
+    stroke-width: 1.2;
+    stroke-linecap: round;
+  }
+
+  .thread-planned {
+    stroke-dasharray: 4 7;
+  }
+
+  .lobe-node {
+    fill: var(--mesh-node);
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .lobe-node.gateway {
+    fill: none;
+    stroke: var(--mesh-node);
+    stroke-width: 2.2;
+  }
+
+  .lobe-halo {
+    transform-box: fill-box;
+    transform-origin: center;
+    opacity: 0.7;
+  }
+
+  .diagram-label,
+  .diagram-label-group text {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    fill: var(--ink-soft);
+    letter-spacing: 0.02em;
+  }
+
+  .diagram-label-group text {
+    text-anchor: middle;
+  }
+
+  /* Must out-specify `.diagram-label-group text` above once Astro appends
+     its scoping attribute to both — hence the full compound selector. */
+  .diagram-label-group text.on-node {
+    fill: var(--on-accent);
+    text-anchor: middle;
+    font-size: 11.5px;
+  }
+
+  /* Motion: both scenes share one grid cell and trade places on a slow
+     sequential cycle — one fades fully out before the other fades in, so
+     the captions never superimpose. Only opacity and a whisper of scale
+     move — both compositor-only. The cell sizes to the taller scene, so
+     no viewport width can make a caption overflow onto content below.
+     Without motion (or without this media block applying), the grid above
+     simply shows both scenes stacked, composed and still. */
+  @media (prefers-reduced-motion: no-preference) {
+    .lobes-stage {
+      gap: 0;
+    }
+
+    .scene {
+      grid-area: 1 / 1;
+    }
+
+    .scene-a {
+      animation: lobes-scene-a 22s var(--ease-gentle) infinite;
+    }
+
+    .scene-b {
+      animation: lobes-scene-b 22s var(--ease-gentle) infinite;
+    }
+
+    .scene svg {
+      transform-origin: 50% 45%;
+    }
+
+    .scene-a svg {
+      animation: lobes-drift 22s var(--ease-gentle) infinite;
+    }
+
+    .scene-b svg {
+      animation: lobes-drift 22s var(--ease-gentle) infinite reverse;
+    }
+
+    .lobe-node {
+      animation: node-breathe 9s var(--ease-gentle) infinite alternate;
+      animation-delay: var(--bd, 0s);
+    }
+
+    .lobe-halo {
+      animation: halo-breathe 13s var(--ease-gentle) infinite alternate;
+      animation-delay: var(--bd, 0s);
+    }
+  }
+
+  /* pointer-events rides along discretely so the invisible scene never
+     blocks selecting the visible one's caption (engines that don't
+     animate it just fall back to the cosmetic quirk). */
+  @keyframes lobes-scene-a {
+    0%,
+    40% {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    48%,
+    94% {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    100% {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+
+  @keyframes lobes-scene-b {
+    0%,
+    48% {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    56%,
+    88% {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    94%,
+    100% {
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+
+  @keyframes lobes-drift {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(1.02);
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .scene-caption {
+      font-size: 0.88rem;
+    }
+  }
+</style>

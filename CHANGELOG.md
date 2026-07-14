@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/). This project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2026-07-14
+
+### Added
+
+- The /agents/lobes page: a presentation-grade introduction to lobes-cli — the lobes it serves (six roles), purpose × machine profiles, validated hardware (DGX Spark, Jetson Thor; AGX Orin/JetPack 7.2 planned), a benchmarking area with reproducible git links, and the Mesh-brain direction
+- LobesDiagram component: two hand-placed scenes (models as lobes of one machine ↔ machines as lobes of the Mesh-brain) crossfading compositor-only, stacked and still under reduced motion
+- LobesTerminal component: replays real captured sessions (spark local, thor over the LAN, captured 2026-07-14) with a build-time typing schedule — the published page makes zero network calls
+
+### Changed
+
+- The lobes-cli card on /agents/ now links to /agents/lobes (the page links out to the GitHub repo)
+
 ## [0.5.1] - 2026-07-11
 
 ### Added

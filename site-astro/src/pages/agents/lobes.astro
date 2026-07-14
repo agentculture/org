@@ -1,0 +1,460 @@
+---
+// /agents/lobes — the presentation page for lobes: what it is, the lobes it
+// serves, the profiles it tunes, the machines it is validated on, and the
+// Mesh-brain direction. Copy lives in ../../data/lobes.ts; every terminal
+// on this page replays a real captured session from
+// ../../data/lobes-captures.ts — nothing on this page dials a machine.
+import Layout from "../../layouts/Layout.astro";
+import PageHero from "../../components/PageHero.astro";
+import LobesDiagram from "../../components/LobesDiagram.astro";
+import LobesTerminal from "../../components/LobesTerminal.astro";
+import site from "../../data/site";
+import lobes from "../../data/lobes";
+import {
+  singleMachine,
+  profileDryRun,
+  meshSpark,
+  meshThor,
+  meshAsk,
+} from "../../data/lobes-captures";
+---
+
+<Layout
+  title={`lobes · Agents · ${site.hero.title}`}
+  description={lobes.hero.metaDescription}
+>
+  <PageHero title={lobes.hero.title} intro={lobes.hero.intro} />
+
+  <!-- fast facts -->
+  <section class="section facts-section" aria-label="Fast facts">
+    <div class="container">
+      <ul class="facts">
+        {
+          lobes.facts.map((fact, i) => (
+            <li
+              class="fact"
+              data-reveal
+              style={`--reveal-delay: ${Math.min(i * 0.07, 0.28)}s`}
+            >
+              <span class="fact-label muted">{fact.label}</span>
+              <span class="fact-value">
+                {fact.href ? <a href={fact.href}>{fact.value}</a> : fact.value}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- what lobes serves -->
+  <section class="section" aria-label="The lobes">
+    <div class="container">
+      <span class="eyebrow" data-reveal>the lobes</span>
+      <h2 data-reveal>One machine serves a small fleet of minds</h2>
+      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
+        {lobes.story.what.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <ul class="roles">
+        {
+          lobes.roles.map((lobe, i) => (
+            <li
+              class="card role-card"
+              data-reveal
+              style={`--reveal-delay: ${Math.min(i * 0.07, 0.35)}s`}
+            >
+              <h3 class="role-name">{lobe.role}</h3>
+              <p class="role-duty muted">{lobe.duty}</p>
+              <span class="repo muted">{lobe.model}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- the command, replayed for real -->
+  <section class="section" aria-label="The command">
+    <div class="container">
+      <span class="eyebrow" data-reveal>the command</span>
+      <h2 data-reveal>Watch it run — these are real captures</h2>
+      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
+        {lobes.story.commands.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <div class="term-grid">
+        <div data-reveal>
+          <LobesTerminal session={singleMachine} />
+        </div>
+        <div data-reveal style="--reveal-delay: 0.12s">
+          <LobesTerminal session={profileDryRun} start={1.2} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- profiles -->
+  <section class="section" aria-label="Profiles">
+    <div class="container">
+      <span class="eyebrow" data-reveal>profiles</span>
+      <h2 data-reveal>Tuned by purpose × machine, open to override</h2>
+      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
+        {lobes.profiles.intro.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <div class="tables">
+        <div
+          class="table-wrap card"
+          data-reveal
+          tabindex="0"
+          role="region"
+          aria-label="workload profiles table"
+        >
+          <h3>workload — <code>--purpose</code></h3>
+          <table>
+            <thead>
+              <tr><th>purpose</th><th>batching</th><th>shape</th></tr>
+            </thead>
+            <tbody>
+              {
+                lobes.profiles.purposes.map((p) => (
+                  <tr>
+                    <td><code>{p.name}</code></td>
+                    <td>{p.batching}</td>
+                    <td>{p.shape}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+        <div
+          class="table-wrap card"
+          data-reveal
+          style="--reveal-delay: 0.12s"
+          tabindex="0"
+          role="region"
+          aria-label="machine profiles table"
+        >
+          <h3>machine — <code>--machine</code></h3>
+          <table>
+            <thead>
+              <tr><th>machine</th><th>hardware</th><th>status</th></tr>
+            </thead>
+            <tbody>
+              {
+                lobes.profiles.machines.map((m) => (
+                  <tr>
+                    <td><code>{m.name}</code></td>
+                    <td>{m.hardware}</td>
+                    <td>
+                      <span class={`status status-${m.status}`}>{m.status}</span>
+                    </td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <p class="table-note muted" data-reveal>
+        Explicit flags always win — <code>--max-model-len</code>,{" "}
+        <code>--gpu-mem-util</code>, or a new machine profile of your own.
+        Full tables and measured numbers:{" "}
+        <a href="https://github.com/agentculture/lobes-cli/blob/main/docs/tuning-profiles.md">docs/tuning-profiles.md</a>.
+      </p>
+    </div>
+  </section>
+
+  <!-- the mesh-brain -->
+  <section class="section" aria-label="The Mesh-brain">
+    <div class="container">
+      <span class="eyebrow" data-reveal>the mesh-brain</span>
+      <h2 data-reveal>The same idea, at two scales</h2>
+      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
+        {lobes.meshBrain.intro.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <div class="diagram-wrap" data-reveal>
+        <LobesDiagram
+          todayCaption={lobes.meshBrain.todayLabel +
+            " — every machine runs the full stack behind its own gateway."}
+          directionCaption={lobes.meshBrain.directionLabel +
+            " — each machine leans into a role, and the mesh composes them."}
+        />
+      </div>
+      <div class="term-grid">
+        <div data-reveal>
+          <LobesTerminal session={meshSpark} />
+        </div>
+        <div data-reveal style="--reveal-delay: 0.12s">
+          <LobesTerminal session={meshThor} start={1.0} />
+        </div>
+      </div>
+      <div class="ask-wrap" data-reveal>
+        <LobesTerminal session={meshAsk} start={0.5} wrap />
+      </div>
+    </div>
+  </section>
+
+  <!-- benchmarks -->
+  <section class="section" aria-label="Benchmarks">
+    <div class="container">
+      <span class="eyebrow" data-reveal>benchmarks</span>
+      <h2 data-reveal>Measured, and reproducible from the repo</h2>
+      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
+        {lobes.benchmarks.intro.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <ul class="bench-grid">
+        {
+          lobes.benchmarks.links.map((link, i) => (
+            <li
+              data-reveal
+              style={`--reveal-delay: ${Math.min(i * 0.08, 0.32)}s`}
+            >
+              <a class="card bench-card" href={link.url}>
+                <h3>{link.title}</h3>
+                <p class="muted">{link.description}</p>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- closing -->
+  <section class="section closing" aria-label="Closing">
+    <div class="container">
+      <div class="prose" data-reveal>
+        {lobes.closing.paragraphs.map((p) => <p class="lede">{p}</p>)}
+        <p data-reveal style="--reveal-delay: 0.15s">
+          <a class="cta" href={lobes.closing.repoUrl}>{lobes.closing.repoCta} →</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .section {
+    padding-block: clamp(2.6rem, 6vh, 4.2rem);
+  }
+
+  .facts-section {
+    padding-block: 0 1rem;
+  }
+
+  /* fast facts */
+  .facts {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem 0.9rem;
+  }
+
+  .fact {
+    display: flex;
+    align-items: baseline;
+    gap: 0.55rem;
+    padding: 0.55rem 1.05rem;
+    background: var(--surface);
+    border: 1px solid var(--line-soft);
+    border-radius: 999px;
+    box-shadow: var(--shadow);
+    font-size: 0.85rem;
+  }
+
+  .fact-label {
+    font-size: 0.72rem;
+    font-weight: 640;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .fact-value {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    white-space: nowrap;
+  }
+
+  /* roles */
+  .roles {
+    list-style: none;
+    margin-top: 2.2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(13.5rem, 1fr));
+    gap: 1.1rem;
+  }
+
+  .role-card {
+    padding: 1.4rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .role-name {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 1.02rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--accent);
+  }
+
+  .role-duty {
+    font-size: 0.92rem;
+    line-height: 1.55;
+    flex-grow: 1;
+  }
+
+  .role-card .repo {
+    font-size: 0.74rem;
+  }
+
+  /* terminals */
+  .term-grid {
+    margin-top: 2.2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+    gap: 1.3rem;
+    align-items: start;
+  }
+
+  .ask-wrap {
+    margin-top: 1.3rem;
+  }
+
+  /* profiles tables */
+  .tables {
+    margin-top: 2.2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: 1.3rem;
+    align-items: start;
+  }
+
+  .table-wrap {
+    padding: 1.5rem 1.6rem;
+    overflow-x: auto;
+  }
+
+  .table-wrap h3 {
+    font-size: 0.92rem;
+    font-family: var(--font-body);
+    font-variation-settings: normal;
+    font-weight: 620;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 1rem;
+  }
+
+  /* CLI flags are case-sensitive — exempt them from the heading transform. */
+  .table-wrap h3 code {
+    text-transform: none;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+
+  th {
+    text-align: left;
+    font-weight: 620;
+    font-size: 0.74rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    padding: 0.35rem 0.9rem 0.55rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  td {
+    padding: 0.6rem 0.9rem 0.6rem 0;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  .status {
+    display: inline-block;
+    padding: 0.1rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 620;
+    letter-spacing: 0.06em;
+  }
+
+  .status-validated {
+    color: var(--accent-strong);
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+
+  .status-configured {
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+  }
+
+  .status-planned {
+    color: var(--ink-soft);
+    border: 1px dashed var(--line);
+  }
+
+  .table-note {
+    margin-top: 1.4rem;
+    font-size: 0.92rem;
+    max-width: 42rem;
+  }
+
+  /* diagram */
+  .diagram-wrap {
+    margin-block: 2.6rem 2.8rem;
+    max-width: 46rem;
+    margin-inline: auto;
+  }
+
+  /* benchmarks */
+  .bench-grid {
+    list-style: none;
+    margin-top: 2.2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 1.1rem;
+  }
+
+  .bench-card {
+    height: 100%;
+    padding: 1.5rem 1.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .bench-card h3 {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.98rem;
+    font-weight: 600;
+  }
+
+  .bench-card p {
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  /* closing */
+  .closing {
+    padding-bottom: clamp(4rem, 9vh, 6.5rem);
+  }
+
+  .cta {
+    font-weight: 560;
+  }
+</style>

@@ -1,0 +1,200 @@
+---
+// A terminal pane that REPLAYS a captured session from
+// src/data/lobes-captures.ts. The whole performance is pre-scheduled at
+// build time: command characters appear on a per-character stagger, output
+// lines settle in as blocks — all opacity/transform, no layout movement,
+// and not a single network request. The strings were captured once, while
+// authoring; the page never dials the machines it quotes.
+//
+// No JS or reduced motion → the completed transcript renders immediately
+// (hidden states are gated behind html.js + no-preference, exactly like the
+// site's reveal system).
+import type { CaptureSession } from "../data/lobes-captures";
+
+interface Props {
+  session: CaptureSession;
+  /** Seconds before this pane starts playing once revealed. */
+  start?: number;
+  /** Soft-wrap output lines instead of scrolling (for quotable output). */
+  wrap?: boolean;
+}
+
+const { session, start = 0.3, wrap = false } = Astro.props;
+
+// Pre-compute the timeline: when each line begins, when each character of a
+// command lands. Calm pace — the prompt appears, a short beat (LEAD), then
+// typing at ~34 chars/s, a pause before output.
+const CHAR = 0.029;
+const LEAD = 0.22;
+const CMD_PAUSE = 0.55;
+const OUT_STEP = 0.16;
+
+// The transcript is rendered to an HTML string here (with explicit
+// escaping) and injected with set:html: inside <pre> any template
+// whitespace renders literally, and astro-check's TSX transform rejects
+// the branching-JSX forms this needs — a plain string has neither problem.
+const esc = (s: string) =>
+  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+let clock = start;
+const rendered = session.lines
+  .map((line) => {
+    const at = clock;
+    const ld = `--ld: ${at.toFixed(2)}s`;
+    if (line.kind === "cmd" || line.kind === "cont") {
+      clock += LEAD + line.text.length * CHAR + CMD_PAUSE;
+      const prompt =
+        line.kind === "cmd"
+          ? '<span class="ch prompt" style="--cd: 0s">$ </span>'
+          : "";
+      const chars = [...line.text]
+        .map(
+          (ch, i) =>
+            `<span class="ch" style="--cd: ${(LEAD + i * CHAR).toFixed(3)}s">${esc(ch)}</span>`,
+        )
+        .join("");
+      return `<span class="tl tl-cmd" style="${ld}">${prompt}${chars}\n</span>`;
+    }
+    clock += OUT_STEP;
+    return `<span class="tl tl-out" style="${ld}">${esc(line.text)}\n</span>`;
+  })
+  .join("");
+---
+
+<figure class:list={["term", { wrap }]} data-term>
+  <figcaption class="term-head">
+    <span class="dot" aria-hidden="true"></span>
+    <span class="machine">{session.machine}</span>
+    <span class="title">{session.title}</span>
+    <span class="stamp">captured {session.captured}</span>
+  </figcaption>
+  <pre
+    tabindex="0"
+    role="region"
+    aria-label={`captured terminal session: ${session.title} (${session.machine})`}
+  ><code set:html={rendered}></code></pre>
+</figure>
+
+<style>
+  /* One terminal, both themes: a patch of the pre-dawn sky. In the dark
+     theme it sits nearly seamless; in the light theme it reads as a calm
+     dark card. Text pairs are AA on this ground in both. */
+  .term {
+    margin: 0;
+    background: #10142b;
+    border: 1px solid rgba(233, 236, 248, 0.12);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .term-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7rem;
+    padding: 0.7rem 1.15rem;
+    border-bottom: 1px solid rgba(233, 236, 248, 0.1);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: #a9b0cf;
+    flex-wrap: wrap;
+  }
+
+  .dot {
+    flex: none;
+    align-self: center;
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: #7fdcc9;
+  }
+
+  .machine {
+    color: #e9ecf8;
+    font-weight: 600;
+  }
+
+  .stamp {
+    margin-left: auto;
+    opacity: 0.75;
+  }
+
+  pre {
+    margin: 0;
+    padding: 1.05rem 1.15rem 1.2rem;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    line-height: 1.7;
+    color: #c7cde8;
+  }
+
+  .tl {
+    display: block;
+    white-space: pre;
+  }
+
+  .term.wrap .tl {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .tl-cmd {
+    color: #e9ecf8;
+  }
+
+  .prompt {
+    color: #7fdcc9;
+  }
+
+  /* The performance — only under JS + motion. Everything else sees the
+     finished transcript. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) .term .tl-out {
+      opacity: 0;
+      transform: translateY(0.35rem);
+      transition:
+        opacity 0.55s var(--ease-out),
+        transform 0.55s var(--ease-out);
+      transition-delay: var(--ld, 0s);
+    }
+
+    :global(html.js) .term.is-playing .tl-out {
+      opacity: 1;
+      transform: none;
+    }
+
+    :global(html.js) .term .ch {
+      opacity: 0;
+      transition: opacity 0.03s linear;
+      transition-delay: calc(var(--ld, 0s) + var(--cd, 0s));
+    }
+
+    :global(html.js) .term.is-playing .ch {
+      opacity: 1;
+    }
+  }
+</style>
+
+<script>
+  // Start each pane's replay the first time it scrolls into view. Class
+  // toggle only — the transcript is already in the DOM, and nothing here
+  // touches the network. If IntersectionObserver is missing this no-ops,
+  // which is safe only because Layout.astro strips `html.js` in that case
+  // and the hidden states above are gated behind it.
+  if (matchMedia("(prefers-reduced-motion: no-preference)").matches && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-playing");
+            io.unobserve(entry.target);
+          }
+        }
+      },
+      { threshold: 0.3, rootMargin: "0px 0px -40px 0px" },
+    );
+    document.querySelectorAll("[data-term]").forEach((el) => io.observe(el));
+  }
+</script>

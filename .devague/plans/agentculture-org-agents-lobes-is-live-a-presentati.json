@@ -1,0 +1,365 @@
+{
+  "slug": "agentculture-org-agents-lobes-is-live-a-presentati",
+  "title": "agentculture.org/agents/lobes is live \u2014 a presentation-grade page introducing lobes: the local thinking engine, its command surface, its profiles, its validated hardware, and the Mesh-brain direction \u2014 good enough that Ori can present by just showing the page.",
+  "frame_slug": "agentculture-org-agents-lobes-is-live-a-presentati",
+  "schema_version": 2,
+  "status": "exported",
+  "created": "2026-07-14T04:21:06Z",
+  "updated": "2026-07-14T04:25:56Z",
+  "targets": [
+    {
+      "id": "c1",
+      "kind": "announcement",
+      "text": "agentculture.org/agents/lobes is live \u2014 a presentation-grade page introducing lobes: the local thinking engine, its command surface, its profiles, its validated hardware, and the Mesh-brain direction \u2014 good enough that Ori can present by just showing the page."
+    },
+    {
+      "id": "h7",
+      "kind": "honesty",
+      "text": "The page is reachable at agentculture.org/agents/lobes in production, deployed through the established operator lane, only after the preview sign-off (c11)."
+    },
+    {
+      "id": "c2",
+      "kind": "audience",
+      "text": "A live-presentation audience first: Ori presents and just shows this page while explaining. Secondarily, humans and agents browsing agentculture.org/agents/."
+    },
+    {
+      "id": "h8",
+      "kind": "honesty",
+      "text": "The page reads as a presentation arc: sections in spoken-narrative order, one idea per viewport, so a first-time audience can follow it while Ori talks."
+    },
+    {
+      "id": "c3",
+      "kind": "before_state",
+      "text": "agentculture.org/agents/ lists lobes-cli as a one-line card ('A local thinking agent for the Culture ecosystem') linking to GitHub; there is no page that explains what lobes actually is."
+    },
+    {
+      "id": "h9",
+      "kind": "honesty",
+      "text": "Checkable today: /agents/ renders lobes-cli as a card with role text and a GitHub link only; no /agents/lobes route exists (site-astro/src/pages has no agents/ subdirectory)."
+    },
+    {
+      "id": "c4",
+      "kind": "after_state",
+      "text": "agentculture.org/agents/lobes presents lobes-cli end to end: package/repo name and the 'lobes' command, profiles, hardware validation status, extension/override openness, and the two framings \u2014 models as specialized lobes on one machine, and a whole machine as a specialized lobe in a machine mesh (Mesh-brain)."
+    },
+    {
+      "id": "h10",
+      "kind": "honesty",
+      "text": "Every element named in the after_state is present and findable in one scroll pass: name+repo+command, profiles, hardware status, extension/override, models-as-lobes, Mesh-brain."
+    },
+    {
+      "id": "c5",
+      "kind": "why_it_matters",
+      "text": "The page doubles as the presentation deck: it must be good enough that Ori can present live and just show this page while explaining, no slides."
+    },
+    {
+      "id": "h11",
+      "kind": "honesty",
+      "text": "Dry-run test: the page alone suffices to give the talk \u2014 no slide deck, no second tab; each section headline carries the spoken point."
+    },
+    {
+      "id": "c6",
+      "kind": "requirement",
+      "text": "Content covers, at minimum: package name lobes-cli / repo agentculture/lobes-cli; the 'lobes' command; profiles (machine x purpose tuning); validated on DGX Spark and Jetson Thor; planned for Jetson AGX Orin with JetPack 7.2; open for extension and override; serves models as specialized lobes; a single machine can serve as a specialized lobe in a machine mesh (Mesh-brain)."
+    },
+    {
+      "id": "h1",
+      "kind": "honesty",
+      "text": "Every fact on the page is checkable against the lobes-cli repo/docs (the site.ts convention), except explicitly-forward-looking items (AGX Orin JetPack 7.2 plan, Mesh-brain direction) which the page marks as planned/vision."
+    },
+    {
+      "id": "c7",
+      "kind": "requirement",
+      "text": "Keep the existing site styling: the page uses Layout/PageHero, the established tokens, fonts, reveal animations, and light+dark themes \u2014 it must read as the same site as /agents/."
+    },
+    {
+      "id": "h2",
+      "kind": "honesty",
+      "text": "Viewed side by side with /agents/ in both light and dark themes, the page reads as the same site: same Layout/PageHero/Header/Footer, same tokens and fonts, no new global styles."
+    },
+    {
+      "id": "c8",
+      "kind": "requirement",
+      "text": "Live, moving examples: animated demonstrations on the page (motion is a core experience element per the established site design bar \u2014 calm, compositor-only, honoring prefers-reduced-motion)."
+    },
+    {
+      "id": "h3",
+      "kind": "honesty",
+      "text": "Motion meets the established bar: calm easing, compositor-only (transform/opacity), 60fps, and fully honors prefers-reduced-motion with a still-presentable static fallback."
+    },
+    {
+      "id": "c9",
+      "kind": "requirement",
+      "text": "Command examples for the single-machine story, and separate multi-machine command examples for the mesh story."
+    },
+    {
+      "id": "h4",
+      "kind": "honesty",
+      "text": "Every command shown exists in the shipped lobes-cli surface (verifiable via the README / lobes --help); no invented verbs or flags."
+    },
+    {
+      "id": "c10",
+      "kind": "success_signal",
+      "text": "During the build, the command examples are validated against real hardware \u2014 e.g. curl over 'thor' \u2014 so what the page shows is authentic output, not invented."
+    },
+    {
+      "id": "h5",
+      "kind": "honesty",
+      "text": "Example outputs shown on the page are captured from real runs (spark locally, thor over the network) during authoring; any output that could not be captured live is either omitted or clearly marked illustrative."
+    },
+    {
+      "id": "c11",
+      "kind": "success_signal",
+      "text": "Presentation-readiness gate: Ori reviews the page in a live preview and signs off that it is presentable as-is, before it merges/deploys \u2014 same preview gate the site itself had."
+    },
+    {
+      "id": "h14",
+      "kind": "honesty",
+      "text": "A preview (local build or preview URL) is shown to Ori and an explicit 'presentable as-is' sign-off exists before merge/deploy \u2014 no cutover on assumption."
+    },
+    {
+      "id": "c12",
+      "kind": "boundary",
+      "text": "This is one new page plus the minimal link change on /agents/ (the lobes-cli card gains a link to /agents/lobes); no redesign of the rest of the site."
+    },
+    {
+      "id": "h12",
+      "kind": "honesty",
+      "text": "The PR diff touches only the new page files, the /agents/ card link, and the mandatory version-bump/changelog \u2014 no other page's rendered output changes."
+    },
+    {
+      "id": "c13",
+      "kind": "boundary",
+      "text": "The published page makes no live network calls to lobes endpoints from visitors' browsers. 'Live, moving examples' are self-contained animated recreations of real, captured output \u2014 the curl-over-thor test happens at build/authoring time, not at page-view time (the tunnel is auth-gated; hostnames and keys must not appear in the page)."
+    },
+    {
+      "id": "h13",
+      "kind": "honesty",
+      "text": "User-stated 2026-07-14: calls to lobes/spark/thor happen only locally, for the demo plan/recording. The built page contains no fetch/XHR to those hosts \u2014 verifiable by grepping dist/ for the hostnames and by a clean network panel on the published page."
+    },
+    {
+      "id": "c14",
+      "kind": "boundary",
+      "text": "The page presents lobes-cli as it is; it does not require any change to the lobes-cli repo itself. 'Mesh-brain' is introduced as the direction/vision term on this page even though the lobes-cli docs do not use the word yet."
+    },
+    {
+      "id": "h15",
+      "kind": "honesty",
+      "text": "Shipping the page requires zero commits to lobes-cli; 'Mesh-brain' appears on the page framed as the direction this page names, not as an existing lobes-cli feature."
+    },
+    {
+      "id": "c19",
+      "kind": "requirement",
+      "text": "The page includes a benchmarking area: what was benchmarked, how, and on what setup \u2014 with git links so the setup is downloadable/reproducible (lobes-cli repo: docs/tuning-profiles.md, per-model result docs under docs/, the packaged compose templates; plus the shahizat cross-machine NVFP4 reference on the NVIDIA forums)."
+    },
+    {
+      "id": "h6",
+      "kind": "honesty",
+      "text": "Every number shown in the benchmarking area traces to a linked source a reader can open \u2014 a lobes-cli doc in git, or the NVIDIA forums reference \u2014 and the 'how' names the actual verbs (lobes benchmark for throughput/latency shape-by-purpose, lobes assess for correctness)."
+    },
+    {
+      "id": "c20",
+      "kind": "success_signal",
+      "text": "Measurable floor (same bar as the site itself): Lighthouse performance and accessibility both >= 95 on the built /agents/lobes page, light and dark themes both pass WCAG AA, animations are compositor-only at 60fps, and the page ships zero client-side requests to lobes endpoints (0 external API calls in the network panel)."
+    },
+    {
+      "id": "h16",
+      "kind": "honesty",
+      "text": "Verified by running Lighthouse on the built page (both themes) and recording the scores in the PR; the network panel on the published page shows zero requests to lobes/spark/thor hosts."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "t1",
+      "summary": "Capture real material: run the shown commands for real and store transcripts as a typed data module (site-astro/src/data/lobes-captures.ts) \u2014 on spark locally (lobes status/overview/whoami, fleet status) and over the network to thor (curl thor:8000/health, /v1/models, one chat completion)",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "Every captured command is a shipped lobes-cli verb or a real HTTP call; transcripts labeled with machine + date; zero secrets/tokens in the stored file",
+        "The thor probe (gateway /health + /v1/models + one completion) is re-captured fresh and stored verbatim minus secrets"
+      ],
+      "deps": [],
+      "covers": [
+        "c10",
+        "h5",
+        "h4"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t2",
+      "summary": "Author the page content model (site-astro/src/data/lobes.ts): presentation-arc narrative \u2014 what lobes is, lobes-cli / agentculture/lobes-cli / 'lobes' binary, command surface, profiles (machine x purpose), hardware status (spark+thor validated, AGX Orin/JetPack 7.2 planned), extension/override, models-as-lobes, Mesh-brain direction, benchmarking area with downloadable git links; story not tutorial",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "Every after_state element present in the content model; every fact cross-checkable against lobes-cli repo/docs; forward-looking items (AGX Orin JetPack 7.2, Mesh-brain) explicitly marked planned/vision; Mesh-brain framed as the direction this page names, requiring zero lobes-cli commits",
+        "Benchmark section names lobes benchmark + lobes assess as the how, the purpose x machine tables as the setup, and links docs/tuning-profiles.md, per-model docs, and the shahizat NVIDIA-forums report as public URLs a reader can open/clone",
+        "Copy tells the story, not a tutorial: no install walkthrough duplicating the README; section headlines each carry a spoken point in presentation order"
+      ],
+      "deps": [
+        "t1"
+      ],
+      "covers": [
+        "c2",
+        "c4",
+        "c5",
+        "c6",
+        "c14",
+        "h15",
+        "c19"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t3",
+      "summary": "Build the animated lobes diagram component (site-astro/src/components/LobesDiagram.astro): a centerpiece that morphs between the two framings \u2014 models as specialized lobes inside one machine, then whole machines as specialized lobes in the Mesh-brain",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "Animation is transform/opacity only (compositor-only), calm easing per the site motion language, and holds 60fps",
+        "prefers-reduced-motion swaps the morph for a presentable static final frame; both framings remain legible without motion"
+      ],
+      "deps": [],
+      "covers": [
+        "c8"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t4",
+      "summary": "Build the terminal replay component (site-astro/src/components/LobesTerminal.astro): animated panes that type/stream the captured sessions \u2014 one single-machine lobes sequence, one multi-machine sequence (spark + thor side by side) \u2014 fully self-contained, replaying t1's captures",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "Panes replay only strings imported from lobes-captures.ts; the component performs zero fetch/XHR/WebSocket calls \u2014 no lobes/spark/thor endpoint is dialed at page-view time",
+        "Every command line shown exists in the shipped lobes-cli surface or is a real curl against the gateway API; single-machine and multi-machine sequences are visually distinct sections",
+        "Typing/streaming motion is compositor-friendly, calm, and under prefers-reduced-motion renders the completed transcript as a still"
+      ],
+      "deps": [
+        "t1"
+      ],
+      "covers": [
+        "c9",
+        "c13",
+        "h13"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t5",
+      "summary": "Assemble the page (site-astro/src/pages/agents/lobes.astro): Layout + PageHero + existing tokens/reveal pattern, rendering the content model with the diagram and terminal components in spoken-narrative order, one idea per viewport",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "Uses Layout/PageHero/Header/Footer and existing global tokens; no new global styles; builds clean with astro build",
+        "Sections follow the presentation arc top-to-bottom; every after_state element findable in one scroll pass"
+      ],
+      "deps": [
+        "t2",
+        "t3",
+        "t4"
+      ],
+      "covers": [
+        "c7",
+        "h8",
+        "h10"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t6",
+      "summary": "Point the lobes-cli card on /agents/ at /agents/lobes (site-astro/src/data/site.ts url field); the new page links out to github.com/agentculture/lobes-cli",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "Card url is /agents/lobes; GitHub repo link present on the new page; no other site.ts entry changes"
+      ],
+      "deps": [],
+      "covers": [
+        "c3",
+        "h9"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t7",
+      "summary": "Verification pass on the built page: fact cross-check, styling parity, motion bar, and the measurable floor",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "Side-by-side with /agents/ in light and dark themes: same tokens/fonts, WCAG AA contrast in both",
+        "Lighthouse performance >= 95 and accessibility >= 95 on the built page in both themes, scores recorded for the PR",
+        "grep of site-astro/dist/ shows no thor/spark hostnames or lobes endpoints; devtools network panel on the served page shows zero requests to lobes hosts",
+        "Animations verified compositor-only at 60fps; prefers-reduced-motion path shows presentable stills; every page fact re-checked against the lobes-cli repo/docs",
+        "Every number in the benchmarking area traces to a linked, openable source (lobes-cli doc in git or the NVIDIA forums report)"
+      ],
+      "deps": [
+        "t5",
+        "t6"
+      ],
+      "covers": [
+        "c20",
+        "h16",
+        "h1",
+        "h2",
+        "h3",
+        "c8",
+        "h6"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t8",
+      "summary": "Ship lane: version-bump, PR via cicd, and Ori's preview sign-off gate",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "PR diff touches only the new page files (page, components, data modules), the site.ts card link, and the version-bump/changelog \u2014 no other page's rendered output changes",
+        "A preview (local build or preview URL) is shown to Ori and an explicit presentable-as-is sign-off exists before merge; the dry-run test holds: the page alone suffices to give the talk"
+      ],
+      "deps": [
+        "t7"
+      ],
+      "covers": [
+        "c11",
+        "h14",
+        "c12",
+        "h12",
+        "h11",
+        "c5"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t9",
+      "summary": "Go live through the operator lane: deploy the built site so agentculture.org/agents/lobes is reachable in production (Cloudflare Pages via the credentialed operator step; DNS untouched)",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "https://agentculture.org/agents/lobes returns the page in production after sign-off; deploy performed through the established operator lane, not from a checkout"
+      ],
+      "deps": [
+        "t8"
+      ],
+      "covers": [
+        "c1",
+        "h7"
+      ],
+      "instruction": ""
+    }
+  ],
+  "risks": [
+    {
+      "id": "r1",
+      "text": "Deploy is a credentialed operator step (cultureflare) \u2014 timing depends on the operator being available after sign-off",
+      "kind": "unknown_nonblocking",
+      "task_id": "t9"
+    },
+    {
+      "id": "r2",
+      "text": "lobes-cli docs/tuning-profiles.md still marks thor as 'configured' while the page says validated (live-probe evidence); consider an upstream doc refresh in lobes-cli after this ships",
+      "kind": "follow_up",
+      "task_id": null
+    }
+  ]
+}
