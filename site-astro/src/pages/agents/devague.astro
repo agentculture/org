@@ -1,0 +1,546 @@
+---
+// /agents/devague — the presentation page for devague: the pipeline, the
+// announcement-frame method, the human review loop, the operator skills,
+// real captured sessions, and a what's-next from the open tracker. All copy
+// lives in ../../data/devague.ts — including each section's eyebrow and
+// headline, a deliberate departure from lobes.ts documented there: this page
+// is a presentation Ori talks over, so the headlines are spoken copy and
+// live in the content model. Every terminal below replays a real captured
+// session from ../../data/devague-captures.ts — nothing on this page runs
+// devague in the browser.
+import Layout from "../../layouts/Layout.astro";
+import PageHero from "../../components/PageHero.astro";
+import DevagueFlow from "../../components/DevagueFlow.astro";
+import DevagueTerminal from "../../components/DevagueTerminal.astro";
+import site from "../../data/site";
+import devague from "../../data/devague";
+import {
+  frameAnnounceCapture,
+  frameInterrogateReviewShift,
+  frameGateConvergeExport,
+  planTaskConvergeExport,
+  freshRecheck,
+} from "../../data/devague-captures";
+---
+
+<Layout
+  title={`devague · Agents · ${site.hero.title}`}
+  description={devague.hero.metaDescription}
+>
+  <PageHero title={devague.hero.title} intro={devague.hero.intro} />
+
+  <!-- fast facts -->
+  <section class="section facts-section" aria-label="Fast facts">
+    <div class="container">
+      <ul class="facts">
+        {
+          devague.facts.map((fact, i) => (
+            <li
+              class="fact"
+              data-reveal
+              style={`--reveal-delay: ${Math.min(i * 0.07, 0.28)}s`}
+            >
+              <span class="fact-label muted">{fact.label}</span>
+              <span class="fact-value">
+                {fact.href ? <a href={fact.href}>{fact.value}</a> : fact.value}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- the pipeline — with the method arc as the centerpiece -->
+  <section class="section" aria-label="The pipeline">
+    <div class="container">
+      <span class="eyebrow" data-reveal>{devague.pipeline.eyebrow}</span>
+      <h2 data-reveal>{devague.pipeline.headline}</h2>
+      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
+        {devague.pipeline.intro.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <div class="flow-wrap" data-reveal>
+        <DevagueFlow
+          caption="The whole arc in one pass: claims arrive proposed, a human confirms them, and the converge gate stays shut until the frame closes — then the spec exports and fans out into waves a workforce builds."
+        />
+      </div>
+      <ul class="stages">
+        {
+          devague.pipeline.stages.map((stage, i) => (
+            <li
+              class="card stage-card"
+              data-reveal
+              style={`--reveal-delay: ${Math.min(i * 0.07, 0.35)}s`}
+            >
+              <h3 class="stage-name">{stage.name}</h3>
+              <span class="stage-engine muted">{stage.engine}</span>
+              <p class="stage-detail muted">{stage.detail}</p>
+              <span class="stage-verbs muted">{stage.verbs}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- the announcement-frame method -->
+  <section class="section" aria-label="The method">
+    <div class="container">
+      <span class="eyebrow" data-reveal>{devague.method.eyebrow}</span>
+      <h2 data-reveal>{devague.method.headline}</h2>
+      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
+        {devague.method.intro.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <ol class="moves">
+        {
+          devague.method.moves.map((move, i) => (
+            <li
+              class="card move-card"
+              data-reveal
+              style={`--reveal-delay: ${Math.min(i * 0.07, 0.35)}s`}
+            >
+              <span class="move-step muted" aria-hidden="true">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <h3 class="move-verb">{move.verb}</h3>
+              <p class="move-ask">{move.ask}</p>
+              <p class="move-detail muted">{move.detail}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- the human review loop -->
+  <section class="section" aria-label="The human gate">
+    <div class="container">
+      <span class="eyebrow" data-reveal>{devague.reviewLoop.eyebrow}</span>
+      <h2 data-reveal>{devague.reviewLoop.headline}</h2>
+      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
+        {devague.reviewLoop.intro.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <ul class="gate-steps">
+        {
+          devague.reviewLoop.steps.map((step, i) => (
+            <li
+              class="card gate-step"
+              data-reveal
+              style={`--reveal-delay: ${Math.min(i * 0.07, 0.28)}s`}
+            >
+              <code class="gate-cmd">{step.cmd}</code>
+              <p class="gate-effect muted">{step.effect}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- the operator skills -->
+  <section class="section" aria-label="The operator skills">
+    <div class="container">
+      <span class="eyebrow" data-reveal>{devague.skills.eyebrow}</span>
+      <h2 data-reveal>{devague.skills.headline}</h2>
+      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
+        {devague.skills.intro.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <ul class="skills">
+        {
+          devague.skills.cards.map((card, i) => (
+            <li
+              class="card skill-card"
+              data-reveal
+              style={`--reveal-delay: ${Math.min(i * 0.07, 0.35)}s`}
+            >
+              <h3 class="skill-name">{card.name}</h3>
+              <span class="skill-leg muted">{card.leg}</span>
+              <p class="skill-duty muted">{card.duty}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- real captures: the dogfood loop, replayed -->
+  <section class="section" aria-label="Real captures">
+    <div class="container">
+      <span class="eyebrow" data-reveal>{devague.captures.eyebrow}</span>
+      <h2 data-reveal>{devague.captures.headline}</h2>
+      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
+        {devague.captures.intro.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <!-- the frame leg opens: the announcement, then the mid-session shift -->
+      <div class="term-grid">
+        <div data-reveal>
+          <DevagueTerminal pane={frameAnnounceCapture} />
+        </div>
+        <div data-reveal style="--reveal-delay: 0.12s">
+          <DevagueTerminal pane={frameInterrogateReviewShift} start={1.4} />
+        </div>
+      </div>
+      <!-- the two gates, side by side: the frame converges, then the plan -->
+      <div class="term-grid">
+        <div data-reveal>
+          <DevagueTerminal pane={frameGateConvergeExport} />
+        </div>
+        <div data-reveal style="--reveal-delay: 0.12s">
+          <DevagueTerminal pane={planTaskConvergeExport} start={1.4} />
+        </div>
+      </div>
+      <!-- the coda: a fresh, read-only re-check on 0.17.2 -->
+      <div class="coda-wrap" data-reveal>
+        <DevagueTerminal pane={freshRecheck} start={0.5} />
+      </div>
+      <p class="provenance muted" data-reveal>{devague.captures.provenance}</p>
+    </div>
+  </section>
+
+  <!-- what's next, from the open tracker -->
+  <section class="section" aria-label="What's next">
+    <div class="container">
+      <span class="eyebrow" data-reveal>{devague.whatsNext.eyebrow}</span>
+      <h2 data-reveal>{devague.whatsNext.headline}</h2>
+      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
+        {devague.whatsNext.intro.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <ul class="themes">
+        {
+          devague.whatsNext.themes.map((theme, i) => (
+            <li
+              class="card theme-card"
+              data-reveal
+              style={`--reveal-delay: ${Math.min(i * 0.08, 0.24)}s`}
+            >
+              <h3 class="theme-name">{theme.name}</h3>
+              <p class="theme-direction muted">{theme.direction}</p>
+              <ul class="theme-issues">
+                {theme.issues.map((issue) => (
+                  <li>
+                    <a href={issue.url}>
+                      <span class="issue-num">#{issue.number}</span>{" "}
+                      {issue.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- closing -->
+  <section class="section closing" aria-label="Closing">
+    <div class="container">
+      <div class="prose" data-reveal>
+        {devague.closing.paragraphs.map((p) => <p class="lede">{p}</p>)}
+        <p class="cta-row" data-reveal style="--reveal-delay: 0.15s">
+          <a class="cta" href={devague.closing.repoUrl}
+            >{devague.closing.repoCta} →</a
+          >
+          <a class="cta" href={devague.closing.pypiUrl}
+            ><code>{devague.closing.pypiCta}</code></a
+          >
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .section {
+    padding-block: clamp(2.6rem, 6vh, 4.2rem);
+  }
+
+  .facts-section {
+    padding-block: 0 1rem;
+  }
+
+  /* fast facts */
+  .facts {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem 0.9rem;
+  }
+
+  .fact {
+    display: flex;
+    align-items: baseline;
+    gap: 0.55rem;
+    padding: 0.55rem 1.05rem;
+    background: var(--surface);
+    border: 1px solid var(--line-soft);
+    border-radius: 999px;
+    box-shadow: var(--shadow);
+    font-size: 0.85rem;
+  }
+
+  .fact-label {
+    font-size: 0.72rem;
+    font-weight: 640;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .fact-value {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    white-space: nowrap;
+  }
+
+  /* the pipeline */
+  .flow-wrap {
+    margin-block: 2.8rem 3rem;
+    max-width: 56rem;
+    margin-inline: auto;
+  }
+
+  .stages {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: 1.1rem;
+  }
+
+  .stage-card {
+    padding: 1.4rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .stage-name {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 1.02rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--accent);
+  }
+
+  .stage-engine {
+    font-size: 0.7rem;
+    font-weight: 640;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .stage-detail {
+    font-size: 0.92rem;
+    line-height: 1.55;
+    flex-grow: 1;
+    margin-top: 0.35rem;
+  }
+
+  .stage-verbs {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.01em;
+  }
+
+  /* the method moves */
+  .moves {
+    list-style: none;
+    margin-top: 2.2rem;
+    display: grid;
+    /* 18rem floor lands the six moves as two rows of three on desktop —
+       the arc reads in order: new/capture/interrogate, park/converge/export */
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: 1.1rem;
+  }
+
+  .move-card {
+    padding: 1.4rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .move-step {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+  }
+
+  .move-verb {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 1.02rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--accent);
+  }
+
+  .move-ask {
+    font-style: italic;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    font-weight: 500;
+    color: var(--ink);
+    margin: 0.25rem 0 0.35rem;
+  }
+
+  .move-detail {
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  /* the review loop */
+  .gate-steps {
+    list-style: none;
+    margin-top: 2.2rem;
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .gate-step {
+    padding: 1.15rem 1.5rem;
+    display: grid;
+    grid-template-columns: minmax(12rem, 19rem) 1fr;
+    gap: 0.4rem 1.6rem;
+    align-items: baseline;
+  }
+
+  .gate-cmd {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent);
+    overflow-wrap: anywhere;
+  }
+
+  .gate-effect {
+    font-size: 0.92rem;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  @media (max-width: 40rem) {
+    .gate-step {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* the operator skills */
+  .skills {
+    list-style: none;
+    margin-top: 2.2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: 1.1rem;
+  }
+
+  .skill-card {
+    padding: 1.4rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .skill-name {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 1.02rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--accent);
+  }
+
+  .skill-leg {
+    font-size: 0.7rem;
+    font-weight: 640;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+  }
+
+  .skill-duty {
+    font-size: 0.92rem;
+    line-height: 1.55;
+    margin-top: 0.35rem;
+  }
+
+  /* captures */
+  .term-grid {
+    margin-top: 2.2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+    gap: 1.3rem;
+    align-items: start;
+  }
+
+  .term-grid + .term-grid {
+    margin-top: 1.3rem;
+  }
+
+  .coda-wrap {
+    margin-top: 1.3rem;
+  }
+
+  .provenance {
+    margin-top: 1.4rem;
+    font-size: 0.92rem;
+    max-width: 42rem;
+  }
+
+  /* what's next */
+  .themes {
+    list-style: none;
+    margin-top: 2.2rem;
+    display: grid;
+    gap: 1.1rem;
+  }
+
+  .theme-card {
+    padding: 1.6rem 1.8rem;
+  }
+
+  .theme-name {
+    margin-bottom: 0.4em;
+  }
+
+  .theme-direction {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    max-width: 46rem;
+  }
+
+  .theme-issues {
+    list-style: none;
+    margin-top: 1rem;
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .theme-issues li {
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+
+  .issue-num {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+
+  /* closing */
+  .closing {
+    padding-bottom: clamp(4rem, 9vh, 6.5rem);
+  }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.8rem;
+    align-items: baseline;
+  }
+
+  .cta {
+    font-weight: 560;
+    white-space: nowrap;
+  }
+</style>

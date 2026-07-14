@@ -1,0 +1,717 @@
+---
+// The centerpiece of /agents/devague: one machine-free diagram that walks
+// devague's method arc left to right —
+//
+//   idea → announcement frame → converge gate → spec → plan waves → build
+//
+// Two beats carry the whole story of why devague is different, and the
+// motion makes them legible:
+//   1. proposed → confirmed. In the frame stage, claims arrive tentative
+//      (dashed, hollow — "proposed") and a human confirm flips them solid.
+//   2. the gate refuses. The converge gate strains shut while any claim is
+//      still proposed, then opens once the frame closes — the spec exports
+//      through it and fans out into plan waves the workforce builds.
+//
+// Motion is compositor-only (transform + opacity, nothing else), on the
+// site's calm easings. It plays ONCE the first time it scrolls into view
+// (the LobesTerminal pattern: an IntersectionObserver toggles `.is-playing`;
+// the class is the only thing JS touches — no network, no layout writes),
+// then holds the assembled frame. Under prefers-reduced-motion, or with no
+// JS, nothing is hidden and nothing moves: the authored DOM already IS the
+// finished pipeline — every stage present, every claim confirmed, the gate
+// open — so the method stays fully legible as a still.
+//
+// Labels default to real devague vocabulary (verified against `devague
+// learn` on 0.17.2). The page may override any stage label via `labels`.
+
+interface StageLabels {
+  /** stage 1 — the vague starting point. */
+  idea: string;
+  /** stage 2 — the announcement frame. */
+  frame: string;
+  /** stage 3 — the convergence gate. */
+  converge: string;
+  /** stage 4 — the exported spec. */
+  spec: string;
+  /** stage 5 — the plan's dependency waves. */
+  waves: string;
+  /** stage 6 — the built result. */
+  build: string;
+}
+
+interface Props {
+  /** Optional caption rendered under the diagram. */
+  caption?: string;
+  /** Per-stage label overrides; factual defaults are used when omitted. */
+  labels?: Partial<StageLabels>;
+}
+
+const { caption, labels = {} } = Astro.props;
+
+const L: StageLabels = {
+  idea: "idea",
+  frame: "frame",
+  converge: "converge",
+  spec: "spec",
+  waves: "waves",
+  build: "build",
+  ...labels,
+};
+
+// The three claims that flip proposed → confirmed. Real capture kinds
+// (`devague capture --kind <k>`): announcement/audience/after_state/
+// boundary/why_it_matters/before_state/success_signal.
+const CLAIMS = ["audience", "after_state", "boundary"];
+---
+
+<figure
+  class="flow"
+  data-flow
+  aria-label="devague's method arc: a vague idea becomes an announcement frame whose claims a human confirms, a convergence gate opens once the frame closes, a spec exports and fans out into plan waves the workforce builds"
+>
+  <ol class="flow-track" role="list">
+    <!-- 1 · idea — the vague seed -->
+    <li class="stage stage-idea">
+      <span class="glyph" aria-hidden="true">
+        <svg viewBox="0 0 60 60" fill="none">
+          <ellipse class="idea-cloud" cx="30" cy="30" rx="22" ry="18"></ellipse>
+          <circle class="idea-seed" cx="30" cy="30" r="6"></circle>
+        </svg>
+      </span>
+      <span class="stage-label">{L.idea}</span>
+      <span class="stage-kind muted">announcement</span>
+    </li>
+
+    <li class="link" aria-hidden="true" style="--d: 0.55s"><i class="link-line"></i></li>
+
+    <!-- 2 · frame — claims flip proposed → confirmed (the human gate) -->
+    <li class="stage stage-frame">
+      <span class="glyph frame-glyph" aria-hidden="true">
+        <span class="frame-claims" style="--d: 1s">
+          {
+            CLAIMS.map((kind, i) => (
+              <span
+                class="claim"
+                data-claim
+                style={`--d: ${(2.1 + i * 0.6).toFixed(2)}s`}
+              >
+                <span class="claim-face claim-open">
+                  <span class="claim-mark"></span>
+                  {kind}
+                </span>
+                <span class="claim-face claim-solid">
+                  <svg class="claim-tick" viewBox="0 0 12 12" fill="none">
+                    <path d="M2.5 6.4 5 8.9 9.6 3.4"></path>
+                  </svg>
+                  {kind}
+                </span>
+              </span>
+            ))
+          }
+        </span>
+      </span>
+      <span class="stage-label">{L.frame}</span>
+      <span class="stage-kind muted">capture · confirm</span>
+    </li>
+
+    <li class="link" aria-hidden="true" style="--d: 3.9s"><i class="link-line"></i></li>
+
+    <!-- 3 · converge — the gate refuses, then opens -->
+    <li class="stage stage-converge">
+      <span class="glyph" aria-hidden="true">
+        <svg viewBox="0 0 60 60" fill="none">
+          <rect class="gate-frame" x="12" y="10" width="36" height="40" rx="4"></rect>
+          <g class="gate-leaves">
+            <rect class="gate-leaf gate-leaf-l" x="15" y="13" width="13.5" height="34" rx="2"></rect>
+            <rect class="gate-leaf gate-leaf-r" x="31.5" y="13" width="13.5" height="34" rx="2"></rect>
+          </g>
+          <line class="gate-block" x1="21" y1="21" x2="39" y2="39"></line>
+          <path class="gate-check" d="M22 30.5 27.5 36 40 23"></path>
+        </svg>
+      </span>
+      <span class="stage-label">{L.converge}</span>
+      <span class="stage-kind muted">gate</span>
+    </li>
+
+    <li class="link" aria-hidden="true" style="--d: 4.8s"><i class="link-line"></i></li>
+
+    <!-- 4 · spec — exports through the open gate -->
+    <li class="stage stage-spec">
+      <span class="glyph" aria-hidden="true">
+        <svg class="spec-doc" viewBox="0 0 60 60" fill="none" style="--d: 5s">
+          <path class="spec-page" d="M17 8 H37 L47 18 V52 H17 Z"></path>
+          <path class="spec-fold" d="M37 8 V18 H47"></path>
+          <line class="spec-rule" x1="23" y1="27" x2="41" y2="27"></line>
+          <line class="spec-rule" x1="23" y1="34" x2="41" y2="34"></line>
+          <line class="spec-rule spec-rule-short" x1="23" y1="41" x2="34" y2="41"></line>
+        </svg>
+      </span>
+      <span class="stage-label">{L.spec}</span>
+      <span class="stage-kind muted">export</span>
+    </li>
+
+    <li class="link" aria-hidden="true" style="--d: 5.7s"><i class="link-line"></i></li>
+
+    <!-- 5 · waves — the plan fans out into dependency waves -->
+    <li class="stage stage-waves">
+      <span class="glyph" aria-hidden="true">
+        <svg viewBox="0 0 60 60" fill="none">
+          <circle class="wave-root" cx="9" cy="30" r="4"></circle>
+          <g class="wave-lane" style="--d: 6s">
+            <path class="wave-thread" d="M13 30 Q30 18 40 15"></path>
+            <circle class="wave-dot" cx="40" cy="15" r="3.6"></circle>
+            <circle class="wave-dot" cx="52" cy="15" r="3.6"></circle>
+          </g>
+          <g class="wave-lane" style="--d: 6.3s">
+            <path class="wave-thread" d="M13 30 H40"></path>
+            <circle class="wave-dot" cx="40" cy="30" r="3.6"></circle>
+            <circle class="wave-dot" cx="52" cy="30" r="3.6"></circle>
+          </g>
+          <g class="wave-lane" style="--d: 6.6s">
+            <path class="wave-thread" d="M13 30 Q30 42 40 45"></path>
+            <circle class="wave-dot" cx="40" cy="45" r="3.6"></circle>
+            <circle class="wave-dot" cx="52" cy="45" r="3.6"></circle>
+          </g>
+        </svg>
+      </span>
+      <span class="stage-label">{L.waves}</span>
+      <span class="stage-kind muted">plan</span>
+    </li>
+
+    <li class="link" aria-hidden="true" style="--d: 7.1s"><i class="link-line"></i></li>
+
+    <!-- 6 · build — the workforce ships it -->
+    <li class="stage stage-build">
+      <span class="glyph" aria-hidden="true">
+        <svg class="build-glyph" viewBox="0 0 60 60" fill="none" style="--d: 7.5s">
+          <rect class="build-box" x="14" y="14" width="32" height="32" rx="8"></rect>
+          <path class="build-check" d="M22 31 28 37 40 24"></path>
+        </svg>
+      </span>
+      <span class="stage-label">{L.build}</span>
+      <span class="stage-kind muted">workforce</span>
+    </li>
+  </ol>
+
+  {caption && <figcaption class="flow-caption muted">{caption}</figcaption>}
+</figure>
+
+<style>
+  /* ---------- layout ---------- */
+  .flow {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    align-items: center;
+  }
+
+  .flow-track {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+
+  .stage {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  .glyph {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 4.6rem;
+  }
+
+  /* Direct child only: the stage glyph. Nested SVGs (claim ticks) keep
+     their own sizes and must not inherit this. */
+  .glyph > svg {
+    width: 4.6rem;
+    height: 4.6rem;
+    overflow: visible;
+  }
+
+  .stage-label {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--accent);
+  }
+
+  .stage-kind {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.05em;
+  }
+
+  /* connectors: a thin thread that draws stage-to-stage */
+  .link {
+    flex: 1 1 auto;
+    min-width: 1.5rem;
+    max-width: 4.5rem;
+    height: 4.6rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .link-line {
+    display: block;
+    width: 100%;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--mesh-thread);
+    transform-origin: left center;
+    /* the pre-play "undrawn" pose — horizontal by default, vertical when
+       the track stacks (set in the narrow-screen block). */
+    --link-hidden: scaleX(0);
+  }
+
+  .flow-caption {
+    font-size: 0.92rem;
+    line-height: 1.55;
+    text-align: center;
+    max-width: 34rem;
+  }
+
+  /* ---------- glyph paint (static; theme via tokens) ---------- */
+  .idea-cloud {
+    stroke: var(--line);
+    stroke-width: 1.4;
+    stroke-dasharray: 4 5;
+    stroke-linecap: round;
+    fill: color-mix(in srgb, var(--surface) 55%, transparent);
+  }
+
+  .idea-seed {
+    fill: var(--mesh-node);
+    opacity: 0.5;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  /* frame: two stacked faces per claim — proposed (open) and confirmed */
+  .frame-glyph {
+    height: 4.6rem;
+  }
+
+  .frame-claims {
+    display: flex;
+    flex-direction: column;
+    gap: 0.28rem;
+  }
+
+  .claim {
+    position: relative;
+    display: grid;
+  }
+
+  .claim-face {
+    grid-area: 1 / 1;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.12rem 0.5rem 0.12rem 0.4rem;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  /* Composed base = the CONFIRMED face only. The proposed (open) face is
+     hidden here so the reduced-motion / no-JS still shows a single, solid
+     claim per row; motion re-reveals it as the pre-play pose below. */
+  .claim-open {
+    opacity: 0;
+    border: 1px dashed var(--line);
+    color: var(--ink-soft);
+    background: transparent;
+  }
+
+  .claim-open .claim-mark {
+    width: 0.42rem;
+    height: 0.42rem;
+    border-radius: 50%;
+    border: 1px solid var(--ink-soft);
+    opacity: 0.7;
+  }
+
+  .claim-solid {
+    border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    color: var(--accent-strong);
+    transform-origin: center;
+  }
+
+  .claim-tick {
+    width: 0.6rem;
+    height: 0.6rem;
+    flex: none;
+  }
+
+  .claim-tick path {
+    stroke: var(--accent-strong);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* converge gate */
+  .gate-frame {
+    stroke: var(--line);
+    stroke-width: 1.4;
+    fill: color-mix(in srgb, var(--surface) 55%, transparent);
+  }
+
+  .gate-leaf {
+    fill: color-mix(in srgb, var(--surface) 88%, var(--mesh-node));
+    stroke: var(--line);
+    stroke-width: 1;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .gate-block {
+    stroke: var(--ink-soft);
+    stroke-width: 2;
+    stroke-linecap: round;
+    opacity: 0;
+  }
+
+  .gate-check {
+    fill: none;
+    stroke: var(--accent-strong);
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* spec doc */
+  .spec-doc {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .spec-page {
+    fill: color-mix(in srgb, var(--surface) 70%, transparent);
+    stroke: var(--line);
+    stroke-width: 1.4;
+    stroke-linejoin: round;
+  }
+
+  .spec-fold {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1.4;
+    stroke-linejoin: round;
+  }
+
+  .spec-rule {
+    stroke: var(--mesh-node);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    opacity: 0.7;
+  }
+
+  /* plan waves */
+  .wave-root {
+    fill: var(--mesh-node);
+  }
+
+  .wave-thread {
+    stroke: var(--mesh-thread);
+    stroke-width: 1.3;
+    stroke-linecap: round;
+  }
+
+  .wave-dot {
+    fill: var(--mesh-node);
+  }
+
+  .wave-lane {
+    transform-box: fill-box;
+    transform-origin: left center;
+  }
+
+  /* build */
+  .build-glyph {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .build-box {
+    fill: color-mix(in srgb, var(--accent) 14%, transparent);
+    stroke: color-mix(in srgb, var(--accent) 55%, transparent);
+    stroke-width: 1.6;
+  }
+
+  .build-check {
+    fill: none;
+    stroke: var(--accent-strong);
+    stroke-width: 2.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* ---------- responsive: stack to a column on narrow screens ----------
+     Each stage keeps its glyph-over-label shape; only the track direction
+     and the connectors turn vertical, so the wide frame pills never
+     overflow a phone-width viewport. */
+  @media (max-width: 46rem) {
+    .flow-track {
+      flex-direction: column;
+      align-items: center;
+      gap: 0.15rem;
+    }
+
+    .link {
+      width: 100%;
+      min-width: 0;
+      max-width: none;
+      height: 1.4rem;
+      justify-content: center;
+    }
+
+    .link-line {
+      width: 2px;
+      height: 100%;
+      transform-origin: top center;
+      --link-hidden: scaleY(0);
+    }
+  }
+
+  /* ---------- motion ----------
+     Every animated property below is transform or opacity only. Hidden /
+     pre-play states apply ONLY under html.js + no-preference (mirroring the
+     site's reveal system and LobesTerminal); the base rules above already
+     render the finished, composed pipeline. The `.is-playing` class — set
+     once by the observer when the figure scrolls into view — drives each
+     element from its pre-play pose to the composed pose, staggered by a
+     per-element `--d` delay, then holds. No loop, no reset flicker. */
+  @media (prefers-reduced-motion: no-preference) {
+    /* idle breathing on the seed and finished nodes — calm, infinite */
+    .idea-seed {
+      animation: node-breathe 8s var(--ease-gentle) infinite alternate;
+    }
+
+    /* --- pre-play poses (before .is-playing) --- */
+    :global(html.js) .flow .link-line {
+      transform: var(--link-hidden, scaleX(0));
+      transition: transform 0.7s var(--ease-out);
+      transition-delay: var(--d, 0s);
+    }
+
+    :global(html.js) .flow .frame-claims {
+      opacity: 0;
+      transform: translateY(0.5rem) scale(0.96);
+      transition:
+        opacity 0.7s var(--ease-out),
+        transform 0.7s var(--ease-out);
+      transition-delay: var(--d, 0s);
+    }
+
+    /* claims arrive proposed: the open face shown, the solid face waiting */
+    :global(html.js) .flow .claim-open {
+      opacity: 1;
+      transition: opacity 0.5s var(--ease-out);
+      transition-delay: var(--d, 0s);
+    }
+
+    :global(html.js) .flow .claim-solid {
+      opacity: 0;
+      transform: scale(0.8);
+      transition:
+        opacity 0.5s var(--ease-out),
+        transform 0.5s var(--ease-gentle);
+      transition-delay: var(--d, 0s);
+    }
+
+    :global(html.js) .flow .spec-doc {
+      opacity: 0;
+      transform: translateY(0.6rem) scale(0.9);
+      transition:
+        opacity 0.7s var(--ease-out),
+        transform 0.7s var(--ease-out);
+      transition-delay: var(--d, 0s);
+    }
+
+    :global(html.js) .flow .wave-lane {
+      opacity: 0;
+      transform: scaleX(0.2);
+      transition:
+        opacity 0.6s var(--ease-out),
+        transform 0.6s var(--ease-out);
+      transition-delay: var(--d, 0s);
+    }
+
+    :global(html.js) .flow .build-glyph {
+      opacity: 0;
+      transform: scale(0.7);
+      transition:
+        opacity 0.7s var(--ease-out),
+        transform 0.7s var(--ease-gentle);
+      transition-delay: var(--d, 0s);
+    }
+
+    /* gate: authored open; before play it is shut, blocked, unchecked */
+    :global(html.js) .flow .gate-leaf-l {
+      transform: translateX(6.5px);
+    }
+
+    :global(html.js) .flow .gate-leaf-r {
+      transform: translateX(-6.5px);
+    }
+
+    :global(html.js) .flow .gate-block {
+      opacity: 1;
+      transition: opacity 0.4s var(--ease-out);
+      transition-delay: 3.7s;
+    }
+
+    :global(html.js) .flow .gate-check {
+      opacity: 0;
+      transform: scale(0.6);
+      transform-box: fill-box;
+      transform-origin: center;
+      transition:
+        opacity 0.5s var(--ease-out),
+        transform 0.5s var(--ease-gentle);
+      transition-delay: 4.2s;
+    }
+
+    /* --- played poses (composed) --- */
+    :global(html.js) .flow.is-playing .link-line {
+      transform: none;
+    }
+
+    :global(html.js) .flow.is-playing .frame-claims {
+      opacity: 1;
+      transform: none;
+    }
+
+    :global(html.js) .flow.is-playing .claim-open {
+      opacity: 0;
+    }
+
+    :global(html.js) .flow.is-playing .claim-solid {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    :global(html.js) .flow.is-playing .spec-doc,
+    :global(html.js) .flow.is-playing .build-glyph {
+      opacity: 1;
+      transform: none;
+    }
+
+    :global(html.js) .flow.is-playing .wave-lane {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+
+    :global(html.js) .flow.is-playing .gate-block {
+      opacity: 0;
+    }
+
+    :global(html.js) .flow.is-playing .gate-check {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* the gate's refuse-then-open beat is inherently multi-step, so it runs
+       as a keyframe (compositor-only). `both` holds the open pose after. */
+    :global(html.js) .flow.is-playing .gate-leaf-l {
+      animation: gate-open-l 3.6s var(--ease-gentle) 1s both;
+    }
+
+    :global(html.js) .flow.is-playing .gate-leaf-r {
+      animation: gate-open-r 3.6s var(--ease-gentle) 1s both;
+    }
+  }
+
+  /* leaves strain apart and snap shut twice (refuse), then finally open */
+  @keyframes gate-open-l {
+    0%,
+    12% {
+      transform: translateX(6.5px);
+    }
+    18% {
+      transform: translateX(4.5px);
+    }
+    26%,
+    42% {
+      transform: translateX(6.5px);
+    }
+    48% {
+      transform: translateX(4px);
+    }
+    56%,
+    74% {
+      transform: translateX(6.5px);
+    }
+    92%,
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes gate-open-r {
+    0%,
+    12% {
+      transform: translateX(-6.5px);
+    }
+    18% {
+      transform: translateX(-4.5px);
+    }
+    26%,
+    42% {
+      transform: translateX(-6.5px);
+    }
+    48% {
+      transform: translateX(-4px);
+    }
+    56%,
+    74% {
+      transform: translateX(-6.5px);
+    }
+    92%,
+    100% {
+      transform: translateX(0);
+    }
+  }
+</style>
+
+<script>
+  // Play the arc the first time it scrolls into view — class toggle only.
+  // No network, no layout writes. If IntersectionObserver is unavailable,
+  // Layout.astro strips `html.js`, so the pre-play poses above never apply
+  // and the composed still shows. Mirrors LobesTerminal exactly.
+  if (
+    matchMedia("(prefers-reduced-motion: no-preference)").matches &&
+    "IntersectionObserver" in window
+  ) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-playing");
+            io.unobserve(entry.target);
+          }
+        }
+      },
+      { threshold: 0.35, rootMargin: "0px 0px -40px 0px" },
+    );
+    document.querySelectorAll("[data-flow]").forEach((el) => io.observe(el));
+  }
+</script>
