@@ -77,7 +77,7 @@ slug: `agentculture-org-agents-devague-is-live-a-presenta` · status: `exported`
 - depends on: t8
 - covers: c1, h5
 - acceptance:
-  - https://agentculture.org/agents/devague returns the page in production after sign-off; deploy performed through the established operator lane, not from a checkout
+  - <https://agentculture.org/agents/devague> returns the page in production after sign-off; deploy performed through the established operator lane, not from a checkout
 
 ## Risks
 
