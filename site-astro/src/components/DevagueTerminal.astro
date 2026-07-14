@@ -31,17 +31,28 @@ const { pane, start = 0.3, wrap = true } = Astro.props;
 // Which leg of the pipeline this pane replays — legible in the chrome via a
 // color-coded dot, a text tag, and a top accent stripe, on top of the
 // provenance line already naming it. Derived from the pane's own stable id
-// prefix (t1's data module), not guessed from prose.
-type Leg = "frame" | "plan" | "check";
+// prefix (t1's data module), not guessed from prose. scope-/deviate-/summary-
+// are the idea->scope, spec->deviate, and closing-summary legs; anything
+// unmatched still falls back to "check", same as before these three existed.
+type Leg = "frame" | "plan" | "check" | "scope" | "deviate" | "summary";
 const leg: Leg = pane.id.startsWith("frame-")
   ? "frame"
   : pane.id.startsWith("plan-")
     ? "plan"
-    : "check";
+    : pane.id.startsWith("scope-")
+      ? "scope"
+      : pane.id.startsWith("deviate-")
+        ? "deviate"
+        : pane.id.startsWith("summary-")
+          ? "summary"
+          : "check";
 const legLabel: Record<Leg, string> = {
   frame: "frame leg",
   plan: "plan leg",
   check: "fresh check",
+  scope: "scope leg",
+  deviate: "deviate",
+  summary: "summary",
 };
 
 // The transcript is rendered to an HTML string here (with explicit
@@ -153,6 +164,18 @@ const rendered = pane.lines
     border-top-color: #a9b0cf;
   }
 
+  .term.leg-scope {
+    border-top-color: #7fb3f2;
+  }
+
+  .term.leg-deviate {
+    border-top-color: #f2789a;
+  }
+
+  .term.leg-summary {
+    border-top-color: #b49cf2;
+  }
+
   .term-head {
     display: flex;
     align-items: baseline;
@@ -188,6 +211,18 @@ const rendered = pane.lines
     background: #a9b0cf;
   }
 
+  .leg-scope .dot {
+    background: #7fb3f2;
+  }
+
+  .leg-deviate .dot {
+    background: #f2789a;
+  }
+
+  .leg-summary .dot {
+    background: #b49cf2;
+  }
+
   .leg-tag {
     flex: none;
     padding: 0.1rem 0.55rem;
@@ -209,6 +244,18 @@ const rendered = pane.lines
 
   .leg-check .leg-tag {
     color: #a9b0cf;
+  }
+
+  .leg-scope .leg-tag {
+    color: #7fb3f2;
+  }
+
+  .leg-deviate .leg-tag {
+    color: #f2789a;
+  }
+
+  .leg-summary .leg-tag {
+    color: #b49cf2;
   }
 
   .title {
