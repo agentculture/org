@@ -285,7 +285,9 @@ const rendered = pane.lines
 
   .term :global(.cut-mark) {
     flex: none;
-    opacity: 0.75;
+    /* Same composited weight as .cut-text: 0.75 measured 3.80:1 against
+       the terminal ground — under AA's 4.5:1 for text-sized content. */
+    opacity: 0.9;
   }
 
   .term :global(.cut-text) {
