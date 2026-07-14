@@ -19,6 +19,19 @@
 // The page REPLAYS these strings. It never re-invokes devague at build or
 // view time: every line below was produced by a real run, once, while
 // authoring.
+//
+// A second batch of panes, added later (scopeSurveySeeds,
+// frameGateLiveRefusal, deviateLedgerRead, summarySkeletonRead), was captured
+// during the very session that scoped, specced, and planned THIS update — the
+// six-leg page rewrite — against devague 0.18.0. Same rule applies: verbatim
+// lines, trimmed only for pane length, every cut marked with its own
+// "ellipsis" line. Two of the four are a live devague /think transcript
+// (scope leg, then the gate); the other two are labeled read-only re-runs —
+// `devague --version`, `devague deviate --list`, and `devague summary` — run
+// for real, once, against this plan's own committed .devague/ state, not
+// re-invoked at build time. The deviate ledger read is short because the
+// real ledger is empty: no deviation occurred in this run, and the pane says
+// exactly that rather than inventing one (see risk r1 on this plan).
 
 export interface CaptureLine {
   /**
@@ -49,6 +62,12 @@ export const capturedOn = "2026-07-14";
 export const sessionVersion = "0.17.0";
 /** Version of the fresh, read-only re-run closing pane. */
 export const freshVersion = "0.17.2";
+
+/** Capture date for the second batch: this update's own scope/frame/gate
+ * session and its labeled read-only reads. */
+export const newLegsCapturedOn = "2026-07-15";
+/** devague version the second batch ran under. */
+export const newLegsVersion = "0.18.0";
 
 /** Frame leg, part 1: the announcement and the first captured claims. */
 export const frameAnnounceCapture: CapturePane = {
@@ -333,6 +352,241 @@ export const freshRecheck: CapturePane = {
     {
       kind: "ellipsis",
       text: "… (the guided-stage walkthrough continues — see `devague learn`)",
+    },
+  ],
+};
+
+/**
+ * Scope leg (devague 0.18's new `/scope` verb): the announcement for THIS
+ * update, two of its captured claims, three scope entries recording where
+ * each claim's finding lives with `--seeds`, and a trimmed read-back of
+ * `devague scope --list`. Captured live from this session's own run, before
+ * a single honesty condition or confirm — scoping happens ahead of the
+ * frame's interrogation loop.
+ */
+export const scopeSurveySeeds: CapturePane = {
+  id: "scope-survey-seeds",
+  title: "scope — survey the surfaces, seed the frame",
+  context: "org repo · scope leg · devague /scope",
+  capturedDate: newLegsCapturedOn,
+  devagueVersion: newLegsVersion,
+  lines: [
+    {
+      kind: "cmd",
+      text: 'devague new "agentculture.org/agents/devague now presents devague as the complete six-leg method — scope, think, spec-to-plan, assign-to-workforce, deviate, summarize-delivery — as a pure product presentation: the pipeline and method arc carry the execution seam (scope entries on the frame, the deviation ledger, the delivery summary), the operator-skills section shows all six legs, real captured sessions demonstrate the new legs, launch-day meta (public-since dates, dated version chips) is gone, and what\'s-next is re-verified against the live tracker — good enough that Ori presents the product by just showing the page" --title "devague page: six-leg update"',
+    },
+    {
+      kind: "out",
+      text: "created frame 'devague-page-six-leg-update' (announcement = c1)",
+    },
+    {
+      kind: "cmd",
+      text: 'devague capture --origin llm --kind requirement "Pipeline, diagram, and skills copy reflect the devague 0.18 surface verified against the installed CLI and CHANGELOG: the scope verb (pre-frame scoping recorded on the frame), the deviate verb (append-only deviation ledger under .devague/deliveries/), the summary verb (render-only eight-section skeleton, --pr variant), and plan deliverables/amend."',
+    },
+    { kind: "out", text: "captured c6 (requirement, proposed)" },
+    {
+      kind: "cmd",
+      text: 'devague capture --origin llm --kind requirement "whatsNext is re-distilled from the live tracker at authoring time (gh issue list on agentculture/devague, 2026-07-15): the resolution-moves cluster (#60, #57, #55, #52, #49, #48, #45) and the consolidated board (#36) remain open; #62, #68, #69, #70 are closed and must not be linked as direction."',
+    },
+    { kind: "out", text: "captured c15 (requirement, proposed)" },
+    {
+      kind: "ellipsis",
+      text: "… (c2–c5, c7–c14, c16–c18 captures elided)",
+    },
+    {
+      kind: "cmd",
+      text: 'devague scope "site-astro/src/data/devague.ts" --finding "carries all page copy: fact chips incl. \'public since 2026-07-14\' and \'version 0.17.2 — 2026-07-14\', the went-public hero paragraph, a 3-stage pipeline, 3 skill cards, and whatsNext linking #62/#68/#69/#70 — all closed by 0.18.0" --seeds c3 c5',
+    },
+    { kind: "out", text: "recorded s1 (site-astro/src/data/devague.ts)" },
+    {
+      kind: "cmd",
+      text: 'devague scope "devague 0.18.0 (devague --help; ../devague/CHANGELOG.md 0.18.0)" --finding "ships the scope, deviate, and summary verbs plus plan deliverables/amend; docs name the six-leg flow scope→think→spec-to-plan→assign-to-workforce→deviate→summarize-delivery" --seeds c6',
+    },
+    {
+      kind: "out",
+      text: "recorded s2 (devague 0.18.0 (devague --help; ../devague/CHANGELOG.md 0.18.0))",
+    },
+    {
+      kind: "cmd",
+      text: 'devague scope "site-astro/src/data/devague-captures.ts" --finding "verbatim-replay contract: every line captured from a real run, cuts marked with first-class ellipsis lines, versions and dates carried as pane provenance — new panes must meet the same bar" --seeds c7 c10',
+    },
+    {
+      kind: "out",
+      text: "recorded s3 (site-astro/src/data/devague-captures.ts)",
+    },
+    { kind: "cmd", text: "devague scope --list" },
+    {
+      kind: "out",
+      text: "s1: site-astro/src/data/devague.ts -> carries all page copy: fact chips incl. 'public since 2026-07-14' and 'version 0.17.2 — 2026-07-14', the went-public hero paragraph, a 3-stage pipeline, 3 skill cards, and whatsNext linking #62/#68/#69/#70 — all closed by 0.18.0 [seeds: c3, c5]",
+    },
+    {
+      kind: "out",
+      text: "s2: devague 0.18.0 (devague --help; ../devague/CHANGELOG.md 0.18.0) -> ships the scope, deviate, and summary verbs plus plan deliverables/amend; docs name the six-leg flow scope→think→spec-to-plan→assign-to-workforce→deviate→summarize-delivery [seeds: c6]",
+    },
+    {
+      kind: "out",
+      text: "s3: site-astro/src/data/devague-captures.ts -> verbatim-replay contract: every line captured from a real run, cuts marked with first-class ellipsis lines, versions and dates carried as pane provenance — new panes must meet the same bar [seeds: c7, c10]",
+    },
+    {
+      kind: "ellipsis",
+      text: "… (s4 through s8 — DevagueTerminal.astro, DevagueFlow.astro, the live issue tracker, docs/skill-sources.md, site.ts — cut for length)",
+    },
+  ],
+};
+
+/**
+ * The gate, on this same frame: the confirm batch (trimmed), `converge`
+ * refusing on six missing honesty conditions, `export` refusing to write
+ * with the matching error/hint, then the pivot — a USER-origin capture
+ * (`devague capture` with no `--origin llm`) auto-lands `confirmed`, unlike
+ * every LLM-origin claim above it that needed an explicit `devague confirm`.
+ * That contrast IS the honesty-gate story: Ori, watching live, wrote "Note
+ * that I love the animations on page" and "Keep them and add for the new
+ * steps" — captured verbatim as c19. The remaining honesty conditions are
+ * then confirmed, and the frame converges and exports for real.
+ */
+export const frameGateLiveRefusal: CapturePane = {
+  id: "frame-gate-live-refusal",
+  title: "the gate — refuses, Ori decides live, converges",
+  context: "org repo · frame leg · devague /think",
+  capturedDate: newLegsCapturedOn,
+  devagueVersion: newLegsVersion,
+  lines: [
+    {
+      kind: "cmd",
+      text: "devague confirm c1 c2 c3 c4 c5 c6 c7 c8 c9 c10 c11 c12 c13 c14 c15 c16 c17 c18 h1 h2 h3 h4 h5 h6 h7 h8",
+    },
+    { kind: "out", text: "c1 -> confirmed" },
+    { kind: "out", text: "c2 -> confirmed" },
+    {
+      kind: "ellipsis",
+      text: "… (c3 through h7 confirmed the same way, 24 more lines)",
+    },
+    { kind: "out", text: "h8 -> confirmed" },
+    { kind: "cmd", text: "devague converge" },
+    { kind: "out", text: "not converged:" },
+    { kind: "out", text: "  - claim c2 has no confirmed honesty condition" },
+    { kind: "out", text: "  - claim c3 has no confirmed honesty condition" },
+    {
+      kind: "ellipsis",
+      text: "… (c8, c9, c11 gaps also listed)",
+    },
+    { kind: "out", text: "  - claim c12 has no confirmed honesty condition" },
+    { kind: "cmd", text: "devague export" },
+    {
+      kind: "out",
+      text: "error: frame has not converged; cannot export",
+    },
+    {
+      kind: "out",
+      text: "hint: resolve: claim c2 has no confirmed honesty condition; claim c3 has no confirmed honesty condition; claim c8 has no confirmed honesty condition; claim c9 has no confirmed honesty condition; claim c11 has no confirmed honesty condition; claim c12 has no confirmed honesty condition",
+    },
+    {
+      kind: "cmd",
+      text: 'devague capture --kind decision "Ori loves the page\'s animations: every existing animated beat is preserved, and the new steps get their own animated beats — the DevagueFlow arc\'s execution-seam stages animate in the same compositor-only language, and every new capture pane replays with the same typing/settle motion."',
+    },
+    { kind: "out", text: "captured c19 (decision, confirmed)" },
+    { kind: "cmd", text: "devague confirm h9 h10 h11 h12 h13 h14" },
+    { kind: "out", text: "h9 -> confirmed" },
+    {
+      kind: "ellipsis",
+      text: "… (h10 through h13 confirmed the same way)",
+    },
+    { kind: "out", text: "h14 -> confirmed" },
+    { kind: "cmd", text: "devague converge" },
+    { kind: "out", text: "converged ✓" },
+    { kind: "cmd", text: "devague export" },
+    {
+      kind: "out",
+      text: "exported spec to docs/specs/2026-07-14-devague-page-six-leg-update.md",
+    },
+  ],
+};
+
+/**
+ * Execution seam, part 1 — a labeled read-only read of this plan's own
+ * deviate ledger, run for real in the worktree that carries this task
+ * (not replayed from an old session). The ledger is genuinely empty: no
+ * deviation happened during this run, and the pane says exactly that
+ * instead of inventing one, per the risk this plan itself parked
+ * (r1: "if none occurs, the deviate pane is a labeled read-only ledger
+ * read"). Short on purpose — honesty over padding.
+ */
+export const deviateLedgerRead: CapturePane = {
+  id: "deviate-ledger-read",
+  title: "deviate — the ledger, read live",
+  context: "org repo · read-only ledger read · devague 0.18.0",
+  capturedDate: newLegsCapturedOn,
+  devagueVersion: newLegsVersion,
+  lines: [
+    { kind: "cmd", text: "devague --version" },
+    { kind: "out", text: "devague 0.18.0" },
+    { kind: "cmd", text: "devague deviate --list" },
+    { kind: "out", text: "no deviations recorded yet" },
+  ],
+};
+
+/**
+ * Execution seam, part 2 — a labeled read-only read of `devague summary`
+ * against this plan's own committed state, trimmed to the skeleton's shape:
+ * header/intent, the actual-delivery table (fill-in placeholders — nothing
+ * here is claimed as delivered), and the honesty mechanism in the
+ * mid-work/drift sections refusing to backfill a deviation that never
+ * happened.
+ */
+export const summarySkeletonRead: CapturePane = {
+  id: "summary-skeleton-read",
+  title: "summary — the skeleton, read live",
+  context: "org repo · read-only summary read · devague 0.18.0",
+  capturedDate: newLegsCapturedOn,
+  devagueVersion: newLegsVersion,
+  lines: [
+    { kind: "cmd", text: "devague summary" },
+    {
+      kind: "out",
+      text: "# Delivery Summary — devague page: six-leg update",
+    },
+    {
+      kind: "out",
+      text: "plan: `devague-page-six-leg-update` · run: `<complete | partial | failed>` · date: `2026-07-14`",
+    },
+    {
+      kind: "out",
+      text: "baseline: `devague plan (devague-page-six-leg-update)`",
+    },
+    { kind: "out", text: "## Intent" },
+    {
+      kind: "out",
+      text: "> agentculture.org/agents/devague now presents devague as the complete six-leg method — scope, think, spec-to-plan, assign-to-workforce, deviate, summarize-delivery — as a pure product presentation: the pipeline and method arc carry the execution seam (scope entries on the frame, the deviation ledger, the delivery summary), the operator-skills section shows all six legs, real captured sessions demonstrate the new legs, launch-day meta (public-since dates, dated version chips) is gone, and what's-next is re-verified against the live tracker — good enough that Ori presents the product by just showing the page",
+    },
+    {
+      kind: "ellipsis",
+      text: "… (## After, ## Planned Work — t1 through t7 — elided)",
+    },
+    { kind: "out", text: "## Actual Delivery" },
+    {
+      kind: "out",
+      text: "| Plan task | Status | What actually landed |",
+    },
+    {
+      kind: "ellipsis",
+      text: "… (rows `t1` through `t7`, each `<fill: status>` / `<fill: what landed>`, elided)",
+    },
+    { kind: "out", text: "## Mid-work Decisions" },
+    { kind: "out", text: "(no deviations recorded yet)" },
+    { kind: "out", text: "## Drift From Plan" },
+    {
+      kind: "out",
+      text: "no approved deviation records yet — record drift via `devague deviate` before this section can be filled in",
+    },
+    {
+      kind: "ellipsis",
+      text: "… (## Evidence, ## Delivery Claims sections — all `<fill: ...>` placeholders — elided)",
+    },
+    { kind: "out", text: "## Remaining Work / Follow-up" },
+    {
+      kind: "out",
+      text: "- `<fill: remaining item>` — `<fill: next step / owner>`",
     },
   ],
 };
