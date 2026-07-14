@@ -3,14 +3,24 @@
 // devague's method arc left to right —
 //
 //   idea → announcement frame → converge gate → spec → plan waves → build
+//     → deviate → summary
 //
-// Two beats carry the whole story of why devague is different, and the
+// Four beats carry the whole story of why devague is different, and the
 // motion makes them legible:
 //   1. proposed → confirmed. In the frame stage, claims arrive tentative
 //      (dashed, hollow — "proposed") and a human confirm flips them solid.
 //   2. the gate refuses. The converge gate strains shut while any claim is
 //      still proposed, then opens once the frame closes — the spec exports
 //      through it and fans out into plan waves the workforce builds.
+//   3. the ledger amends. Mid-build, reality diverges: the run stops, and
+//      the approved departure lands in the delivery ledger as an append-only
+//      record. The amendment row arrives dashed — the claims' own
+//      proposed language, because it is literally the same anti-fabrication
+//      rule — and human approval flips it solid. A record, not an error.
+//   4. the summary reconciles. After the run the accountability artifact
+//      closes the loop: the spec's document shape returns with ticks landing
+//      beside each rule (planned vs actual, drift, evidence-backed claims).
+//      A spec opens the build; a summary closes it.
 //
 // Motion is compositor-only (transform + opacity, nothing else), on the
 // site's calm easings. It plays ONCE the first time it scrolls into view
@@ -37,6 +47,10 @@ interface StageLabels {
   waves: string;
   /** stage 6 — the built result. */
   build: string;
+  /** stage 7 — the approved mid-build departure, recorded in the ledger. */
+  deviate: string;
+  /** stage 8 — the closing accountability artifact. */
+  summary: string;
 }
 
 interface Props {
@@ -55,6 +69,8 @@ const L: StageLabels = {
   spec: "spec",
   waves: "waves",
   build: "build",
+  deviate: "deviate",
+  summary: "summary",
   ...labels,
 };
 
@@ -67,7 +83,7 @@ const CLAIMS = ["audience", "after_state", "boundary"];
 <figure
   class="flow"
   data-flow
-  aria-label="devague's method arc: a vague idea becomes an announcement frame whose claims a human confirms, a convergence gate opens once the frame closes, a spec exports and fans out into plan waves the workforce builds"
+  aria-label="devague's method arc: a vague idea becomes an announcement frame whose claims a human confirms, a convergence gate opens once the frame closes, a spec exports and fans out into plan waves the workforce builds; when reality diverges mid-build a human approves the departure and it lands as an append-only record in the delivery ledger, and a closing summary reconciles planned versus actual as the accountability artifact"
 >
   <ol class="flow-track" role="list">
     <!-- 1 · idea — the vague seed -->
@@ -190,6 +206,54 @@ const CLAIMS = ["audience", "after_state", "boundary"];
       </span>
       <span class="stage-label">{L.build}</span>
       <span class="stage-kind muted">workforce</span>
+    </li>
+
+    <li class="link" aria-hidden="true" style="--d: 8s"><i class="link-line"></i></li>
+
+    <!-- 7 · deviate — reality diverges; the approved amendment lands in the ledger -->
+    <li class="stage stage-deviate">
+      <span class="glyph" aria-hidden="true">
+        <svg class="ledger-glyph" viewBox="0 0 60 60" fill="none" style="--d: 8.2s">
+          <rect class="ledger-page" x="14" y="9" width="32" height="42" rx="4"></rect>
+          <line class="ledger-row" x1="20" y1="17" x2="40" y2="17"></line>
+          <line class="ledger-row" x1="20" y1="24" x2="33" y2="24"></line>
+          <!-- the amendment row: two stacked faces — proposed (dashed) and
+               approved — flipping exactly like the frame's claims. -->
+          <g class="ledger-entry" style="--d: 8.8s">
+            <g class="entry-open">
+              <rect class="entry-outline" x="16.5" y="33.5" width="27" height="9" rx="4.5"></rect>
+              <line class="entry-draft" x1="20.5" y1="38" x2="39.5" y2="38"></line>
+            </g>
+            <g class="entry-solid">
+              <rect class="entry-pill" x="16.5" y="33.5" width="27" height="9" rx="4.5"></rect>
+              <line class="entry-line" x1="20.5" y1="38" x2="31.5" y2="38"></line>
+              <path class="entry-tick" d="M33.5 38.5 35.8 40.6 40 35.8"></path>
+            </g>
+          </g>
+        </svg>
+      </span>
+      <span class="stage-label">{L.deviate}</span>
+      <span class="stage-kind muted">ledger</span>
+    </li>
+
+    <li class="link" aria-hidden="true" style="--d: 9.3s"><i class="link-line"></i></li>
+
+    <!-- 8 · summary — the accountability artifact closes the loop -->
+    <li class="stage stage-summary">
+      <span class="glyph" aria-hidden="true">
+        <svg class="summary-doc" viewBox="0 0 60 60" fill="none" style="--d: 9.5s">
+          <path class="spec-page" d="M17 8 H37 L47 18 V52 H17 Z"></path>
+          <path class="spec-fold" d="M37 8 V18 H47"></path>
+          <line class="spec-rule" x1="23" y1="27" x2="33" y2="27"></line>
+          <path class="summary-tick" d="M36.5 27.8 38.8 30 43 25" style="--d: 10.05s"></path>
+          <line class="spec-rule" x1="23" y1="34" x2="33" y2="34"></line>
+          <path class="summary-tick" d="M36.5 34.8 38.8 37 43 32" style="--d: 10.3s"></path>
+          <line class="spec-rule spec-rule-short" x1="23" y1="41" x2="30" y2="41"></line>
+          <path class="summary-tick" d="M33.5 41.8 35.8 44 40 39" style="--d: 10.55s"></path>
+        </svg>
+      </span>
+      <span class="stage-label">{L.summary}</span>
+      <span class="stage-kind muted">artifact</span>
     </li>
   </ol>
 
@@ -464,11 +528,102 @@ const CLAIMS = ["audience", "after_state", "boundary"];
     stroke-linejoin: round;
   }
 
+  /* deviate: the delivery ledger receives a human-approved amendment.
+     Settled rows share the spec-rule paint; the amendment row has two
+     stacked faces — proposed (dashed outline, penciled) and approved
+     (accent pill + tick) — reusing the claims' visual language on purpose:
+     it is the same anti-fabrication rule. */
+  .ledger-glyph {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .ledger-page {
+    fill: color-mix(in srgb, var(--surface) 70%, transparent);
+    stroke: var(--line);
+    stroke-width: 1.4;
+    stroke-linejoin: round;
+  }
+
+  .ledger-row {
+    stroke: var(--mesh-node);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    opacity: 0.7;
+  }
+
+  /* Composed base = the APPROVED face only, mirroring .claim-open: the
+     reduced-motion / no-JS still shows a recorded, approved entry. Motion
+     re-reveals the proposed face as the pre-play pose below. */
+  .entry-open {
+    opacity: 0;
+  }
+
+  .entry-outline {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+    stroke-dasharray: 3 3.5;
+  }
+
+  .entry-draft {
+    stroke: var(--ink-soft);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-dasharray: 2.5 3.5;
+    opacity: 0.8;
+  }
+
+  .entry-solid {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .entry-pill {
+    fill: color-mix(in srgb, var(--accent) 12%, transparent);
+    stroke: color-mix(in srgb, var(--accent) 55%, transparent);
+    stroke-width: 1;
+  }
+
+  .entry-line {
+    stroke: var(--accent-strong);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+  }
+
+  .entry-tick {
+    fill: none;
+    stroke: var(--accent-strong);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* summary: the accountability artifact. Deliberately reuses the spec's
+     page/fold/rule paint — a spec opens the build, a summary closes it —
+     reconciled by ticks landing beside each rule. */
+  .summary-doc {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .summary-tick {
+    fill: none;
+    stroke: var(--accent-strong);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
   /* ---------- responsive: stack to a column on narrow screens ----------
      Each stage keeps its glyph-over-label shape; only the track direction
      and the connectors turn vertical, so the wide frame pills never
-     overflow a phone-width viewport. */
-  @media (max-width: 46rem) {
+     overflow a phone-width viewport. The breakpoint is sized to the
+     8-stage row: its natural width is ~56rem, so below 59rem (row + page
+     padding) the track stacks rather than ever scrolling horizontally. */
+  @media (max-width: 59rem) {
     .flow-track {
       flex-direction: column;
       align-items: center;
@@ -564,6 +719,44 @@ const CLAIMS = ["audience", "after_state", "boundary"];
       transition-delay: var(--d, 0s);
     }
 
+    /* deviate + summary glyphs arrive like the spec doc did */
+    :global(html.js) .flow .ledger-glyph,
+    :global(html.js) .flow .summary-doc {
+      opacity: 0;
+      transform: translateY(0.6rem) scale(0.9);
+      transition:
+        opacity 0.7s var(--ease-out),
+        transform 0.7s var(--ease-out);
+      transition-delay: var(--d, 0s);
+    }
+
+    /* the amendment arrives proposed (dashed), approval flips it solid —
+       the claims' flip, replayed in the ledger */
+    :global(html.js) .flow .entry-open {
+      opacity: 1;
+      transition: opacity 0.5s var(--ease-out);
+      transition-delay: var(--d, 0s);
+    }
+
+    :global(html.js) .flow .entry-solid {
+      opacity: 0;
+      transform: scale(0.8);
+      transition:
+        opacity 0.5s var(--ease-out),
+        transform 0.5s var(--ease-gentle);
+      transition-delay: var(--d, 0s);
+    }
+
+    /* reconciliation ticks land beside each summary rule, staggered */
+    :global(html.js) .flow .summary-tick {
+      opacity: 0;
+      transform: scale(0.6);
+      transition:
+        opacity 0.5s var(--ease-out),
+        transform 0.5s var(--ease-gentle);
+      transition-delay: var(--d, 0s);
+    }
+
     /* gate: authored open; before play it is shut, blocked, unchecked */
     :global(html.js) .flow .gate-leaf-l {
       transform: translateX(6.5px);
@@ -625,6 +818,26 @@ const CLAIMS = ["audience", "after_state", "boundary"];
     }
 
     :global(html.js) .flow.is-playing .gate-check {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    :global(html.js) .flow.is-playing .ledger-glyph,
+    :global(html.js) .flow.is-playing .summary-doc {
+      opacity: 1;
+      transform: none;
+    }
+
+    :global(html.js) .flow.is-playing .entry-open {
+      opacity: 0;
+    }
+
+    :global(html.js) .flow.is-playing .entry-solid {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    :global(html.js) .flow.is-playing .summary-tick {
       opacity: 1;
       transform: scale(1);
     }
