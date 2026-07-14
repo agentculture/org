@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/). This project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2026-07-14
+
+### Added
+
+- /agents/devague — a presentation-grade page introducing devague: the idea→spec→plan pipeline, the announcement-frame method, the human review loop, the operator skills, real captured sessions (the page's own frame — dogfooding), and a what's-next drawn from the open tracker
+- devague card in the /agents/ directory (Developer tooling group)
+- DevagueFlow component — animated method-arc centerpiece (compositor-only, reduced-motion still frame)
+- DevagueTerminal component — typed replay of captured sessions, word-chunked typing for long commands, and the :global() pattern for set:html markup under Astro scoped CSS
+- devague.ts + devague-captures.ts data modules; spec and plan exported by devague itself
+
+### Fixed
+
+- MD034 bare URL in the exported plan doc (0.17.0 exporter predates devague#65)
+
 ## [0.6.0] - 2026-07-14
 
 ### Added
