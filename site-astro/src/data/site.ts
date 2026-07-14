@@ -188,7 +188,7 @@ const site: SiteData = {
         name: "devague",
         repo: "agentculture/devague",
         url: "/agents/devague/",
-        role: "Turns a vague feature idea into a buildable spec, then a buildable plan — working backwards, then forwards.",
+        role: "Turns a vague feature idea into a buildable spec, then a buildable plan, then a closed loop through delivery — working backwards, then forwards, then recording deviations and summarizing delivery against the plan.",
         group: "Developer tooling",
       },
       // Cloud & infrastructure

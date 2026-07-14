@@ -6,10 +6,14 @@ AgentCulture **skills supplier** after the steward → guildmaster cutover
 (`steward doctor`, the sibling-pattern baseline); only the skills-supplier role
 moved. This file tracks provenance so re-syncs stay deterministic.
 
-Three skills (`think`, `spec-to-plan`, `assign-to-workforce`) originate in
-[`agentculture/devague`](https://github.com/agentculture/devague) and are
-**re-broadcast** through guildmaster — cite guildmaster's copy; track devague as
-the true origin. One skill, `ask-colleague` (formerly `outsource`), originates in
+Six skills (`think`, `spec-to-plan`, `assign-to-workforce`, `scope`, `deviate`,
+`summarize-delivery`) originate in
+[`agentculture/devague`](https://github.com/agentculture/devague). The first
+three are **re-broadcast** through guildmaster — cite guildmaster's copy; track
+devague as the true origin. The latter three (`scope`, `deviate`,
+`summarize-delivery`) are vendored **directly from devague**, guildmaster
+re-broadcast pending — the same direct-vendor precedent `ask-colleague` sets
+below. One skill, `ask-colleague` (formerly `outsource`), originates in
 [`agentculture/colleague`](https://github.com/agentculture/colleague) — the
 renamed `convertible`. guildmaster's re-broadcast still carries the old
 `outsource` name, so `ask-colleague` is vendored **directly from colleague** as a
@@ -29,9 +33,12 @@ is load-bearing, even where guildmaster's upstream copy omits it.
 | `doc-test-alignment` | `../guildmaster/.claude/skills/doc-test-alignment/` | guildmaster | **STUB** — `scripts/check.sh` exits not-yet-implemented; the contract lives in SKILL.md. Verbatim except added `type: command`. | 2026-05-26 (guildmaster 0.6.0) |
 | `run-tests` | `../guildmaster/.claude/skills/run-tests/` | guildmaster | pytest + xdist + coverage (`scripts/test.sh`). Verbatim except added `type: command`. | 2026-05-26 (guildmaster 0.6.0) |
 | `sonarclaude` | `../guildmaster/.claude/skills/sonarclaude/` | guildmaster | SonarCloud API queries (`scripts/sonar.sh`). Verbatim except added `type: command`. | 2026-05-26 (guildmaster 0.6.0) |
+| `scope` | `../devague/.claude/skills/scope/` | **devague** (direct vendor; guildmaster re-broadcast pending) | Pre-frame idea→scope exploration leg of the devague workflow chain, ahead of `think`. Vendored verbatim; carries `type: command`. | 2026-07-15 (devague 0.18.0, direct) |
 | `think` | `../guildmaster/.claude/skills/think/` | **devague** (re-broadcast via guildmaster) | idea→spec leg of the devague workflow chain. Verbatim (already carried `type: command` at guildmaster). Origin/broadcast prose left verbatim. | 2026-05-26 (guildmaster 0.6.0) |
 | `spec-to-plan` | `../guildmaster/.claude/skills/spec-to-plan/` | **devague** (re-broadcast via guildmaster) | spec→plan leg of the devague workflow chain. Verbatim (already carried `type: command`). | 2026-05-26 (guildmaster 0.6.0) |
 | `assign-to-workforce` | `../guildmaster/.claude/skills/assign-to-workforce/` | **devague** (re-broadcast via guildmaster) | plan→parallel-implementation leg of the devague workflow chain. Verbatim (already carried `type: command`). | 2026-05-26 (guildmaster 0.6.0) |
+| `deviate` | `../devague/.claude/skills/deviate/` | **devague** (direct vendor; guildmaster re-broadcast pending) | Execution-time approved-departure ledger; drives `devague deviate`. Vendored verbatim; carries `type: command`. | 2026-07-15 (devague 0.18.0, direct) |
+| `summarize-delivery` | `../devague/.claude/skills/summarize-delivery/` | **devague** (direct vendor; guildmaster re-broadcast pending) | Delivery-side closure/accountability artifact, method-only, read-only devague moves. Vendored verbatim; carries `type: command`. | 2026-07-15 (devague 0.18.0, direct) |
 | `ask-colleague` | `../colleague/.claude/skills/ask-colleague/` | **colleague** (renamed from convertible; vendored directly — guildmaster re-broadcast pending) | The first-party front door to the `colleague` CLI: hand a scoped task to a *different* engine/mind via `explore` / `review` / `write`, grade a finished work item via `feedback` (the ROI loop), and reap stale/corrupt `colleague/*` branches a crashed run left behind via `clean`. Every verb takes `--json` (result JSON on stdout, diagnostics on stderr). `explore`/`review` run isolated in a throwaway `git worktree`; `write` **previews by default** (throwaway worktree, no side effects) and refuses a dirty tree only when applying (`--apply` / `--pr`). Verbatim except one consumer-identifying clause in the Provenance paragraph (`colleague vendors from guildmaster` → `org vendors from guildmaster`); already carried `type: command`. Optional runtime dep: **`colleague`** on PATH. | 2026-06-12 (colleague 1.7.0, direct) |
 
 ## Re-sync procedure
