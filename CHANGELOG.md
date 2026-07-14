@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/). This project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] - 2026-07-14
+
+### Added
+
+- Two real shape captures on /agents/lobes, taken on this box with lobes-cli 0.42.0: the live co-residency tax read off the deployed .env, and the spark-lobe dry-run showing the reclaim (cortex 0.44/262144, MULTIMODAL_FEASIBLE=false) — zero scaffold bytes changed, hash-verified
+- Mesh-brain end-state prose (#112 converged spec: one heavy lobe per box, cheap gears co-reside, direct + honest referral) and the named next step: Jetson AGX Orin (JetPack 7.2) joins the mesh brain as its small-model lobe
+- devague frame, spec, and plan for the update (docs/specs/, docs/plans/, .devague/)
+
+### Changed
+
+- /agents/lobes Mesh-brain section rewritten from vision to shipped: deployment shapes (machine-as-brain / spark-lobe / thor-lobe), lobes init --shape under dry-run/--apply, measured budget reclaim, dropped-lobe honesty (404 role_infeasible)
+- Section heading, diagram captions, facts chips, orin machine note, data-file header contract, and benchmarks links (adds machine-profiles.md) reconciled to lobes-cli 0.42.0 (main @ 8aa2d2f)
+
 ## [0.7.0] - 2026-07-14
 
 ### Added
