@@ -1,0 +1,320 @@
+{
+  "slug": "agentculture-org-agents-devague-is-live-a-presenta",
+  "title": "agentculture.org/agents/devague is live \u2014 a presentation-grade page introducing devague: the CLI that turns a vague idea into a buildable spec, then a buildable plan, by working backwards; the page presents the method (announcement frame, interrogation, convergence, human review loop), the command surface, real captured sessions, and a what's-next drawn from its issue tracker \u2014 good enough that Ori can present by just showing the page",
+  "frame_slug": "agentculture-org-agents-devague-is-live-a-presenta",
+  "schema_version": 2,
+  "status": "exported",
+  "created": "2026-07-14T08:40:45Z",
+  "updated": "2026-07-14T08:44:52Z",
+  "targets": [
+    {
+      "id": "c1",
+      "kind": "announcement",
+      "text": "agentculture.org/agents/devague is live \u2014 a presentation-grade page introducing devague: the CLI that turns a vague idea into a buildable spec, then a buildable plan, by working backwards; the page presents the method (announcement frame, interrogation, convergence, human review loop), the command surface, real captured sessions, and a what's-next drawn from its issue tracker \u2014 good enough that Ori can present by just showing the page"
+    },
+    {
+      "id": "h5",
+      "kind": "honesty",
+      "text": "The page is reachable at agentculture.org/agents/devague in production, deployed through the established operator lane, only after the presentable-as-is preview sign-off."
+    },
+    {
+      "id": "c2",
+      "kind": "audience",
+      "text": "A live-presentation audience first: Ori presents and just shows this page while explaining. Secondarily, humans and agents browsing agentculture.org/agents/."
+    },
+    {
+      "id": "h11",
+      "kind": "honesty",
+      "text": "The page assumes no prior devague knowledge: a first-time viewer can state what devague is and what the converge gate does after one scroll pass."
+    },
+    {
+      "id": "c4",
+      "kind": "after_state",
+      "text": "agentculture.org/agents/devague presents devague end to end: the idea-to-spec-to-plan pipeline, the announcement-frame method (capture, interrogate, park, converge, export), the human review loop (proposals stay proposed until a human confirms), the deterministic no-LLM CLI, the operator skills (/think, /spec-to-plan, /assign-to-workforce), real captured sessions, and a what's-next drawn from the open issue tracker. The /agents/ directory gains a devague card linking to the page."
+    },
+    {
+      "id": "h12",
+      "kind": "honesty",
+      "text": "Every element named in the after_state is present and findable in one scroll pass: pipeline, method arc, review loop, deterministic CLI, operator skills, real captures, what's-next \u2014 and the /agents/ card links to the page."
+    },
+    {
+      "id": "c5",
+      "kind": "why_it_matters",
+      "text": "The page doubles as the presentation deck: good enough that Ori presents live by just showing this page \u2014 no slides, no second tab."
+    },
+    {
+      "id": "h6",
+      "kind": "honesty",
+      "text": "The page reads as a presentation arc: sections in spoken-narrative order, one idea per viewport; dry-run test \u2014 the page alone suffices to give the talk, each section headline carries the spoken point."
+    },
+    {
+      "id": "c6",
+      "kind": "boundary",
+      "text": "One new page plus a new devague card in the /agents/ directory; no redesign of the rest of the site; shipping requires zero commits to the devague repo itself."
+    },
+    {
+      "id": "h13",
+      "kind": "honesty",
+      "text": "The PR diff touches only the new page files, new data files, the /agents/ directory card, and the mandatory version-bump/changelog \u2014 no other page's rendered output changes; zero commits to the devague repo."
+    },
+    {
+      "id": "c8",
+      "kind": "success_signal",
+      "text": "Same measurable floor as /agents/lobes: Lighthouse performance and accessibility >= 95 on the built page, light and dark themes both pass WCAG AA, animations compositor-only honoring prefers-reduced-motion, zero client-side network calls; plus an explicit presentable-as-is preview sign-off from Ori before merge/deploy."
+    },
+    {
+      "id": "h14",
+      "kind": "honesty",
+      "text": "Verified by running Lighthouse on the built page in both themes and recording the scores in the PR; the network panel on the published page shows zero client-side API calls."
+    },
+    {
+      "id": "c10",
+      "kind": "requirement",
+      "text": "Keep the existing site styling: the page uses Layout/PageHero, the established tokens, fonts, reveal animations, and light+dark themes \u2014 side by side with /agents/ and /agents/lobes it reads as the same site."
+    },
+    {
+      "id": "h2",
+      "kind": "honesty",
+      "text": "Viewed side by side with /agents/ and /agents/lobes in both light and dark themes, the page reads as the same site: same Layout/PageHero/Header/Footer, same tokens and fonts, no new global styles."
+    },
+    {
+      "id": "c11",
+      "kind": "requirement",
+      "text": "Live, moving examples: animated terminal panes replaying real captured devague sessions \u2014 the frame leg (new / capture / interrogate / review / confirm / converge / export) and the plan leg (plan new / task / cover / converge / export) \u2014 with the site's calm motion language."
+    },
+    {
+      "id": "h3",
+      "kind": "honesty",
+      "text": "Motion meets the established bar: compositor-only (transform/opacity), calm easing, 60fps, full prefers-reduced-motion path with a still-presentable static fallback; every replayed session was captured from a real run during authoring \u2014 anything not captured live is omitted or clearly marked illustrative."
+    },
+    {
+      "id": "c15",
+      "kind": "before_state",
+      "text": "agentculture.org does not mention devague anywhere: no directory entry on /agents/, no page. The repo agentculture/devague went public (Apache-2.0) on 2026-07-14, just ahead of this page; the package is on PyPI as devague 0.17.1."
+    },
+    {
+      "id": "h8",
+      "kind": "honesty",
+      "text": "Checkable today: grep of site-astro/src finds no occurrence of 'devague'; the GitHub API reports agentculture/devague public with license apache-2.0; PyPI serves devague 0.17.1."
+    },
+    {
+      "id": "c16",
+      "kind": "requirement",
+      "text": "Every fact on the page is checkable against a public artifact: the now-public repo agentculture/devague (Apache-2.0), PyPI metadata (devague, uv tool install devague), and the installed CLI's own output (devague learn / explain / status --json / --help) \u2014 same checkability convention as site.ts. The card and page link GitHub like every other /agents/ entry."
+    },
+    {
+      "id": "h9",
+      "kind": "honesty",
+      "text": "Every fact shown traces to the public repo, PyPI, or the installed CLI's own output \u2014 any reader can verify the entire page without special access."
+    },
+    {
+      "id": "c17",
+      "kind": "requirement",
+      "text": "A what's-next section grounded in the open issue tracker (now public), presented as direction not shipped features, with linkable issues: (1) resolution moves \u2014 no CLI verb yet resolves parked vagueness or blocking hard questions, the tracker's top deadlock theme; (2) a consolidated plan/wave board with a deliverables view; (3) deepening the delivery-closure leg \u2014 summarize-delivery shipped in 0.17.0, capturing decisions and plan drift remains open."
+    },
+    {
+      "id": "h10",
+      "kind": "honesty",
+      "text": "Every what's-next theme traces to at least one open issue in agentculture/devague at authoring time, linked on the page; themes read as direction, not shipped features."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "t1",
+      "summary": "Capture real material: store this frame's own devague session transcripts as a typed data module (site-astro/src/data/devague-captures.ts) \u2014 the frame leg (new, capture, interrogate, review, confirm, status, converge, export) and the plan leg (plan new, task, cover, converge, waves, export), captured from real runs in this repo",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "Every captured line is from a real devague 0.17.1 run of this repo's own frame/plan session, stored verbatim (trimmed only for length), labeled with version and date; no secrets or private URLs in the stored file",
+        "Captures include both legs: the frame arc (new to export) and the plan arc (plan new to export), plus a status/converge gate moment showing proposed-vs-confirmed"
+      ],
+      "deps": [],
+      "covers": [
+        "c11",
+        "h3"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t2",
+      "summary": "Author the page content model (site-astro/src/data/devague.ts): presentation-arc narrative \u2014 what devague is (deterministic no-LLM CLI, PyPI devague, uv tool install devague, Apache-2.0, repo newly public), the idea-to-spec-to-plan pipeline, the announcement-frame method, the human review loop, the operator skills (/think, /spec-to-plan, /assign-to-workforce), and the what's-next themes from the live issue tracker",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "Every after_state element is present as content: pipeline, method arc, review loop, deterministic CLI, operator skills, captures hook, what's-next; every fact traces to the public repo, PyPI metadata, or the installed CLI's output",
+        "What's-next is distilled from the live issue tracker at authoring time into 2-4 named themes, each linking at least one open GitHub issue, written as direction not shipped features",
+        "Copy assumes no prior devague knowledge and tells the story, not a tutorial; each section headline carries a spoken point; the narrative reflects the before-state (site had no devague mention; repo newly public under Apache-2.0)"
+      ],
+      "deps": [],
+      "covers": [
+        "c2",
+        "c4",
+        "c15",
+        "c16",
+        "c17",
+        "h9",
+        "h10",
+        "h11"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t3",
+      "summary": "Build the method-arc diagram component (site-astro/src/components/DevagueFlow.astro): an animated centerpiece that walks the pipeline \u2014 vague idea, announcement frame with claims flipping proposed to confirmed, the converge gate, exported spec, plan waves, build",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "Animation is transform/opacity only (compositor-only), calm easing per the site motion language, holds 60fps",
+        "prefers-reduced-motion renders a presentable static final frame; the pipeline stays legible without motion"
+      ],
+      "deps": [],
+      "covers": [
+        "c11",
+        "h3"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t4",
+      "summary": "Build the terminal replay component (site-astro/src/components/DevagueTerminal.astro): typed/streamed panes replaying the captured sessions from devague-captures.ts \u2014 a frame-leg pane and a plan-leg pane \u2014 reusing the lobes replay pattern, fully self-contained",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "Panes replay only strings imported from devague-captures.ts; the component performs zero fetch/XHR/WebSocket calls at page-view time",
+        "Every command shown exists in the shipped devague 0.17.1 surface (verifiable via devague --help / learn); frame-leg and plan-leg sequences are visually distinct",
+        "Typing/streaming motion is compositor-only and calm; under prefers-reduced-motion the completed transcript renders as a still",
+        "If shared code is generalized from the lobes terminal component, the lobes page's rendered output is unchanged (verified by build diff)"
+      ],
+      "deps": [
+        "t1"
+      ],
+      "covers": [
+        "c11",
+        "h3"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t5",
+      "summary": "Assemble the page (site-astro/src/pages/agents/devague.astro): Layout + PageHero + existing tokens and reveal pattern, rendering the content model with the diagram and terminal components in spoken-narrative order, one idea per viewport",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "Uses Layout/PageHero/Header/Footer and existing global tokens; no new global styles; builds clean with astro build",
+        "Sections follow the presentation arc top to bottom, one idea per viewport; every after_state element findable in one scroll pass"
+      ],
+      "deps": [
+        "t2",
+        "t3",
+        "t4"
+      ],
+      "covers": [
+        "c10",
+        "h2",
+        "h12",
+        "h6"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t6",
+      "summary": "Add the devague directory card and source links: new entry in site-astro/src/data/site.ts under Developer tooling linking /agents/devague/; the page links github.com/agentculture/devague and pypi.org/project/devague",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "site.ts gains exactly one new entry (devague, group Developer tooling, url /agents/devague/); no other entry changes",
+        "The page links the now-public GitHub repo and PyPI; both links resolve"
+      ],
+      "deps": [],
+      "covers": [
+        "c15",
+        "h8",
+        "c16"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t7",
+      "summary": "Verification pass on the built page: fact cross-check, styling parity, motion bar, and the measurable floor",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "Lighthouse performance >= 95 and accessibility >= 95 on the built page in both themes, scores recorded for the PR",
+        "Side by side with /agents/ and /agents/lobes in light and dark themes: same tokens/fonts, WCAG AA contrast in both",
+        "Network panel on the served page shows zero client-side API calls; built JS greps clean of fetch/XHR to any devague endpoint",
+        "Every page fact re-checked against the public repo, PyPI, and a real devague run; every what's-next issue link opens and its issue is still open at verification time",
+        "Animations verified compositor-only at 60fps; the reduced-motion path shows presentable stills"
+      ],
+      "deps": [
+        "t5",
+        "t6"
+      ],
+      "covers": [
+        "c8",
+        "h14",
+        "h2",
+        "h3",
+        "h9",
+        "h10"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t8",
+      "summary": "Ship lane: version-bump, PR via the cicd skill, and Ori's preview + dry-run sign-off gate",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "PR diff touches only the new page files (page, components, data modules), the site.ts card, and the version-bump/changelog (uv.lock synced with the bump); no other page's rendered output changes; zero commits to the devague repo",
+        "A preview is shown to Ori and an explicit presentable-as-is sign-off exists before merge; dry-run holds \u2014 the talk can be given with only the page on screen"
+      ],
+      "deps": [
+        "t7"
+      ],
+      "covers": [
+        "c5",
+        "h6",
+        "c6",
+        "h13"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t9",
+      "summary": "Go live through the operator lane: deploy so agentculture.org/agents/devague is reachable in production (Cloudflare Pages via the credentialed cultureflare step; DNS untouched)",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "https://agentculture.org/agents/devague returns the page in production after sign-off; deploy performed through the established operator lane, not from a checkout"
+      ],
+      "deps": [
+        "t8"
+      ],
+      "covers": [
+        "c1",
+        "h5"
+      ],
+      "instruction": ""
+    }
+  ],
+  "risks": [
+    {
+      "id": "r1",
+      "text": "Deploy is a credentialed operator step (cultureflare) \u2014 timing depends on the operator being available after sign-off",
+      "kind": "unknown_nonblocking",
+      "task_id": "t9"
+    },
+    {
+      "id": "r2",
+      "text": "The GitHub repo description of agentculture/devague is stale ('Agent owner for specifix to create specs for changes') and does not match what the page will say \u2014 update the repo About before ship so card, page, and repo agree (a devague-side metadata edit, outside this repo's diff)",
+      "kind": "follow_up",
+      "task_id": null
+    },
+    {
+      "id": "r3",
+      "text": "Issue-set drift between planning and authoring: what's-next themes were distilled on 2026-07-14; issues open and close (summarize-delivery already shipped mid-frame) \u2014 re-verify at authoring (t2) and verification (t7)",
+      "kind": "unknown_nonblocking",
+      "task_id": null
+    }
+  ]
+}
