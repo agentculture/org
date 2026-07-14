@@ -77,11 +77,20 @@ const rendered = pane.lines
           ? Math.min(CHAR, MAX_TYPE / line.text.length)
           : CHAR;
       clock += LEAD + line.text.length * per + CMD_PAUSE;
-      const chars = [...line.text]
-        .map(
-          (ch, i) =>
-            `<span class="ch" style="--cd: ${(LEAD + i * per).toFixed(3)}s">${esc(ch)}</span>`,
-        )
+      // devague's captured commands quote whole sentences; per-character
+      // spans at that length triple the page's HTML weight for motion the
+      // eye reads as a stream either way. Type short commands character by
+      // character (where the typing is actually perceptible) and long ones
+      // word by word, on the same clock.
+      const chunks =
+        line.text.length <= 40 ? [...line.text] : line.text.split(/(?<= )/);
+      let offset = 0;
+      const chars = chunks
+        .map((chunk) => {
+          const span = `<span class="ch" style="--cd: ${(LEAD + offset * per).toFixed(3)}s">${esc(chunk)}</span>`;
+          offset += chunk.length;
+          return span;
+        })
         .join("");
       return `<span class="tl tl-cmd" style="${ld}"><span class="ch prompt" style="--cd: 0s">$ </span>${chars}\n</span>`;
     }
