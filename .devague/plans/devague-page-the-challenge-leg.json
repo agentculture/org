@@ -1,0 +1,338 @@
+{
+  "slug": "devague-page-the-challenge-leg",
+  "title": "devague page: the challenge leg",
+  "frame_slug": "devague-page-the-challenge-leg",
+  "schema_version": 2,
+  "status": "exported",
+  "created": "2026-07-15T08:03:26Z",
+  "updated": "2026-07-15T08:10:42Z",
+  "targets": [
+    {
+      "id": "c1",
+      "kind": "announcement",
+      "text": "agentculture.org/agents/devague now presents the seven-leg method: the new /challenge blind-spot discovery skill (devague 0.19.0, issue 73) is vendored into org's skill kit and the page teaches it in its true flow position \u2014 third leg, between /think and /spec-to-plan"
+    },
+    {
+      "id": "h6",
+      "kind": "honesty",
+      "text": "the live page and the vendored kit agree with upstream: /challenge exists in .claude/skills/, and the rendered page teaches it as the third leg of a seven-leg method \u2014 no copy anywhere still says six"
+    },
+    {
+      "id": "c2",
+      "kind": "audience",
+      "text": "visitors to agentculture.org/agents/devague \u2014 the presentation page Ori talks over \u2014 plus mesh agents and operators who learn the devague method from it"
+    },
+    {
+      "id": "h9",
+      "kind": "honesty",
+      "text": "the page stays presentation-first: each leg's card and copy describe what the skill actually does, verified against its SKILL.md \u2014 operators who learn the method here are not misled"
+    },
+    {
+      "id": "c3",
+      "kind": "before_state",
+      "text": "the page presents the six-leg method everywhere copy counts legs (hero, pipeline intro, skills intro, closing), and org's .claude/skills/ kit has no challenge skill"
+    },
+    {
+      "id": "h10",
+      "kind": "honesty",
+      "text": "on main today, grep -n 'six' site-astro/src/data/devague.ts hits exactly the five enumerated copy sites, and .claude/skills/challenge/ does not exist"
+    },
+    {
+      "id": "c4",
+      "kind": "after_state",
+      "text": "the page presents the seven-leg method with /challenge as the third leg between /think and /spec-to-plan, and .claude/skills/challenge/ is vendored verbatim from ../devague at 0.19.0"
+    },
+    {
+      "id": "h11",
+      "kind": "honesty",
+      "text": "after merge, both the rendered page and the vendored kit place challenge third in flow order \u2014 matching the position upstream's SKILL.md declares (seventh origin skill, third leg)"
+    },
+    {
+      "id": "c5",
+      "kind": "requirement",
+      "text": "vendor .claude/skills/challenge/ verbatim from ../devague/.claude/skills/challenge/ \u2014 direct-vendor precedent set by scope/deviate/summarize-delivery at devague 0.18.0; SKILL.md already carries type: command"
+    },
+    {
+      "id": "h1",
+      "kind": "honesty",
+      "text": "after vendoring, diff -ru ../devague/.claude/skills/challenge .claude/skills/challenge is empty \u2014 verbatim copy, type: command frontmatter included"
+    },
+    {
+      "id": "c6",
+      "kind": "requirement",
+      "text": "docs/skill-sources.md: the 'Six skills \u2026 are devague-origin' line becomes seven, and a challenge row lands in the ledger table (direct vendor, 2026-07-15, devague 0.19.0)"
+    },
+    {
+      "id": "h2",
+      "kind": "honesty",
+      "text": "the ledger's opening count and its table agree: seven devague-origin skills, and the challenge row carries origin=devague, direct vendor, 2026-07-15, devague 0.19.0"
+    },
+    {
+      "id": "c7",
+      "kind": "requirement",
+      "text": "site-astro/src/data/devague.ts: every six-leg copy site moves to seven legs \u2014 hero metaDescription + intro, pipeline intro arc sentence, skills intro, closing paragraph \u2014 plus a seventh SkillCard for /challenge and a seventh PipelineStage for the challenge leg; provenance header comment re-verified against devague 0.19.0"
+    },
+    {
+      "id": "h3",
+      "kind": "honesty",
+      "text": "grep -in 'six' site-astro/src/data/devague.ts returns no rendered-copy hits after the edit, and the seventh SkillCard/PipelineStage sit third in leg order matching the skill's declared flow position"
+    },
+    {
+      "id": "c8",
+      "kind": "requirement",
+      "text": "site-astro/src/pages/agents/devague.astro: the header comment's six-leg description moves to seven legs; the skills grid (auto-fit minmax 18rem) absorbs a seventh card without CSS changes"
+    },
+    {
+      "id": "h4",
+      "kind": "honesty",
+      "text": "the .astro header comment describes exactly what the page renders after the change \u2014 seven legs, seven skills \u2014 and the skills grid needed no CSS edits"
+    },
+    {
+      "id": "c9",
+      "kind": "requirement",
+      "text": "version bump + CHANGELOG entry \u2014 the version-check CI job fails any PR whose pyproject.toml version equals main's"
+    },
+    {
+      "id": "h5",
+      "kind": "honesty",
+      "text": "pyproject.toml version on the PR branch differs from main and CHANGELOG.md carries a matching Keep-a-Changelog entry"
+    },
+    {
+      "id": "c10",
+      "kind": "boundary",
+      "text": "the vendored SKILL.md body stays verbatim \u2014 cite-don't-import; markdownlint and sonar.exclusions already skip .claude/skills/** so no reformatting pressure exists"
+    },
+    {
+      "id": "h12",
+      "kind": "honesty",
+      "text": "at merge time, diff -ru of the vendored challenge skill against ../devague's copy is still empty"
+    },
+    {
+      "id": "c11",
+      "kind": "boundary",
+      "text": "no org CLI changes: doctor's skills_present check is count-agnostic (dir non-empty), and learn/explain never enumerate devague skills"
+    },
+    {
+      "id": "h13",
+      "kind": "honesty",
+      "text": "the PR diff touches no files under org/ (the CLI package) or tests/"
+    },
+    {
+      "id": "c12",
+      "kind": "boundary",
+      "text": "the whatsNext section stays untouched \u2014 all 14 linked issues re-verified open on 2026-07-15 via gh issue list, and closed issue 73 was never listed there"
+    },
+    {
+      "id": "h14",
+      "kind": "honesty",
+      "text": "the PR diff leaves the whatsNext block of devague.ts byte-identical"
+    },
+    {
+      "id": "c15",
+      "kind": "success_signal",
+      "text": "astro build green, the rendered page counts seven legs and shows the /challenge card in flow position, and the full org lint gate (black/isort/flake8/bandit/markdownlint/teken --strict) passes"
+    },
+    {
+      "id": "h15",
+      "kind": "honesty",
+      "text": "every command named in c15's instruction exits 0 on the PR branch"
+    },
+    {
+      "id": "c16",
+      "kind": "why_it_matters",
+      "text": "the page is the method's public proof \u2014 its closing paragraph promises 'nothing was invented', so the moment the method grows a leg the page doesn't teach, that promise rots"
+    },
+    {
+      "id": "h16",
+      "kind": "honesty",
+      "text": "every new fact in the copy traces to an upstream artifact \u2014 the challenge SKILL.md, the 2026-07-15 challenge spec's recorded decisions, or CHANGELOG 0.19.0 \u2014 the same provenance bar the file already enforces"
+    },
+    {
+      "id": "c17",
+      "kind": "requirement",
+      "text": "DevagueFlow.astro gains a ninth 'challenge' stage between spec and waves \u2014 new glyph in the house style, the 0.55s-10.55s animation cascade re-timed to include it, and the stacking breakpoint re-sized to the 9-stage row (resolves q1)"
+    },
+    {
+      "id": "h7",
+      "kind": "honesty",
+      "text": "the played diagram shows nine stages with challenge third-to-fifth in visual order (between spec and waves), motion stays compositor-only (transform/opacity), reduced-motion/no-JS still renders the full composed nine-stage arc, and the stacked mobile track never scrolls horizontally"
+    },
+    {
+      "id": "c18",
+      "kind": "requirement",
+      "text": "devague-captures.ts gains a third labeled batch: verbatim panes from THIS run's real /challenge session at devague 0.19.0, and the captures section copy moves from 'twice' to three runs (resolves q2)"
+    },
+    {
+      "id": "h8",
+      "kind": "honesty",
+      "text": "every line in the new panes is copied verbatim from this session's real terminal output (trims marked with ellipsis lines), the batch is labeled devague 0.19.0 with its own capture date, and no existing pane is altered"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "t1",
+      "summary": "Vendor the challenge skill and update the provenance ledger",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "diff -ru ../devague/.claude/skills/challenge .claude/skills/challenge produces no output (verbatim copy incl. type: command)",
+        "docs/skill-sources.md counts seven devague-origin skills and the new challenge row matches the direct-vendor row shape (origin devague, 2026-07-15, devague 0.19.0)",
+        "markdownlint-cli2 over tracked markdown still passes (.claude/skills/** stays excluded)"
+      ],
+      "deps": [],
+      "covers": [
+        "c5",
+        "h1",
+        "c6",
+        "h2",
+        "c10",
+        "h12"
+      ],
+      "instruction": "cp -R ../devague/.claude/skills/challenge .claude/skills/ ; verify diff -ru empty; model the docs/skill-sources.md row on the deviate/summarize-delivery direct-vendor rows and update the opening count sentence"
+    },
+    {
+      "id": "t2",
+      "summary": "Move devague.ts to the seven-leg copy (incl. captures story to three runs)",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "grep -in 'six' site-astro/src/data/devague.ts returns no rendered-copy hits (comments about others' six-of-something excluded)",
+        "a seventh PipelineStage and a seventh /challenge SkillCard sit third in leg order, copy citing the upstream skill (blind-spot pass, findings land proposed, clean pass records lenses examined)",
+        "the whatsNext block is byte-identical to main",
+        "captures.headline/intro tell three runs; provenance header comment re-verified against devague 0.19.0"
+      ],
+      "deps": [],
+      "covers": [
+        "c7",
+        "h3",
+        "c12",
+        "h14",
+        "c18"
+      ],
+      "instruction": "edit only site-astro/src/data/devague.ts; the five six-leg copy sites are hero.metaDescription, hero.intro[1], pipeline.intro[0], skills.intro[0], closing.paragraphs[0]; insert the challenge PipelineStage after 'idea \u2192 spec' and the /challenge SkillCard after /think; source facts from the upstream challenge SKILL.md and its 2026-07-15 spec decisions c17/c18/c19; keep whatsNext byte-identical"
+    },
+    {
+      "id": "t3",
+      "summary": "Rewrite devague.astro header comment and wire the challenge capture panes",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "the header comment narrates seven legs / seven skills and matches what the page renders",
+        "a new term-grid row renders the two challenge panes imported from devague-captures.ts",
+        "the skills grid needed no CSS change (or carries the deliberate c19 treatment if 3+3+1 read awkward at build)",
+        "cd site-astro && npm run build exits 0"
+      ],
+      "deps": [
+        "t2",
+        "t5"
+      ],
+      "covers": [
+        "c8",
+        "h4"
+      ],
+      "instruction": "edit only site-astro/src/pages/agents/devague.astro; import the two new pane exports from devague-captures.ts and add one term-grid row for them in the captures section; rewrite the header comment for seven legs; c19 grants styling latitude on the 7-card grid if 3+3+1 reads awkward"
+    },
+    {
+      "id": "t4",
+      "summary": "Add the ninth challenge stage to DevagueFlow.astro",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "the played diagram shows nine stages with challenge between spec and waves \u2014 own glyph in the house SVG style, stage-label 'challenge', stage-kind 'blind spots'",
+        "the animation cascade is re-timed monotonically left-to-right (waves/build/deviate/summary --d delays and gate keyframes shifted); motion stays transform/opacity only",
+        "reduced-motion and no-JS render the full composed nine-stage arc; the stacking breakpoint is raised so the row never scrolls horizontally",
+        "the figure aria-label narrates the challenge beat"
+      ],
+      "deps": [],
+      "covers": [
+        "c17",
+        "h7"
+      ],
+      "instruction": "edit only site-astro/src/components/DevagueFlow.astro; insert the challenge stage li between spec and waves; design the glyph in the existing SVG idiom (a lens/sweep motif over a spec page suits the blind-spot beat); shift --d delays of waves/build/deviate/summary and gate keyframe timing; raise the 59rem stacking breakpoint to fit nine stages; update the figure aria-label"
+    },
+    {
+      "id": "t5",
+      "summary": "Author the third capture batch (this run's real /challenge session)",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "a third batch header comment documents: captured 2026-07-15, devague 0.19.0, verbatim-lines rule, trims marked with ellipsis lines",
+        "two new CapturePane exports (challenge sweep/route; adjudicate/reconverge/re-export) whose lines match the transcript embedded in the task brief exactly",
+        "every existing pane and export in devague-captures.ts is byte-identical to main"
+      ],
+      "deps": [],
+      "covers": [
+        "c18",
+        "h8"
+      ],
+      "instruction": "edit only site-astro/src/data/devague-captures.ts; append a third batch header comment + two CapturePane exports (challengeSweepRoute, challengeAdjudicateReexport) using ONLY the verbatim lines embedded in the task brief; mark every cut with an ellipsis line; never reword a kept line"
+    },
+    {
+      "id": "t6",
+      "summary": "Version bump (minor) + CHANGELOG entry",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "pyproject.toml version differs from main's",
+        "CHANGELOG.md gains a Keep-a-Changelog entry describing the challenge-skill vendor and the seven-leg page update"
+      ],
+      "deps": [],
+      "covers": [
+        "c9",
+        "h5"
+      ],
+      "instruction": "run the version-bump skill: minor bump + Keep-a-Changelog entry covering the vendored challenge skill and the seven-leg page update"
+    },
+    {
+      "id": "t7",
+      "summary": "Final verification and honesty-condition audit on the assembled branch",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "npm run build (site-astro) and the full org lint gate all exit 0: black --check, isort --check-only, flake8, bandit, markdownlint-cli2, teken cli doctor . --strict",
+        "the built dist HTML for /agents/devague counts seven legs, shows the /challenge card third, and renders the nine-stage flow markup",
+        "the PR diff touches no files under org/ or tests/, leaves whatsNext byte-identical, and the vendored skill still diffs empty against upstream",
+        "every new page fact traces to the challenge SKILL.md, the upstream 2026-07-15 challenge spec, or CHANGELOG 0.19.0"
+      ],
+      "deps": [
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "t5",
+        "t6"
+      ],
+      "covers": [
+        "c1",
+        "h6",
+        "c2",
+        "h9",
+        "c3",
+        "h10",
+        "c4",
+        "h11",
+        "c11",
+        "h13",
+        "c15",
+        "h15",
+        "c16",
+        "h16"
+      ],
+      "instruction": "on the assembled branch run: cd site-astro && npm run build; uv run black --check org tests; uv run isort --check-only org tests; uv run flake8 org tests; uv run bandit -c pyproject.toml -r org; markdownlint-cli2 per repo config; uv run teken cli doctor . --strict; uv run pytest -n auto; then audit h6/h10-h14/h16 with grep/diff and report per-condition PASS/FAIL with evidence"
+    }
+  ],
+  "risks": [
+    {
+      "id": "r1",
+      "text": "mid-tablet rendering of the re-timed 9-stage cascade is only observable in a browser \u2014 t4 verifies during the build (parked v1 on the frame, routed plan-side)",
+      "kind": "unknown_nonblocking",
+      "task_id": "t4"
+    },
+    {
+      "id": "r2",
+      "text": "the c18 capture batch's source transcript exists only in this operator session and is embedded verbatim in t5's brief \u2014 if a pane needs lines beyond the brief, the task must stop and ask rather than invent",
+      "kind": "unknown_nonblocking",
+      "task_id": "t5"
+    }
+  ]
+}

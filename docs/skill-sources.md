@@ -6,11 +6,12 @@ AgentCulture **skills supplier** after the steward → guildmaster cutover
 (`steward doctor`, the sibling-pattern baseline); only the skills-supplier role
 moved. This file tracks provenance so re-syncs stay deterministic.
 
-Six skills (`think`, `spec-to-plan`, `assign-to-workforce`, `scope`, `deviate`,
-`summarize-delivery`) originate in
-[`agentculture/devague`](https://github.com/agentculture/devague). The first
-three are **re-broadcast** through guildmaster — cite guildmaster's copy; track
-devague as the true origin. The latter three (`scope`, `deviate`,
+Seven skills (`scope`, `think`, `challenge`, `spec-to-plan`,
+`assign-to-workforce`, `deviate`, `summarize-delivery`) originate in
+[`agentculture/devague`](https://github.com/agentculture/devague). Three of
+them (`think`, `spec-to-plan`, `assign-to-workforce`) are **re-broadcast**
+through guildmaster — cite guildmaster's copy; track devague as the true
+origin. The other four (`scope`, `challenge`, `deviate`,
 `summarize-delivery`) are vendored **directly from devague**, guildmaster
 re-broadcast pending — the same direct-vendor precedent `ask-colleague` sets
 below. One skill, `ask-colleague` (formerly `outsource`), originates in
@@ -35,6 +36,7 @@ is load-bearing, even where guildmaster's upstream copy omits it.
 | `sonarclaude` | `../guildmaster/.claude/skills/sonarclaude/` | guildmaster | SonarCloud API queries (`scripts/sonar.sh`). Verbatim except added `type: command`. | 2026-05-26 (guildmaster 0.6.0) |
 | `scope` | `../devague/.claude/skills/scope/` | **devague** (direct vendor; guildmaster re-broadcast pending) | Pre-frame idea→scope exploration leg of the devague workflow chain, ahead of `think`. Vendored verbatim; carries `type: command`. | 2026-07-15 (devague 0.18.0, direct) |
 | `think` | `../guildmaster/.claude/skills/think/` | **devague** (re-broadcast via guildmaster) | idea→spec leg of the devague workflow chain. Verbatim (already carried `type: command` at guildmaster). Origin/broadcast prose left verbatim. | 2026-05-26 (guildmaster 0.6.0) |
+| `challenge` | `../devague/.claude/skills/challenge/` | **devague** (direct vendor; guildmaster re-broadcast pending) | Risk-scaled blind-spot discovery pass between `think` and `spec-to-plan`; method-only — no script, no new CLI verb. Vendored verbatim; carries `type: command`. | 2026-07-15 (devague 0.19.0, direct) |
 | `spec-to-plan` | `../guildmaster/.claude/skills/spec-to-plan/` | **devague** (re-broadcast via guildmaster) | spec→plan leg of the devague workflow chain. Verbatim (already carried `type: command`). | 2026-05-26 (guildmaster 0.6.0) |
 | `assign-to-workforce` | `../guildmaster/.claude/skills/assign-to-workforce/` | **devague** (re-broadcast via guildmaster) | plan→parallel-implementation leg of the devague workflow chain. Verbatim (already carried `type: command`). | 2026-05-26 (guildmaster 0.6.0) |
 | `deviate` | `../devague/.claude/skills/deviate/` | **devague** (direct vendor; guildmaster re-broadcast pending) | Execution-time approved-departure ledger; drives `devague deviate`. Vendored verbatim; carries `type: command`. | 2026-07-15 (devague 0.18.0, direct) |

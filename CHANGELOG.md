@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/). This project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.0] - 2026-07-15
+
+### Added
+
+- Vendored the seventh devague origin skill `/challenge` (blind-spot discovery pass between `/think` and `/spec-to-plan`) from devague 0.19.0 — direct vendor, verbatim, `type: command`; ledger row in `docs/skill-sources.md`.
+- /agents/devague now presents the seven-leg method: seventh pipeline stage and skill card, a ninth `challenge` stage in the flow diagram, and a third verbatim capture batch replaying this update's own /challenge session.
+
 ## [0.9.0] - 2026-07-15
 
 ### Added

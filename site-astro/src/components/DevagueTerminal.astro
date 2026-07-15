@@ -32,25 +32,36 @@ const { pane, start = 0.3, wrap = true } = Astro.props;
 // color-coded dot, a text tag, and a top accent stripe, on top of the
 // provenance line already naming it. Derived from the pane's own stable id
 // prefix (t1's data module), not guessed from prose. scope-/deviate-/summary-
-// are the idea->scope, spec->deviate, and closing-summary legs; anything
-// unmatched still falls back to "check", same as before these three existed.
-type Leg = "frame" | "plan" | "check" | "scope" | "deviate" | "summary";
+// are the idea->scope, spec->deviate, and closing-summary legs; challenge- is
+// the blind-spot pass between spec and plan; anything unmatched still falls
+// back to "check", same as before these four existed.
+type Leg =
+  | "frame"
+  | "plan"
+  | "check"
+  | "scope"
+  | "challenge"
+  | "deviate"
+  | "summary";
 const leg: Leg = pane.id.startsWith("frame-")
   ? "frame"
   : pane.id.startsWith("plan-")
     ? "plan"
     : pane.id.startsWith("scope-")
       ? "scope"
-      : pane.id.startsWith("deviate-")
-        ? "deviate"
-        : pane.id.startsWith("summary-")
-          ? "summary"
-          : "check";
+      : pane.id.startsWith("challenge-")
+        ? "challenge"
+        : pane.id.startsWith("deviate-")
+          ? "deviate"
+          : pane.id.startsWith("summary-")
+            ? "summary"
+            : "check";
 const legLabel: Record<Leg, string> = {
   frame: "frame leg",
   plan: "plan leg",
   check: "fresh check",
   scope: "scope leg",
+  challenge: "challenge leg",
   deviate: "deviate",
   summary: "summary",
 };
@@ -168,6 +179,10 @@ const rendered = pane.lines
     border-top-color: #7fb3f2;
   }
 
+  .term.leg-challenge {
+    border-top-color: #e6cd7a;
+  }
+
   .term.leg-deviate {
     border-top-color: #f2789a;
   }
@@ -215,6 +230,10 @@ const rendered = pane.lines
     background: #7fb3f2;
   }
 
+  .leg-challenge .dot {
+    background: #e6cd7a;
+  }
+
   .leg-deviate .dot {
     background: #f2789a;
   }
@@ -248,6 +267,10 @@ const rendered = pane.lines
 
   .leg-scope .leg-tag {
     color: #7fb3f2;
+  }
+
+  .leg-challenge .leg-tag {
+    color: #e6cd7a;
   }
 
   .leg-deviate .leg-tag {

@@ -2,7 +2,7 @@
 // public artifact: the repo (github.com/agentculture/devague, Apache-2.0),
 // PyPI metadata (pypi.org/project/devague), or the installed CLI's own
 // output (devague --help, plus scope/deviate/summary/plan --help) — all
-// re-verified 2026-07-15 against devague 0.18.0 on PATH. The what's-next
+// re-verified 2026-07-15 against devague 0.19.0 on PATH. The what's-next
 // themes were distilled from the live open-issue list the same day
 // (gh issue list, agentculture/devague); each theme links only issues
 // verified open at authoring time. Dates live in comments like this one
@@ -23,7 +23,7 @@ export interface FactChip {
   href?: string;
 }
 
-/** One leg of the six-leg arc: scope → spec → plan → build → deviations → delivery. */
+/** One leg of the seven-leg arc: scope → spec → challenge → plan → build → deviations → delivery. */
 export interface PipelineStage {
   name: string;
   engine: string;
@@ -68,10 +68,10 @@ const devague = {
   hero: {
     title: "devague",
     metaDescription:
-      "devague turns a vague feature idea into a buildable spec, a buildable plan, and an accountable delivery — six legs, one small deterministic CLI, and a human confirmation gate at its heart.",
+      "devague turns a vague feature idea into a buildable spec, a buildable plan, and an accountable delivery — seven legs, one small deterministic CLI, and a human confirmation gate at its heart.",
     intro: [
       "Every feature starts as a vague idea, and most tooling rushes it straight to code. devague goes the other way: a small command-line tool that walks the idea backwards — from the announcement you wish you could make, to a spec you can defend, to a plan you can hand to a workforce — and then keeps score while the workforce builds, so what you ship is what you can prove.",
-      "Six legs, one deterministic CLI, and a human gate at every point where a machine might otherwise grade its own work. This page is the tour, and the proof.",
+      "Seven legs, one deterministic CLI, and a human gate at every point where a machine might otherwise grade its own work. This page is the tour, and the proof.",
     ],
   },
 
@@ -90,14 +90,14 @@ const devague = {
     { label: "license", value: "Apache-2.0" },
   ] satisfies FactChip[],
 
-  // What devague is: the six-leg arc, the deterministic-CLI surprise, and
+  // What devague is: the seven-leg arc, the deterministic-CLI surprise, and
   // the execution seam where the CLI hands the build to operators.
   pipeline: {
     eyebrow: "the pipeline",
     headline:
       "A vague idea in, an accountable delivery out — and no model in the middle",
     intro: [
-      "The arc is six legs: scope the idea, think it backwards into a spec, plan it forwards, fan the plan out to a workforce, stop for every deviation the build forces, then summarize what was actually delivered. Three engines share one CLI — the frame engine works backwards from the announcement, the plan engine works forwards from that spec, and the delivery ledger keeps score from the first departure to the final summary.",
+      "The arc is seven legs: scope the idea, think it backwards into a spec, challenge that spec for the blind spots it still hides, plan it forwards, fan the plan out to a workforce, stop for every deviation the build forces, then summarize what was actually delivered. Three engines share one CLI — the frame engine works backwards from the announcement, the plan engine works forwards from that spec, and the delivery ledger keeps score from the first departure to the final summary.",
       "Here is the part that surprises people: there is no model inside. devague makes zero LLM calls — it is a small, deterministic, fully unit-tested Python CLI, not an agent, service, or daemon. Its state is plain JSON under .devague/ in the repo you are speccing. Your agent proposes; devague keeps score. That split is the whole design.",
       "And the seam where execution begins is deliberate. The CLI describes the build — plan waves says what can run in parallel, plan deliverables says what exists once every task completes — and there its writ ends. Operators take over at the seam; devague follows the build from the ledger.",
     ],
@@ -115,6 +115,13 @@ const devague = {
         verbs: "new · capture · interrogate · park · converge · export",
         detail:
           "works backwards from the announcement, capturing and pressure-testing every claim it makes",
+      },
+      {
+        name: "spec → challenged spec",
+        engine: "the frame engine — reopened by the pass",
+        verbs: "capture · interrogate · question · park · scope → reconverge · re-export",
+        detail:
+          "the blind-spot hunt, scaled to risk: findings land proposed for the human through the existing moves; a clean pass records the lenses examined and the residual risk still parked — never a claim of no unknown unknowns",
       },
       {
         name: "spec → plan",
@@ -249,7 +256,7 @@ const devague = {
     eyebrow: "the operator skills",
     headline: "devague keeps score; operators make the moves",
     intro: [
-      "Around the CLI sit six operator skills — authored in the devague repo, broadcast to the AgentCulture mesh — one per leg: /scope surveys before the frame, /think walks an idea to an exported spec, /spec-to-plan walks that spec to an exported plan, /assign-to-workforce fans the plan out to a parallel workforce, /deviate stops the run when execution must leave the plan, and /summarize-delivery closes the loop.",
+      "Around the CLI sit seven operator skills — authored in the devague repo, broadcast to the AgentCulture mesh — one per leg: /scope surveys before the frame, /think walks an idea to an exported spec, /challenge pressure-tests that exported spec for blind spots before planning, /spec-to-plan walks the challenged spec to an exported plan, /assign-to-workforce fans the plan out to a parallel workforce, /deviate stops the run when execution must leave the plan, and /summarize-delivery closes the loop.",
       "Note what devague itself never does: orchestrate. devague plan waves only describes the dependency graph — deterministic metadata, nothing more. Spawning agents, managing worktrees, gating merges: that is the operator's job. The tool that keeps score should not also play the game.",
     ],
     cards: [
@@ -262,6 +269,11 @@ const devague = {
         name: "/think",
         leg: "idea → spec",
         duty: "drive the frame engine — announce, capture, interrogate, park; export once the frame converges",
+      },
+      {
+        name: "/challenge",
+        leg: "between spec and plan",
+        duty: "run a risk-scaled blind-spot pass over the exported spec — findings land proposed for the human, and a clean pass records the lenses examined and the residual uncertainty, never a claim of no unknown unknowns",
       },
       {
         name: "/spec-to-plan",
@@ -290,11 +302,12 @@ const devague = {
   // — the page renders these paragraphs, then replays those captured sessions.
   captures: {
     eyebrow: "real captures",
-    headline: "This page specced itself — twice",
+    headline: "This page specced itself — three times now",
     intro: [
-      "The sessions replayed below are not staged, and by now they tell two true stories. The first is the original run — the real frame and plan that specced and planned this very page, announcement to converge to export, then the plan leg through its dependency waves.",
-      "The second is this update. When the page had to catch up with the tool, the tool ran its full arc on it: a scope survey before the frame, the convergence gate refusing an incomplete frame live, a user decision landing mid-session, a deviation put on the ledger, and the delivery-summary skeleton closing the loop.",
-      "The gate has earned its keep in both. In the first run, reality changed while the frame was open — and claims that were no longer true were rejected and re-captured, on the record. The human gate is real, not ceremony.",
+      "The sessions replayed below are not staged, and by now they tell three true stories. The first is the original run — the real frame and plan that specced and planned this very page, announcement to converge to export, then the plan leg through its dependency waves.",
+      "The second is the first catch-up, and it is a period piece now: it ran before the challenge leg existed, so its transcript honestly announces the method as it then stood — one leg shorter. When the page had to catch up with the tool, the tool ran its full arc on it: a scope survey before the frame, the convergence gate refusing an incomplete frame live, a user decision landing mid-session, a deviation put on the ledger, and the delivery-summary skeleton closing the loop.",
+      "The third is this update — the first to run the new seventh leg on its own frame. A lightweight challenge pass swept the exported spec for blind spots and surfaced one unstated assumption — the grid row the seventh skill card lands on — which the human confirmed on the record. The clean lenses went down as examined surfaces, the residual uncertainty was parked, and the same dated spec file was re-exported.",
+      "The gate has earned its keep in all three. In the first run, reality changed while the frame was open — and claims that were no longer true were rejected and re-captured, on the record. The human gate is real, not ceremony.",
     ],
     provenance:
       "Transcripts are stored verbatim in a data module and replayed as text — the page never runs devague in your browser, and nothing is invented.",
@@ -420,7 +433,7 @@ const devague = {
 
   closing: {
     paragraphs: [
-      "devague is open source, Apache-2.0, and deliberately small — a scorekeeper, not a player. It earned this page the honest way, twice over: the page was specced, planned, and built through the tool it presents, and this very update ran all six legs, scope to delivery summary. Every fact above traces to the public repo, PyPI, the open tracker, or the CLI's own output. Nothing was invented.",
+      "devague is open source, Apache-2.0, and deliberately small — a scorekeeper, not a player. It earned this page the honest way, three times over: the page was specced, planned, and built through the tool it presents, and this very update ran all seven legs, scope to delivery summary — including the challenge pass on its own spec. Every fact above traces to the public repo, PyPI, the open tracker, or the CLI's own output. Nothing was invented.",
     ],
     repoUrl: "https://github.com/agentculture/devague",
     repoCta: "Read the code",
