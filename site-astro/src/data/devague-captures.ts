@@ -32,6 +32,15 @@
 // re-invoked at build time. The deviate ledger read is short because the
 // real ledger is empty: no deviation occurred in this run, and the pane says
 // exactly that rather than inventing one (see risk r1 on this plan).
+//
+// A third batch of panes (challengeSweepRoute, challengeAdjudicateReexport)
+// was captured 2026-07-15 during the session that ran the NEW seventh leg —
+// /challenge, shipped in devague 0.19.0 — against this very update's frame: a
+// lightweight blind-spot pass (no escalation signals) over the exported spec,
+// whose findings routed through existing moves as proposed content, were
+// adjudicated by the human, and re-exported the same dated spec file. Same
+// verbatim rule: every cmd/out line copied from a real run, cuts marked with
+// their own "ellipsis" line, no kept line reworded.
 
 export interface CaptureLine {
   /**
@@ -68,6 +77,12 @@ export const freshVersion = "0.17.2";
 export const newLegsCapturedOn = "2026-07-15";
 /** devague version the second batch ran under. */
 export const newLegsVersion = "0.18.0";
+
+/** Capture date for the third batch: the /challenge session run against
+ * this update's own exported spec. */
+export const challengeCapturedOn = "2026-07-15";
+/** devague version the third batch ran under. */
+export const challengeVersion = "0.19.0";
 
 /** Frame leg, part 1: the announcement and the first captured claims. */
 export const frameAnnounceCapture: CapturePane = {
@@ -587,6 +602,104 @@ export const summarySkeletonRead: CapturePane = {
     {
       kind: "out",
       text: "- `<fill: remaining item>` — `<fill: next step / owner>`",
+    },
+  ],
+};
+
+/**
+ * Challenge leg (devague 0.19's new `/challenge` verb): a lightweight
+ * blind-spot sweep over this update's own exported spec — no escalation
+ * signals fired, so every lens ran at its default depth. One finding (the
+ * seventh skill card's grid layout) is proposed as a fresh assumption and
+ * routed to a scope entry for adjudication; clean lenses are recorded as
+ * examined rather than skipped; a genuine residual (how the re-timed
+ * cascade and raised breakpoint read at mid-tablet widths) is parked, not
+ * invented. Same rule as every other pane: verbatim lines, cuts marked with
+ * their own "ellipsis" line.
+ */
+export const challengeSweepRoute: CapturePane = {
+  id: "challenge-sweep-route",
+  title: "challenge — sweep the lenses, route the findings",
+  context: "org repo · challenge leg · devague /challenge",
+  capturedDate: challengeCapturedOn,
+  devagueVersion: challengeVersion,
+  lines: [
+    {
+      kind: "cmd",
+      text: 'devague capture --origin llm --kind assumption "the seventh skill card reads acceptably in the existing auto-fit grid (3+3+1); if it reads awkward at build time the task owner may give the row a deliberate treatment like the moves grid\'s full-width lead card — a styling call inside the task, not a new requirement"',
+    },
+    { kind: "out", text: "captured c19 (assumption, proposed)" },
+    {
+      kind: "cmd",
+      text: 'devague scope "challenge pass / unstated-assumptions lens: devague.astro skills grid CSS" --finding "the six cards sit 3+3; a seventh lands 3+3+1 with the last card alone — surfaced the layout assumption nobody had stated and proposed it for adjudication" --seeds c19',
+    },
+    {
+      kind: "out",
+      text: "recorded s10 (challenge pass / unstated-assumptions lens: devague.astro skills grid CSS)",
+    },
+    {
+      kind: "ellipsis",
+      text: "… (adjacent-systems lenses s11–s12 — DevagueFlow/DevagueTerminal imports, the site.ts directory entry — both clean; cut for length)",
+    },
+    {
+      kind: "cmd",
+      text: 'devague scope "challenge pass / operations+reversibility lens: .github/workflows/deploy.yml" --finding "merge to main auto-deploys site-astro/** to Cloudflare Pages (push-path trigger, secrets-gated, PR builds included) — the page goes live on merge with no separate operator step, and a git revert redeploys the old page; no rollback gap"',
+    },
+    {
+      kind: "out",
+      text: "recorded s13 (challenge pass / operations+reversibility lens: .github/workflows/deploy.yml)",
+    },
+    {
+      kind: "cmd",
+      text: 'devague scope "challenge pass / cheap-probe lens: npm run build on the untouched tree" --finding "astro build exits 0 (6 pages, ~209ms) — c15\'s verification lane confirmed live before the workforce depends on it; dist/ is gitignored so the probe mutated nothing tracked"',
+    },
+    {
+      kind: "out",
+      text: "recorded s14 (challenge pass / cheap-probe lens: npm run build on the untouched tree)",
+    },
+    {
+      kind: "cmd",
+      text: 'devague park "how the re-timed 9-stage cascade and raised stacking breakpoint read at mid-tablet widths is only observable in a browser during the build — residual until the flow task verifies it" --kind unknown_nonblocking',
+    },
+    { kind: "out", text: "parked v1 (unknown_nonblocking)" },
+  ],
+};
+
+/**
+ * The gate, once more — this time the /challenge leg's own: the remaining
+ * lenses come back clean or out of scope, the human adjudicates the routed
+ * finding by confirming it as content on this same frame, and the frame
+ * reconverges around it. `export` doesn't open a new file: it rewrites the
+ * SAME dated spec this update's frame already owns, at
+ * docs/specs/2026-07-15-devague-page-the-challenge-leg.md.
+ */
+export const challengeAdjudicateReexport: CapturePane = {
+  id: "challenge-adjudicate-reexport",
+  title: "challenge — adjudicate, reconverge, re-export",
+  context: "org repo · challenge leg · the spec gate at work",
+  capturedDate: challengeCapturedOn,
+  devagueVersion: challengeVersion,
+  lines: [
+    {
+      kind: "cmd",
+      text: 'devague scope "challenge pass / security+migration+concurrency+failure-modes lenses: the change surface as a class" --finding "statically-built page + verbatim skill vendor: no auth, no stored data, no schema, no concurrent writers; the only failure mode is a red build or an ugly render, both caught by c15\'s lane before merge — lenses examined, nothing to route"',
+    },
+    {
+      kind: "out",
+      text: "recorded s15 (challenge pass / security+migration+concurrency+failure-modes lenses: the change surface as a class)",
+    },
+    { kind: "cmd", text: "devague confirm c19" },
+    { kind: "out", text: "c19 -> confirmed" },
+    { kind: "cmd", text: "devague converge" },
+    { kind: "out", text: "converged ✓" },
+    {
+      kind: "ellipsis",
+      text: "… (seven non-blocking no-instruction warnings on descriptive claims — cut for length)",
+    },
+    { kind: "cmd", text: "devague export" },
+    {
+      kind: "out",
+      text: "exported spec to docs/specs/2026-07-15-devague-page-the-challenge-leg.md",
     },
   ],
 };
