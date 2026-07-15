@@ -1,0 +1,47 @@
+{
+  "plan_slug": "devague-page-the-challenge-leg",
+  "schema_version": 1,
+  "created": "2026-07-15T08:30:25Z",
+  "updated": "2026-07-15T10:20:20Z",
+  "deviations": [
+    {
+      "id": "d1",
+      "what": "extend t3's brief: also update the DevagueFlow caption prop in devague.astro to narrate the nine-stage story (the challenge beat included)",
+      "task_ref": "t3",
+      "reason": "t4's headless render found the caption copy still tells the eight-stage arc; the plan's copy inventory located leg-count copy in devague.ts but missed this one site living in the page itself \u2014 no confirmed task covers it",
+      "affects": [
+        "c8",
+        "h4"
+      ],
+      "origin": "llm",
+      "status": "approved",
+      "classification": "acceptable"
+    },
+    {
+      "id": "d2",
+      "what": "add a 'challenge' leg to DevagueTerminal.astro's id-prefix ladder so the two challenge panes carry their own badge and accent (Leg type + ladder branch + 'challenge leg' label + three CSS color blocks) instead of falling into the generic 'fresh check' bucket",
+      "task_ref": "t3",
+      "reason": "t3's build check found the component's leg-detection ladder predates the challenge leg; no confirmed task owns DevagueTerminal.astro, and without the branch the new panes render mislabeled \u2014 the operator applies the small scoped fix directly, t7 verifies",
+      "affects": [
+        "c18",
+        "h8"
+      ],
+      "origin": "llm",
+      "status": "approved",
+      "classification": "acceptable"
+    },
+    {
+      "id": "d3",
+      "what": "commit the uv.lock sync that t6's version bump implies (lock still pins org 0.9.0 at HEAD; the corrected lock sits uncommitted in the working tree)",
+      "task_ref": "t6",
+      "reason": "t6's confirmed brief scoped edits to pyproject.toml + CHANGELOG.md only; the version-bump skill does not run uv lock, so the lockfile's own-project pin went stale \u2014 a mechanical sync, no dependency changes",
+      "affects": [
+        "c9",
+        "h5"
+      ],
+      "origin": "llm",
+      "status": "approved",
+      "classification": "acceptable"
+    }
+  ]
+}
