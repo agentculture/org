@@ -1,18 +1,22 @@
 ---
-// /agents/devague — the presentation page for devague: the six-leg arc
-// (scope → think → spec-to-plan → assign-to-workforce → deviate →
-// summarize-delivery) with the execution seam where the CLI hands the build
-// to operators, the announcement-frame method (scope now its opening move),
-// the human review loop extended onto the deviation ledger, the six operator
-// skills — one per leg — real captured sessions from two runs (the frame
-// that specced this page, then the update that re-specced it through all
-// six legs), and a what's-next from the open tracker. All copy lives in
-// ../../data/devague.ts — including each section's eyebrow and headline, a
-// deliberate departure from lobes.ts documented there: this page is a
-// presentation Ori talks over, so the headlines are spoken copy and live in
-// the content model. Every terminal below replays a real captured session
-// from ../../data/devague-captures.ts — nothing on this page runs devague
-// in the browser.
+// /agents/devague — the presentation page for devague: the seven-leg arc
+// (scope → think → challenge → spec-to-plan → assign-to-workforce →
+// deviate → summarize-delivery) with the execution seam where the CLI hands
+// the build to operators, the announcement-frame method (scope its opening
+// move, challenge reopening the frame between spec and plan), the human
+// review loop extended onto the deviation ledger and the challenge pass's
+// own findings, and the seven operator skills — one per leg. Real captured
+// sessions now replay three runs: the frame and plan that specced and
+// planned this page, the catch-up run that walked it through all six legs
+// the tool had before challenge existed, and this update's own /challenge
+// session — the first to run the new seventh leg — sweeping that same
+// frame for blind spots and re-exporting it. Also a what's-next from the
+// open tracker. All copy lives in ../../data/devague.ts — including each
+// section's eyebrow and headline, a deliberate departure from lobes.ts
+// documented there: this page is a presentation Ori talks over, so the
+// headlines are spoken copy and live in the content model. Every terminal
+// below replays a real captured session from ../../data/devague-captures.ts
+// — nothing on this page runs devague in the browser.
 import Layout from "../../layouts/Layout.astro";
 import PageHero from "../../components/PageHero.astro";
 import DevagueFlow from "../../components/DevagueFlow.astro";
@@ -28,6 +32,8 @@ import {
   frameGateLiveRefusal,
   deviateLedgerRead,
   summarySkeletonRead,
+  challengeSweepRoute,
+  challengeAdjudicateReexport,
 } from "../../data/devague-captures";
 ---
 
@@ -69,7 +75,7 @@ import {
       </div>
       <div class="flow-wrap" data-reveal>
         <DevagueFlow
-          caption="The whole arc in one pass: claims arrive proposed, a human confirms them, and the converge gate stays shut until the frame closes — then the spec exports and fans out into waves a workforce builds. Where the build must leave that plan, the run stops and the approved departure lands on the deviate ledger; the closing summary reconciles planned against actual — the accountability artifact."
+          caption="The whole arc in one pass: claims arrive proposed, a human confirms them, and the converge gate stays shut until the frame closes — then the spec exports. A challenge pass hunts its blind spots and a human adjudicates what it finds, and the re-exported spec fans out into the waves a workforce builds. Where the build must leave that plan, the run stops and the approved departure lands on the deviate ledger; the closing summary reconciles planned against actual — the accountability artifact."
         />
       </div>
       <ul class="stages">
@@ -217,6 +223,18 @@ import {
         </div>
         <div data-reveal style="--reveal-delay: 0.12s">
           <DevagueTerminal pane={summarySkeletonRead} start={1.4} />
+        </div>
+      </div>
+      <!-- story three: the new seventh leg ran on this very update's own
+           frame — the challenge pass swept it for blind spots and routed
+           the finding as proposed content for the human to adjudicate, and
+           the same dated spec file re-exported -->
+      <div class="term-grid">
+        <div data-reveal>
+          <DevagueTerminal pane={challengeSweepRoute} />
+        </div>
+        <div data-reveal style="--reveal-delay: 0.12s">
+          <DevagueTerminal pane={challengeAdjudicateReexport} start={1.4} />
         </div>
       </div>
       <p class="provenance muted" data-reveal>{devague.captures.provenance}</p>
