@@ -2,22 +2,28 @@
 // The centerpiece of /agents/devague: one machine-free diagram that walks
 // devague's method arc left to right —
 //
-//   idea → announcement frame → converge gate → spec → plan waves → build
-//     → deviate → summary
+//   idea → announcement frame → converge gate → spec → challenge
+//     → plan waves → build → deviate → summary
 //
-// Four beats carry the whole story of why devague is different, and the
+// Five beats carry the whole story of why devague is different, and the
 // motion makes them legible:
 //   1. proposed → confirmed. In the frame stage, claims arrive tentative
 //      (dashed, hollow — "proposed") and a human confirm flips them solid.
 //   2. the gate refuses. The converge gate strains shut while any claim is
 //      still proposed, then opens once the frame closes — the spec exports
-//      through it and fans out into plan waves the workforce builds.
-//   3. the ledger amends. Mid-build, reality diverges: the run stops, and
+//      through it.
+//   3. the challenge adjudicates. Before the plan fans out, a blind-spot
+//      pass sweeps the exported spec: a lens travels the page and a finding
+//      surfaces dashed — the claims' own proposed language, because it is
+//      literally the same anti-fabrication rule — and a human confirm flips
+//      it solid. A clean pass still records what was examined, never a
+//      claim that there are no unknown unknowns. Only then does the spec
+//      fan out into plan waves the workforce builds.
+//   4. the ledger amends. Mid-build, reality diverges: the run stops, and
 //      the approved departure lands in the delivery ledger as an append-only
-//      record. The amendment row arrives dashed — the claims' own
-//      proposed language, because it is literally the same anti-fabrication
-//      rule — and human approval flips it solid. A record, not an error.
-//   4. the summary reconciles. After the run the accountability artifact
+//      record. The amendment row arrives dashed and human approval flips it
+//      solid — the same flip a third time. A record, not an error.
+//   5. the summary reconciles. After the run the accountability artifact
 //      closes the loop: the spec's document shape returns with ticks landing
 //      beside each rule (planned vs actual, drift, evidence-backed claims).
 //      A spec opens the build; a summary closes it.
@@ -32,7 +38,7 @@
 // open — so the method stays fully legible as a still.
 //
 // Labels default to real devague vocabulary (verified against `devague
-// learn` on 0.17.2). The page may override any stage label via `labels`.
+// learn` on 0.19.0). The page may override any stage label via `labels`.
 
 interface StageLabels {
   /** stage 1 — the vague starting point. */
@@ -43,13 +49,15 @@ interface StageLabels {
   converge: string;
   /** stage 4 — the exported spec. */
   spec: string;
-  /** stage 5 — the plan's dependency waves. */
+  /** stage 5 — the blind-spot challenge pass over the exported spec. */
+  challenge: string;
+  /** stage 6 — the plan's dependency waves. */
   waves: string;
-  /** stage 6 — the built result. */
+  /** stage 7 — the built result. */
   build: string;
-  /** stage 7 — the approved mid-build departure, recorded in the ledger. */
+  /** stage 8 — the approved mid-build departure, recorded in the ledger. */
   deviate: string;
-  /** stage 8 — the closing accountability artifact. */
+  /** stage 9 — the closing accountability artifact. */
   summary: string;
 }
 
@@ -67,6 +75,7 @@ const L: StageLabels = {
   frame: "frame",
   converge: "converge",
   spec: "spec",
+  challenge: "challenge",
   waves: "waves",
   build: "build",
   deviate: "deviate",
@@ -83,7 +92,7 @@ const CLAIMS = ["audience", "after_state", "boundary"];
 <figure
   class="flow"
   data-flow
-  aria-label="devague's method arc: a vague idea becomes an announcement frame whose claims a human confirms, a convergence gate opens once the frame closes, a spec exports and fans out into plan waves the workforce builds; when reality diverges mid-build a human approves the departure and it lands as an append-only record in the delivery ledger, and a closing summary reconciles planned versus actual as the accountability artifact"
+  aria-label="devague's method arc: a vague idea becomes an announcement frame whose claims a human confirms, a convergence gate opens once the frame closes, and a spec exports; a challenge pass hunts the spec's blind spots and a human adjudicates what it finds; the spec re-exports and fans out into plan waves the workforce builds; when reality diverges mid-build a human approves the departure and it lands as an append-only record in the delivery ledger, and a closing summary reconciles planned versus actual as the accountability artifact"
 >
   <ol class="flow-track" role="list">
     <!-- 1 · idea — the vague seed -->
@@ -168,22 +177,58 @@ const CLAIMS = ["audience", "after_state", "boundary"];
 
     <li class="link" aria-hidden="true" style="--d: 5.7s"><i class="link-line"></i></li>
 
-    <!-- 5 · waves — the plan fans out into dependency waves -->
+    <!-- 5 · challenge — a blind-spot pass examines the exported spec -->
+    <li class="stage stage-challenge">
+      <span class="glyph" aria-hidden="true">
+        <svg class="challenge-glyph" viewBox="0 0 60 60" fill="none" style="--d: 5.9s">
+          <path class="spec-page" d="M15 8 H35 L45 18 V52 H15 Z"></path>
+          <path class="spec-fold" d="M35 8 V18 H45"></path>
+          <line class="spec-rule" x1="21" y1="25" x2="39" y2="25"></line>
+          <line class="spec-rule spec-rule-short" x1="21" y1="32" x2="32" y2="32"></line>
+          <!-- the finding: two stacked faces — proposed (dashed) and
+               confirmed — the claims' and the ledger's anti-fabrication
+               flip, replayed on the spec's own page. -->
+          <g class="challenge-finding" style="--d: 6.6s">
+            <g class="finding-open" style="--d: 7.2s">
+              <rect class="finding-outline" x="17.5" y="39.5" width="25" height="9" rx="4.5"></rect>
+              <line class="finding-draft" x1="21" y1="44" x2="38.5" y2="44"></line>
+            </g>
+            <g class="finding-solid" style="--d: 7.2s">
+              <rect class="finding-pill" x="17.5" y="39.5" width="25" height="9" rx="4.5"></rect>
+              <line class="finding-line" x1="21" y1="44" x2="30" y2="44"></line>
+              <path class="finding-tick" d="M32.5 44.5 34.8 46.6 39 41.8"></path>
+            </g>
+          </g>
+          <!-- the lens: sweeps down the examined rules to rest over the
+               finding it surfaced. -->
+          <g class="challenge-lens" style="--d: 6.1s">
+            <circle class="lens-glass" cx="37" cy="43" r="9"></circle>
+            <line class="lens-handle" x1="43.4" y1="49.4" x2="49.5" y2="55.5"></line>
+          </g>
+        </svg>
+      </span>
+      <span class="stage-label">{L.challenge}</span>
+      <span class="stage-kind muted">blind spots</span>
+    </li>
+
+    <li class="link" aria-hidden="true" style="--d: 7.5s"><i class="link-line"></i></li>
+
+    <!-- 6 · waves — the plan fans out into dependency waves -->
     <li class="stage stage-waves">
       <span class="glyph" aria-hidden="true">
         <svg viewBox="0 0 60 60" fill="none">
           <circle class="wave-root" cx="9" cy="30" r="4"></circle>
-          <g class="wave-lane" style="--d: 6s">
+          <g class="wave-lane" style="--d: 7.8s">
             <path class="wave-thread" d="M13 30 Q30 18 40 15"></path>
             <circle class="wave-dot" cx="40" cy="15" r="3.6"></circle>
             <circle class="wave-dot" cx="52" cy="15" r="3.6"></circle>
           </g>
-          <g class="wave-lane" style="--d: 6.3s">
+          <g class="wave-lane" style="--d: 8.1s">
             <path class="wave-thread" d="M13 30 H40"></path>
             <circle class="wave-dot" cx="40" cy="30" r="3.6"></circle>
             <circle class="wave-dot" cx="52" cy="30" r="3.6"></circle>
           </g>
-          <g class="wave-lane" style="--d: 6.6s">
+          <g class="wave-lane" style="--d: 8.4s">
             <path class="wave-thread" d="M13 30 Q30 42 40 45"></path>
             <circle class="wave-dot" cx="40" cy="45" r="3.6"></circle>
             <circle class="wave-dot" cx="52" cy="45" r="3.6"></circle>
@@ -194,12 +239,12 @@ const CLAIMS = ["audience", "after_state", "boundary"];
       <span class="stage-kind muted">plan</span>
     </li>
 
-    <li class="link" aria-hidden="true" style="--d: 7.1s"><i class="link-line"></i></li>
+    <li class="link" aria-hidden="true" style="--d: 8.9s"><i class="link-line"></i></li>
 
-    <!-- 6 · build — the workforce ships it -->
+    <!-- 7 · build — the workforce ships it -->
     <li class="stage stage-build">
       <span class="glyph" aria-hidden="true">
-        <svg class="build-glyph" viewBox="0 0 60 60" fill="none" style="--d: 7.5s">
+        <svg class="build-glyph" viewBox="0 0 60 60" fill="none" style="--d: 9.3s">
           <rect class="build-box" x="14" y="14" width="32" height="32" rx="8"></rect>
           <path class="build-check" d="M22 31 28 37 40 24"></path>
         </svg>
@@ -208,18 +253,18 @@ const CLAIMS = ["audience", "after_state", "boundary"];
       <span class="stage-kind muted">workforce</span>
     </li>
 
-    <li class="link" aria-hidden="true" style="--d: 8s"><i class="link-line"></i></li>
+    <li class="link" aria-hidden="true" style="--d: 9.8s"><i class="link-line"></i></li>
 
-    <!-- 7 · deviate — reality diverges; the approved amendment lands in the ledger -->
+    <!-- 8 · deviate — reality diverges; the approved amendment lands in the ledger -->
     <li class="stage stage-deviate">
       <span class="glyph" aria-hidden="true">
-        <svg class="ledger-glyph" viewBox="0 0 60 60" fill="none" style="--d: 8.2s">
+        <svg class="ledger-glyph" viewBox="0 0 60 60" fill="none" style="--d: 10s">
           <rect class="ledger-page" x="14" y="9" width="32" height="42" rx="4"></rect>
           <line class="ledger-row" x1="20" y1="17" x2="40" y2="17"></line>
           <line class="ledger-row" x1="20" y1="24" x2="33" y2="24"></line>
           <!-- the amendment row: two stacked faces — proposed (dashed) and
                approved — flipping exactly like the frame's claims. -->
-          <g class="ledger-entry" style="--d: 8.8s">
+          <g class="ledger-entry" style="--d: 10.6s">
             <g class="entry-open">
               <rect class="entry-outline" x="16.5" y="33.5" width="27" height="9" rx="4.5"></rect>
               <line class="entry-draft" x1="20.5" y1="38" x2="39.5" y2="38"></line>
@@ -236,20 +281,20 @@ const CLAIMS = ["audience", "after_state", "boundary"];
       <span class="stage-kind muted">ledger</span>
     </li>
 
-    <li class="link" aria-hidden="true" style="--d: 9.3s"><i class="link-line"></i></li>
+    <li class="link" aria-hidden="true" style="--d: 11.1s"><i class="link-line"></i></li>
 
-    <!-- 8 · summary — the accountability artifact closes the loop -->
+    <!-- 9 · summary — the accountability artifact closes the loop -->
     <li class="stage stage-summary">
       <span class="glyph" aria-hidden="true">
-        <svg class="summary-doc" viewBox="0 0 60 60" fill="none" style="--d: 9.5s">
+        <svg class="summary-doc" viewBox="0 0 60 60" fill="none" style="--d: 11.3s">
           <path class="spec-page" d="M17 8 H37 L47 18 V52 H17 Z"></path>
           <path class="spec-fold" d="M37 8 V18 H47"></path>
           <line class="spec-rule" x1="23" y1="27" x2="33" y2="27"></line>
-          <path class="summary-tick" d="M36.5 27.8 38.8 30 43 25" style="--d: 10.05s"></path>
+          <path class="summary-tick" d="M36.5 27.8 38.8 30 43 25" style="--d: 11.85s"></path>
           <line class="spec-rule" x1="23" y1="34" x2="33" y2="34"></line>
-          <path class="summary-tick" d="M36.5 34.8 38.8 37 43 32" style="--d: 10.3s"></path>
+          <path class="summary-tick" d="M36.5 34.8 38.8 37 43 32" style="--d: 12.1s"></path>
           <line class="spec-rule spec-rule-short" x1="23" y1="41" x2="30" y2="41"></line>
-          <path class="summary-tick" d="M33.5 41.8 35.8 44 40 39" style="--d: 10.55s"></path>
+          <path class="summary-tick" d="M33.5 41.8 35.8 44 40 39" style="--d: 12.35s"></path>
         </svg>
       </span>
       <span class="stage-label">{L.summary}</span>
@@ -278,7 +323,10 @@ const CLAIMS = ["audience", "after_state", "boundary"];
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    gap: 0.4rem;
+    /* nine stages ride one row inside the page's 56rem measure, so the
+       row-mode gap is deliberately tight; the stacked block below sets
+       its own. */
+    gap: 0.25rem;
   }
 
   .stage {
@@ -319,10 +367,13 @@ const CLAIMS = ["audience", "after_state", "boundary"];
     letter-spacing: 0.05em;
   }
 
-  /* connectors: a thin thread that draws stage-to-stage */
+  /* connectors: a thin thread that draws stage-to-stage. The low min-width
+     is load-bearing: it lets the nine-stage row compress into the page's
+     56rem content measure instead of ever overflowing it (the stages
+     themselves are rigid; only these threads flex). */
   .link {
     flex: 1 1 auto;
-    min-width: 1.5rem;
+    min-width: 0.5rem;
     max-width: 4.5rem;
     height: 4.6rem;
     display: flex;
@@ -488,6 +539,82 @@ const CLAIMS = ["audience", "after_state", "boundary"];
     opacity: 0.7;
   }
 
+  /* challenge: a blind-spot pass examines the exported spec. The page and
+     rules deliberately reuse the spec's paint — it is the spec under
+     examination — while a lens sweeps the page. The finding it surfaces has
+     two stacked faces — proposed (dashed outline, penciled) and confirmed
+     (accent pill + tick) — reusing the claims'/ledger's visual language on
+     purpose: it is the same anti-fabrication rule. */
+  .challenge-glyph {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .challenge-lens {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .lens-glass {
+    fill: color-mix(in srgb, var(--accent) 7%, transparent);
+    stroke: var(--accent);
+    stroke-width: 1.4;
+  }
+
+  .lens-handle {
+    stroke: var(--accent);
+    stroke-width: 2.2;
+    stroke-linecap: round;
+  }
+
+  /* Composed base = the CONFIRMED face only, mirroring .claim-open /
+     .entry-open: the reduced-motion / no-JS still shows an adjudicated,
+     solid finding. Motion re-reveals the proposed face as the pre-play
+     pose below. */
+  .finding-open {
+    opacity: 0;
+  }
+
+  .finding-outline {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+    stroke-dasharray: 3 3.5;
+  }
+
+  .finding-draft {
+    stroke: var(--ink-soft);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-dasharray: 2.5 3.5;
+    opacity: 0.8;
+  }
+
+  .finding-solid {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .finding-pill {
+    fill: color-mix(in srgb, var(--accent) 12%, transparent);
+    stroke: color-mix(in srgb, var(--accent) 55%, transparent);
+    stroke-width: 1;
+  }
+
+  .finding-line {
+    stroke: var(--accent-strong);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+  }
+
+  .finding-tick {
+    fill: none;
+    stroke: var(--accent-strong);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
   /* plan waves */
   .wave-root {
     fill: var(--mesh-node);
@@ -621,9 +748,11 @@ const CLAIMS = ["audience", "after_state", "boundary"];
      Each stage keeps its glyph-over-label shape; only the track direction
      and the connectors turn vertical, so the wide frame pills never
      overflow a phone-width viewport. The breakpoint is sized to the
-     8-stage row: its natural width is ~56rem, so below 59rem (row + page
-     padding) the track stacks rather than ever scrolling horizontally. */
-  @media (max-width: 59rem) {
+     9-stage row: at comfortable connector widths it wants ~63rem, so below
+     66rem (row + page padding) the track stacks rather than ever scrolling
+     horizontally. Above it, the connectors' low min-width lets the row
+     compress into the page's 56rem content measure. */
+  @media (max-width: 66rem) {
     .flow-track {
       flex-direction: column;
       align-items: center;
@@ -701,6 +830,21 @@ const CLAIMS = ["audience", "after_state", "boundary"];
       transition-delay: var(--d, 0s);
     }
 
+    /* challenge: the lens starts up at the examined rules and sweeps down
+       the page to rest over the finding — one calm, transform-only move */
+    :global(html.js) .flow .challenge-lens {
+      transform: translate(-14px, -22px);
+      transition: transform 0.8s var(--ease-gentle);
+      transition-delay: var(--d, 0s);
+    }
+
+    /* the finding surfaces as the lens arrives, then flips like a claim */
+    :global(html.js) .flow .challenge-finding {
+      opacity: 0;
+      transition: opacity 0.5s var(--ease-out);
+      transition-delay: var(--d, 0s);
+    }
+
     :global(html.js) .flow .wave-lane {
       opacity: 0;
       transform: scaleX(0.2);
@@ -719,7 +863,8 @@ const CLAIMS = ["audience", "after_state", "boundary"];
       transition-delay: var(--d, 0s);
     }
 
-    /* deviate + summary glyphs arrive like the spec doc did */
+    /* challenge, deviate + summary glyphs arrive like the spec doc did */
+    :global(html.js) .flow .challenge-glyph,
     :global(html.js) .flow .ledger-glyph,
     :global(html.js) .flow .summary-doc {
       opacity: 0;
@@ -730,14 +875,17 @@ const CLAIMS = ["audience", "after_state", "boundary"];
       transition-delay: var(--d, 0s);
     }
 
-    /* the amendment arrives proposed (dashed), approval flips it solid —
-       the claims' flip, replayed in the ledger */
+    /* the finding and the amendment arrive proposed (dashed), and human
+       confirmation flips them solid — the claims' flip, replayed on the
+       challenged spec and again in the ledger */
+    :global(html.js) .flow .finding-open,
     :global(html.js) .flow .entry-open {
       opacity: 1;
       transition: opacity 0.5s var(--ease-out);
       transition-delay: var(--d, 0s);
     }
 
+    :global(html.js) .flow .finding-solid,
     :global(html.js) .flow .entry-solid {
       opacity: 0;
       transform: scale(0.8);
@@ -822,16 +970,27 @@ const CLAIMS = ["audience", "after_state", "boundary"];
       transform: scale(1);
     }
 
+    :global(html.js) .flow.is-playing .challenge-glyph,
     :global(html.js) .flow.is-playing .ledger-glyph,
     :global(html.js) .flow.is-playing .summary-doc {
       opacity: 1;
       transform: none;
     }
 
+    :global(html.js) .flow.is-playing .challenge-lens {
+      transform: none;
+    }
+
+    :global(html.js) .flow.is-playing .challenge-finding {
+      opacity: 1;
+    }
+
+    :global(html.js) .flow.is-playing .finding-open,
     :global(html.js) .flow.is-playing .entry-open {
       opacity: 0;
     }
 
+    :global(html.js) .flow.is-playing .finding-solid,
     :global(html.js) .flow.is-playing .entry-solid {
       opacity: 1;
       transform: scale(1);
