@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/). This project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0] - 2026-07-15
+
+### Added
+
+- Scope, deviate, and summarize-delivery skills vendored from devague, with ledger rows in docs/skill-sources.md
+
+### Changed
+
+- /agents/devague page now presents the full six-leg devague method (scope, think, spec-to-plan, assign-to-workforce, deviate, summarize-delivery) as a product presentation: new scope/deviate/summary capture panes, extended flow arc and terminal legs, launch meta dropped from presentation copy
+
 ## [0.8.0] - 2026-07-14
 
 ### Added
