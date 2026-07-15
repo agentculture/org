@@ -1,0 +1,400 @@
+{
+  "slug": "devague-page-six-leg-update",
+  "title": "devague page: six-leg update",
+  "schema_version": 2,
+  "status": "exported",
+  "created": "2026-07-14T23:04:02Z",
+  "updated": "2026-07-14T23:09:56Z",
+  "claims": [
+    {
+      "id": "c1",
+      "kind": "announcement",
+      "text": "agentculture.org/agents/devague now presents devague as the complete six-leg method \u2014 scope, think, spec-to-plan, assign-to-workforce, deviate, summarize-delivery \u2014 as a pure product presentation: the pipeline and method arc carry the execution seam (scope entries on the frame, the deviation ledger, the delivery summary), the operator-skills section shows all six legs, real captured sessions demonstrate the new legs, launch-day meta (public-since dates, dated version chips) is gone, and what's-next is re-verified against the live tracker \u2014 good enough that Ori presents the product by just showing the page",
+      "origin": "user",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h8",
+          "text": "The built /agents/devague page, scrolled once top to bottom, presents the six-leg method in order as a product: concepts, demos, and real captures \u2014 with no launch-day meta anywhere in the copy.",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": "Verify by building the site (astro build), scrolling the page once, and checking: six legs named, execution seam in the arc, six skill cards, real capture panes for the new legs, no dates/public-since in presentation copy."
+    },
+    {
+      "id": "c2",
+      "kind": "audience",
+      "text": "A live-presentation audience first: Ori presents devague by showing this page. Secondarily, humans and agents browsing agentculture.org/agents/ who should leave knowing what the tool delivers.",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h9",
+          "text": "The page reads as a presentation: each section leads with a spoken headline, one idea per viewport \u2014 Ori can talk over it top to bottom without a separate deck.",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c3",
+      "kind": "before_state",
+      "text": "The live page presents a three-skill pipeline (/think, /spec-to-plan, /assign-to-workforce) per site-astro/src/data/devague.ts; its facts carry 'public since 2026-07-14' and 'version 0.17.2 \u2014 2026-07-14' chips; the hero says 'Until today, this site never mentioned it'; and whatsNext links issues #62, #68, #69, #70 \u2014 all closed by devague 0.18.0.",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h10",
+          "text": "The before-state is checkable against git: the cited chips, hero paragraph, three-card skills section, and closed-issue links all exist in the committed devague.ts on main.",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c4",
+      "kind": "after_state",
+      "text": "The page presents the full six-leg method: the pipeline section and DevagueFlow arc carry the execution seam, the operator-skills section shows six cards (/scope, /think, /spec-to-plan, /assign-to-workforce, /deviate, /summarize-delivery), the method section includes the scope move, real captures demonstrate the new legs, and whatsNext reflects only issues open on the live tracker at authoring time.",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h4",
+          "text": "One scroll pass of the built page encounters all six legs by name, the execution seam in the arc diagram, six operator-skill cards, and at least one real capture for each new leg (scope, deviate, summary).",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c5",
+      "kind": "requirement",
+      "text": "Launch-day meta is dropped from the presentation: the 'public since' fact chip, the dated 'version 0.17.2 \u2014 2026-07-14' chip, and the hero paragraph about the repo going public \u2014 the copy carries only what devague delivers, its demos, and its concepts (per Ori's instruction this session).",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h1",
+          "text": "A grep of the shipped page source finds no 'public since' chip, no dated version chip, and no went-public hero paragraph; the install / repo / PyPI / license chips remain.",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c6",
+      "kind": "requirement",
+      "text": "Pipeline, diagram, and skills copy reflect the devague 0.18 surface verified against the installed CLI and CHANGELOG: the scope verb (pre-frame scoping recorded on the frame), the deviate verb (append-only deviation ledger under .devague/deliveries/), the summary verb (render-only eight-section skeleton, --pr variant), and plan deliverables/amend.",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h2",
+          "text": "Every verb and flag the copy names exists on the installed devague 0.18.0 --help surface: scope, deviate (--list / --confirm / --reject / --classification), summary (--pr), plan deliverables, plan amend.",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c7",
+      "kind": "requirement",
+      "text": "Every new capture pane replayed on the page comes from a real devague run \u2014 this session's own frame/plan/deviate/summary run is the primary material \u2014 stored verbatim in devague-captures.ts, trimmed only for length, cuts marked with first-class ellipsis lines, no invented output.",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h3",
+          "text": "Each new pane's lines are copy-pasted verbatim from this session's own transcript (or a labeled read-only re-run against real state); every omission is an explicit ellipsis line; each pane header carries its devague version and capture date.",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c8",
+      "kind": "boundary",
+      "text": "The page stays replay-only: it never runs devague in the browser, makes zero client-side network calls, and DevagueTerminal's pre-scheduled replay technique is reused unchanged (per its authored contract in DevagueTerminal.astro).",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h11",
+          "text": "The built page's client JS performs no network calls and never invokes devague; every terminal pane renders from build-time strings imported from devague-captures.ts.",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c9",
+      "kind": "boundary",
+      "text": "No new global styles: Layout/PageHero/Header/Footer and existing tokens only; motion stays compositor-only (transform/opacity) with the full prefers-reduced-motion still-legible fallback, matching DevagueFlow.astro's authored contract.",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h12",
+          "text": "The PR diff touches no global stylesheet and adds no new global tokens; every animated property added is transform or opacity, gated behind prefers-reduced-motion: no-preference and html.js.",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c10",
+      "kind": "non_goal",
+      "text": "The page does not retell release history: no 'shipped in 0.17.0/0.18.0' beats, no changelog narration, no dates in the presentation copy \u2014 versions and capture dates survive only as provenance stamps on the capture panes themselves.",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c11",
+      "kind": "success_signal",
+      "text": "Same measurable floor as the page's original frame: Lighthouse performance and accessibility >= 95 on the built page, WCAG AA in light and dark, compositor-only animation honoring prefers-reduced-motion, zero client-side network calls, astro build clean \u2014 plus Ori's presentable-as-is sign-off at the final PR gate.",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h13",
+          "text": "Lighthouse against the built page reports performance and accessibility >= 95 in both themes' rendering, and the reduced-motion render shows the complete composed content with nothing hidden.",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c12",
+      "kind": "why_it_matters",
+      "text": "The page is the product's face for presentations: a three-leg story undersells a six-leg product, and a page whose subject is honesty gates cannot cite closed issues as open direction \u2014 the facts must hold to the page's own standard.",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h14",
+          "text": "Every factual statement in the shipped copy traces to a public artifact \u2014 the repo, PyPI, the installed CLI's own output, or the live tracker \u2014 nothing invented, matching the page's existing provenance bar.",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c13",
+      "kind": "decision",
+      "text": "The dogfood beat continues and deepens: this very update is scoped, specced, planned, fanned out, and summarized with the new legs it presents \u2014 the captures exhibit their own origin, including the frame's scope entries.",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c14",
+      "kind": "assumption",
+      "text": "DevagueTerminal derives its leg tag from the pane id prefix (frame-/plan-/else check) \u2014 new pane families (scope-, deviate-, summary-) need either new id prefixes with matching leg tags or deliberate reuse of an existing bucket; the replay technique itself does not change.",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c15",
+      "kind": "requirement",
+      "text": "whatsNext is re-distilled from the live tracker at authoring time (gh issue list on agentculture/devague, 2026-07-15): the resolution-moves cluster (#60, #57, #55, #52, #49, #48, #45) and the consolidated board (#36) remain open; #62, #68, #69, #70 are closed and must not be linked as direction.",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h5",
+          "text": "Every issue linked on the page is open on agentculture/devague at the moment the copy lands, re-checked with gh issue list the same day.",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c16",
+      "kind": "requirement",
+      "text": "The three new origin skills (scope, deviate, summarize-delivery) copied from agentculture/devague into org/.claude/skills/ this session are committed with provenance recorded in docs/skill-sources.md, matching how think/spec-to-plan/assign-to-workforce already live here.",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h6",
+          "text": "org/.claude/skills/{scope,deviate,summarize-delivery}/SKILL.md are byte-identical to ../devague's copies, each carries type: command, and docs/skill-sources.md gains a row for each naming devague as origin (direct vendor, ask-colleague precedent).",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c17",
+      "kind": "requirement",
+      "text": "The devague directory card in site-astro/src/data/site.ts gains the delivery side: its role line currently stops at 'working backwards, then forwards' and should say the method now closes the loop through execution.",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h7",
+          "text": "The site.ts devague role line names the delivery/execution side of the method and the card still routes to /agents/devague/.",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c18",
+      "kind": "decision",
+      "text": "The DevagueFlow arc presents the execution seam as a continuation of the existing six stages \u2014 the build beat hands into a deviate (ledger) beat and closes on the summary artifact \u2014 designed within the component's existing contract: compositor-only, plays once, legible as a reduced-motion still, no horizontal overflow on mobile.",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c19",
+      "kind": "decision",
+      "text": "Ori loves the page's animations: every existing animated beat is preserved, and the new steps get their own animated beats \u2014 the DevagueFlow arc's execution-seam stages animate in the same compositor-only language, and every new capture pane replays with the same typing/settle motion.",
+      "origin": "user",
+      "status": "confirmed",
+      "honesty_conditions": [],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    }
+  ],
+  "open_vagueness": [
+    {
+      "id": "v1",
+      "text": "Whether this run produces a real deviation is unknowable until the fan-out actually runs; if none occurs, the deviate pane is captured read-only from real ledger state (devague's own release delivery store, or this plan's ledger read) and labeled exactly as what it is.",
+      "kind": "unknown_nonblocking",
+      "claim_id": null
+    },
+    {
+      "id": "v2",
+      "text": "The exact open-issue set can shift between now and the moment the copy lands \u2014 whatsNext gets one final gh re-verification pass at landing time.",
+      "kind": "unknown_nonblocking",
+      "claim_id": null
+    }
+  ],
+  "scope_entries": [
+    {
+      "id": "s1",
+      "surface": "site-astro/src/data/devague.ts",
+      "finding": "carries all page copy: fact chips incl. 'public since 2026-07-14' and 'version 0.17.2 \u2014 2026-07-14', the went-public hero paragraph, a 3-stage pipeline, 3 skill cards, and whatsNext linking #62/#68/#69/#70 \u2014 all closed by 0.18.0",
+      "seeds": [
+        "c3",
+        "c5"
+      ]
+    },
+    {
+      "id": "s2",
+      "surface": "devague 0.18.0 (devague --help; ../devague/CHANGELOG.md 0.18.0)",
+      "finding": "ships the scope, deviate, and summary verbs plus plan deliverables/amend; docs name the six-leg flow scope\u2192think\u2192spec-to-plan\u2192assign-to-workforce\u2192deviate\u2192summarize-delivery",
+      "seeds": [
+        "c6"
+      ]
+    },
+    {
+      "id": "s3",
+      "surface": "site-astro/src/data/devague-captures.ts",
+      "finding": "verbatim-replay contract: every line captured from a real run, cuts marked with first-class ellipsis lines, versions and dates carried as pane provenance \u2014 new panes must meet the same bar",
+      "seeds": [
+        "c7",
+        "c10"
+      ]
+    },
+    {
+      "id": "s4",
+      "surface": "site-astro/src/components/DevagueTerminal.astro",
+      "finding": "replays pre-scheduled panes with zero network calls; derives its leg tag from the pane id prefix (frame-/plan-/else check), so new pane families need new prefixes+tags or deliberate bucket reuse",
+      "seeds": [
+        "c8",
+        "c14"
+      ]
+    },
+    {
+      "id": "s5",
+      "surface": "site-astro/src/components/DevagueFlow.astro",
+      "finding": "the six-stage arc (idea\u2192frame\u2192converge\u2192spec\u2192waves\u2192build) is compositor-only, plays once, fully legible as a reduced-motion still, and accepts per-stage label overrides \u2014 extending the arc with the execution seam must keep that contract",
+      "seeds": [
+        "c9"
+      ]
+    },
+    {
+      "id": "s6",
+      "surface": "gh issue list agentculture/devague (live tracker, 2026-07-15)",
+      "finding": "open: #60 #57 #55 #52 #49 #48 #47 #45 #44 #42 #41 #40 #37 #36 \u2014 the resolution-moves cluster and the board issue remain; #62 #68 #69 #70 are closed",
+      "seeds": [
+        "c15"
+      ]
+    },
+    {
+      "id": "s7",
+      "surface": "docs/skill-sources.md (org)",
+      "finding": "think/spec-to-plan/assign-to-workforce are tracked as devague-origin (re-broadcast via guildmaster); ask-colleague sets the precedent for direct vendoring with a tracked note \u2014 the three new skills copied from ../devague this session follow that pattern",
+      "seeds": [
+        "c16"
+      ]
+    },
+    {
+      "id": "s8",
+      "surface": "site-astro/src/data/site.ts (directory card)",
+      "finding": "devague's role line stops at 'working backwards, then forwards' \u2014 predates the delivery side of the method",
+      "seeds": [
+        "c17"
+      ]
+    }
+  ]
+}
