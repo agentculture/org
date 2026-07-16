@@ -67,6 +67,8 @@
 - each section headline reads as a line Ori would say aloud while presenting — checked by reading the page top to bottom as a script
 - a section-by-section walk of the built page against the announcement finds every named surface present with at least one real capture or verified fact
 - the hero states the second-mind thesis in words traceable to the repo's own diversity line, not invented marketing
+- every ported pane's cited path resolves in the public colleague repo at authoring time (git ls-files check), and every non-public-sourced pane is labeled fresh-run with run id + date + colleague version
+- a pane-by-pane review of the final captures module before merge finds no token, key, or private URL, and every omission is a visible first-class ellipsis line
 
 ## Success signals
 
@@ -77,10 +79,13 @@
 
 - Every terminal on the page REPLAYS a real captured session recorded once while authoring, per the contract documented at the head of devague-captures.ts: verbatim cmd/out lines, cuts marked with first-class ellipsis lines, no reworded kept lines, zero client-side network calls — the page never runs colleague at build or view time
   - instruction: Author colleague-captures.ts only from real material: ported artifact paths from the colleague repo or fresh runs executed once while authoring; carry the source in each pane; grep dist for external requests — zero
+- Ported capture panes cite only committed, publicly traceable colleague-repo paths (docs/drive-notes/2026-05-29-website-self-build/ — verified committed via git ls-files: notes.md, success-bdd455519da0.json + .trace.jsonl, render.png); .colleague/ run artifacts are gitignored and NOT public, so material from them is presented as a fresh-run capture (run id + date + colleague version in pane chrome), never cited as a public repo path
+- No-secrets bar for every pane: no tokens, keys, or private URLs; a line that would need redaction is cut with a first-class ellipsis line, never reworded (the verbatim rule allows cuts, not edits); prefer panes needing no redaction; localhost:8001 endpoints are fine — already public in colleague's own docs
 
 ## Non-goals
 
 - This change does not fix LobesTerminal's inert animation, does not restructure the shared components (Layout, PageHero, Header, Footer), and does not touch the devague or lobes pages beyond the one site.ts url flip
+- Deploy and DNS are out of scope: the PR delivers the page in-repo; going live rides the standing credentialed operator deploy lane (cultureflare), and AgentCulture.org DNS stays operator-owned
 
 ## Assumptions
 
@@ -114,3 +119,14 @@
   - seeds: `c15`
 - `s12` — `pypi.org/pypi/colleague/json + colleague pyproject.toml`: PyPI serves colleague 1.48.0 with homepage github.com/agentculture/colleague, matching the checkout: Apache-2.0, Python >=3.12, console scripts colleague and clg, one base dep agentfront>=0.20.0
   - seeds: `c16`
+- `s13` — `challenge pass / adjacent-systems lens: colleague .gitignore + docs/drive-notes`: git check-ignore confirms .colleague/ run artifacts are gitignored (not publicly traceable); the 2026-05-29 self-build drive material IS committed (git ls-files: notes.md, success artifact + trace, render.png) — seeded the ported-provenance boundary
+  - seeds: `c23`
+- `s14` — `challenge pass / security-privacy lens: candidate capture content`: the verbatim rule vs redaction tension resolves by ellipsis cuts, never rewording; no tokens/keys observed in candidate material; localhost:8001 already public in colleague docs
+  - seeds: `c24`
+- `s15` — `challenge pass / operations-reversibility lens: deploy lane`: deploy is a credentialed operator step via cultureflare per org CLAUDE.md; the PR is git-revertable; DNS operator-owned — seeded the deploy non-goal
+  - seeds: `c25`
+- `s16` — `challenge pass / unstated-assumption lens: colleague open tracker`: gh issue list verified a live tracker (15+ open issues) with distillable themes: gates/honesty hardening (330/340/341/342), cognitive roles across nodes (273/316/332), voice + retrieval (277/304), three-tier visibility parity (256), lobes pressure routing (250) — c21/h14 hold as stated
+- `s17` — `challenge pass / failure-mode lens: rig availability (colleague lobes show)`: lobes armed + reachable; cortex ready at 262144 ctx; senses NOT ready (gemma not loaded); stt not ready — a ready-state cortex+senses capture needs an operator step; the honest not-ready output is itself a presentable real capture; seeded q4
+- `s18` — `challenge pass / second-mind lens: colleague explore run e41355e8e5ac`: colleague's independent read (graded 4/5, zero contradictions with the first-pass map) added copy-enriching specifics: embedder relayed-never-consumed, all-stdlib session cockpit, read-only roles deliberately excluding culture/devague, dynamic writer allowlist synced to the tool surface
+  - seeds: `c20`, `c22`
+- `s19` — `challenge pass / self-description drift lens: org repo strings + astro.config.mjs`: clean — no org CLI or README string enumerates the agent pages (nothing to go stale); astro.config.mjs is pure static output with no sitemap integration or route registry to update
