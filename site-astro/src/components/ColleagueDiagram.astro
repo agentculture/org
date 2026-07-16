@@ -1,0 +1,311 @@
+---
+// ColleagueDiagram — /agents/colleague's one small diagram: "one runtime,
+// many minds" in a single glance.
+//
+// Top band asserts colleague's tier-visibility fact (colleague repo,
+// docs/tier-visibility.md): the runtime holds exactly one CockpitState and
+// renders it honestly three ways — TUI for a human (an ANSI cockpit), TAUI
+// for an agent (selector-addressed JSON), JSON for a bot (a TaskResult on
+// stdout). Three renders, one source — drawn as three arrows fanning from a
+// single box, never as three independent boxes.
+//
+// Bottom band asserts colleague's cortex/senses fact (colleague repo,
+// docs/cortex-senses.md): minds are resolved by ROLE, not by machine,
+// through a lobes gateway — cortex is the tool-calling mind that drives the
+// agent loop; senses is the tools-off front door that structurally cannot
+// act. The small "spark" / "thor" tags hint the mesh split this build's own
+// captures showed (cortex ready on spark, senses ready on Thor) — that
+// split is a fact this build observed, not something the architecture
+// implies on its own.
+//
+// A light dashed connector between the bands stands in for the runtime
+// itself, the only thing joining the two facts: it consumes cortex/senses
+// (up from the gateway) and renders the cockpit (up into the top band).
+//
+// Inline SVG only; every color rides the site's theme tokens
+// (var(--ink) / --accent / --surface / --line / --mesh-thread /
+// --mesh-node from src/styles/global.css) so both themes stay legible.
+// Static by default — the only motion (two idle breathing origin dots,
+// reusing global.css's shared node-breathe keyframe) is gated behind
+// prefers-reduced-motion: no-preference, and the diagram is fully drawn
+// and legible with it off.
+interface Props {
+  /** Optional caption rendered below the diagram, muted. */
+  caption?: string;
+}
+
+const { caption } = Astro.props;
+---
+
+<figure class="colleague-diagram">
+  <svg
+    viewBox="0 0 620 420"
+    fill="none"
+    role="img"
+    aria-label="one cockpit state rendered three ways; cortex and senses minds resolved by role from a lobes gateway"
+  >
+    <defs>
+      <marker
+        id="colleague-arrow"
+        viewBox="0 0 10 10"
+        refX="8"
+        refY="5"
+        markerWidth="6.5"
+        markerHeight="6.5"
+        orient="auto-start-reverse"
+      >
+        <path d="M0 0 L10 5 L0 10 Z" class="arrow-head"></path>
+      </marker>
+    </defs>
+
+    <!-- ============ top band: one CockpitState, three honest renders ============ -->
+
+    <rect x="245" y="24" width="130" height="54" rx="12" class="hub-box"></rect>
+    <text x="310" y="48" text-anchor="middle" class="hub-title">CockpitState</text>
+    <text x="310" y="65" text-anchor="middle" class="hub-sub">one render state</text>
+
+    <circle cx="310" cy="78" r="3" class="origin-dot" style="--bd: 0s"></circle>
+
+    <!-- three arrows, one source -->
+    <path
+      d="M310 78 Q210 96 110 108"
+      class="fan-arrow"
+      marker-end="url(#colleague-arrow)"
+    ></path>
+    <path
+      d="M310 78 L310 108"
+      class="fan-arrow"
+      marker-end="url(#colleague-arrow)"
+    ></path>
+    <path
+      d="M310 78 Q410 96 510 108"
+      class="fan-arrow"
+      marker-end="url(#colleague-arrow)"
+    ></path>
+
+    <!-- tier — TUI · human -->
+    <rect x="35" y="110" width="150" height="60" rx="14" class="tier-pill"></rect>
+    <text x="110" y="134" text-anchor="middle" class="tier-label">TUI · human</text>
+    <text x="110" y="153" text-anchor="middle" class="tier-note">(ANSI cockpit)</text>
+
+    <!-- tier — TAUI · agent -->
+    <rect x="235" y="110" width="150" height="60" rx="14" class="tier-pill"></rect>
+    <text x="310" y="134" text-anchor="middle" class="tier-label">TAUI · agent</text>
+    <text x="310" y="153" text-anchor="middle" class="tier-note">
+      (selector-addressed JSON)
+    </text>
+
+    <!-- tier — JSON · bot -->
+    <rect x="435" y="110" width="150" height="60" rx="14" class="tier-pill"></rect>
+    <text x="510" y="134" text-anchor="middle" class="tier-label">JSON · bot</text>
+    <text x="510" y="153" text-anchor="middle" class="tier-note">
+      (TaskResult on stdout)
+    </text>
+
+    <!-- ============ light connector: the runtime joins the two facts ============ -->
+
+    <path
+      d="M310 228 L310 170"
+      class="runtime-line"
+      marker-end="url(#colleague-arrow)"
+    ></path>
+    <rect x="268" y="189" width="84" height="22" rx="11" class="runtime-pill"></rect>
+    <text x="310" y="204" text-anchor="middle" class="runtime-label">runtime</text>
+
+    <!-- ============ bottom band: minds resolved by role from a lobes gateway ============ -->
+
+    <rect x="245" y="228" width="130" height="46" rx="12" class="hub-box"></rect>
+    <text x="310" y="256" text-anchor="middle" class="hub-title">lobes gateway</text>
+
+    <circle cx="310" cy="274" r="3" class="origin-dot" style="--bd: -3s"></circle>
+
+    <path
+      d="M310 274 Q230 292 152.5 308"
+      class="fan-arrow"
+      marker-end="url(#colleague-arrow)"
+    ></path>
+    <path
+      d="M310 274 Q390 292 467.5 308"
+      class="fan-arrow"
+      marker-end="url(#colleague-arrow)"
+    ></path>
+
+    <!-- role — cortex: the tool-calling mind, resolved on spark -->
+    <rect x="45" y="310" width="215" height="92" rx="16" class="role-pill"></rect>
+    <text x="45" y="303" text-anchor="start" class="machine-tag">spark</text>
+    <text x="152.5" y="337" text-anchor="middle" class="role-title role-title-cortex">
+      cortex
+    </text>
+    <text x="152.5" y="357" text-anchor="middle" class="role-sub">tool-calling mind</text>
+    <text x="152.5" y="377" text-anchor="middle" class="role-note">drives the loop</text>
+
+    <!-- role — senses: the tools-off front door, resolved on thor -->
+    <rect x="360" y="310" width="215" height="92" rx="16" class="role-pill"></rect>
+    <text x="575" y="303" text-anchor="end" class="machine-tag">thor</text>
+    <text x="467.5" y="337" text-anchor="middle" class="role-title role-title-senses">
+      senses
+    </text>
+    <text x="467.5" y="357" text-anchor="middle" class="role-sub">
+      tools-off front door
+    </text>
+    <text x="467.5" y="377" text-anchor="middle" class="role-note">
+      structurally cannot act
+    </text>
+  </svg>
+
+  {caption && <figcaption class="diagram-caption muted">{caption}</figcaption>}
+</figure>
+
+<style>
+  .colleague-diagram {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  .colleague-diagram svg {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .diagram-caption {
+    font-size: 0.92rem;
+    line-height: 1.55;
+    text-align: center;
+    max-width: 34rem;
+    margin: 0 auto;
+  }
+
+  /* ---------- shared text paint ---------- */
+  text {
+    font-family: var(--font-mono);
+  }
+
+  .hub-title {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    fill: var(--accent-strong);
+  }
+
+  .hub-sub {
+    font-size: 10px;
+    fill: var(--ink-soft);
+  }
+
+  .tier-label {
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    fill: var(--accent-strong);
+  }
+
+  .tier-note {
+    font-size: 9.5px;
+    fill: var(--ink-soft);
+  }
+
+  .role-title {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+
+  .role-title-cortex {
+    fill: var(--accent-strong);
+  }
+
+  .role-title-senses {
+    fill: var(--ink);
+  }
+
+  .role-sub {
+    font-size: 13px;
+    fill: var(--ink);
+  }
+
+  .role-note {
+    font-size: 10.5px;
+    fill: var(--ink-soft);
+  }
+
+  .machine-tag {
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    fill: var(--ink-soft);
+  }
+
+  .runtime-label {
+    font-size: 10px;
+    letter-spacing: 0.02em;
+    fill: var(--ink-soft);
+  }
+
+  /* ---------- shapes ---------- */
+  .hub-box {
+    fill: color-mix(in srgb, var(--accent) 10%, var(--surface));
+    stroke: color-mix(in srgb, var(--accent) 45%, transparent);
+    stroke-width: 1.6;
+  }
+
+  .tier-pill,
+  .role-pill {
+    fill: color-mix(in srgb, var(--surface) 70%, transparent);
+    stroke: var(--line);
+    stroke-width: 1.4;
+  }
+
+  .fan-arrow {
+    stroke: var(--mesh-thread);
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    fill: none;
+  }
+
+  .runtime-line {
+    stroke: var(--mesh-thread);
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    stroke-dasharray: 4 5;
+    fill: none;
+  }
+
+  .runtime-pill {
+    fill: var(--surface);
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+
+  .arrow-head {
+    fill: var(--mesh-thread);
+  }
+
+  .origin-dot {
+    fill: var(--mesh-node);
+    opacity: 0.78;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  /* ---------- motion: two idle breathing dots, nothing else ----------
+     Reuses global.css's shared node-breathe keyframe (transform + opacity
+     only). Gated behind prefers-reduced-motion so a reduced-motion reader
+     sees the identical, fully-drawn diagram with the dots simply held
+     still — no JS is used or needed for this component. */
+  @media (prefers-reduced-motion: no-preference) {
+    .origin-dot {
+      animation: node-breathe 8s var(--ease-gentle) infinite alternate;
+      animation-delay: var(--bd, 0s);
+    }
+  }
+
+  /* ---------- narrow screens: trim caption size a touch ---------- */
+  @media (max-width: 26rem) {
+    .diagram-caption {
+      font-size: 0.88rem;
+    }
+  }
+</style>
