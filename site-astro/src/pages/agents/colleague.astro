@@ -1,0 +1,844 @@
+---
+// /agents/colleague — the presentation page for colleague: a swappable
+// coder-agent harness — one runtime, many minds. The arc: the paradigm
+// (harness, not model; mock vs vllm-openai; the field-work split with
+// Claude), the three honest render tiers of one CockpitState (human, agent,
+// bot), the bounded work loop (typed contract, write isolation, the seven
+// base tools, pre-finish gates, handoff, piloting), the typed subagent
+// workforce (five roles, four of them structurally read-only), the
+// cortex/senses mind split resolved by role from a lobes gateway, eidetic
+// memory (the measured warm-vs-cold pair), the rest of the surface
+// catalogue, a dogfood section proving all of it on colleague's own work —
+// including this very page — and a what's-next drawn from the live open
+// tracker. Closes with the same two-CTA idiom as devague.astro: repo, then
+// install.
+//
+// All copy — eyebrows, headlines, intros, and every card/table cell — lives
+// in ../../data/colleague.ts, the same convention as devague.ts: this page
+// is a presentation Ori talks over, so the headlines are spoken copy and
+// belong to the content model, not this template. ONE deliberate exception:
+// the dogfood section's eyebrow/headline/intro are authored directly below
+// (see the `dogfood` const), because colleague.ts — already committed on
+// this branch — carries no data field for that section, and this page
+// composes strictly from what colleague.ts and colleague-captures.ts already
+// export, touching neither file.
+//
+// Every terminal below replays a real captured session from
+// ../../data/colleague-captures.ts — nothing on this page runs colleague, in
+// the browser or anywhere else. All eleven capture panes that module
+// exports appear exactly once, each in the section it documents — including
+// dogfoodReview, the pre-PR review of this page's own diff, rendered in the
+// dogfood section below. That pane was appended only once the run
+// (7bd1b67432d0) existed; until then the module deliberately exported no
+// placeholder for it — no invented transcript ever stood in for it.
+import Layout from "../../layouts/Layout.astro";
+import PageHero from "../../components/PageHero.astro";
+import ColleagueDiagram from "../../components/ColleagueDiagram.astro";
+import ColleagueTerminal from "../../components/ColleagueTerminal.astro";
+import site from "../../data/site";
+import colleague from "../../data/colleague";
+import {
+  identityWhoami,
+  tauiState,
+  workDirtyRefusal,
+  workFlightRun,
+  rolesList,
+  lobesSparkCortex,
+  lobesThorSenses,
+  selfBuildTrace,
+  dogfoodExplore,
+  dogfoodFeedback,
+  dogfoodReview,
+} from "../../data/colleague-captures";
+
+// Dogfood copy, authored here rather than in colleague.ts — see the header
+// comment above for why. Every claim below matches the provenance already
+// documented on the panes this section renders (colleague-captures.ts:
+// selfBuildTrace, dogfoodExplore, dogfoodFeedback, dogfoodReview — the
+// pre-PR review pane carries its own provenance comment there).
+const dogfood = {
+  eyebrow: "dogfood",
+  headline: "It runs on real work — this page included",
+  intro: [
+    "Every capture on this page is a real session, and four of them prove the point on colleague itself, not just in prose. The step trace below is ported straight from the public repo: colleague once built its own website in eight bounded steps, with no step failing.",
+    "The other three are this very page. While it was being specced, colleague explored its own repo as ask-colleague's second, independent mind, and that run was graded through the same ROI loop described above. Then, before this page's pull request opened, colleague reviewed the diff itself — its one real catch shipped, recorded as a first-class deviation on the plan's ledger.",
+  ],
+};
+---
+
+<Layout
+  title={`colleague · Agents · ${site.hero.title}`}
+  description={colleague.hero.metaDescription}
+>
+  <PageHero title={colleague.hero.title} intro={colleague.hero.intro} />
+
+  <!-- fast facts -->
+  <section class="section facts-section" aria-label="Fast facts">
+    <div class="container">
+      <ul class="facts">
+        {
+          colleague.facts.map((fact, i) => (
+            <li
+              class="fact"
+              data-reveal
+              style={`--reveal-delay: ${Math.min(i * 0.07, 0.28)}s`}
+            >
+              <span class="fact-label muted">{fact.label}</span>
+              <span class="fact-value">
+                {fact.href ? <a href={fact.href}>{fact.value}</a> : fact.value}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- the paradigm -->
+  <section class="section" aria-label="The paradigm">
+    <div class="container">
+      <span class="eyebrow" data-reveal>{colleague.paradigm.eyebrow}</span>
+      <h2 data-reveal>{colleague.paradigm.headline}</h2>
+      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
+        {colleague.paradigm.intro.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <div class="diagram-wrap" data-reveal>
+        <ColleagueDiagram caption="One runtime, many minds, in one glance: the top band is one CockpitState rendered three honest ways; the bottom band is cortex and senses, resolved by role from the lobes gateway. Two facts, joined by the one runtime that consumes one and renders the other." />
+      </div>
+      <ul class="paradigm-cards">
+        {
+          colleague.paradigm.cards.map((card, i) => (
+            <li
+              class="card paradigm-card"
+              data-reveal
+              style={`--reveal-delay: ${Math.min(i * 0.07, 0.28)}s`}
+            >
+              <h3 class="paradigm-name">{card.name}</h3>
+              <p class="paradigm-detail muted">{card.detail}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="term-narrow" data-reveal>
+        <ColleagueTerminal pane={identityWhoami} />
+      </div>
+    </div>
+  </section>
+
+  <!-- three tiers -->
+  <section class="section" aria-label="Three tiers">
+    <div class="container">
+      <span class="eyebrow" data-reveal>{colleague.tiers.eyebrow}</span>
+      <h2 data-reveal>{colleague.tiers.headline}</h2>
+      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
+        {colleague.tiers.intro.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <ul class="tier-cards">
+        {
+          colleague.tiers.cards.map((tier, i) => (
+            <li
+              class="card tier-card"
+              data-reveal
+              style={`--reveal-delay: ${Math.min(i * 0.08, 0.24)}s`}
+            >
+              <h3 class="tier-name">{tier.name}</h3>
+              <span class="tier-surface muted">{tier.surface}</span>
+              <p class="tier-detail muted">{tier.detail}</p>
+              <code class="tier-commands">{tier.commands}</code>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="term-grid">
+        <div data-reveal>
+          <ColleagueTerminal pane={tauiState} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- the work loop -->
+  <section class="section" aria-label="The work loop">
+    <div class="container">
+      <span class="eyebrow" data-reveal>{colleague.work.eyebrow}</span>
+      <h2 data-reveal>{colleague.work.headline}</h2>
+      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
+        {colleague.work.intro.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <ul class="work-cards">
+        {
+          colleague.work.cards.map((card, i) => (
+            <li
+              class="card work-card"
+              data-reveal
+              style={`--reveal-delay: ${Math.min(i * 0.07, 0.35)}s`}
+            >
+              <h3 class="work-name">{card.name}</h3>
+              <code class="work-verbs">{card.verbs}</code>
+              <p class="work-detail muted">{card.detail}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <!-- the dirty-tree refusal is four lines on purpose — it takes the
+           narrow column beside the full flight-piloted run, same seam idiom
+           as devague.astro's execution-seam row -->
+      <div class="term-grid seam">
+        <div data-reveal>
+          <ColleagueTerminal pane={workDirtyRefusal} />
+        </div>
+        <div data-reveal style="--reveal-delay: 0.12s">
+          <ColleagueTerminal pane={workFlightRun} start={1.4} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- the workforce -->
+  <section class="section" aria-label="The workforce">
+    <div class="container">
+      <span class="eyebrow" data-reveal>{colleague.subagents.eyebrow}</span>
+      <h2 data-reveal>{colleague.subagents.headline}</h2>
+      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
+        {colleague.subagents.intro.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <div
+        class="table-wrap card"
+        data-reveal
+        style="--reveal-delay: 0.1s"
+        tabindex="0"
+        role="region"
+        aria-label="subagent roles table"
+      >
+        <table>
+          <thead>
+            <tr>
+              <th>role</th>
+              <th>access</th>
+              <th>tools</th>
+              <th>use</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              colleague.subagents.roles.map((role) => (
+                <tr>
+                  <td>
+                    <code>{role.name}</code>
+                  </td>
+                  <td>
+                    <span
+                      class={`access ${role.readOnly ? "access-readonly" : "access-full"}`}
+                    >
+                      {role.readOnly ? "read-only" : "full"}
+                    </span>
+                  </td>
+                  <td class="tools-cell muted">{role.tools}</td>
+                  <td class="use-cell muted">{role.use}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="term-grid">
+        <div data-reveal>
+          <ColleagueTerminal pane={rolesList} wrap />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- cortex & senses -->
+  <section class="section" aria-label="Cortex and senses">
+    <div class="container">
+      <span class="eyebrow" data-reveal>{colleague.cortexSenses.eyebrow}</span>
+      <h2 data-reveal>{colleague.cortexSenses.headline}</h2>
+      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
+        {colleague.cortexSenses.intro.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <ul class="minds">
+        {
+          colleague.cortexSenses.cards.map((card, i) => (
+            <li
+              class="card mind-card"
+              data-reveal
+              style={`--reveal-delay: ${Math.min(i * 0.08, 0.24)}s`}
+            >
+              <h3 class="mind-name">{card.name}</h3>
+              <span class="mind-role muted">{card.role}</span>
+              <p class="mind-detail muted">{card.detail}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <!-- the mesh pair: one brain split across two machines — spark
+           carries cortex, Thor carries senses -->
+      <div class="term-grid">
+        <div data-reveal>
+          <ColleagueTerminal pane={lobesSparkCortex} />
+        </div>
+        <div data-reveal style="--reveal-delay: 0.12s">
+          <ColleagueTerminal pane={lobesThorSenses} start={1.4} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- eidetic memory -->
+  <section class="section" aria-label="Eidetic memory">
+    <div class="container">
+      <span class="eyebrow" data-reveal>{colleague.memory.eyebrow}</span>
+      <h2 data-reveal>{colleague.memory.headline}</h2>
+      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
+        {colleague.memory.intro.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <div class="measured-grid">
+        {
+          colleague.memory.measured.map((leg, i) => (
+            <div
+              class="card measured-card"
+              data-reveal
+              style={`--reveal-delay: ${Math.min(i * 0.12, 0.12)}s`}
+            >
+              <span class="measured-leg">{leg.leg}</span>
+              <span class="measured-workitem muted">{leg.workItem}</span>
+              <dl class="measured-stats">
+                <div>
+                  <dt>steps</dt>
+                  <dd>{leg.steps}</dd>
+                </div>
+                <div>
+                  <dt>model turns</dt>
+                  <dd>{leg.modelTurns}</dd>
+                </div>
+                <div>
+                  <dt>tokens</dt>
+                  <dd>{leg.tokens}</dd>
+                </div>
+                <div>
+                  <dt>duration</dt>
+                  <dd>{leg.duration}</dd>
+                </div>
+              </dl>
+            </div>
+          ))
+        }
+      </div>
+      <p class="measured-note muted" data-reveal style="--reveal-delay: 0.16s">
+        {colleague.memory.measuredNote}
+      </p>
+    </div>
+  </section>
+
+  <!-- more surfaces -->
+  <section class="section" aria-label="More surfaces">
+    <div class="container">
+      <span class="eyebrow" data-reveal>{colleague.moreSurfaces.eyebrow}</span>
+      <h2 data-reveal>{colleague.moreSurfaces.headline}</h2>
+      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
+        {colleague.moreSurfaces.intro.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <ul class="surfaces">
+        {
+          colleague.moreSurfaces.cards.map((card, i) => (
+            <li
+              class="card surface-card"
+              data-reveal
+              style={`--reveal-delay: ${Math.min(i * 0.05, 0.4)}s`}
+            >
+              <h3 class="surface-name">{card.name}</h3>
+              <p class="surface-detail muted">{card.detail}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- dogfood: real captures proving the whole page on colleague's own work -->
+  <section class="section" aria-label="Dogfood — real work, including its own">
+    <div class="container">
+      <span class="eyebrow" data-reveal>{dogfood.eyebrow}</span>
+      <h2 data-reveal>{dogfood.headline}</h2>
+      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
+        {dogfood.intro.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <!-- ported: the self-build drive, a committed public artifact -->
+      <div class="term-grid">
+        <div data-reveal>
+          <ColleagueTerminal pane={selfBuildTrace} />
+        </div>
+      </div>
+      <!-- fresh run: the second mind reads its own repo, then that run is
+           graded — closing the ROI loop described in "more surfaces" above -->
+      <div class="term-grid">
+        <div data-reveal>
+          <ColleagueTerminal pane={dogfoodExplore} />
+        </div>
+        <div data-reveal style="--reveal-delay: 0.12s">
+          <ColleagueTerminal pane={dogfoodFeedback} start={1.4} />
+        </div>
+      </div>
+      <!-- fresh run: the pre-PR review of this very page's committed diff —
+           captured once the run existed, exactly as the placeholder that
+           previously stood here promised. Its one adopted catch is
+           deviation d1 on the plan's ledger. -->
+      <div class="term-grid">
+        <div data-reveal>
+          <ColleagueTerminal pane={dogfoodReview} start={0.5} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- what's next, from the open tracker -->
+  <section class="section" aria-label="What's next">
+    <div class="container">
+      <span class="eyebrow" data-reveal>{colleague.whatsNext.eyebrow}</span>
+      <h2 data-reveal>{colleague.whatsNext.headline}</h2>
+      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
+        {colleague.whatsNext.intro.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <ul class="themes">
+        {
+          colleague.whatsNext.themes.map((theme, i) => (
+            <li
+              class="card theme-card"
+              data-reveal
+              style={`--reveal-delay: ${Math.min(i * 0.08, 0.24)}s`}
+            >
+              <h3 class="theme-name">{theme.name}</h3>
+              <p class="theme-direction muted">{theme.direction}</p>
+              <ul class="theme-issues">
+                {theme.issues.map((issue) => (
+                  <li>
+                    <a href={issue.url}>
+                      <span class="issue-num">#{issue.number}</span>{" "}
+                      {issue.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- closing -->
+  <section class="section closing" aria-label="Closing">
+    <div class="container">
+      <div class="prose" data-reveal>
+        {colleague.closing.paragraphs.map((p) => <p class="lede">{p}</p>)}
+        <p class="cta-row" data-reveal style="--reveal-delay: 0.15s">
+          <a class="cta" href={colleague.closing.repoUrl}
+            >{colleague.closing.repoCta} →</a
+          >
+          <a class="cta" href={colleague.closing.pypiUrl}
+            ><code>{colleague.closing.pypiCta}</code></a
+          >
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .section {
+    padding-block: clamp(2.6rem, 6vh, 4.2rem);
+  }
+
+  .facts-section {
+    padding-block: 0 1rem;
+  }
+
+  /* fast facts */
+  .facts {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem 0.9rem;
+  }
+
+  .fact {
+    display: flex;
+    align-items: baseline;
+    gap: 0.55rem;
+    padding: 0.55rem 1.05rem;
+    background: var(--surface);
+    border: 1px solid var(--line-soft);
+    border-radius: 999px;
+    box-shadow: var(--shadow);
+    font-size: 0.85rem;
+  }
+
+  .fact-label {
+    font-size: 0.72rem;
+    font-weight: 640;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .fact-value {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 480px) {
+    .fact-value {
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  /* the paradigm */
+  .diagram-wrap {
+    margin-block: 2.6rem 2.8rem;
+    max-width: 46rem;
+    margin-inline: auto;
+  }
+
+  .paradigm-cards,
+  .tier-cards,
+  .work-cards,
+  .minds,
+  .surfaces {
+    list-style: none;
+    margin-top: 2.2rem;
+    display: grid;
+    gap: 1.1rem;
+  }
+
+  .paradigm-cards {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  }
+
+  .paradigm-card,
+  .tier-card,
+  .work-card,
+  .mind-card,
+  .surface-card {
+    padding: 1.4rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .paradigm-name,
+  .tier-name,
+  .work-name,
+  .mind-name,
+  .surface-name {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 1.02rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--accent);
+  }
+
+  .paradigm-detail,
+  .surface-detail {
+    font-size: 0.92rem;
+    line-height: 1.55;
+    margin-top: 0.1rem;
+  }
+
+  /* a single narrow terminal, centered — the same idiom as .diagram-wrap
+     above, sized for a short, six-line identity probe rather than a full
+     term-grid column */
+  .term-narrow {
+    margin-top: 2.2rem;
+    max-width: 28rem;
+    margin-inline: auto;
+  }
+
+  /* three tiers */
+  .tier-cards {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  }
+
+  .tier-surface {
+    font-size: 0.7rem;
+    font-weight: 640;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .tier-detail {
+    font-size: 0.92rem;
+    line-height: 1.55;
+    flex-grow: 1;
+    margin-top: 0.15rem;
+  }
+
+  .tier-commands {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.01em;
+    overflow-wrap: anywhere;
+  }
+
+  /* the work loop */
+  .work-cards {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  }
+
+  .work-verbs {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    letter-spacing: 0.01em;
+    overflow-wrap: anywhere;
+  }
+
+  .work-detail {
+    font-size: 0.92rem;
+    line-height: 1.55;
+    margin-top: 0.15rem;
+  }
+
+  /* the workforce: roles table + the live capture beneath it */
+  .table-wrap {
+    margin-top: 2.2rem;
+    padding: 1.5rem 1.6rem;
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.86rem;
+    line-height: 1.5;
+  }
+
+  th {
+    text-align: left;
+    font-weight: 620;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    padding: 0.35rem 1rem 0.55rem 0;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 0.7rem 1rem 0.7rem 0;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  .tools-cell,
+  .use-cell {
+    font-size: 0.84rem;
+  }
+
+  .tools-cell {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    min-width: 20rem;
+  }
+
+  .access {
+    display: inline-block;
+    white-space: nowrap;
+    padding: 0.1rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 620;
+    letter-spacing: 0.06em;
+  }
+
+  .access-readonly {
+    color: var(--accent-strong);
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+
+  .access-full {
+    color: var(--ink-soft);
+    border: 1px dashed var(--line);
+  }
+
+  /* cortex & senses */
+  .minds {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  }
+
+  .mind-role {
+    font-size: 0.72rem;
+    font-weight: 640;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .mind-detail {
+    font-size: 0.92rem;
+    line-height: 1.55;
+    margin-top: 0.15rem;
+  }
+
+  /* eidetic memory: the measured pair */
+  .measured-grid {
+    margin-top: 2.2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: 1.1rem;
+  }
+
+  .measured-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 1.4rem 1.5rem;
+  }
+
+  .measured-leg {
+    font-family: var(--font-mono);
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .measured-workitem {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+  }
+
+  .measured-stats {
+    margin: 0.7rem 0 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.6rem 1rem;
+  }
+
+  .measured-stats div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  .measured-stats dt {
+    font-size: 0.68rem;
+    font-weight: 640;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .measured-stats dd {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .measured-note {
+    margin-top: 1.6rem;
+    max-width: 42rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    padding-left: 1rem;
+    border-left: 2px solid var(--accent);
+  }
+
+  /* more surfaces */
+  .surfaces {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  }
+
+  /* captures, shared across sections */
+  .term-grid {
+    margin-top: 2.2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+    gap: 1.3rem;
+    align-items: start;
+  }
+
+  .term-grid + .term-grid {
+    margin-top: 1.3rem;
+  }
+
+  /* the seam row: the deliberately short dirty-tree refusal takes the
+     narrow column, the full flight-piloted run the wide one; below the
+     sibling grids' natural two-column width it stacks like every other
+     row — same idiom as devague.astro's .seam */
+  .term-grid.seam {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  }
+
+  @media (max-width: 52rem) {
+    .term-grid.seam {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* what's next */
+  .themes {
+    list-style: none;
+    margin-top: 2.2rem;
+    display: grid;
+    gap: 1.1rem;
+  }
+
+  .theme-card {
+    padding: 1.6rem 1.8rem;
+  }
+
+  .theme-name {
+    margin-bottom: 0.4em;
+  }
+
+  .theme-direction {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    max-width: 46rem;
+  }
+
+  .theme-issues {
+    list-style: none;
+    margin-top: 1rem;
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .theme-issues li {
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+
+  .issue-num {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+
+  /* closing */
+  .closing {
+    padding-bottom: clamp(4rem, 9vh, 6.5rem);
+  }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.8rem;
+    align-items: baseline;
+  }
+
+  .cta {
+    font-weight: 560;
+    white-space: nowrap;
+  }
+</style>

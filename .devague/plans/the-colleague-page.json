@@ -1,0 +1,375 @@
+{
+  "slug": "the-colleague-page",
+  "title": "the colleague page",
+  "frame_slug": "the-colleague-page",
+  "schema_version": 2,
+  "status": "exported",
+  "created": "2026-07-16T05:31:39Z",
+  "updated": "2026-07-16T05:37:10Z",
+  "targets": [
+    {
+      "id": "c1",
+      "kind": "announcement",
+      "text": "agentculture.org/agents/colleague is live \u2014 a presentation-grade page introducing colleague to someone who has never seen it: the paradigm behind it (a second, independent mind on a different backend, run as a peer), its three interaction surfaces (interactive TUI, agent-interactive TAUI, bot-interactive JSON), batch work via colleague work, subagent orchestration, roles, models-for-purposes (cortex and senses), and eidetic memory \u2014 presented with real captured sessions, good enough that Ori can present colleague by just showing the page"
+    },
+    {
+      "id": "h12",
+      "kind": "honesty",
+      "text": "the live page presents every surface the announcement names \u2014 paradigm, TUI, TAUI, bot JSON, colleague work, subagents, roles, cortex/senses, eidetic memory \u2014 each with at least one real capture or authoring-day-verified fact; nothing announced is missing from the page"
+    },
+    {
+      "id": "c2",
+      "kind": "requirement",
+      "text": "The page follows the sibling pattern read from agents/devague.astro and agents/lobes.astro: a new site-astro/src/pages/agents/colleague.astro page, a content model src/data/colleague.ts, a verbatim-captures module src/data/colleague-captures.ts, and a ColleagueTerminal.astro replay component \u2014 sections composed from PageHero, fast-fact chips, card grids, and terminal replay grids"
+    },
+    {
+      "id": "h1",
+      "kind": "honesty",
+      "text": "the built page renders entirely from its own colleague.ts + colleague-captures.ts + ColleagueTerminal.astro; no shared component (Layout, PageHero, Header, Footer) changes"
+    },
+    {
+      "id": "c3",
+      "kind": "requirement",
+      "text": "src/data/site.ts already carries a colleague entry in agents.entries (Mesh and platform group) whose url points at github.com/agentculture/colleague; the change flips that url to /agents/colleague/ the same way lobes-cli points at /agents/lobes/ and devague at /agents/devague/"
+    },
+    {
+      "id": "h2",
+      "kind": "honesty",
+      "text": "after the flip, the built site serves /agents/colleague/ and the agents index card links there; the GitHub link survives on the page itself (fact chip + closing CTA)"
+    },
+    {
+      "id": "c4",
+      "kind": "boundary",
+      "text": "Every terminal on the page REPLAYS a real captured session recorded once while authoring, per the contract documented at the head of devague-captures.ts: verbatim cmd/out lines, cuts marked with first-class ellipsis lines, no reworded kept lines, zero client-side network calls \u2014 the page never runs colleague at build or view time"
+    },
+    {
+      "id": "h16",
+      "kind": "honesty",
+      "text": "a grep of the built page output finds no fetch/XHR/WebSocket and no external asset host; every pane in colleague-captures.ts names its source artifact or fresh-run date+version"
+    },
+    {
+      "id": "c8",
+      "kind": "success_signal",
+      "text": "Same measurable floor as the sibling pages: Lighthouse performance and accessibility >= 95 on the built page, light and dark themes both pass WCAG AA, animations compositor-only honoring prefers-reduced-motion, zero client-side network calls, plus an explicit presentable-as-is preview sign-off from Ori before merge"
+    },
+    {
+      "id": "h17",
+      "kind": "honesty",
+      "text": "the bar is measured on the built page, not assumed: Lighthouse perf+a11y >=95, axe/contrast AA in both themes, reduced-motion serves completed transcripts, and Ori's sign-off happens on a served preview before merge"
+    },
+    {
+      "id": "c9",
+      "kind": "requirement",
+      "text": "The page opens with the paradigm, verbatim from the repo's own words: one runtime, many minds \u2014 a swappable coder-agent harness that turns different model backends into repo workers behind one shared task runtime; the harness around the model, not the model; a different mind, not a stronger one (diversity is the value); the colleague at the next desk, a peer not a tool; a headless task runtime, explicitly not a chat assistant or IDE plugin; local vLLM Qwen as the reference backend"
+    },
+    {
+      "id": "h3",
+      "kind": "honesty",
+      "text": "every paradigm line on the page traces to colleague's own words in README.md/CLAUDE.md/docs \u2014 quoted or tightly paraphrased with the source verified at authoring; no invented manifesto lines"
+    },
+    {
+      "id": "c10",
+      "kind": "requirement",
+      "text": "A section presents the three render tiers of one CockpitState, chosen automatically: the human ANSI cockpit TUI (bare colleague / colleague session / colleague tui live), the agent tier TAUI \u2014 Textual Agentic UI, a serialised selector-addressed JSON mirror plus a Markdown render an agent can drive without a screen reader or an LLM call (colleague tui state / render) \u2014 and the bot tier, --json on every verb with one TaskResult on stdout, .colleague/<id>.json artifacts, a WorkStep JSONL stream, and colleague mcp serve"
+    },
+    {
+      "id": "h4",
+      "kind": "honesty",
+      "text": "TAUI is expanded as Textual Agentic UI exactly as tui.md:24 does, and every launch command printed on the page (colleague, colleague session, colleague tui live/state/render, --json) is re-verified against colleague 1.48.x --help output at authoring time"
+    },
+    {
+      "id": "c11",
+      "kind": "requirement",
+      "text": "A section presents batch work, colleague work: the typed Task -> TaskResult contract (same shape for every engine), throwaway-worktree write isolation on colleague/<id> branches with dirty-tree refusal, the bounded tool-loop (seven base tools plus curated optional ones, guaranteed termination), default-ON advisory pre-finish gates, handoff to branch/commit/PR, and piloting a live run via flight status/guide/stop plus --background, --until-done, --continue"
+    },
+    {
+      "id": "h5",
+      "kind": "honesty",
+      "text": "every work-lifecycle fact rendered (worktree isolation on colleague/<id>, dirty-tree refusal, seven base tools, max_steps default, flight verbs, --background/--until-done/--continue) is re-verified against docs/features/* or CLI --help at authoring time"
+    },
+    {
+      "id": "c12",
+      "kind": "requirement",
+      "text": "A section presents subagent orchestration and the typed roles workforce: mid-run subagent/subagents loop tools, each child in its own worktree on a sub/<id> branch running the same bounded loop, a merge-subagent that surfaces (never force-merges) conflicts, structural caps (depth 2 / fanout 4 plain; depth 4 / total 24 with roles), and the five built-in roles \u2014 explorer, planner, reviewer, validator, writer \u2014 where a read-only role provably cannot mutate the tree because the ToolExecutor refuses withheld tools even if the model hallucinates the call"
+    },
+    {
+      "id": "h6",
+      "kind": "honesty",
+      "text": "the roles table rendered on the page matches colleague roles list --json output at authoring time, including which roles are read-only and the structural-refusal claim stated no more strongly than subagent-roles.md states it"
+    },
+    {
+      "id": "c13",
+      "kind": "requirement",
+      "text": "A section presents models-for-purposes: minds resolved by ROLE from the lobes gateway, not by hardcoded model id \u2014 cortex, the fast wide-window tool-calling mind that drives the loop (reference rig: Qwen3.6-27B, 128K), and senses, the tools-off multimodal front door that intakes the operator's request and speaks the result back but structurally cannot act (every senses call is tools=[]; reference rig: gemma-4-12B, 32K) \u2014 with lobes armed, zero model ids in colleague's own config"
+    },
+    {
+      "id": "h7",
+      "kind": "honesty",
+      "text": "the senses-cannot-act claim is stated exactly as the repo grounds it (every senses call is tools=[]; senses.py imports neither ToolExecutor nor subprocess) and the rig models are labeled as the probed reference rig, not as requirements"
+    },
+    {
+      "id": "c14",
+      "kind": "requirement",
+      "text": "A section presents eidetic memory: every work item wrapped in recall-before and remember-after against the repo's eidetic store, a model-callable memory tool mid-run (read-only roles get recall only), triple-gated default-ON, one store shared between colleague and Claude so the two minds read each other's lessons, incomplete runs recorded too \u2014 and the measured warm-vs-cold numbers: 5x fewer steps, 5.5x fewer tokens, 3.3x faster on the same task"
+    },
+    {
+      "id": "h8",
+      "kind": "honesty",
+      "text": "the 5x/5.5x/3.3x warm-vs-cold numbers are presented with their provenance (one measured task pair in memory.md, run ids named) \u2014 never as a general benchmark claim"
+    },
+    {
+      "id": "c16",
+      "kind": "requirement",
+      "text": "Fact chips verified against live sources: install uv tool install colleague (PyPI serves colleague 1.48.0, homepage agentculture/colleague), repo agentculture/colleague, license Apache-2.0, Python >=3.12, entry points colleague and clg, one base dependency (agentfront)"
+    },
+    {
+      "id": "h9",
+      "kind": "honesty",
+      "text": "each fact chip is re-verified against its live source on authoring day: PyPI JSON for install+version, pyproject.toml for license/python/entry-points/deps"
+    },
+    {
+      "id": "c17",
+      "kind": "audience",
+      "text": "A live-presentation audience first: Ori presents colleague to someone who has never seen it by just showing this page while talking over it. Secondarily, humans and agents browsing agentculture.org/agents/ cold."
+    },
+    {
+      "id": "h18",
+      "kind": "honesty",
+      "text": "each section headline reads as a line Ori would say aloud while presenting \u2014 checked by reading the page top to bottom as a script"
+    },
+    {
+      "id": "c18",
+      "kind": "after_state",
+      "text": "agentculture.org/agents/colleague presents colleague end to end: the paradigm (one runtime, many minds; a different mind, not a stronger one), the three render tiers (TUI cockpit, TAUI, bot JSON), batch work via colleague work with flight piloting, subagent orchestration with typed roles, models-for-purposes (cortex and senses via lobes), eidetic memory with the measured warm-vs-cold win, and real captured sessions throughout; the /agents/ index card for colleague flips from the GitHub link to /agents/colleague/"
+    },
+    {
+      "id": "h19",
+      "kind": "honesty",
+      "text": "a section-by-section walk of the built page against the announcement finds every named surface present with at least one real capture or verified fact"
+    },
+    {
+      "id": "c19",
+      "kind": "why_it_matters",
+      "text": "colleague is the org's standing second mind \u2014 the diversity thesis (a different mind catches what the author's mind glides past) made runnable \u2014 and the only presentation of it today is scattered across a README and sixty feature docs; a single presentable page is how the paradigm gets shown, not explained from memory"
+    },
+    {
+      "id": "h20",
+      "kind": "honesty",
+      "text": "the hero states the second-mind thesis in words traceable to the repo's own diversity line, not invented marketing"
+    },
+    {
+      "id": "c20",
+      "kind": "requirement",
+      "text": "A compact 'more surfaces' section covers, per Ori's decision: the ask-colleague verbs + the ROI loop (always-on WorkStats + 1-5 feedback); the safety/trust model stated honestly (approval gate as policy gate not sandbox, write previews by default, dirty-tree refusal); mesh/culture residency + the organs map; voice (stt/tts), deepthink, and media input (audio + vision); worktree isolation presented as the cross-cutting story spanning work items, subagent sub/<id> branches, and the ask-colleague verbs; and agentfront as the shared foundation that fits humans, agents, and bots (colleague's one base dep, the TAUI cockpit imported from agentfront.taui)"
+    },
+    {
+      "id": "h13",
+      "kind": "honesty",
+      "text": "every fact in the more-surfaces section is re-verified against its colleague doc or CLI output at authoring time, and the safety copy never claims sandboxing \u2014 policy gate and worktree isolation are stated with the repo's own honest limits"
+    },
+    {
+      "id": "c21",
+      "kind": "requirement",
+      "text": "The page closes with a what's-next section drawn from colleague's live open tracker (the devague-page pattern): themes distilled from open issues, each linking only issues verified open at authoring time"
+    },
+    {
+      "id": "h14",
+      "kind": "honesty",
+      "text": "every issue linked in what's-next is verified open via gh issue list on authoring day; themes cite only issues that exist"
+    },
+    {
+      "id": "c22",
+      "kind": "requirement",
+      "text": "This build's own ask-colleague runs are a first-class captured story on the page: the explore run reading colleague's repo (with its live flight feed) and the pre-PR review run over this very page's diff, captured verbatim like the devague page replaying its own speccing session"
+    },
+    {
+      "id": "h15",
+      "kind": "honesty",
+      "text": "the dogfood panes replay this build's real runs verbatim \u2014 flight feed lines and TaskResult summaries as produced, cuts marked as ellipsis lines, run ids and dates carried in the pane chrome"
+    },
+    {
+      "id": "c23",
+      "kind": "boundary",
+      "text": "Ported capture panes cite only committed, publicly traceable colleague-repo paths (docs/drive-notes/2026-05-29-website-self-build/ \u2014 verified committed via git ls-files: notes.md, success-bdd455519da0.json + .trace.jsonl, render.png); .colleague/ run artifacts are gitignored and NOT public, so material from them is presented as a fresh-run capture (run id + date + colleague version in pane chrome), never cited as a public repo path"
+    },
+    {
+      "id": "h21",
+      "kind": "honesty",
+      "text": "every ported pane's cited path resolves in the public colleague repo at authoring time (git ls-files check), and every non-public-sourced pane is labeled fresh-run with run id + date + colleague version"
+    },
+    {
+      "id": "c24",
+      "kind": "boundary",
+      "text": "No-secrets bar for every pane: no tokens, keys, or private URLs; a line that would need redaction is cut with a first-class ellipsis line, never reworded (the verbatim rule allows cuts, not edits); prefer panes needing no redaction; localhost:8001 endpoints are fine \u2014 already public in colleague's own docs"
+    },
+    {
+      "id": "h22",
+      "kind": "honesty",
+      "text": "a pane-by-pane review of the final captures module before merge finds no token, key, or private URL, and every omission is a visible first-class ellipsis line"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "t1",
+      "summary": "Harvest and author colleague-captures.ts \u2014 every pane real: port committed self-build drive material (docs/drive-notes/2026-05-29, paths verified via git ls-files), run fresh sessions once (whoami, tui state excerpt, roles list --json, lobes show against Thor with senses ready, a small work run with flight feed), and capture this build's own dogfood story (explore e41355e8e5ac + the pre-PR review)",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "colleague-captures.ts passes astro check and exports panes covering paradigm/whoami, TAUI tui state excerpt, work+flight, roles list, lobes show (Thor, senses ready), and the dogfood explore + review",
+        "every pane carries id, title, context, capturedDate, colleagueVersion and a source label: a public committed path (git ls-files verified) or a fresh-run id + date",
+        "zero tokens/keys/private URLs; every omission is a first-class ellipsis line; no kept line reworded"
+      ],
+      "deps": [],
+      "covers": [
+        "c4",
+        "c22",
+        "c23",
+        "c24",
+        "h15",
+        "h16",
+        "h21",
+        "h22"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t2",
+      "summary": "Author colleague.ts \u2014 the content model with spoken headlines: hero (second-mind thesis), verified fact chips, and section copy for paradigm, three tiers, work+flight, subagents+roles, cortex/senses, eidetic memory, more-surfaces, what's-next (from the live tracker), closing",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "colleague.ts passes astro check; every paradigm line carries a source comment traceable to colleague's README/CLAUDE/docs; TAUI expanded as Textual Agentic UI; every command re-verified against colleague 1.48.x --help",
+        "fact chips re-verified against PyPI JSON + pyproject.toml on authoring day; roles table matches roles list --json; warm-vs-cold numbers carry run ids and provenance; senses-cannot-act stated exactly as the repo grounds it; safety copy never claims sandboxing",
+        "what's-next themes link only issues verified open via gh issue list on authoring day; headlines read as spoken lines"
+      ],
+      "deps": [],
+      "covers": [
+        "c9",
+        "c10",
+        "c11",
+        "c12",
+        "c13",
+        "c14",
+        "c16",
+        "c19",
+        "c20",
+        "c21",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "h7",
+        "h8",
+        "h9",
+        "h13",
+        "h14",
+        "h20"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t3",
+      "summary": "Build ColleagueTerminal.astro \u2014 the replay component, DevagueTerminal's technique deliberately unshared: escaped-string transcript via set:html, every injected class wrapped in :global(), IntersectionObserver class-toggle playback, its own data marker, leg/tier accent colors for colleague pane kinds",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "renders a CapturePane with the pinned interface (kind cmd/out/ellipsis lines; id/title/context/capturedDate/colleagueVersion; optional source label)",
+        "every class injected via set:html is wrapped in :global(); no-JS and reduced-motion render the completed transcript; astro check passes"
+      ],
+      "deps": [],
+      "covers": [],
+      "instruction": ""
+    },
+    {
+      "id": "t4",
+      "summary": "Compose colleague.astro and flip the site.ts card url to /agents/colleague/",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "npm run build emits dist/agents/colleague/index.html; the agents index card links /agents/colleague/; the page still links the GitHub repo (fact chip + closing CTA)",
+        "git diff touches no shared component (Layout, PageHero, Header, Footer) and no sibling page"
+      ],
+      "deps": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "covers": [
+        "c2",
+        "c3",
+        "h1",
+        "h2"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t5",
+      "summary": "Validate the built page against the design bar and the announcement",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "npm run build green; Lighthouse performance and accessibility >= 95 on the served page; axe/contrast AA in both themes; prefers-reduced-motion shows completed transcripts",
+        "grep of dist finds no fetch/XHR/WebSocket and no external asset host; no deploy workflow added by this change",
+        "a top-to-bottom read as a spoken script passes; a section-by-section walk against the announcement finds every named surface with at least one real capture or verified fact; served preview ready for Ori's sign-off"
+      ],
+      "deps": [
+        "t4"
+      ],
+      "covers": [
+        "c1",
+        "c8",
+        "c17",
+        "c18",
+        "h12",
+        "h17",
+        "h18",
+        "h19"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t6",
+      "summary": "Version-bump the org repo and update CHANGELOG (every PR bumps; CI enforces)",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "pyproject.toml version bumped via the version-bump skill; Keep-a-Changelog entry prepended; uv run pytest -n auto green; teken cli doctor . --strict green"
+      ],
+      "deps": [],
+      "covers": [],
+      "instruction": ""
+    },
+    {
+      "id": "t7",
+      "summary": "Build ColleagueDiagram.astro \u2014 a small inline-SVG diagram of the one-runtime-many-minds shape (three render tiers around one CockpitState, cortex/senses split), theme-aware, reduced-motion-safe",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "inline SVG only, no external assets; both themes AA-legible; honors prefers-reduced-motion; astro check passes"
+      ],
+      "deps": [],
+      "covers": [],
+      "instruction": ""
+    }
+  ],
+  "risks": [
+    {
+      "id": "r1",
+      "text": "Thor's lobes gateway may be unreachable from this machine at capture time \u2014 the senses-ready lobes show pane depends on it (fallback: Ori loads gemma locally or the pane is deferred, a recorded deviation)",
+      "kind": "unknown_nonblocking",
+      "task_id": "t1"
+    },
+    {
+      "id": "r2",
+      "text": "the local vLLM rig (cortex) could go down mid-build, blocking fresh work/flight captures \u2014 verified live today via colleague whoami and lobes show",
+      "kind": "unknown_nonblocking",
+      "task_id": "t1"
+    },
+    {
+      "id": "r3",
+      "text": "page weight and animation cost of many capture panes is unmeasured until the page is built \u2014 bounded by the measured design bar (Lighthouse gate in t5)",
+      "kind": "unknown_nonblocking",
+      "task_id": "t5"
+    }
+  ]
+}

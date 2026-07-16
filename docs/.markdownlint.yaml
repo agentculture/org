@@ -1,0 +1,19 @@
+# Directory-scoped markdownlint config for docs/.
+#
+# markdownlint-cli2 does not merge a directory config with the repo-root
+# .markdownlint-cli2.yaml — it replaces it for this tree — so the root
+# preset (MD013/MD060 off, MD024 siblings_only) is mirrored here first.
+default: true
+MD013: false
+MD060: false
+MD024:
+  siblings_only: true
+# docs/specs/ and docs/plans/ are MACHINE-EXPORTED artifacts (devague
+# export) rendering confirmed frame/plan text verbatim. Claim text can
+# legitimately contain angle-bracket tokens like `colleague/<id>` or
+# `sub/<id>` — the names of real git branch patterns — which MD033
+# misreads as inline HTML. The exported artifact must not be hand-edited
+# to appease a linter (the frame is the source of truth), so MD033 is
+# off for this tree. Escaping such tokens at export time is a devague
+# exporter concern, tracked as a follow-up on agentculture/devague.
+MD033: false

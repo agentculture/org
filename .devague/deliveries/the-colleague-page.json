@@ -1,0 +1,21 @@
+{
+  "plan_slug": "the-colleague-page",
+  "schema_version": 1,
+  "created": "2026-07-16T06:54:57Z",
+  "updated": "2026-07-16T06:54:57Z",
+  "deviations": [
+    {
+      "id": "d1",
+      "what": "amend the site.ts colleague card role text alongside the confirmed url flip: 'A harness for Qwen, designed to run by itself \u2014 and other agents.' becomes 'A swappable coder-agent harness \u2014 one runtime, many minds; runs by itself, and other agents.'",
+      "task_ref": "t4",
+      "reason": "colleague's pre-PR review (run 7bd1b67432d0) caught the card still describing colleague as a harness for Qwen \u2014 the one claim contradicting the backend-agnostic paradigm the page presents; Ori approved adopting the fix",
+      "affects": [
+        "c3",
+        "c6"
+      ],
+      "origin": "user",
+      "status": "approved",
+      "classification": "acceptable"
+    }
+  ]
+}
