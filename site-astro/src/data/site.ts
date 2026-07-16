@@ -88,7 +88,7 @@ const site: SiteData = {
         name: "colleague",
         repo: "agentculture/colleague",
         url: "/agents/colleague/",
-        role: "A harness for Qwen, designed to run by itself — and other agents.",
+        role: "A swappable coder-agent harness — one runtime, many minds; runs by itself, and other agents.",
         group: "Mesh & platform",
       },
       {

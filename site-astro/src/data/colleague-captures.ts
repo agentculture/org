@@ -387,8 +387,55 @@ export const dogfoodFeedback: CapturePane = {
   ],
 };
 
-// The dogfood loop, part 3 — the pre-PR review pane — is appended by the
-// operator once that run exists (it reviews this very page's committed
-// diff, so it can only be captured after the page is built). Until then
-// this module deliberately exports no placeholder: absent capture, absent
-// pane — the page never renders an invented transcript.
+/** The dogfood loop, part 3: before this page's PR opened, colleague
+ * reviewed the page's own committed diff — and caught the one claim on the
+ * site that still contradicted the paradigm (the agents-index card written
+ * before this page existed). The catch was adopted, recorded as deviation
+ * d1 on the plan's ledger, and the run graded — the full loop, on the page
+ * about the tool that ran it. */
+export const dogfoodReview: CapturePane = {
+  id: "dogfood-review",
+  title: "the second mind reviews this page",
+  context: "spark · ask-colleague review main...HEAD · lobes armed at thor:8000",
+  capturedDate: capturedOn,
+  colleagueVersion: sessionVersion,
+  source: "fresh run · 7bd1b67432d0, 2026-07-16",
+  lines: [
+    { kind: "out", text: "flight: 7bd1b67432d0" },
+    {
+      kind: "out",
+      text: "feed: /tmp/ask-colleague.AeB4A5/.colleague/flight/7bd1b67432d0.feed.jsonl",
+    },
+    { kind: "out", text: "step 0: run_command git diff main...HEAD --stat [ok]" },
+    { kind: "out", text: "step 1: run_command git diff main...HEAD [ok]" },
+    { kind: "out", text: "step 2: read_file site-astro/src/data/colleague.ts [ok]" },
+    {
+      kind: "out",
+      text: "step 3: read_file site-astro/src/data/colleague-captures.ts [ok]",
+    },
+    {
+      kind: "out",
+      text: "step 4: read_file site-astro/src/pages/agents/colleague.astro [ok]",
+    },
+    {
+      kind: "out",
+      text: "step 8: finish ## Review: /agents/colleague Presentation Page [ok]",
+    },
+    { kind: "out", text: "status: ok" },
+    {
+      kind: "ellipsis",
+      text: "… (the full review; its one adopted catch below — the other findings were verified and declined, with the checks recorded in the run's feedback)",
+    },
+    {
+      kind: "out",
+      text: '1. **Fix site.ts:91 role description** — Change "A harness for Qwen" to something backend-agnostic. This is the only claim that actively misrepresents what colleague is.',
+    },
+    { kind: "ellipsis", text: "… (adopted — deviation d1 on the plan's ledger)" },
+    {
+      kind: "cmd",
+      text: 'ask-colleague feedback 7bd1b67432d0 --rating 4 --notes "…"',
+    },
+    { kind: "out", text: "rating: 4/5" },
+    { kind: "out", text: "by:     org" },
+  ],
+};

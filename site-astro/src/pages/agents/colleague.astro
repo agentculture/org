@@ -47,6 +47,7 @@ import {
   selfBuildTrace,
   dogfoodExplore,
   dogfoodFeedback,
+  dogfoodReview,
 } from "../../data/colleague-captures";
 
 // Dogfood copy, authored here rather than in colleague.ts — see the header
@@ -377,11 +378,15 @@ const dogfood = {
           <ColleagueTerminal pane={dogfoodFeedback} start={1.4} />
         </div>
       </div>
-      <!-- The third dogfood pane — the pre-PR review of this very page's
-           committed diff — is appended by the operator once that run
-           exists. colleague-captures.ts documents this and deliberately
-           exports no placeholder for it; this page renders nothing invented
-           in its place. -->
+      <!-- fresh run: the pre-PR review of this very page's committed diff —
+           captured once the run existed, exactly as the placeholder that
+           previously stood here promised. Its one adopted catch is
+           deviation d1 on the plan's ledger. -->
+      <div class="term-grid">
+        <div data-reveal>
+          <ColleagueTerminal pane={dogfoodReview} start={0.5} />
+        </div>
+      </div>
     </div>
   </section>
 
