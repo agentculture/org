@@ -25,11 +25,12 @@
 //
 // Every terminal below replays a real captured session from
 // ../../data/colleague-captures.ts — nothing on this page runs colleague, in
-// the browser or anywhere else. All ten capture panes that module exports
-// appear exactly once, each in the section it documents; the eleventh pane
-// the module's own trailing comment describes (the pre-PR review of this
-// page's own diff) doesn't exist yet, so it isn't rendered — no invented
-// transcript stands in for it.
+// the browser or anywhere else. All eleven capture panes that module
+// exports appear exactly once, each in the section it documents — including
+// dogfoodReview, the pre-PR review of this page's own diff, rendered in the
+// dogfood section below. That pane was appended only once the run
+// (7bd1b67432d0) existed; until then the module deliberately exported no
+// placeholder for it — no invented transcript ever stood in for it.
 import Layout from "../../layouts/Layout.astro";
 import PageHero from "../../components/PageHero.astro";
 import ColleagueDiagram from "../../components/ColleagueDiagram.astro";
@@ -52,8 +53,9 @@ import {
 
 // Dogfood copy, authored here rather than in colleague.ts — see the header
 // comment above for why. Every claim below matches the provenance already
-// documented on the three panes it introduces (colleague-captures.ts:
-// selfBuildTrace, dogfoodExplore, dogfoodFeedback).
+// documented on the panes this section renders (colleague-captures.ts:
+// selfBuildTrace, dogfoodExplore, dogfoodFeedback, dogfoodReview — the
+// pre-PR review pane carries its own provenance comment there).
 const dogfood = {
   eyebrow: "dogfood",
   headline: "It runs on real work — this page included",
