@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/). This project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.0] - 2026-07-16
+
+### Added
+
+- /agents/colleague — the colleague presentation page: paradigm (one runtime, many minds), the three render tiers (TUI cockpit, TAUI, bot JSON), colleague work + flight piloting, subagent orchestration with typed roles, cortex & senses via lobes, eidetic memory, more-surfaces, a tracker-driven what's-next, and real captured sessions throughout (ColleagueTerminal replay component, colleague.ts content model, colleague-captures.ts verbatim captures)
+- devague artifacts for the run: the-colleague-page frame (22 claims, 22 honesty conditions, 19 scope entries incl. the /challenge pass), plan (7 tasks, 3 waves, 3 risks), exported spec + plan docs
+
+### Changed
+
+- site.ts: the colleague agents-index card now links /agents/colleague/ instead of the GitHub repo
+
 ## [0.10.0] - 2026-07-15
 
 ### Added
