@@ -49,10 +49,12 @@ const { pane, start = 0.3, wrap = true } = Astro.props;
 // from a committed verification doc. That boundary is exactly what the chrome
 // should make legible at a glance, so it drives a color-coded dot, a tag, and
 // the top accent stripe, on top of the full `source` line already naming it.
-// Derived from the pane's own `source` string (its stated provenance), not
-// guessed from prose: "ported · …" -> ported, "fresh run · …" -> fresh.
+// Derived from the pane's own stable id prefix ("ported-…"), the sibling
+// terminals' convention (ColleagueTerminal / DevagueTerminal) — never parsed
+// out of the human-readable `source` line, which is display-only prose whose
+// wording is free to change without silently flipping this chrome.
 type Provenance = "fresh" | "ported";
-const provenance: Provenance = pane.source.trimStart().startsWith("ported")
+const provenance: Provenance = pane.id.startsWith("ported-")
   ? "ported"
   : "fresh";
 const provLabel: Record<Provenance, string> = {

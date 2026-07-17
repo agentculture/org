@@ -16,6 +16,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - site.ts: the reachy-mini-cli agents-index card now links /agents/reachy-mini-cli/ instead of the GitHub repo
 
+### Fixed
+
+- ReachyTerminal derives its fresh/ported provenance chrome from the pane's stable id prefix (`ported-…`), the sibling terminals' convention, instead of parsing the display-only `source` string — a wording edit there can no longer silently flip a ported pane to fresh-run chrome (qodo review on #17)
+
 ## [0.11.0] - 2026-07-16
 
 ### Added
