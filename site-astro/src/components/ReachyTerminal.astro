@@ -1,0 +1,406 @@
+---
+// A terminal pane that REPLAYS one captured reachy-mini-cli session pane
+// from ../data/reachy-mini-cli-captures.ts. It uses the same replay
+// TECHNIQUE the sibling replay components use (DevagueTerminal /
+// ColleagueTerminal / LobesTerminal) — the whole performance pre-scheduled
+// at build time, an escaped-string transcript injected with set:html, every
+// animated property opacity/transform only — but it is written fresh here
+// and kept deliberately UNSHARED: it owns its own `r`-prefixed classes, its
+// own theme-token palette, its own provenance accent scheme, its own
+// `data-reachy-term` marker, and its own IntersectionObserver script. It
+// shares no code, no selector, no class, no state, and no script with any
+// sibling terminal, even when several ship on the same page.
+//
+// Command characters stream in on a duration-capped per-character (or, past
+// ~40 chars, per-word) stagger; real output settles in as blocks; a
+// curator's ellipsis cut fades in as its own distinct, clearly-not-output
+// marker (a short dashed rule + italic voice, never a line of the
+// transcript). The full-height transcript is already in the DOM at first
+// paint — characters and lines only change opacity/transform in place — so
+// nothing reflows while it plays. Not a single network call: every string
+// replayed here was captured once, verbatim, into the imported data module;
+// this component only ever reads the CapturePane, never reachy-mini-cli.
+//
+// No JS or reduced motion -> the completed transcript renders immediately,
+// fully visible and still (the hidden states are gated behind html.js +
+// prefers-reduced-motion: no-preference, the site-wide convention). Colours
+// ride global.css theme tokens (var(--surface), var(--ink), var(--ink-soft),
+// var(--accent), var(--line), var(--font-mono), var(--radius), var(--shadow),
+// var(--ease-out)) so the pane is legible and correct in BOTH dawn themes —
+// no hardcoded colour that would break light or dark.
+import type { CapturePane } from "../data/reachy-mini-cli-captures";
+
+interface Props {
+  pane: CapturePane;
+  /** Seconds before this pane starts playing once it scrolls into view. */
+  start?: number;
+  /** Soft-wrap long lines instead of horizontal scroll. Defaults on:
+   * captured reachy-mini-cli sessions include long say/think command lines
+   * and a full-width SDK/daemon RuntimeWarning that would otherwise scroll
+   * (deviceStatus / quickstart / sayHarmonic). */
+  wrap?: boolean;
+}
+
+const { pane, start = 0.3, wrap = true } = Astro.props;
+
+// Provenance is this page's own accent axis (each replay component picks its
+// own): the captures module draws one hard boundary — FRESH RUN panes,
+// captured live on the rig today, versus the single PORTED pane replayed
+// from a committed verification doc. That boundary is exactly what the chrome
+// should make legible at a glance, so it drives a color-coded dot, a tag, and
+// the top accent stripe, on top of the full `source` line already naming it.
+// Derived from the pane's own stable id prefix ("ported-…"), the sibling
+// terminals' convention (ColleagueTerminal / DevagueTerminal) — never parsed
+// out of the human-readable `source` line, which is display-only prose whose
+// wording is free to change without silently flipping this chrome.
+type Provenance = "fresh" | "ported";
+const provenance: Provenance = pane.id.startsWith("ported-")
+  ? "ported"
+  : "fresh";
+const provLabel: Record<Provenance, string> = {
+  fresh: "fresh run",
+  ported: "ported",
+};
+
+// The transcript is rendered to an HTML string here (with explicit escaping)
+// and injected with set:html: inside <pre> any template whitespace renders
+// literally, and astro-check's TSX transform rejects the branching-JSX forms
+// this needs — a plain string has neither problem. esc() only touches the
+// three HTML-significant characters; emoji (🤔 😮 🙂 👂 😐 🎉 😔), em dashes,
+// and every other Unicode glyph in the captured output pass through unchanged
+// as UTF-8 and render verbatim.
+const esc = (s: string) =>
+  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+// Pre-compute the timeline: when each line begins (--ld), when each character
+// of a command lands (--cd). Calm pace, per the site's motion language — but
+// captured commands quote whole say/think phrases, so a constant
+// per-character rate is capped: long commands still visibly stream in, they
+// just don't drag a single line past MAX_TYPE seconds.
+const LEAD = 0.18;
+const CHAR = 0.028;
+const MAX_TYPE = 1.4;
+const CMD_PAUSE = 0.5;
+const OUT_STEP = 0.14;
+// A curator's cut gets its own, slightly longer beat — a breath, not a line.
+const ELLIPSIS_STEP = 0.4;
+// Past this length a command types per WORD rather than per character:
+// per-character spans at say/think-phrase length triple the page's HTML
+// weight for motion the eye reads as a stream either way.
+const WORD_THRESHOLD = 40;
+
+let clock = start;
+const rendered = pane.lines
+  .map((line) => {
+    const at = clock;
+    const ld = `--ld: ${at.toFixed(2)}s`;
+
+    if (line.kind === "cmd") {
+      const per =
+        line.text.length > 0
+          ? Math.min(CHAR, MAX_TYPE / line.text.length)
+          : CHAR;
+      clock += LEAD + line.text.length * per + CMD_PAUSE;
+      // Type short commands character by character (where the typing is
+      // actually perceptible) and long ones word by word, on the same clock.
+      const chunks =
+        line.text.length <= WORD_THRESHOLD
+          ? [...line.text]
+          : line.text.split(/(?<= )/);
+      let offset = 0;
+      const chars = chunks
+        .map((chunk) => {
+          const span = `<span class="rchar" style="--cd: ${(LEAD + offset * per).toFixed(3)}s">${esc(chunk)}</span>`;
+          offset += chunk.length;
+          return span;
+        })
+        .join("");
+      return `<span class="rline rline-cmd" style="${ld}"><span class="rchar rprompt" style="--cd: 0s">$ </span>${chars}\n</span>`;
+    }
+
+    if (line.kind === "ellipsis") {
+      clock += ELLIPSIS_STEP;
+      // Not typed, not faded in as if it were real output: a curator's note
+      // about a run of omitted real lines, set apart with a short dashed
+      // rule and an italic voice — never the terminal's own foreground.
+      return `<span class="rline rline-cut" style="${ld}"><span class="rcut-rule" aria-hidden="true"></span><span class="rcut-text">${esc(line.text)}</span>\n</span>`;
+    }
+
+    // "out" — including blank spacer lines (text === ""), which several panes
+    // use between sections. esc("") is still "", so the span's only content
+    // is the trailing "\n" below: one forced line break, one visible blank
+    // row. Nothing special-cases the empty string away — that would collapse
+    // the spacer to zero height and desync every later line from its --ld.
+    clock += OUT_STEP;
+    return `<span class="rline rline-out" style="${ld}">${esc(line.text)}\n</span>`;
+  })
+  .join("");
+---
+
+<figure
+  class:list={["rterm", `prov-${provenance}`, { wrap }]}
+  data-reachy-term
+>
+  <figcaption class="rterm-head">
+    <span class="rdot" aria-hidden="true"></span>
+    <span class="rprov-tag">{provLabel[provenance]}</span>
+    <span class="rtitle">{pane.title}</span>
+    <span class="rcontext">{pane.context}</span>
+    <span class="rstamp">reachy-mini-cli {pane.cliVersion} &middot; captured {pane.capturedDate}</span>
+    <span class="rsource">{pane.source}</span>
+  </figcaption>
+  <pre
+    tabindex="0"
+    role="region"
+    aria-label={`captured terminal session: ${pane.title} — ${pane.context}, reachy-mini-cli ${pane.cliVersion}, captured ${pane.capturedDate}`}
+  ><code set:html={rendered}></code></pre>
+</figure>
+
+<style>
+  /* One terminal, both dawn themes: the ground rides var(--surface), the ink
+     rides var(--ink)/--ink-soft, the accent rides var(--accent) — so the
+     pane recomposes correctly for light and dark rather than pinning a fixed
+     ground. All text pairs are AA on --surface in both themes. */
+  .rterm {
+    margin: 0;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-top-width: 3px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  /* Provenance accent: a top stripe plus a dot/tag treatment, so the one
+     ported pane reads as visibly distinct from the live fresh-run batch
+     before a single word is read. Fresh runs wear the live accent teal;
+     the ported pane wears a quieter, dashed, muted treatment — the archival
+     exception, not the live rig. Both colours are theme tokens, so each
+     flips correctly between the light and dark accent. */
+  .rterm.prov-fresh {
+    border-top-color: var(--accent);
+  }
+
+  .rterm.prov-ported {
+    border-top-color: var(--ink-soft);
+  }
+
+  .rterm-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    padding: 0.7rem 1.15rem;
+    border-bottom: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.03em;
+    color: var(--ink-soft);
+    flex-wrap: wrap;
+    row-gap: 0.35rem;
+  }
+
+  .rdot {
+    flex: none;
+    align-self: center;
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+  }
+
+  /* fresh: a filled live dot. ported: a hollow ring — not a live capture. */
+  .prov-fresh .rdot {
+    background: var(--accent);
+  }
+
+  .prov-ported .rdot {
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px var(--ink-soft);
+  }
+
+  .rprov-tag {
+    flex: none;
+    padding: 0.1rem 0.55rem;
+    border-radius: 999px;
+    border: 1px solid currentColor;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: 0.62rem;
+  }
+
+  .prov-fresh .rprov-tag {
+    color: var(--accent);
+  }
+
+  /* ported: dashed outline reinforces "not from today's live batch". */
+  .prov-ported .rprov-tag {
+    color: var(--ink-soft);
+    border-style: dashed;
+  }
+
+  .rtitle {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .rcontext {
+    flex-basis: 100%;
+    color: var(--ink-soft);
+    opacity: 0.85;
+  }
+
+  .rstamp {
+    margin-left: auto;
+    opacity: 0.75;
+    white-space: nowrap;
+  }
+
+  /* Provenance line: always present, its own full-width row under
+     context/stamp, small and muted so it stays quiet without an opacity
+     fade that could push it under AA at this size. */
+  .rsource {
+    flex-basis: 100%;
+    font-size: 0.9em;
+    letter-spacing: 0.01em;
+    color: var(--ink-soft);
+  }
+
+  pre {
+    margin: 0;
+    padding: 1.05rem 1.15rem 1.2rem;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    line-height: 1.7;
+    /* Output lines: a calm foreground, a touch softer than a heading. */
+    color: color-mix(in srgb, var(--ink) 88%, var(--ink-soft));
+  }
+
+  /* NOTE on :global() below — the reason this component works where a naive
+     port would silently not. The transcript (.rline / .rline-cmd /
+     .rline-out / .rline-cut / .rchar / .rprompt / .rcut-rule / .rcut-text)
+     arrives as a plain HTML string via set:html, NOT as markup this file's
+     template parses. Astro's compiler stamps its per-component scoping
+     attribute (data-astro-cid-…) only onto elements it sees in the template
+     it compiles; it has no visibility into a string assembled in frontmatter
+     and poured into the DOM at render time, so nothing inside set:html ever
+     gets that attribute. A bare scoped selector like `.rline-out { … }`
+     would compile to `.rline-out[data-astro-cid-…]`, which can NEVER match
+     the injected markup — the rule would silently no-op: no colour, no
+     reveal, no typing, and no error to notice it by. (LobesTerminal.astro
+     ships exactly that latent bug: its animation selectors are scoped, its
+     transcript is injected, so nothing animates.) Wrapping each injected
+     class name in :global() keeps it unscoped, while `.rterm` — a real
+     element THIS template renders, so it DOES carry the scoping attribute —
+     stays scoped. The combined selector `.rterm :global(.rline-out)`
+     therefore matches only transcript lines inside one of THIS component's
+     own `.rterm` figures, never a sibling terminal elsewhere on the page. */
+  .rterm :global(.rline) {
+    display: block;
+    white-space: pre;
+  }
+
+  .rterm.wrap :global(.rline) {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .rterm :global(.rline-cmd) {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .rterm :global(.rprompt) {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* the curator's cut: a note ABOUT the transcript, not a line of it — a
+     short dashed rule then italic, muted text; never the terminal's own
+     foreground colour, so it can't be misread as captured output. */
+  .rterm :global(.rline-cut) {
+    display: flex;
+    align-items: baseline;
+    gap: 0.55rem;
+    color: var(--ink-soft);
+    font-style: italic;
+    font-size: 0.86em;
+  }
+
+  .rterm :global(.rcut-rule) {
+    flex: none;
+    align-self: center;
+    width: 1.4rem;
+    border-top: 1px dashed currentColor;
+    opacity: 0.7;
+  }
+
+  .rterm :global(.rcut-text) {
+    opacity: 0.92;
+  }
+
+  /* The performance — only under JS + motion. Everything else (no JS, or a
+     reduced-motion visitor) skips every rule in here and sees the finished
+     transcript: full opacity, no transform, no typing, fully static. That is
+     the reduced-motion contract — the initial hidden states live ONLY inside
+     this block, so they simply never apply when motion is not allowed. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) .rterm :global(.rline-out),
+    :global(html.js) .rterm :global(.rline-cut) {
+      opacity: 0;
+      transform: translateY(0.35rem);
+      transition:
+        opacity 0.55s var(--ease-out),
+        transform 0.55s var(--ease-out);
+      transition-delay: var(--ld, 0s);
+    }
+
+    :global(html.js) .rterm.is-playing :global(.rline-out),
+    :global(html.js) .rterm.is-playing :global(.rline-cut) {
+      opacity: 1;
+      transform: none;
+    }
+
+    :global(html.js) .rterm :global(.rchar) {
+      opacity: 0;
+      transition: opacity 0.028s linear;
+      transition-delay: calc(var(--ld, 0s) + var(--cd, 0s));
+    }
+
+    :global(html.js) .rterm.is-playing :global(.rchar) {
+      opacity: 1;
+    }
+  }
+</style>
+
+<script>
+  // Start each pane's replay the first time it scrolls into view. Class
+  // toggle only — the transcript is already in the DOM, and nothing here
+  // touches the network. If IntersectionObserver is missing this no-ops,
+  // which is safe only because Layout.astro strips `html.js` in that case and
+  // the hidden states above are gated behind it. Scoped to this component's
+  // own `data-reachy-term` marker — deliberately not `data-term`
+  // (LobesTerminal), `data-devague-term` (DevagueTerminal), or
+  // `data-colleague-term` (ColleagueTerminal) — so the replay components
+  // never share state, a selector, or a script, even when several ship on
+  // the same page.
+  if (
+    matchMedia("(prefers-reduced-motion: no-preference)").matches &&
+    "IntersectionObserver" in window
+  ) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-playing");
+            io.unobserve(entry.target);
+          }
+        }
+      },
+      { threshold: 0.3, rootMargin: "0px 0px -40px 0px" },
+    );
+    document
+      .querySelectorAll("[data-reachy-term]")
+      .forEach((el) => io.observe(el));
+  }
+</script>

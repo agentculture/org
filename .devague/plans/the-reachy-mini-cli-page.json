@@ -1,0 +1,402 @@
+{
+  "slug": "the-reachy-mini-cli-page",
+  "title": "the reachy-mini-cli page",
+  "frame_slug": "the-reachy-mini-cli-page",
+  "schema_version": 2,
+  "status": "exported",
+  "created": "2026-07-17T00:18:17Z",
+  "updated": "2026-07-17T00:20:44Z",
+  "targets": [
+    {
+      "id": "c1",
+      "kind": "announcement",
+      "text": "AgentCulture.org /agents/reachy-mini-cli is live: a presentation page for the Reachy Mini operator CLI \u2014 the noun map, the single-SDK-owner model, and real live-robot captures \u2014 joining devague, lobes, and colleague in the agents family."
+    },
+    {
+      "id": "h9",
+      "kind": "honesty",
+      "text": "the shipped page matches the announcement: reachable at /agents/reachy-mini-cli/, presents the noun map and the single-SDK-owner model, and every capture pane replays a real session"
+    },
+    {
+      "id": "c2",
+      "kind": "requirement",
+      "text": "New page site-astro/src/pages/agents/reachy-mini-cli.astro composed entirely from a data module: all copy (eyebrows, headlines, intros, card text) lives in src/data/reachy-mini-cli.ts, same convention colleague.astro:16-24 states explicitly \u2014 the page is spoken-presentation copy, the template only composes"
+    },
+    {
+      "id": "h1",
+      "kind": "honesty",
+      "text": "the built page contains no narrative copy hardcoded in the template \u2014 every headline, intro, and card cell traces to src/data/reachy-mini-cli.ts (any deliberate exception is documented in the page header comment, as colleague.astro did)"
+    },
+    {
+      "id": "c3",
+      "kind": "requirement",
+      "text": "Real-captures module src/data/reachy-mini-cli-captures.ts using the CapturePane/CaptureLine contract from colleague-captures.ts: every cmd/out line verbatim from a real session, cuts marked with ellipsis lines, per-pane provenance (fresh run vs ported), and the page only replays \u2014 it never runs the CLI at build or view time"
+    },
+    {
+      "id": "h2",
+      "kind": "honesty",
+      "text": "every cmd/out line in reachy-mini-cli-captures.ts is copied verbatim from a session actually run on this rig (or ported from a committed public reachy-mini-cli artifact, so labeled); omissions appear only as ellipsis lines; no pane exists for a run that never happened"
+    },
+    {
+      "id": "c4",
+      "kind": "requirement",
+      "text": "Own replay component ReachyTerminal.astro, deliberately unshared like its three siblings, following DevagueTerminal's working :global() animation pattern \u2014 NOT LobesTerminal's, whose typing animation is dead CSS (Astro scoped styles vs set:html)"
+    },
+    {
+      "id": "h3",
+      "kind": "honesty",
+      "text": "the typing/reveal animation demonstrably plays in the built page (the set:html transcript is styled via :global() like DevagueTerminal \u2014 not scoped-and-dead like LobesTerminal)"
+    },
+    {
+      "id": "c5",
+      "kind": "requirement",
+      "text": "src/data/site.ts reachy-mini-cli entry (lines 218-220) flips url from https://github.com/agentculture/reachy-mini-cli to /agents/reachy-mini-cli/ \u2014 that is how the agents index links a page; Header nav (Learn/Framework/Agents/Engage) is untouched"
+    },
+    {
+      "id": "h4",
+      "kind": "honesty",
+      "text": "in the built site the agents index card for reachy-mini-cli navigates to /agents/reachy-mini-cli/ and no remaining site surface still deep-links the old GitHub url as its primary link"
+    },
+    {
+      "id": "c6",
+      "kind": "requirement",
+      "text": "A ReachyDiagram.astro diagram component \u2014 the natural subject is the single-SDK-owner model (one in-process SDK client + one motion queue; listen/think/sleep/vision/pat mutually exclusive on the sdk transport) which README calls the one model you must understand; every sibling page carries one diagram"
+    },
+    {
+      "id": "h5",
+      "kind": "honesty",
+      "text": "the diagram asserts only relationships documented in ../reachy-mini-cli's README/operating guide (single SDK client, single motion queue, which nouns conflict on the sdk transport) \u2014 nothing invented for visual effect"
+    },
+    {
+      "id": "c8",
+      "kind": "boundary",
+      "text": "Site-only change: the org CLI package (org/), tests/, and the teken rubric surface are untouched \u2014 the rubric gates the CLI, not the site"
+    },
+    {
+      "id": "h10",
+      "kind": "honesty",
+      "text": "the PR diff shows no changes under org/, tests/, or any teken-audited CLI surface"
+    },
+    {
+      "id": "c9",
+      "kind": "requirement",
+      "text": "Version bump + CHANGELOG entry ship with the PR \u2014 the version-check CI job fails any PR whose pyproject.toml version equals main's, even site-only ones"
+    },
+    {
+      "id": "h6",
+      "kind": "honesty",
+      "text": "the version-check CI job passes on the PR (pyproject.toml bumped, CHANGELOG.md entry prepended via the version-bump skill)"
+    },
+    {
+      "id": "c10",
+      "kind": "boundary",
+      "text": "../reachy-mini-cli is read-only source material for this work \u2014 the page presents the CLI from its README, docs/operating-reachy.md, and live tracker; no changes land in that repo"
+    },
+    {
+      "id": "h11",
+      "kind": "honesty",
+      "text": "no commits land in ../reachy-mini-cli as part of this delivery"
+    },
+    {
+      "id": "c11",
+      "kind": "boundary",
+      "text": "No CI workflow changes: tests.yml already builds site-astro on PRs and deploy.yml (Cloudflare Pages) is path-filtered to site-astro/** on main \u2014 the new page rides existing lanes"
+    },
+    {
+      "id": "h12",
+      "kind": "honesty",
+      "text": "the PR diff contains no changes under .github/workflows/"
+    },
+    {
+      "id": "c14",
+      "kind": "audience",
+      "text": "AgentCulture.org visitors evaluating the agent-first way of working, plus the page's second life as a presentation the operator talks over \u2014 same dual audience as the devague/lobes/colleague pages"
+    },
+    {
+      "id": "h13",
+      "kind": "honesty",
+      "text": "the page reads as a presentation: spoken-copy headlines living in the data module, sections usable as talking points \u2014 the same test the sibling pages pass"
+    },
+    {
+      "id": "c15",
+      "kind": "after_state",
+      "text": "/agents/reachy-mini-cli/ is live: the physical-embodiment leg of the agents family \u2014 a desk robot operated agent-first from a shell \u2014 presented with the noun map, the single-SDK-owner model, and real captures; the agents index links it locally instead of off-site"
+    },
+    {
+      "id": "h14",
+      "kind": "honesty",
+      "text": "once merged and deployed, /agents/reachy-mini-cli/ responds on AgentCulture.org and the agents index card navigates to it"
+    },
+    {
+      "id": "c16",
+      "kind": "before_state",
+      "text": "reachy-mini-cli is the only agents-index entry of its group still pointing off-site to GitHub; the CLI's story (14 nouns, single-SDK-owner model, live senses, presence modes) exists only in the repo's own docs"
+    },
+    {
+      "id": "h15",
+      "kind": "honesty",
+      "text": "at branch time site.ts still points the reachy-mini-cli entry at GitHub and no /agents/reachy-mini-cli page exists in the repo \u2014 verifiable from main's HEAD"
+    },
+    {
+      "id": "c17",
+      "kind": "why_it_matters",
+      "text": "devague shows the method, lobes the split brain, colleague the swappable mind \u2014 reachy-mini-cli is the missing embodiment leg: the same agent-first CLI discipline (nouns, --json everywhere, exit codes, explain/learn) driving a physical robot; presenting it completes the family"
+    },
+    {
+      "id": "h16",
+      "kind": "honesty",
+      "text": "the framing presents embodiment as the family's missing leg without restating or contradicting the sibling pages' content"
+    },
+    {
+      "id": "c18",
+      "kind": "success_signal",
+      "text": "the PR merges green: astro build passes in CI, version-check passes, every exported capture pane renders exactly once on the page, the agents index card navigates to /agents/reachy-mini-cli/, and the Cloudflare Pages deploy publishes it on merge"
+    },
+    {
+      "id": "h17",
+      "kind": "honesty",
+      "text": "every listed signal is mechanically checkable on the PR: CI green, each exported pane imported and rendered exactly once, index navigation verified in the built dist"
+    },
+    {
+      "id": "c19",
+      "kind": "requirement",
+      "text": "Page arc (bespoke like each sibling): hero + fast facts; what Reachy Mini is (capabilities); the noun map as the page's table section; the single-SDK-owner model with diagram; the senses/presence section (listen, vision, pat, sleep, demo-mode, service); the think loop (LLM cognition + --export JSONL feed); what's-next from the live tracker; closing repo + install CTAs"
+    },
+    {
+      "id": "h7",
+      "kind": "honesty",
+      "text": "every section's copy derives from what the repo actually documents (README, docs/operating-reachy.md, docs/export-schema.md, live tracker) \u2014 no capability is claimed that the CLI does not ship today"
+    },
+    {
+      "id": "c20",
+      "kind": "requirement",
+      "text": "The page meets the confirmed site design bar: reveal/typing animations in the house style, every animated property opacity/transform, and prefers-reduced-motion honored throughout"
+    },
+    {
+      "id": "h8",
+      "kind": "honesty",
+      "text": "prefers-reduced-motion is honored on every animation the page adds, and animated properties stay opacity/transform only \u2014 verified in the built page, not assumed from the siblings"
+    },
+    {
+      "id": "c21",
+      "kind": "requirement",
+      "text": "The capture batch negotiates the single-SDK-owner model with the rig's own presence mode: reachy-live.service (hearing + pat, active now) owns the SDK session, so sdk-transport captures stop it first and the batch restores the prior rig state (service status: mode live) when done"
+    },
+    {
+      "id": "h18",
+      "kind": "honesty",
+      "text": "after the capture batch, reachy-mini-cli service status reports the same mode (live) and active presence unit as before the batch started"
+    },
+    {
+      "id": "c22",
+      "kind": "boundary",
+      "text": "Captures carry no tokens, keys, or private URLs; local endpoints (localhost:8000/8001, thor:8000) appear only as reachy-mini-cli's and lobes' own public docs already print them \u2014 the colleague-captures.ts precedent"
+    },
+    {
+      "id": "h19",
+      "kind": "honesty",
+      "text": "grep over reachy-mini-cli-captures.ts finds no credential-shaped strings and no endpoints beyond those in the repos' public docs"
+    },
+    {
+      "id": "c23",
+      "kind": "boundary",
+      "text": "Pre-existing dirty working-tree state (the uv.lock delta, .wrangler/, .claude/settings.json, the stray devague-page-six-leg-update delivery record) stays out of this PR \u2014 the branch commits only this run's artifacts"
+    },
+    {
+      "id": "h20",
+      "kind": "honesty",
+      "text": "git show --stat on the merged PR lists no uv.lock, .wrangler, or .claude/settings.json changes and no artifacts from prior runs"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "t1",
+      "summary": "Run the live capture batch on the rig (operator/main-agent task \u2014 drives hardware and mutates the rig; never a worktree subagent)",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "rig upgraded first: reachy-mini-cli --version prints 0.31.0 and daemon/device probes stay healthy (on failure: roll back to 0.28.2 and capture there, per q1)",
+        "raw transcript of every session saved under the session scratchpad before any transcription happens",
+        "reachy-live.service stopped before sdk-transport captures; after the batch, service status reports mode live with the same active presence unit as before",
+        "capture set spans no-robot nouns (whoami, quickstart or learn, doctor), live device/move/say/listen, and think \u2014 or think's documented ported fallback (c24) if the live run fails"
+      ],
+      "deps": [],
+      "covers": [
+        "c21",
+        "h18"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t2",
+      "summary": "Author src/data/reachy-mini-cli-captures.ts from the raw transcripts",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "every cmd/out line matches its raw transcript verbatim; omissions appear only as ellipsis-kind lines; no pane exists for a run that never happened",
+        "each pane carries a source line: 'fresh run \u00b7 <rig>, <date>' or 'ported \u00b7 <public repo path>'",
+        "grep over the module finds no credential-shaped strings and no endpoints beyond those the repos' public docs print",
+        "module exports typed CapturePane[] panes and the site builds green with it"
+      ],
+      "deps": [
+        "t1"
+      ],
+      "covers": [
+        "c3",
+        "h2",
+        "c22",
+        "h19"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t3",
+      "summary": "Author src/data/reachy-mini-cli.ts \u2014 the page's full content model",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "every arc section (hero+meta, fast facts, capabilities, noun map, single-SDK-owner, senses/presence, think loop, what's-next, closing CTAs) has its copy present and traceable to README.md, docs/operating-reachy.md, docs/export-schema.md, or the live tracker",
+        "what's-next themes cite real open issue numbers and titles from agentculture/reachy-mini-cli",
+        "no capability is claimed that the installed CLI does not ship; fast facts match the capture batch (version, install line)",
+        "headlines read as spoken presentation copy (the sibling-pages test) and the module compiles in the site build"
+      ],
+      "deps": [
+        "t1"
+      ],
+      "covers": [
+        "c19",
+        "h7",
+        "c14",
+        "h13",
+        "c17",
+        "h16"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t4",
+      "summary": "Build ReachyTerminal.astro \u2014 the page's own replay component",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "the typing/reveal animation demonstrably plays in the built page: the set:html transcript is styled via :global() (DevagueTerminal's pattern), not scoped-and-dead (LobesTerminal's bug)",
+        "every animated property is opacity/transform only",
+        "prefers-reduced-motion disables the animation",
+        "the component shares no state, selectors, or script with the three sibling terminals"
+      ],
+      "deps": [
+        "t2"
+      ],
+      "covers": [
+        "c4",
+        "h3"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t5",
+      "summary": "Build ReachyDiagram.astro \u2014 the single-SDK-owner model diagram",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "the diagram asserts only documented relationships: one in-process SDK client, one motion queue, and the sdk-transport conflict set (listen/think/sleep/vision/pat) exactly as docs/operating-reachy.md's conflict matrix states",
+        "renders correctly in both color themes; any motion is opacity/transform and honors prefers-reduced-motion"
+      ],
+      "deps": [],
+      "covers": [
+        "c6",
+        "h5"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t6",
+      "summary": "Compose pages/agents/reachy-mini-cli.astro and flip the site.ts entry",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "the page composes strictly from the two data modules; any deliberate exception is documented in the page header comment (colleague.astro precedent)",
+        "site.ts's reachy-mini-cli entry url becomes /agents/reachy-mini-cli/ (pre-flip state \u2014 the GitHub url \u2014 verified at branch point per h15)",
+        "npm run build is green with 8 pages; dist contains /agents/reachy-mini-cli/index.html; the agents index card links it",
+        "every pane exported by the captures module is imported and rendered exactly once",
+        "page-level check: all animations honor prefers-reduced-motion; animated properties are opacity/transform only"
+      ],
+      "deps": [
+        "t3",
+        "t4",
+        "t5"
+      ],
+      "covers": [
+        "c1",
+        "h9",
+        "c2",
+        "h1",
+        "c5",
+        "h4",
+        "c16",
+        "h15",
+        "c20",
+        "h8"
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "t7",
+      "summary": "Integrate, gate, and ship the PR",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "version bumped + CHANGELOG entry prepended (version-check job green)",
+        "full local gate green: pytest, black/isort/flake8/bandit, markdownlint, teken cli doctor --strict, npm run build",
+        "the PR diff touches nothing under org/, tests/, or .github/workflows/, and carries no uv.lock, .wrangler/, .claude/settings.json, or prior-run artifacts",
+        "PR opened via the cicd skill and merges green; post-merge, agentculture.org/agents/reachy-mini-cli/ responds and the agents index links it"
+      ],
+      "deps": [
+        "t6"
+      ],
+      "covers": [
+        "c9",
+        "h6",
+        "c18",
+        "h17",
+        "c8",
+        "h10",
+        "c10",
+        "h11",
+        "c11",
+        "h12",
+        "c23",
+        "h20",
+        "c15",
+        "h14"
+      ],
+      "instruction": ""
+    }
+  ],
+  "risks": [
+    {
+      "id": "r1",
+      "text": "the live think capture may fail on rig-side think config (model/endpoint) \u2014 fallback is the c24 ported pane from docs/verification/think-body-expression.md",
+      "kind": "unknown_nonblocking",
+      "task_id": "t1"
+    },
+    {
+      "id": "r2",
+      "text": "rig mutation risk: the 0.31.0 upgrade could destabilize the working robot setup mid-batch \u2014 rollback path is 'uv tool install reachy-mini-cli==0.28.2' per q1's decision",
+      "kind": "unknown_nonblocking",
+      "task_id": "t1"
+    },
+    {
+      "id": "r3",
+      "text": "physical-environment risk during motion/speech captures (objects near the robot, USB/media contention) \u2014 operator supervises the batch live",
+      "kind": "unknown_nonblocking",
+      "task_id": "t1"
+    },
+    {
+      "id": "r4",
+      "text": "the LobesTerminal inert-animation fix remains a deliberate follow-up PR outside this delivery",
+      "kind": "follow_up",
+      "task_id": null
+    }
+  ]
+}

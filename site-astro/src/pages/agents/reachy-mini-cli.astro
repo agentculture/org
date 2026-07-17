@@ -1,0 +1,634 @@
+---
+// /agents/reachy-mini-cli — the presentation page for reachy-mini-cli: the
+// body of the agents family, the embodiment leg. The arc: the body (every
+// capability the robot has is a noun you type), the complete noun map (one
+// robot, fourteen nouns, every one speaking JSON), the single-SDK-owner
+// model (the one thing to learn — two single resources, one owner each, and
+// the two ways to compose behaviours anyway, narrated over ReachyDiagram),
+// the folded live senses (one process, every sense — the presence the robot
+// boots into), thinking out loud (the cognition loop, the harmonic fallback
+// voice, the JSONL export feed, the honest empty-buffer no-op), the
+// agent-first CLI surface (structured output, honest failures, one clear
+// owner), a what's-next drawn from the live open tracker, and the same
+// two-CTA close as devague.astro / colleague.astro: repo, then install.
+//
+// All narrative copy — eyebrows, headlines, intros, and every card/table
+// cell — lives in ../../data/reachy-mini-cli.ts, the same convention as
+// colleague.ts and devague.ts: this page is a presentation Ori talks over,
+// so the headlines are spoken copy and belong to the content model, not this
+// template. ONE deliberate exception, exactly the ColleagueDiagram-caption
+// precedent in colleague.astro: the ReachyDiagram caption in the
+// single-SDK-owner section is authored inline below. It introduces no new
+// fact — it paraphrases claims already made by the sdkOwner section (the two
+// single resources, the five-noun fan, the two composition escapes) so the
+// diagram reads standalone without duplicating any sentence the section
+// prose or cards already render. The table's column headers (noun / what it
+// does / transport) are structural glue, authored here because the nounMap
+// data carries rows but no header labels — the hard rule permits this.
+//
+// Every terminal below replays a real captured session from
+// ../../data/reachy-mini-cli-captures.ts — nothing on this page runs
+// reachy-mini-cli, in the browser or anywhere else. INVARIANT: all fourteen
+// panes that module exports appear on this page EXACTLY ONCE, each in the
+// section it documents. Thirteen are today's fresh live-rig batch; the one
+// ported pane (thinkPorted) wears visibly distinct chrome (a hollow ring,
+// dashed tag, muted stripe) so its archival provenance is legible before a
+// word is read. Placement, once each:
+//   capabilities → identityWhoami, doctor, quickstart
+//   nounMap      → deviceStatus, deviceState
+//   sdkOwner     → moveWake, listenRun
+//   senses       → serviceStatus
+//   think        → thinkDemo, thinkExpressions, thinkRunNoop, thinkPorted,
+//                  sayTtsRefusal, sayHarmonic
+import Layout from "../../layouts/Layout.astro";
+import PageHero from "../../components/PageHero.astro";
+import ReachyDiagram from "../../components/ReachyDiagram.astro";
+import ReachyTerminal from "../../components/ReachyTerminal.astro";
+import site from "../../data/site";
+import reachy from "../../data/reachy-mini-cli";
+import {
+  identityWhoami,
+  quickstart,
+  doctor,
+  deviceStatus,
+  deviceState,
+  moveWake,
+  sayTtsRefusal,
+  sayHarmonic,
+  listenRun,
+  thinkRunNoop,
+  thinkDemo,
+  thinkExpressions,
+  serviceStatus,
+  thinkPorted,
+} from "../../data/reachy-mini-cli-captures";
+
+// The single deliberate template-authored string on this page — see the
+// header comment for why. A paraphrase of the sdkOwner section's own claims,
+// not a new fact: the two single resources, the five-noun fan-out/fan-in, and
+// the two composition escapes the diagram traces.
+const sdkOwnerCaption =
+  "Two single resources, one owner each: the in-process SDK client (fed by the mic array) and the serial motion queue (driving the head). The five sdk-sense nouns fan out of one for sense and converge into the other for motion — which is why only one can own the robot at a time, and why the two composition escapes exist.";
+---
+
+<Layout
+  title={`reachy-mini-cli · Agents · ${site.hero.title}`}
+  description={reachy.hero.metaDescription}
+>
+  <PageHero title={reachy.hero.title} intro={reachy.hero.intro} />
+
+  <!-- fast facts -->
+  <section class="section facts-section" aria-label="Fast facts">
+    <div class="container">
+      <ul class="facts">
+        {
+          reachy.facts.map((fact, i) => (
+            <li
+              class="fact"
+              data-reveal
+              style={`--reveal-delay: ${Math.min(i * 0.07, 0.28)}s`}
+            >
+              <span class="fact-label muted">{fact.label}</span>
+              <span class="fact-value">
+                {fact.href ? <a href={fact.href}>{fact.value}</a> : fact.value}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- the body: every capability is a verb you can type -->
+  <section class="section" aria-label="The body">
+    <div class="container">
+      <span class="eyebrow" data-reveal>{reachy.capabilities.eyebrow}</span>
+      <h2 data-reveal>{reachy.capabilities.headline}</h2>
+      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
+        {reachy.capabilities.intro.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <ul class="cap-cards">
+        {
+          reachy.capabilities.cards.map((card, i) => (
+            <li
+              class="card cap-card"
+              data-reveal
+              style={`--reveal-delay: ${Math.min(i * 0.05, 0.4)}s`}
+            >
+              <h3 class="cap-name">{card.name}</h3>
+              <p class="cap-detail muted">{card.detail}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <!-- the identity probe: one narrow, centered glance at the CLI's own
+           self-report, needing no robot — the same idiom as the diagram-wrap
+           below, sized for a short six-line pane -->
+      <div class="term-narrow" data-reveal>
+        <ReachyTerminal pane={identityWhoami} />
+      </div>
+      <!-- the deliberately short doctor report takes the narrow column beside
+           the long real-mode quickstart, the same seam idiom as
+           colleague.astro's work-loop row -->
+      <div class="term-grid seam">
+        <div data-reveal>
+          <ReachyTerminal pane={doctor} />
+        </div>
+        <div data-reveal style="--reveal-delay: 0.12s">
+          <ReachyTerminal pane={quickstart} start={1.4} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- the noun map: the whole robot surface, faithfully -->
+  <section class="section" aria-label="The noun map">
+    <div class="container">
+      <span class="eyebrow" data-reveal>{reachy.nounMap.eyebrow}</span>
+      <h2 data-reveal>{reachy.nounMap.headline}</h2>
+      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
+        {reachy.nounMap.intro.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <div
+        class="table-wrap card"
+        data-reveal
+        style="--reveal-delay: 0.1s"
+        tabindex="0"
+        role="region"
+        aria-label="noun map table"
+      >
+        <table>
+          <thead>
+            <tr>
+              <th>noun</th>
+              <th>what it does</th>
+              <th>transport</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              reachy.nounMap.rows.map((row) => (
+                <tr>
+                  <td>
+                    <code>{row.noun}</code>
+                  </td>
+                  <td class="does-cell muted">{row.does}</td>
+                  <td class="transport-cell muted">{row.transport}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+      <!-- the device panes: the surface speaking — the daemon's own status
+           report, then the live head pose off the robot -->
+      <div class="term-grid">
+        <div data-reveal>
+          <ReachyTerminal pane={deviceStatus} />
+        </div>
+        <div data-reveal style="--reveal-delay: 0.12s">
+          <ReachyTerminal pane={deviceState} start={1.4} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- the single-SDK-owner model: the one thing to learn -->
+  <section class="section" aria-label="The single-SDK-owner model">
+    <div class="container">
+      <span class="eyebrow" data-reveal>{reachy.sdkOwner.eyebrow}</span>
+      <h2 data-reveal>{reachy.sdkOwner.headline}</h2>
+      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
+        {reachy.sdkOwner.intro.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <div class="diagram-wrap" data-reveal>
+        <ReachyDiagram caption={sdkOwnerCaption} />
+      </div>
+      <ul class="model-cards">
+        {
+          reachy.sdkOwner.cards.map((card, i) => (
+            <li
+              class="card model-card"
+              data-reveal
+              style={`--reveal-delay: ${Math.min(i * 0.07, 0.35)}s`}
+            >
+              <h3 class="model-name">{card.name}</h3>
+              <p class="model-detail muted">{card.detail}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <!-- the seam: the two-line move wake takes the narrow column beside the
+           long two-tier listen run — one queued motion next to the full
+           orient-to-sound loop -->
+      <div class="term-grid seam">
+        <div data-reveal>
+          <ReachyTerminal pane={moveWake} />
+        </div>
+        <div data-reveal style="--reveal-delay: 0.12s">
+          <ReachyTerminal pane={listenRun} start={1.4} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- the senses, live: one process, every sense -->
+  <section class="section" aria-label="The senses, live">
+    <div class="container">
+      <span class="eyebrow" data-reveal>{reachy.senses.eyebrow}</span>
+      <h2 data-reveal>{reachy.senses.headline}</h2>
+      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
+        {reachy.senses.intro.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <ul class="sense-cards">
+        {
+          reachy.senses.cards.map((card, i) => (
+            <li
+              class="card sense-card"
+              data-reveal
+              style={`--reveal-delay: ${Math.min(i * 0.07, 0.35)}s`}
+            >
+              <h3 class="sense-name">{card.name}</h3>
+              <p class="sense-detail muted">{card.detail}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <!-- the presence unit itself: the rig restored to exactly one boot
+           presence after the batch — the folded live loop, on systemd -->
+      <div class="term-grid">
+        <div data-reveal>
+          <ReachyTerminal pane={serviceStatus} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- thinking out loud: the cognition loop, the fallback voice, the feed -->
+  <section class="section" aria-label="Thinking out loud">
+    <div class="container">
+      <span class="eyebrow" data-reveal>{reachy.think.eyebrow}</span>
+      <h2 data-reveal>{reachy.think.headline}</h2>
+      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
+        {reachy.think.intro.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <!-- the scripted demo ran to completion beside the full expression
+           vocabulary it draws its gestures from -->
+      <div class="term-grid">
+        <div data-reveal>
+          <ReachyTerminal pane={thinkDemo} />
+        </div>
+        <div data-reveal style="--reveal-delay: 0.12s">
+          <ReachyTerminal pane={thinkExpressions} start={1.4} />
+        </div>
+      </div>
+      <!-- the honest story of live cognition: today's bounded run was a clean
+           zero-turn no-op (narrow, left) beside the ported worked example of
+           what the loop actually says when it has something to say (wide,
+           right) — the ported pane's archival chrome is distinct on purpose -->
+      <div class="term-grid seam">
+        <div data-reveal>
+          <ReachyTerminal pane={thinkRunNoop} />
+        </div>
+        <div data-reveal style="--reveal-delay: 0.12s">
+          <ReachyTerminal pane={thinkPorted} start={1.4} />
+        </div>
+      </div>
+      <!-- the voice seam: the TTS refusal (the error:/hint: contract, narrow
+           left) beside the harmonic voice actually answering (wide right) —
+           the second voice for when the first is unreachable -->
+      <div class="term-grid seam">
+        <div data-reveal>
+          <ReachyTerminal pane={sayTtsRefusal} />
+        </div>
+        <div data-reveal style="--reveal-delay: 0.12s">
+          <ReachyTerminal pane={sayHarmonic} start={1.4} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- agent-first, all the way down -->
+  <section class="section" aria-label="Agent-first">
+    <div class="container">
+      <span class="eyebrow" data-reveal>{reachy.agentFirst.eyebrow}</span>
+      <h2 data-reveal>{reachy.agentFirst.headline}</h2>
+      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
+        {reachy.agentFirst.intro.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <ul class="surface-cards">
+        {
+          reachy.agentFirst.cards.map((card, i) => (
+            <li
+              class="card surface-card"
+              data-reveal
+              style={`--reveal-delay: ${Math.min(i * 0.07, 0.35)}s`}
+            >
+              <h3 class="surface-name">{card.name}</h3>
+              <p class="surface-detail muted">{card.detail}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- what's next, from the open tracker -->
+  <section class="section" aria-label="What's next">
+    <div class="container">
+      <span class="eyebrow" data-reveal>{reachy.whatsNext.eyebrow}</span>
+      <h2 data-reveal>{reachy.whatsNext.headline}</h2>
+      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
+        {reachy.whatsNext.intro.map((p) => <p class="muted">{p}</p>)}
+      </div>
+      <ul class="themes">
+        {
+          reachy.whatsNext.themes.map((theme, i) => (
+            <li
+              class="card theme-card"
+              data-reveal
+              style={`--reveal-delay: ${Math.min(i * 0.08, 0.24)}s`}
+            >
+              <h3 class="theme-name">{theme.name}</h3>
+              <p class="theme-direction muted">{theme.direction}</p>
+              <ul class="theme-issues">
+                {theme.issues.map((issue) => (
+                  <li>
+                    <a href={issue.url}>
+                      <span class="issue-num">#{issue.number}</span>{" "}
+                      {issue.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- closing -->
+  <section class="section closing" aria-label="Closing">
+    <div class="container">
+      <div class="prose" data-reveal>
+        {reachy.closing.paragraphs.map((p) => <p class="lede">{p}</p>)}
+        <p class="cta-row" data-reveal style="--reveal-delay: 0.15s">
+          <a class="cta" href={reachy.closing.repoUrl}
+            >{reachy.closing.repoCta} →</a
+          >
+          <a class="cta" href={reachy.closing.pypiUrl}
+            ><code>{reachy.closing.pypiCta}</code></a
+          >
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .section {
+    padding-block: clamp(2.6rem, 6vh, 4.2rem);
+  }
+
+  .facts-section {
+    padding-block: 0 1rem;
+  }
+
+  /* fast facts */
+  .facts {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem 0.9rem;
+  }
+
+  .fact {
+    display: flex;
+    align-items: baseline;
+    gap: 0.55rem;
+    padding: 0.55rem 1.05rem;
+    background: var(--surface);
+    border: 1px solid var(--line-soft);
+    border-radius: 999px;
+    box-shadow: var(--shadow);
+    font-size: 0.85rem;
+  }
+
+  .fact-label {
+    font-size: 0.72rem;
+    font-weight: 640;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .fact-value {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 480px) {
+    .fact-value {
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  /* the card grids — one shape across every section: an accent mono name over
+     a muted detail paragraph */
+  .cap-cards,
+  .model-cards,
+  .sense-cards,
+  .surface-cards {
+    list-style: none;
+    margin-top: 2.2rem;
+    display: grid;
+    gap: 1.1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  }
+
+  .cap-card,
+  .model-card,
+  .sense-card,
+  .surface-card {
+    padding: 1.4rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .cap-name,
+  .model-name,
+  .sense-name,
+  .surface-name {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 1.02rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--accent);
+  }
+
+  .cap-detail,
+  .model-detail,
+  .sense-detail,
+  .surface-detail {
+    font-size: 0.92rem;
+    line-height: 1.55;
+    margin-top: 0.1rem;
+  }
+
+  /* a single narrow terminal, centered — the same idiom as .diagram-wrap,
+     sized for a short pane rather than a full term-grid column */
+  .term-narrow {
+    margin-top: 2.2rem;
+    max-width: 28rem;
+    margin-inline: auto;
+  }
+
+  /* the single-SDK-owner diagram */
+  .diagram-wrap {
+    margin-block: 2.6rem 2.8rem;
+    max-width: 46rem;
+    margin-inline: auto;
+  }
+
+  /* the noun map: the whole robot surface in one table + the device captures
+     beneath it. The table scrolls inside its own container, never the page. */
+  .table-wrap {
+    margin-top: 2.2rem;
+    padding: 1.5rem 1.6rem;
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.86rem;
+    line-height: 1.5;
+  }
+
+  th {
+    text-align: left;
+    font-weight: 620;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    padding: 0.35rem 1rem 0.55rem 0;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 0.7rem 1rem 0.7rem 0;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  td code {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    overflow-wrap: anywhere;
+  }
+
+  .does-cell {
+    font-size: 0.84rem;
+    min-width: 18rem;
+  }
+
+  .transport-cell {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    white-space: nowrap;
+  }
+
+  /* what's next */
+  .themes {
+    list-style: none;
+    margin-top: 2.2rem;
+    display: grid;
+    gap: 1.1rem;
+  }
+
+  .theme-card {
+    padding: 1.6rem 1.8rem;
+  }
+
+  .theme-name {
+    margin-bottom: 0.4em;
+  }
+
+  .theme-direction {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    max-width: 46rem;
+  }
+
+  .theme-issues {
+    list-style: none;
+    margin-top: 1rem;
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .theme-issues li {
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+
+  .issue-num {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+
+  /* captures, shared across sections */
+  .term-grid {
+    margin-top: 2.2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+    gap: 1.3rem;
+    align-items: start;
+  }
+
+  .term-grid + .term-grid {
+    margin-top: 1.3rem;
+  }
+
+  /* the seam row: a deliberately short pane takes the narrow column, the long
+     one the wide column; below the two-column threshold it stacks like every
+     other row — the same idiom as colleague.astro's / devague.astro's .seam */
+  .term-grid.seam {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  }
+
+  @media (max-width: 52rem) {
+    .term-grid.seam {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* closing */
+  .closing {
+    padding-bottom: clamp(4rem, 9vh, 6.5rem);
+  }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.8rem;
+    align-items: baseline;
+  }
+
+  .cta {
+    font-weight: 560;
+    white-space: nowrap;
+  }
+</style>
