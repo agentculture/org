@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/). This project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.0] - 2026-07-17
+
+### Added
+
+- /agents/reachy-mini-cli — the embodiment presentation page: capabilities, the 14-noun map, the single-SDK-owner model (ReachyDiagram), senses/presence, the think cognition loop, agent-first surface, a tracker-driven what's-next, and 14 real captured sessions (ReachyTerminal replay component, reachy-mini-cli.ts content model, reachy-mini-cli-captures.ts verbatim captures — 13 fresh-run panes from a live robot batch on spark, 1 ported cognition pane)
+- devague artifacts for the run: the-reachy-mini-cli-page frame (25 claims, 20 honesty conditions, 16 scope entries incl. the rigorous /challenge pass), plan (7 tasks, 5 waves, 4 risks), exported spec + plan docs
+
+### Changed
+
+- site.ts: the reachy-mini-cli agents-index card now links /agents/reachy-mini-cli/ instead of the GitHub repo
+
 ## [0.11.0] - 2026-07-16
 
 ### Added
