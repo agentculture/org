@@ -217,7 +217,7 @@ const site: SiteData = {
       {
         name: "reachy-mini-cli",
         repo: "agentculture/reachy-mini-cli",
-        url: "https://github.com/agentculture/reachy-mini-cli",
+        url: "/agents/reachy-mini-cli/",
         role: "Operates the Reachy Mini expressive robot — device setup, app management, runtime ops.",
         group: "Edge & robotics",
       },
