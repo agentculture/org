@@ -180,7 +180,7 @@ const reachyMiniCli = {
         // README.md:29,50; operating-reachy.md:221-241.
         name: "survive a reboot",
         detail:
-          "service makes exactly one presence mode boot-persistent through systemd, so the robot comes back on its own after a restart instead of waiting to be launched by hand",
+          "service enrolls exactly one presence mode — demo or live — as a boot-enabled systemd unit, one presence per reboot; hardening that survival on real hardware is open work the tracker owns",
       },
     ] satisfies CapabilityCard[],
   },
@@ -374,7 +374,7 @@ const reachyMiniCli = {
     headline: "It reasons, speaks a sentence at a time, and moves as it thinks",
     intro: [
       "think is the noun where the body and the mind meet. Each turn snapshots what the robot just perceived — direction-of-arrival, mic loudness, speech — and asks an LLM for one or two short first-person sentences. The reply is sentence-streamed: the first sentence is synthesized and played while the later ones are still being generated, so thinking and speaking overlap the way they do in a person. Emoji markers in that stream drive calm body poses that arrive timed to the words, and each move goes onto the one serial motion queue. The captured demo runs three gestures against three spoken phrases so you can watch the timing without an LLM in the loop.",
-      "It has a second voice for when the first one is unreachable. The default is text-to-speech over an HTTP service, but that service can be down — and when it is, live cognition would otherwise go silent. So the robot also has a harmonic voice: fully offline, deterministic, in-process. It does not read the words; it renders their meaning as a short note-melody in the robot's own identity signature. Today's capture caught this exactly — the TTS endpoint was down, and instead of failing, the robot answered in its own harmonic identity, the emphasis in the text coming through as musical stress.",
+      "It has a second voice for when the first one is unreachable. The default is text-to-speech over an HTTP service, but that service can be down — and when it is, live cognition would otherwise go silent. So the robot also has a harmonic voice: fully offline, deterministic, in-process. It does not read the words; it renders their meaning as a short note-melody in the robot's own identity signature. Today's captures show both halves, separately and honestly: the default TTS run failed clean — an error line, a hint, no crash — and a second run that asked for the harmonic engine up front played its melody with no TTS service anywhere. The engine is chosen per run, with --voice-engine or REACHY_VOICE_ENGINE; when the speech service is down, the harmonic voice is the one you reach for.",
       "And you can watch it think from outside. think run --export - streams a newline-delimited JSON feed of what the robot is thinking, saying, and feeling — one object per line, tagged thinking, message, or emotion, each with a timestamp. The renderer lives out of this repo by design: the CLI emits a documented contract, and a separate consumer renders it. Be precise about what ships, though — in 0.31.0 only the stdout sink, spelled '-', is wired. Point --export at a file or an HTTP URL and the CLI says so itself: only '-' (stdout) is supported in this version; HTTP and file sinks are future work. A clean exit-one error, not a broken promise.",
       "One last honesty: the loop does nothing gracefully. When the sense-event buffer is empty, the turn is a no-op — no LLM call, no audio. A bounded think run against a quiet room can finish with zero spoken turns and that is the design, not a failure. It is the same discipline everywhere in this tool: the robot would rather do nothing legibly than fake being busy.",
     ],
@@ -390,7 +390,7 @@ const reachyMiniCli = {
     intro: [
       "This is not a robot toy with a scripting hook bolted on. It is an agent-first CLI, cited from teken's agent-first foundation, and the same design that makes it pleasant for a person makes it drivable by a model. The introspection verbs — whoami, quickstart, learn, explain, overview, doctor — all work with no robot attached, so an agent can learn the whole surface before it touches hardware.",
       "The contracts underneath are the point. Every command takes --json. Results go to stdout and diagnostics to stderr, never mixed, so a program can read the answer without parsing around chatter. Exit codes mean one thing each: zero for success, one for a user-input error, two for an environment error, three and up reserved. And a failure is never a Python traceback — it is a structured error: line with a hint: line telling you what to do next.",
-      "You can see the contract hold on a bare install. Run an sdk-transport noun without the SDK extra and you do not get an ImportError — you get exit two and a hint to install [sdk] or use --transport http. In today's captures the same shape appears for real: the TTS service was down, and the robot returned its clean error-and-hint pair and fell back to the harmonic voice rather than crashing. The failures on this page are the CLI keeping its promises.",
+      "You can see the contract hold on a bare install. Run an sdk-transport noun without the SDK extra and you do not get an ImportError — you get exit two and a hint to install [sdk] or use --transport http. In today's captures the same shape appears for real: the TTS service was down, and the robot returned its clean error-and-hint pair rather than crashing; a second run asked for the offline harmonic voice explicitly and played through the same speaker. The failures on this page are the CLI keeping its promises.",
     ],
     cards: [
       {
@@ -415,7 +415,7 @@ const reachyMiniCli = {
         // operating-reachy.md:393-413; _export.py:53-54 — the error:/hint: contract.
         name: "error: and hint:, never a traceback",
         detail:
-          "every failure is a structured pair — the TTS-down capture shows it live: a clean error line, a hint to fix it, and a fallback to the harmonic voice instead of a crash",
+          "every failure is a structured pair — the TTS-down capture shows it live: a clean error line and a hint naming the fix, the exit code intact, and not a stack trace in sight",
       },
       {
         // ADR-0001; operating-reachy.md:162-165, 407 — the bare-install CliError.

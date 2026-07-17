@@ -452,9 +452,12 @@ export const thinkExpressions: CapturePane = {
   ],
 };
 
-/** After the whole batch: the rig's presence unit restored to the same mode
- * and unit it was in before the batch started (service status was captured
- * before and after; this is the after). */
+/** After the whole batch: the rig's standing presence brought back up —
+ * mode (live) and presence unit match the pre-batch capture, and the
+ * reachy-live.service unit was restarted to active (the pre-batch capture
+ * had found it inactive: an external upgrade had stopped it minutes
+ * earlier, so the batch left the rig MORE restored than it found it).
+ * Service status was captured before and after; this is the after. */
 export const serviceStatus: CapturePane = {
   id: "service-status",
   title: "service status — the rig, restored",
