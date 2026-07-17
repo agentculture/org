@@ -1,0 +1,347 @@
+---
+// ReachyDiagram — the one diagram /agents/reachy-mini-cli needs: the
+// **single-SDK-owner model**. Reachy Mini exposes many behaviors, but the
+// hardware underneath is two single resources with one owner each, and that
+// is the whole reason two live behaviors can't run side by side.
+//
+// Every relationship drawn here is asserted verbatim by
+// reachy-mini-cli/docs/operating-reachy.md, "The single-SDK-owner model"
+// (its mermaid graph + conflict matrix) and the README noun map. Nothing is
+// invented for visual effect:
+//
+//   * ONE in-process SDK client — the single owner. On the `sdk` transport
+//     every noun runs against one in-process `ReachyMini` client, and the
+//     robot serves a single live SDK client at a time. Its `media_session()`
+//     is single-consumer (per-tick mic DoA + RMS). Drawn as one accent box,
+//     fed by the one USB mic array ("one audio device").
+//   * ONE serial MotionQueue — the second single owner. Every move flows
+//     through one serial MotionQueue, one move at a time, driving the one
+//     motor set (head · antennas · body). Drawn as one accent box that
+//     drives the head.
+//   * The FIVE sdk-sense nouns — `listen`, `think`, `sleep`, `vision`, `pat`
+//     — are "mutually exclusive on the `sdk` transport" (README) / one live
+//     owner at a time (the conflict matrix). Drawn inside one "sdk transport"
+//     band, fanning from the single SDK client (sense in) and converging into
+//     the single MotionQueue (motion out). The fan-out to five and fan-in
+//     from five IS the pinch of single ownership.
+//   * SOLID vs DASHED sense arrows encode the doc's own distinction: SENSE
+//     --> listen/think/sleep are solid (they open the single-consumer
+//     `media_session()`); SESS -.-> vision/pat are dashed (they read camera
+//     frames / head-pose read-back through the same one SDK client without a
+//     media session, contending at the client level). Per-noun "sense in"
+//     labels come from the Noun reference table.
+//
+// House idiom follows ColleagueDiagram/LobesDiagram: inline SVG only; every
+// colour rides the site's theme tokens (var(--accent)/--accent-strong,
+// --surface, --line, --ink, --ink-soft, --mesh-thread, --mesh-node,
+// --font-mono from src/styles/global.css) so both dawn themes stay legible;
+// a `caption` prop renders muted below. The diagram is fully drawn and
+// legible with motion off — the only motion is two idle breathing origin
+// dots (the fan-out origin and the fan-in point), reusing global.css's shared
+// `node-breathe` keyframe (transform + opacity only), gated behind
+// prefers-reduced-motion: no-preference. No JavaScript is used or needed.
+interface Props {
+  /** Optional caption rendered below the diagram, muted. */
+  caption?: string;
+}
+
+const { caption } = Astro.props;
+---
+
+<figure class="reachy-diagram">
+  <svg
+    viewBox="0 0 640 500"
+    fill="none"
+    role="img"
+    aria-label="Reachy Mini's single-SDK-owner model: one in-process SDK client (fed by the one USB mic array) and one serial MotionQueue (driving the one head/antennas/body motor set), each a single resource. The five sdk-sense nouns — listen, think, sleep, vision and pat — fan from the single SDK client for sense and converge into the single MotionQueue for motion; they are mutually exclusive on the sdk transport, one live owner at a time. listen, think and sleep open the single-consumer media session (solid); vision and pat ride the same SDK client without one (dashed)."
+  >
+    <defs>
+      <marker
+        id="reachy-arrow"
+        viewBox="0 0 10 10"
+        refX="8"
+        refY="5"
+        markerWidth="6.5"
+        markerHeight="6.5"
+        orient="auto-start-reverse"
+      >
+        <path d="M0 0 L10 5 L0 10 Z" class="arrow-head"></path>
+      </marker>
+    </defs>
+
+    <!-- ============ hardware: the two physical single resources ============ -->
+
+    <!-- one USB mic array -->
+    <rect x="24" y="44" width="168" height="52" rx="12" class="hw-box"></rect>
+    <text x="108" y="70" text-anchor="middle" class="hw-title">USB mic array</text>
+    <text x="108" y="86" text-anchor="middle" class="hw-sub">one audio device</text>
+
+    <!-- one motor set -->
+    <rect x="448" y="44" width="168" height="52" rx="12" class="hw-box"></rect>
+    <text x="532" y="70" text-anchor="middle" class="hw-title">head · antennas · body</text>
+    <text x="532" y="86" text-anchor="middle" class="hw-sub">one motor set</text>
+
+    <!-- ============ band header: the sdk transport, one live owner ============ -->
+
+    <text x="320" y="120" text-anchor="middle" class="band-title">sdk transport</text>
+    <text x="320" y="137" text-anchor="middle" class="band-sub">
+      one live owner at a time — these five are mutually exclusive
+    </text>
+
+    <!-- the band that holds the five contending nouns -->
+    <rect x="224" y="148" width="192" height="300" rx="18" class="sdk-band"></rect>
+
+    <!-- ============ the two single owners ============ -->
+
+    <!-- one in-process SDK client (single owner) -->
+    <rect x="23" y="243" width="170" height="110" rx="14" class="owner-box"></rect>
+    <text x="108" y="278" text-anchor="middle" class="owner-title">one SDK client</text>
+    <text x="108" y="296" text-anchor="middle" class="owner-sub">in-process ReachyMini</text>
+    <text x="108" y="318" text-anchor="middle" class="owner-note">media_session</text>
+    <text x="108" y="333" text-anchor="middle" class="owner-note">single consumer</text>
+
+    <!-- one serial MotionQueue (single owner) -->
+    <rect x="447" y="243" width="170" height="110" rx="14" class="owner-box"></rect>
+    <text x="532" y="285" text-anchor="middle" class="owner-title">serial MotionQueue</text>
+    <text x="532" y="305" text-anchor="middle" class="owner-sub">one move at a time</text>
+
+    <!-- ============ hardware ↔ owner feeds ============ -->
+
+    <!-- mic array feeds the SDK client (sense source) -->
+    <path d="M108 96 L108 243" class="feed-arrow" marker-end="url(#reachy-arrow)"></path>
+
+    <!-- the MotionQueue drives the motor set (motion out) -->
+    <path d="M532 243 L532 96" class="feed-arrow" marker-end="url(#reachy-arrow)"></path>
+    <text x="546" y="172" text-anchor="start" class="feed-label">drives</text>
+
+    <!-- ============ sense in: one SDK client fans to five nouns ============ -->
+    <!-- solid = opens the single-consumer media_session (listen/think/sleep) -->
+    <path d="M193 262 Q220 220 242 184" class="sense-arrow" marker-end="url(#reachy-arrow)"></path>
+    <path d="M193 274 Q216 260 242 241" class="sense-arrow" marker-end="url(#reachy-arrow)"></path>
+    <path d="M193 298 L242 298" class="sense-arrow" marker-end="url(#reachy-arrow)"></path>
+    <!-- dashed = rides the same SDK client, no media_session (vision/pat) -->
+    <path d="M193 322 Q216 340 242 355" class="sense-arrow ride" marker-end="url(#reachy-arrow)"></path>
+    <path d="M193 334 Q220 382 242 412" class="sense-arrow ride" marker-end="url(#reachy-arrow)"></path>
+
+    <!-- fan-out origin (breathes) -->
+    <circle cx="193" cy="298" r="3.4" class="origin-dot" style="--bd: 0s"></circle>
+
+    <!-- ============ the five sdk-sense nouns ============ -->
+
+    <!-- listen -->
+    <rect x="242" y="162" width="156" height="44" rx="12" class="noun-pill"></rect>
+    <text x="320" y="184" text-anchor="middle" class="noun-title">listen</text>
+    <text x="320" y="199" text-anchor="middle" class="noun-sub">mic DoA + RMS</text>
+
+    <!-- think -->
+    <rect x="242" y="219" width="156" height="44" rx="12" class="noun-pill"></rect>
+    <text x="320" y="241" text-anchor="middle" class="noun-title">think</text>
+    <text x="320" y="256" text-anchor="middle" class="noun-sub">mic DoA + RMS</text>
+
+    <!-- sleep -->
+    <rect x="242" y="276" width="156" height="44" rx="12" class="noun-pill"></rect>
+    <text x="320" y="298" text-anchor="middle" class="noun-title">sleep</text>
+    <text x="320" y="313" text-anchor="middle" class="noun-sub">mic DoA + RMS</text>
+
+    <!-- vision -->
+    <rect x="242" y="333" width="156" height="44" rx="12" class="noun-pill"></rect>
+    <text x="320" y="355" text-anchor="middle" class="noun-title">vision</text>
+    <text x="320" y="370" text-anchor="middle" class="noun-sub">camera frames</text>
+
+    <!-- pat -->
+    <rect x="242" y="390" width="156" height="44" rx="12" class="noun-pill"></rect>
+    <text x="320" y="412" text-anchor="middle" class="noun-title">pat</text>
+    <text x="320" y="427" text-anchor="middle" class="noun-sub">head-pose read-back</text>
+
+    <!-- ============ motion out: five nouns converge into one queue ============ -->
+    <path d="M398 184 Q426 220 447 262" class="motion-arrow" marker-end="url(#reachy-arrow)"></path>
+    <path d="M398 241 Q424 260 447 274" class="motion-arrow" marker-end="url(#reachy-arrow)"></path>
+    <path d="M398 298 L447 298" class="motion-arrow" marker-end="url(#reachy-arrow)"></path>
+    <path d="M398 355 Q424 340 447 322" class="motion-arrow" marker-end="url(#reachy-arrow)"></path>
+    <path d="M398 412 Q426 382 447 334" class="motion-arrow" marker-end="url(#reachy-arrow)"></path>
+
+    <!-- fan-in point (breathes) -->
+    <circle cx="447" cy="298" r="3.4" class="origin-dot" style="--bd: -4s"></circle>
+
+    <!-- ============ legend: what the two arrow styles mean ============ -->
+
+    <line x1="150" y1="466" x2="182" y2="466" class="sense-arrow legend-line"></line>
+    <text x="190" y="470" text-anchor="start" class="legend-label">
+      opens media_session — listen · think · sleep
+    </text>
+
+    <line x1="150" y1="486" x2="182" y2="486" class="sense-arrow ride legend-line"></line>
+    <text x="190" y="490" text-anchor="start" class="legend-label">
+      rides the same SDK client, no media_session — vision · pat
+    </text>
+  </svg>
+
+  {caption && <figcaption class="diagram-caption muted">{caption}</figcaption>}
+</figure>
+
+<style>
+  .reachy-diagram {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  .reachy-diagram svg {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .diagram-caption {
+    font-size: 0.92rem;
+    line-height: 1.55;
+    text-align: center;
+    max-width: 34rem;
+    margin: 0 auto;
+  }
+
+  /* ---------- shared text paint ---------- */
+  text {
+    font-family: var(--font-mono);
+  }
+
+  /* the two single owners — the point of the diagram, so painted in accent */
+  .owner-title {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    fill: var(--accent-strong);
+  }
+
+  .owner-sub {
+    font-size: 10.5px;
+    fill: var(--ink);
+  }
+
+  .owner-note {
+    font-size: 9.5px;
+    fill: var(--ink-soft);
+  }
+
+  .hw-title {
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    fill: var(--ink);
+  }
+
+  .hw-sub {
+    font-size: 9.5px;
+    fill: var(--ink-soft);
+  }
+
+  .band-title {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    fill: var(--accent-strong);
+  }
+
+  .band-sub {
+    font-size: 10px;
+    fill: var(--ink-soft);
+  }
+
+  .noun-title {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    fill: var(--ink);
+  }
+
+  .noun-sub {
+    font-size: 9px;
+    fill: var(--ink-soft);
+  }
+
+  .feed-label {
+    font-size: 10px;
+    letter-spacing: 0.02em;
+    fill: var(--ink-soft);
+  }
+
+  .legend-label {
+    font-size: 9.5px;
+    fill: var(--ink-soft);
+  }
+
+  /* ---------- shapes ---------- */
+  .owner-box {
+    fill: color-mix(in srgb, var(--accent) 10%, var(--surface));
+    stroke: color-mix(in srgb, var(--accent) 45%, transparent);
+    stroke-width: 1.6;
+  }
+
+  .hw-box,
+  .noun-pill {
+    fill: color-mix(in srgb, var(--surface) 70%, transparent);
+    stroke: var(--line);
+    stroke-width: 1.4;
+  }
+
+  /* the sdk-transport region: one owner at a time lives in here */
+  .sdk-band {
+    fill: color-mix(in srgb, var(--accent) 5%, transparent);
+    stroke: color-mix(in srgb, var(--accent) 30%, transparent);
+    stroke-width: 1.3;
+    stroke-dasharray: 5 6;
+  }
+
+  .sense-arrow,
+  .motion-arrow,
+  .feed-arrow {
+    stroke: var(--mesh-thread);
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    fill: none;
+  }
+
+  /* vision/pat: ride the SDK client with no media session — dashed */
+  .sense-arrow.ride {
+    stroke-dasharray: 4 5;
+  }
+
+  .legend-line {
+    /* markers/curves off — a plain sample stroke */
+  }
+
+  .arrow-head {
+    fill: var(--mesh-thread);
+  }
+
+  .origin-dot {
+    fill: var(--mesh-node);
+    opacity: 0.8;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  /* ---------- motion: two idle breathing dots, nothing else ----------
+     Reuses global.css's shared node-breathe keyframe (transform + opacity
+     only) — the fan-out origin on the SDK client and the fan-in point on the
+     MotionQueue. Gated behind prefers-reduced-motion so a reduced-motion
+     reader sees the identical, fully-drawn diagram with the dots simply held
+     still. (global.css also carries a reduce kill-switch as belt-and-braces.)
+     No JS is used or needed for this component. */
+  @media (prefers-reduced-motion: no-preference) {
+    .origin-dot {
+      animation: node-breathe 8s var(--ease-gentle) infinite alternate;
+      animation-delay: var(--bd, 0s);
+    }
+  }
+
+  /* ---------- narrow screens: trim caption size a touch ---------- */
+  @media (max-width: 26rem) {
+    .diagram-caption {
+      font-size: 0.88rem;
+    }
+  }
+</style>
