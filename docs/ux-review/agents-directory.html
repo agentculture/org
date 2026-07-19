@@ -1,0 +1,719 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The agents directory — proposal for agentculture.org</title>
+<style>
+/* ============================================================
+   PROPOSAL — /agents/ directory: destination, target, wayfinding
+   Measured against the built site at commit d71a719, 1280x720.
+
+   Colour, font-family, radius and shadow below are the site's OWN
+   token values, copied unchanged from site-astro/src/styles/global.css.
+   Nothing here invents a colour. The live examples are built from
+   the real 30 entries in src/data/site.ts.
+   ============================================================ */
+:root {
+  /* ---------- EXISTING SITE TOKENS — unchanged ------------- */
+  --bg: #f4f5fb;
+  --surface: #ffffff;
+  --ink: #232a4d;
+  --ink-soft: #4d546f;
+  --accent: #0b655c;
+  --accent-strong: #0c5a53;
+  --on-accent: #ffffff;
+  --line: rgba(35, 42, 77, 0.14);
+  --line-soft: rgba(35, 42, 77, 0.08);
+  --shadow: 0 4px 24px rgba(35,42,77,0.07), 0 1px 4px rgba(35,42,77,0.05);
+  --shadow-lift: 0 14px 40px rgba(35,42,77,0.12), 0 2px 8px rgba(35,42,77,0.06);
+  --radius: 1.25rem;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-gentle: cubic-bezier(0.45, 0, 0.25, 1);
+  --font-display: "Fraunces Variable", "Iowan Old Style", Georgia, serif;
+  --font-body: "Albert Sans Variable", -apple-system, "Segoe UI", system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* ---------- DOC-ONLY spacing (this page's chrome) --------- */
+  --s1: 0.25rem; --s2: 0.5rem;  --s3: 0.75rem; --s4: 1rem;
+  --s5: 1.5rem;  --s6: 2rem;    --s7: 3rem;    --s8: 4rem;
+  --gutter: clamp(1.5rem, 5vw, 6rem);
+
+  --ok:   #0b655c;
+  --warn: #8a5a12;
+  --bad:  #8c2f39;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--surface); }
+
+/* ============================================================
+   DOC CHROME — deliberately plain. Live examples sit OUTSIDE
+   .doc so none of these element selectors reach them.
+   ============================================================ */
+.doc {
+  font-family: var(--font-body);
+  color: var(--ink-soft);
+  line-height: 1.7;
+  padding: var(--s8) var(--gutter) 0;
+  -webkit-font-smoothing: antialiased;
+}
+.doc-inner { max-width: 78rem; margin: 0 auto; }
+.doc h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4vw, 2.1rem); line-height: 1.15; letter-spacing: -0.015em;
+  color: var(--ink); margin: 0 0 var(--s4); font-weight: 600;
+}
+.doc h2 {
+  font-size: 0.6875rem; line-height: 1.25; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--accent); font-weight: 700;
+  margin: var(--s8) 0 var(--s4);
+}
+.doc h3 {
+  font-family: var(--font-body); font-size: 1rem; line-height: 1.3;
+  color: var(--ink); font-weight: 600; margin: var(--s6) 0 var(--s2);
+  letter-spacing: 0;
+}
+.doc p { margin: 0 0 var(--s4); max-width: 64ch; }
+.doc p:last-child { margin-bottom: 0; }
+.doc ul.notes { margin: 0 0 var(--s4); padding-left: 1.1rem; max-width: 64ch; }
+.doc ul.notes li { margin-bottom: var(--s2); }
+.doc code {
+  font-family: var(--font-mono); font-size: 0.85em; color: var(--ink);
+  background: var(--line-soft); padding: 0.1em 0.35em; border-radius: 4px;
+}
+.doc strong { color: var(--ink); font-weight: 600; }
+.doc a { color: var(--accent); }
+.lede { font-size: 1.0625rem; max-width: 62ch; }
+
+.rule { height: 1px; background: var(--line-soft); margin: var(--s8) 0 0; border: 0; }
+
+/* ---------- measurement table ---------- */
+.measure {
+  width: 100%; border-collapse: collapse; margin: 0 0 var(--s4);
+  font-size: 0.9rem; max-width: 60rem;
+}
+.measure th, .measure td {
+  text-align: left; padding: var(--s3) var(--s4);
+  border-bottom: 1px solid var(--line-soft); vertical-align: top;
+}
+.measure th {
+  font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink-soft); font-weight: 700;
+}
+.measure td.num { font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink); white-space: nowrap; }
+.tag {
+  display: inline-block; font-size: 0.6875rem; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 0.15em 0.5em; border-radius: 4px;
+}
+.tag.ok   { color: var(--ok);   background: rgba(11,101,92,0.10); }
+.tag.warn { color: var(--warn); background: rgba(138,90,18,0.12); }
+.tag.bad  { color: var(--bad);  background: rgba(140,47,57,0.10); }
+
+/* ---------- the demo frame ---------- */
+.frame {
+  margin: var(--s5) 0 var(--s6);
+  border: 1px solid var(--line); border-radius: var(--radius);
+  overflow: hidden; background: var(--bg);
+}
+.frame-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--s4); flex-wrap: wrap;
+  padding: var(--s3) var(--s4);
+  background: var(--surface); border-bottom: 1px solid var(--line-soft);
+}
+.frame-label {
+  font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase;
+  font-weight: 700; color: var(--ink-soft);
+}
+.frame-body { padding: var(--s6) var(--s5); }
+
+.switch { display: flex; gap: var(--s1); flex-wrap: wrap; }
+.switch button {
+  font-family: inherit; font-size: 0.8rem; font-weight: 600;
+  padding: 0.4rem 0.85rem; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--line); background: transparent; color: var(--ink-soft);
+  transition: background 0.2s var(--ease-gentle), color 0.2s var(--ease-gentle),
+              border-color 0.2s var(--ease-gentle);
+}
+.switch button:hover { border-color: var(--accent); color: var(--accent); }
+.switch button[aria-pressed="true"] {
+  background: var(--accent-strong); border-color: var(--accent-strong); color: var(--on-accent);
+}
+.switch button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.toggles { display: flex; gap: var(--s4); flex-wrap: wrap; align-items: center; }
+.toggle {
+  display: inline-flex; align-items: center; gap: var(--s2);
+  font-size: 0.8rem; color: var(--ink-soft); cursor: pointer; user-select: none;
+}
+.toggle input { accent-color: var(--accent); width: 1rem; height: 1rem; cursor: pointer; }
+
+/* ============================================================
+   LIVE EXAMPLE — the directory itself.
+   These rules mirror site-astro/src/pages/agents.astro, then
+   diverge only where the proposal changes something.
+   ============================================================ */
+.ex { font-family: var(--font-body); color: var(--ink); line-height: 1.7; }
+.ex .group { padding-block: 1.2rem 2.6rem; }
+.ex .group:first-child { padding-top: 0; }
+.ex .group-label {
+  font-size: 1.05rem; font-family: var(--font-body); font-weight: 620;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft);
+  margin: 0 0 1.3rem;
+}
+.ex .grid {
+  list-style: none; margin: 0; padding: 0; display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 1.2rem;
+}
+.ex .card {
+  display: block; background: var(--surface);
+  border: 1px solid var(--line-soft); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 1.5rem 1.6rem; color: var(--ink);
+  text-decoration: none; height: 100%;
+}
+.ex .entry { display: flex; flex-direction: column; gap: 0.35rem; }
+.ex .entry h3 { margin: 0; font-size: 1.18rem; font-family: var(--font-display); font-weight: 500; line-height: 1.14; }
+.ex .role { font-size: 0.94rem; line-height: 1.55; flex-grow: 1; color: var(--ink-soft); margin: 0; }
+.ex .repo { font-family: var(--font-mono); font-size: 0.76rem; color: var(--ink-soft); letter-spacing: 0.01em; }
+
+/* ---- BEFORE: name-only anchor (the current build) ---- */
+.ex[data-mode="before"] .entry h3 a {
+  color: inherit; text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  text-underline-offset: 0.2em; text-decoration-thickness: 1px;
+}
+.ex[data-mode="before"] .entry h3 a:hover { color: var(--accent); }
+
+/* ---- AFTER: whole card is the anchor ---- */
+.ex[data-mode="after"] a.card {
+  transition: transform 0.4s var(--ease-gentle), box-shadow 0.4s var(--ease-gentle),
+              border-color 0.4s var(--ease-gentle);
+}
+.ex[data-mode="after"] a.card:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--line-soft));
+  box-shadow: var(--shadow-lift); transform: translateY(-4px);
+}
+.ex[data-mode="after"] a.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.ex[data-mode="after"] .entry h3 { color: var(--ink); }
+
+/* the destination cue — the whole point of finding 1 */
+.ex .dest {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  font-size: 0.78rem; font-weight: 600; letter-spacing: 0.02em;
+  margin-top: 0.6rem;
+}
+.ex .dest svg { width: 0.85em; height: 0.85em; flex: none; }
+.ex .dest.page { color: var(--accent); }
+.ex .dest.repo-dest { color: var(--ink-soft); }
+.ex[data-mode="after"] a.card:hover .dest.page .arrow { transform: translateX(3px); }
+.ex .dest .arrow { transition: transform 0.35s var(--ease-out); display: inline-block; }
+
+/* a page-backed entry earns a slightly stronger edge */
+.ex[data-mode="after"] a.card.has-page {
+  border-color: color-mix(in srgb, var(--accent) 22%, var(--line-soft));
+}
+
+/* ---- wayfinding (finding 4) ---- */
+.ex .jump { margin: 0 0 2rem; }
+.ex .jump-inner {
+  display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;
+  padding-bottom: 1rem; border-bottom: 1px solid var(--line-soft);
+}
+.ex .jump a {
+  font-size: 0.8rem; font-weight: 600; color: var(--ink-soft);
+  text-decoration: none; padding: 0.35rem 0.75rem; border-radius: 999px;
+  border: 1px solid var(--line); white-space: nowrap;
+}
+.ex .jump a:hover { color: var(--accent); border-color: var(--accent); }
+.ex .jump a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex .jump .count { color: var(--ink-soft); opacity: 0.7; font-weight: 500; }
+.ex .filter-row { display: flex; gap: 0.6rem; align-items: center; margin-top: 1rem; flex-wrap: wrap; }
+.ex .filter-row input {
+  font-family: inherit; font-size: 0.85rem; color: var(--ink);
+  padding: 0.45rem 0.8rem; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--surface); min-width: 14rem;
+}
+.ex .filter-row input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-color: var(--accent); }
+.ex .filter-status { font-size: 0.8rem; color: var(--ink-soft); }
+
+/* target-size overlay (finding 2) */
+.ex.show-targets .entry h3 a,
+.ex.show-targets a.card { position: relative; }
+.ex.show-targets .entry h3 a::after,
+.ex.show-targets a.card::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: rgba(140,47,57,0.13); outline: 1.5px dashed rgba(140,47,57,0.55);
+  border-radius: 3px;
+}
+.ex.show-targets[data-mode="after"] a.card::after {
+  background: rgba(11,101,92,0.10); outline-color: rgba(11,101,92,0.5);
+  border-radius: var(--radius);
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+.footnote {
+  font-size: 0.85rem; color: var(--ink-soft); max-width: 64ch;
+  border-left: 2px solid var(--line); padding-left: var(--s4); margin: var(--s5) 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="doc">
+<div class="doc-inner">
+
+  <h1>The agents directory — one affordance, two destinations</h1>
+  <p class="lede">
+    Four findings on <code>/agents/</code>, worked as one change because they
+    share a fix. Measured against the built site at commit <code>d71a719</code>.
+    Every card below is a real entry from <code>src/data/site.ts</code>.
+  </p>
+
+  <h2>0 — What the audit found</h2>
+
+  <table class="measure">
+    <thead>
+      <tr><th>#</th><th>Finding</th><th>Measured</th><th></th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="num">1</td>
+        <td>30 cards, one visual language, three kinds of destination — 4 in-site
+            pages, 25 GitHub repos, 1 other hosted site. No signal which.</td>
+        <td class="num">4 / 25 / 1</td>
+        <td><span class="tag bad">High</span></td>
+      </tr>
+      <tr>
+        <td class="num">2</td>
+        <td>Only the agent name is an anchor. The card is the visual target;
+            one line of text is the real one.</td>
+        <td class="num">4% of card<br>24px tall</td>
+        <td><span class="tag bad">High</span></td>
+      </tr>
+      <tr>
+        <td class="num">3</td>
+        <td>Intro says “Every entry links to its public repository.” Five no
+            longer do.</td>
+        <td class="num">5 / 30 false</td>
+        <td><span class="tag warn">Medium</span></td>
+      </tr>
+      <tr>
+        <td class="num">4</td>
+        <td>Six groups, no jump list, no anchors, no counts. Groups are only
+            findable by scrolling past them.</td>
+        <td class="num">30 entries</td>
+        <td><span class="tag warn">Medium</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    Findings 1 and 2 have the same fix, and it is a small one: the data layer
+    already knows which entries are in-site, because their <code>url</code> starts
+    with <code>/</code>. Nothing new needs to be stored and no content needs
+    rewriting — the distinction just needs to be <em>rendered</em>.
+  </p>
+
+  <h2>1 — The card, before and after</h2>
+
+  <p>
+    Same eight entries, same tokens, same grid. Toggle between the current build
+    and the proposal, and turn on <strong>show click targets</strong> to see
+    finding 2 directly — the shaded region is what actually responds to a click.
+  </p>
+
+  <div class="frame">
+    <div class="frame-bar">
+      <div class="switch" role="group" aria-label="Card treatment">
+        <button type="button" data-mode-btn="before" aria-pressed="true">Current build</button>
+        <button type="button" data-mode-btn="after" aria-pressed="false">Proposed</button>
+      </div>
+      <div class="toggles">
+        <label class="toggle">
+          <input type="checkbox" id="targets"> show click targets
+        </label>
+      </div>
+    </div>
+    <div class="frame-body">
+      <div class="ex" id="ex-cards" data-mode="before">
+        <section class="group">
+          <h3 class="group-label">Mesh &amp; platform</h3>
+          <ul class="grid" id="cards-grid"></ul>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <table class="measure">
+    <thead><tr><th>Measure</th><th>Current</th><th>Proposed</th><th>Change</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Clickable share of card</td>
+        <td class="num" id="m-before">4%</td>
+        <td class="num" id="m-after">100%</td>
+        <td class="num">×25</td>
+      </tr>
+      <tr>
+        <td>Target height</td>
+        <td class="num">24px</td>
+        <td class="num" id="m-h-after">~250px</td>
+        <td><span class="tag ok">≥44px</span></td>
+      </tr>
+      <tr>
+        <td>Destination legible before click</td>
+        <td class="num">no</td>
+        <td class="num">yes</td>
+        <td><span class="tag ok">fixed</span></td>
+      </tr>
+      <tr>
+        <td>Matches the home-page card model</td>
+        <td class="num">no</td>
+        <td class="num">yes</td>
+        <td><span class="tag ok">fixed</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="footnote">
+    The “proposed” treatment is not new design — it is the treatment already used
+    by the three teasers on <code>/</code>, which are <code>a.card</code> with a
+    hover lift and a sliding arrow. This makes the two card grids agree rather
+    than introducing a third pattern.
+  </p>
+
+  <h2>2 — Telling the two destinations apart</h2>
+
+  <p>
+    Three ways to signal it, in increasing strength. All three are shown against
+    real entries: <code>colleague</code> and <code>lobes-cli</code> have pages,
+    the rest do not.
+  </p>
+
+  <div class="frame">
+    <div class="frame-bar">
+      <div class="switch" role="group" aria-label="Destination cue option">
+        <button type="button" data-opt-btn="a" aria-pressed="true">A — label + glyph</button>
+        <button type="button" data-opt-btn="b" aria-pressed="false">B — glyph only</button>
+        <button type="button" data-opt-btn="c" aria-pressed="false">C — separate the groups</button>
+      </div>
+    </div>
+    <div class="frame-body">
+      <div class="ex" id="ex-dest" data-mode="after"></div>
+    </div>
+  </div>
+
+  <table class="measure">
+    <thead><tr><th>Option</th><th>Reads at a glance</th><th>Cost</th><th>Risk</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>A — label + glyph</strong><br><span style="font-size:0.85em">“Read the page →” vs a repo glyph</span></td>
+        <td><span class="tag ok">Strongest</span></td>
+        <td>One derived boolean, one line of markup</td>
+        <td>Adds a line of height per card</td>
+      </tr>
+      <tr>
+        <td><strong>B — glyph only</strong><br><span style="font-size:0.85em">A small mark in the corner</span></td>
+        <td><span class="tag warn">Moderate</span></td>
+        <td>Lowest — no layout change</td>
+        <td>Glyphs alone are learned, not read; needs assistive text</td>
+      </tr>
+      <tr>
+        <td><strong>C — separate the groups</strong><br><span style="font-size:0.85em">Pages promoted above the fleet</span></td>
+        <td><span class="tag ok">Strongest</span></td>
+        <td>Highest — reorders the page</td>
+        <td>Breaks the existing “grouped by what it does” model</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    <strong>Recommendation: A.</strong> It is the only one that states the
+    difference in words rather than asking the visitor to infer it, and it costs
+    one derived boolean:
+  </p>
+
+  <p><code>const hasPage = agent.url.startsWith("/");</code></p>
+
+  <p>
+    C is worth revisiting when there are more than about ten presentation pages.
+    Today, with four, promoting them above the six existing groups would fight the
+    page's own organising idea for a section that would hold four cards.
+  </p>
+
+  <h2>3 — Wayfinding at thirty entries</h2>
+
+  <p>
+    A jump list with counts, and <code>id</code> anchors on each group so a group
+    is linkable. The filter is a progressive enhancement — with JavaScript off,
+    the jump list is plain anchor links and everything still works.
+  </p>
+
+  <div class="frame">
+    <div class="frame-bar">
+      <span class="frame-label">Proposed — jump list, anchors, optional filter</span>
+    </div>
+    <div class="frame-body">
+      <div class="ex" id="ex-nav" data-mode="after">
+        <nav class="jump" aria-label="Agent groups">
+          <div class="jump-inner" id="jump-inner"></div>
+          <div class="filter-row">
+            <label class="sr-only" for="agent-filter">Filter agents</label>
+            <input type="search" id="agent-filter" placeholder="Filter 30 agents…" autocomplete="off">
+            <span class="filter-status" id="filter-status" role="status" aria-live="polite"></span>
+          </div>
+        </nav>
+        <div id="nav-groups"></div>
+      </div>
+    </div>
+  </div>
+
+  <ul class="notes">
+    <li>Group headings get <code>id</code>s, so <code>/agents/#edge-robotics</code>
+        becomes a shareable link — useful when pointing an agent or a person at one
+        part of the fleet.</li>
+    <li>Counts set expectations before the scroll starts.</li>
+    <li>The filter announces its result count via <code>role="status"</code>, so a
+        screen reader hears the list change.</li>
+    <li>Filtering hides groups that empty out, so there are no orphan headings.</li>
+  </ul>
+
+  <h2>4 — The intro sentence</h2>
+
+  <p>Finding 3 is one string in <code>src/data/site.ts</code>. Current:</p>
+  <p class="footnote">
+    This is a curated selection of the fleet, grouped by what each agent does.
+    <strong>Every entry links to its public repository.</strong>
+  </p>
+  <p>Suggested, once the cards distinguish themselves:</p>
+  <p class="footnote">
+    This is a curated selection of the fleet, grouped by what each agent does.
+    <strong>Some have a page here; the rest link straight to their public
+    repository.</strong>
+  </p>
+  <p>
+    The replacement is a stronger sentence than a merely accurate one: it tells
+    the visitor the presentation pages exist, which the current copy actively
+    conceals.
+  </p>
+
+  <h2>5 — What this does not change</h2>
+
+  <ul class="notes">
+    <li>No new colour, font, radius or shadow. Every value is an existing token.</li>
+    <li>No change to the six groups or their order.</li>
+    <li>No change to any <code>role</code> text or repo name.</li>
+    <li>No JavaScript required for anything except the filter, which is additive.</li>
+    <li>Heading order stays <code>h1 → h2 → h3</code>, unchanged.</li>
+  </ul>
+
+  <hr class="rule">
+  <p style="padding-bottom: var(--s8); font-size: 0.85rem;">
+    Part of <code>docs/ux-review/</code> — see <code>findings.md</code> for the
+    full audit and method.
+  </p>
+
+</div>
+</div>
+
+<script>
+// The real 30 entries from site-astro/src/data/site.ts, trimmed to the fields
+// the directory renders. `url` is verbatim — the in-site/off-site distinction
+// is derived from it exactly as the proposal derives it.
+const ENTRIES = [
+  ["culture","agentculture/culture","https://github.com/agentculture/culture","The workspace itself — turns isolated stochastic agents into cooperative, inspectable, improvable colleagues.","Mesh & platform"],
+  ["colleague","agentculture/colleague","/agents/colleague/","A swappable coder-agent harness — one runtime, many minds; runs by itself, and other agents.","Mesh & platform"],
+  ["irc-lens","agentculture/irc-lens","https://github.com/agentculture/irc-lens","The inspection lens for AgentIRC — see what is happening on the mesh.","Mesh & platform"],
+  ["agenda","agentculture/agenda","https://github.com/agentculture/agenda","Task and task-version tracking for the mesh, with a task-overview surface.","Mesh & platform"],
+  ["lobes-cli","agentculture/lobes-cli","/agents/lobes/","A local thinking agent for the Culture ecosystem.","Mesh & platform"],
+  ["eidetic-cli","agentculture/eidetic-cli","https://github.com/agentculture/eidetic-cli","Eidetic, perfect-recall memory for agents.","Memory & data"],
+  ["coherence-cli","agentculture/coherence-cli","https://github.com/agentculture/coherence-cli","Turns context, claims, provenance, and behavioral traces into inspectable signals agents can decide to trust, refresh, or repair.","Memory & data"],
+  ["data-refinery-cli","agentculture/data-refinery-cli","https://github.com/agentculture/data-refinery-cli","Data quality in storage and retrieval — validating, deduplicating, and checking integrity and freshness.","Memory & data"],
+  ["agentfront","agentculture/agentfront","https://github.com/agentculture/agentfront","The Agent First Interface — one registry that derives a CLI, an MCP server, and an HTTP site that cannot drift apart.","Developer tooling"],
+  ["culture-tools","agentculture/culture-tools","https://github.com/agentculture/culture-tools","The package index behind tools.culture.dev — agent-first CLI tools certified against the agentfront contract.","Developer tooling"],
+  ["refactor-cli","agentculture/refactor-cli","https://github.com/agentculture/refactor-cli","Composable, behavior-preserving refactor actions that don't change what the code does.","Developer tooling"],
+  ["dominion-breaker","agentculture/dominion-breaker","https://github.com/agentculture/dominion-breaker","Cited monolith decomposition — entity agents defend domain boundaries, and every claim keeps its evidence.","Developer tooling"],
+  ["webglass-cli","agentculture/webglass-cli","https://github.com/agentculture/webglass-cli","Agent-first web browsing — wraps Playwright and headless Chromium so an agent can navigate, read, and interact with pages.","Developer tooling"],
+  ["arxivist","agentculture/arxivist","https://github.com/agentculture/arxivist","Fetches arXiv papers, keeps a knowledge base, implements paper solutions, and benchmarks them against the papers' claims.","Developer tooling"],
+  ["auntiepypi","agentculture/auntiepypi","https://github.com/agentculture/auntiepypi","Maintains, uses, and serves the CLI for managing PyPI packages.","Developer tooling"],
+  ["devague","agentculture/devague","/agents/devague/","Turns a vague feature idea into a buildable spec, then a buildable plan, then a closed loop through delivery.","Developer tooling"],
+  ["cultureflare","agentculture/cultureflare","https://github.com/agentculture/cultureflare","Agent-first Cloudflare management — action-oriented, idempotent, dry-run by default.","Cloud & infrastructure"],
+  ["cloudai-cli","agentculture/cloudai-cli","https://github.com/agentculture/cloudai-cli","Cloud AI providers behind one interface — Amazon Bedrock today, with room for more.","Cloud & infrastructure"],
+  ["ec2-cli","agentculture/ec2-cli","https://github.com/agentculture/ec2-cli","Manages AWS EC2 instances — launch, inspect, start and stop, operate fleets.","Cloud & infrastructure"],
+  ["reachy-mini-cli","agentculture/reachy-mini-cli","/agents/reachy-mini-cli/","Operates the Reachy Mini expressive robot — device setup, app management, runtime ops.","Edge & robotics"],
+  ["jetson","agentculture/jetson","https://github.com/agentculture/jetson","NVIDIA Jetson edge-AI ops — device setup, container builds, on-device deployment.","Edge & robotics"],
+  ["dgx-spark-cli","agentculture/dgx-spark-cli","https://github.com/agentculture/dgx-spark-cli","Operates an NVIDIA DGX Spark workstation — setup, health, and local AI/ML workloads.","Edge & robotics"],
+  ["drone-cli","agentculture/drone-cli","https://github.com/agentculture/drone-cli","Controls a single flying drone — connect, arm, fly missions, stream telemetry, land.","Edge & robotics"],
+  ["fleet-cli","agentculture/fleet-cli","https://github.com/agentculture/fleet-cli","Coordinates a fleet of drones at once, built on drone-cli.","Edge & robotics"],
+  ["arm101-cli","agentculture/arm101-cli","https://github.com/agentculture/arm101-cli","Controls SO-ARM101 robotic arm grippers.","Edge & robotics"],
+  ["harmonics-cli","agentculture/harmonics-cli","https://github.com/agentculture/harmonics-cli","Non-speech audio for agents and robots — chimes, pulses, and tonal motifs mapped to intent and state.","Edge & robotics"],
+  ["league-of-agents","agentculture/league-of-agents","https://github.com/agentculture/league-of-agents","A cooperative and competitive strategy arena where agent teams complete missions and out-coordinate opponents.","Learning & play"],
+  ["league-of-agents-platform","agentculture/league-of-agents-platform","https://github.com/agentculture/league-of-agents-platform","The hosted arena at league-of-agents.ai — a turn-based game for humans and agents, for fun and for benchmarks.","Learning & play"],
+  ["learn-cli","agentculture/learn-cli","https://agentculture.org/learn/","A hosted site where humans and agents learn a subject step by step; fronts the language tutors.","Learning & play"],
+  ["french-cli","agentculture/french-cli","https://github.com/agentculture/french-cli","A private French tutor — track progress, read stories, practice written and spoken French.","Learning & play"]
+].map(([name, repo, url, role, group]) => ({ name, repo, url, role, group,
+  // The whole proposal rests on this one derived boolean.
+  hasPage: url.startsWith("/") }));
+
+const GROUPS = ["Mesh & platform","Memory & data","Developer tooling",
+                "Cloud & infrastructure","Edge & robotics","Learning & play"];
+
+const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+const GLYPH_PAGE = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 2.5h7l3 3v8H3z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M9.5 2.5V6H13" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>';
+const GLYPH_REPO = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 13.5V11m4 2.5V11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M3.5 2.5h9v8h-9z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M4 13.5h8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>';
+
+// ---- cue variants for the three options ----
+function cue(a, opt) {
+  if (opt === "c") return "";
+  if (a.hasPage) {
+    return opt === "b"
+      ? `<span class="dest page">${GLYPH_PAGE}<span class="sr-only">Has a page on this site</span></span>`
+      : `<span class="dest page">${GLYPH_PAGE} Read the page <span class="arrow">→</span></span>`;
+  }
+  return opt === "b"
+    ? `<span class="dest repo-dest">${GLYPH_REPO}<span class="sr-only">Opens the repository on GitHub</span></span>`
+    : `<span class="dest repo-dest">${GLYPH_REPO} Repository<span class="sr-only"> on GitHub</span></span>`;
+}
+
+function cardHTML(a, mode, opt) {
+  const inner = `
+    <h3>${mode === "before" ? `<a href="${esc(a.url)}">${esc(a.name)}</a>` : esc(a.name)}</h3>
+    <p class="role">${esc(a.role)}</p>
+    <span class="repo">${esc(a.repo)}</span>
+    ${mode === "after" ? cue(a, opt) : ""}`;
+  return mode === "before"
+    ? `<li><div class="card entry">${inner}</div></li>`
+    : `<li><a class="card entry${a.hasPage ? " has-page" : ""}" href="${esc(a.url)}">${inner}</a></li>`;
+}
+
+// ============ demo 1: before / after ============
+const exCards = document.getElementById("ex-cards");
+const grid = document.getElementById("cards-grid");
+const SAMPLE = ENTRIES.filter(a => a.group === "Mesh & platform")
+  .concat(ENTRIES.filter(a => ["eidetic-cli","agentfront","devague"].includes(a.name)));
+
+function renderCards() {
+  const mode = exCards.dataset.mode;
+  grid.innerHTML = SAMPLE.map(a => cardHTML(a, mode, "a")).join("");
+  measure();
+}
+
+function measure() {
+  // Measure the live DOM rather than asserting a number.
+  const cards = [...grid.querySelectorAll(".card")];
+  if (!cards.length) return;
+  const mode = exCards.dataset.mode;
+  const ratios = cards.map(c => {
+    const cr = c.getBoundingClientRect();
+    const target = mode === "before" ? c.querySelector("h3 a") : c;
+    if (!target) return 0;
+    const tr = target.getBoundingClientRect();
+    return (tr.width * tr.height) / (cr.width * cr.height);
+  });
+  const pct = Math.round(100 * ratios.reduce((s, r) => s + r, 0) / ratios.length);
+  const h = Math.round(cards[0].getBoundingClientRect().height);
+  if (mode === "before") document.getElementById("m-before").textContent = pct + "%";
+  else {
+    document.getElementById("m-after").textContent = pct + "%";
+    document.getElementById("m-h-after").textContent = "~" + h + "px";
+  }
+}
+
+document.querySelectorAll("[data-mode-btn]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("[data-mode-btn]").forEach(b =>
+      b.setAttribute("aria-pressed", String(b === btn)));
+    exCards.dataset.mode = btn.dataset.modeBtn;
+    renderCards();
+  });
+});
+
+document.getElementById("targets").addEventListener("change", e => {
+  exCards.classList.toggle("show-targets", e.target.checked);
+});
+
+// ============ demo 2: destination cue options ============
+const exDest = document.getElementById("ex-dest");
+function renderDest(opt) {
+  if (opt === "c") {
+    const pages = ENTRIES.filter(a => a.hasPage);
+    const rest = ENTRIES.filter(a => !a.hasPage).slice(0, 4);
+    exDest.innerHTML = `
+      <section class="group">
+        <h3 class="group-label">Agents with a page</h3>
+        <ul class="grid">${pages.map(a => cardHTML(a, "after", "c")).join("")}</ul>
+      </section>
+      <section class="group">
+        <h3 class="group-label">The wider fleet</h3>
+        <ul class="grid">${rest.map(a => cardHTML(a, "after", "c")).join("")}</ul>
+      </section>`;
+    return;
+  }
+  const sample = ENTRIES.filter(a =>
+    ["colleague","lobes-cli","culture","irc-lens","agenda","devague"].includes(a.name));
+  exDest.innerHTML = `
+    <section class="group">
+      <h3 class="group-label">Mesh &amp; platform</h3>
+      <ul class="grid">${sample.map(a => cardHTML(a, "after", opt)).join("")}</ul>
+    </section>`;
+}
+document.querySelectorAll("[data-opt-btn]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("[data-opt-btn]").forEach(b =>
+      b.setAttribute("aria-pressed", String(b === btn)));
+    renderDest(btn.dataset.optBtn);
+  });
+});
+
+// ============ demo 3: wayfinding ============
+const jumpInner = document.getElementById("jump-inner");
+const navGroups = document.getElementById("nav-groups");
+
+jumpInner.innerHTML = GROUPS.map(g => {
+  const n = ENTRIES.filter(a => a.group === g).length;
+  return `<a href="#${slug(g)}">${esc(g)} <span class="count">${n}</span></a>`;
+}).join("");
+
+function renderGroups(q = "") {
+  const needle = q.trim().toLowerCase();
+  let shown = 0;
+  navGroups.innerHTML = GROUPS.map(g => {
+    const entries = ENTRIES.filter(a => a.group === g).filter(a =>
+      !needle || a.name.toLowerCase().includes(needle) ||
+      a.role.toLowerCase().includes(needle));
+    if (!entries.length) return "";       // no orphan headings
+    shown += entries.length;
+    return `<section class="group" id="${slug(g)}">
+      <h3 class="group-label">${esc(g)}</h3>
+      <ul class="grid">${entries.map(a => cardHTML(a, "after", "a")).join("")}</ul>
+    </section>`;
+  }).join("");
+  const status = document.getElementById("filter-status");
+  status.textContent = needle
+    ? `${shown} of ${ENTRIES.length} agents`
+    : "";
+}
+
+document.getElementById("agent-filter").addEventListener("input", e => {
+  renderGroups(e.target.value);
+});
+
+renderCards();
+renderDest("a");
+renderGroups();
+window.addEventListener("resize", measure);
+</script>
+
+</body>
+</html>

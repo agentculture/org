@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spacing &amp; type system — proposal for agentculture.org</title>
+<style>
+/* ============================================================
+   PROPOSAL — spacing and type tokens for agentculture.org
+   Measured against /agents/devague/ at 1280x720.
+
+   Colour, font-family, radius and shadow below are the site's
+   OWN token values, copied unchanged from :root. The only new
+   tokens are spacing, line-height and letter-spacing.
+   ============================================================ */
+:root {
+  /* ---------- EXISTING SITE TOKENS — unchanged ------------- */
+  --bg: #f4f5fb;
+  --surface: #fff;
+  --ink: #232a4d;
+  --ink-soft: #4d546f;
+  --accent: #0b655c;
+  --line: #232a4d24;
+  --line-soft: #232a4d14;
+  --shadow: 0 4px 24px #232a4d12, 0 1px 4px #232a4d0d;
+  --radius: 1.25rem;
+  --section-pad: clamp(4.5rem, 10vh, 8rem);
+  --font-display: "Fraunces Variable", "Iowan Old Style", Georgia, serif;
+  --font-body: "Albert Sans Variable", -apple-system, "Segoe UI", system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* ---------- PROPOSED: SPACING, 8 tokens ------------------
+     Fixed rem, not em. The current values are em-derived, which
+     is why they render as 4.8 / 5.6 / 17.6 / 18.7 / 20.16 /
+     22.4 / 35.2 — the same intended gap computes differently
+     depending on the font-size it sits next to. Fixed steps
+     mean a gap is the same gap everywhere.
+     --section-pad stays fluid; section padding should be. */
+  --space-1: 0.25rem;  /*  4px */
+  --space-2: 0.5rem;   /*  8px */
+  --space-3: 0.75rem;  /* 12px */
+  --space-4: 1rem;     /* 16px */
+  --space-5: 1.5rem;   /* 24px */
+  --space-6: 2rem;     /* 32px */
+  --space-7: 3rem;     /* 48px */
+  --space-8: 4rem;     /* 64px */
+
+  /* Two FLUID values sit alongside the fixed scale. Section
+     padding and page gutters legitimately scale with viewport,
+     so they are the one place a clamp beats a step.
+     --section-pad already exists; --gutter is proposed.
+
+     The live site's gutter is a 1088px max-width with a 24px
+     floor — 96px at 1280, 24px at 1100. That is correct as-is.
+     The floor matters here for one reason: it must exceed the
+     25px grid outdent below, or cards overhang at narrow
+     widths. 24 < 25, so the floor is raised to 32. */
+  --gutter: clamp(2rem, 5vw, 6rem);   /* 32 -> 96px */
+
+  /* ---------- PROPOSED: LINE-HEIGHT, 4 values --------------
+     1.7 is currently inherited by everything, including
+     single-line labels. See section 3 — this is the root cause
+     of the spacing feeling arbitrary. */
+  --lh-tight:  1.1;   /* display, >=32px                      */
+  --lh-ui:     1.25;  /* single-line labels, card titles      */
+  --lh-normal: 1.55;  /* dense multi-line copy in cards       */
+  --lh-prose:  1.7;   /* long-form prose — the site's current */
+
+  /* ---------- PROPOSED: TRACKING, 4 values ----------------- */
+  --ls-display: -0.02em; /* >=32px                            */
+  --ls-heading: -0.01em; /* 20-31px                           */
+  --ls-flat:     0;      /* 14-19px, and ALL monospace        */
+  --ls-caps:     0.12em; /* uppercase <=13px                  */
+
+  /* ---------- PROPOSED: TYPE SIZES -------------------------
+     Currently 33.6 / 16.32 / 14.72 / 11.2 — fractional because
+     they compound through nested em. Rounded to a scale. */
+  --fs-eyebrow:    0.75rem;    /* 12 — was 12    */
+  --fs-display:    2.25rem;    /* 36 — was 33.6  */
+  --fs-prose:      1.0625rem;  /* 17 — was 17    */
+  --fs-skill-name: 1rem;       /* 16 — was 16.32 */
+  --fs-skill-leg:  0.6875rem;  /* 11 — was 11.2  */
+  --fs-skill-duty: 0.875rem;   /* 14 — was 14.72 */
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--surface); }
+
+/* ============================================================
+   DOC CHROME — deliberately plain. The live example sits
+   OUTSIDE .doc so none of these element selectors reach it.
+   ============================================================ */
+.doc {
+  font-family: var(--font-body);
+  color: var(--ink-soft);
+  line-height: var(--lh-prose);
+  padding: var(--space-8) var(--gutter) 0;
+}
+.doc-inner { max-width: 78rem; margin: 0 auto; }
+.doc h1 {
+  font-family: var(--font-display);
+  font-size: 1.75rem; line-height: var(--lh-tight); letter-spacing: var(--ls-heading);
+  color: var(--ink); margin: 0 0 var(--space-4); font-weight: 600;
+}
+.doc h2 {
+  font-size: 0.6875rem; line-height: var(--lh-ui); letter-spacing: var(--ls-caps);
+  text-transform: uppercase; color: var(--accent); font-weight: 700;
+  margin: var(--space-8) 0 var(--space-4);
+}
+.doc p { margin: 0 0 var(--space-4); max-width: 62ch; }
+.doc p:last-child { margin-bottom: 0; }
+.doc code {
+  font-family: var(--font-mono); font-size: 0.85em; color: var(--ink);
+  background: var(--line-soft); padding: 0.1em 0.35em; border-radius: 4px;
+}
+.lede { font-size: 1.0625rem; }
+.doc strong { color: var(--ink); font-weight: 600; }
+
+.scale { list-style: none; margin: 0; padding: 0; }
+.scale li {
+  display: grid; grid-template-columns: 7rem 3.5rem 1fr; align-items: center;
+  gap: var(--space-4); padding: var(--space-2) 0; border-top: 1px solid var(--line-soft);
+}
+.scale li:last-child { border-bottom: 1px solid var(--line-soft); }
+.scale .tok { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--ink); }
+.scale .px  { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--ink-soft); text-align: right; }
+.scale .bar { height: 0.5rem; border-radius: 2px; background: var(--accent); }
+
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; min-width: 44rem; font-size: 0.875rem; }
+th, td { text-align: left; padding: var(--space-3) var(--space-4) var(--space-3) 0;
+         border-top: 1px solid var(--line-soft); vertical-align: top; }
+thead th {
+  border-top: 0; border-bottom: 1px solid var(--line);
+  font-size: 0.6875rem; text-transform: uppercase; letter-spacing: var(--ls-caps);
+  color: var(--ink-soft); font-weight: 700;
+}
+td.was { font-family: var(--font-mono); font-size: 0.8125rem; color: #9aa0b4; white-space: nowrap; }
+td.now { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--accent); white-space: nowrap; }
+td.why { line-height: var(--lh-normal); }
+.doc ul.notes { margin: 0; padding-left: var(--space-5); max-width: 62ch; }
+.doc ul.notes li { margin-bottom: var(--space-3); line-height: var(--lh-normal); }
+
+/* Small padding here on purpose — the section's own --gutter
+   below is what should create the breathing room, exactly as it
+   would on the real page. */
+.example-wrap { font-family: var(--font-body); padding: var(--space-5) var(--space-5) var(--space-8); }
+.example-frame { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.example-caption {
+  font-size: 0.6875rem; text-transform: uppercase; letter-spacing: var(--ls-caps);
+  color: var(--ink-soft); font-weight: 700; padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--line-soft);
+}
+.note { font-size: 0.8125rem; color: #9aa0b4; }
+
+/* ============================================================
+   THE REVISED SECTION
+   Real class names from the live page, so this is a drop-in.
+   Content and colour unchanged. data-reveal animation omitted.
+   ============================================================ */
+.section {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  padding-block: var(--section-pad);
+  padding-inline: var(--gutter);   /* must exceed the grid outdent below */
+}
+.container { max-width: 68rem; margin: 0 auto; }
+
+/* Tracked uppercase leaves trailing space after the last letter;
+   --space-1 pulls it back so the block optically aligns left. */
+.eyebrow {
+  display: block;
+  font-size: var(--fs-eyebrow);
+  line-height: var(--lh-ui);          /* was 1.7 */
+  letter-spacing: var(--ls-caps);
+  margin-inline-end: calc(var(--space-1) * -1);
+  text-transform: uppercase;
+  font-weight: 640;
+  color: var(--accent);
+  margin-block: 0 var(--space-4);     /* was 17.6px */
+}
+
+.section h2 {
+  font-family: var(--font-display);
+  font-size: var(--fs-display);
+  line-height: var(--lh-tight);       /* was 1.14 */
+  letter-spacing: var(--ls-display);  /* was -0.012em */
+  font-weight: 440;
+  color: var(--ink);
+  margin: 0 0 var(--space-5);         /* was 20.16px */
+}
+
+.prose { max-width: 42rem; }          /* the site's existing 672px */
+.prose p {
+  font-size: var(--fs-prose);
+  line-height: var(--lh-prose);
+  letter-spacing: var(--ls-flat);
+  color: var(--ink-soft);
+  margin: 0 0 var(--space-4);         /* was 18.7px */
+}
+.prose p:last-child { margin-bottom: 0; }
+
+/* Outdented by one card-padding PLUS the 1px card border, so
+   card text lands on the same left edge as the heading above.
+   Measured on the live page: heading 96px, card text 121px. */
+.skills {
+  list-style: none;
+  padding: 0;
+  margin-block: var(--space-7) 0;     /* was 35.2px */
+  margin-inline: calc((var(--space-5) + 1px) * -1);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 1fr;                /* was two mismatched row heights */
+  gap: var(--space-5);                /* was 17.6px; now === card padding */
+}
+
+.skill-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--space-5);            /* was 22.4px block / 24px inline */
+  display: flex;
+  flex-direction: column;
+  gap: 0;                             /* spacing now owned by the children */
+}
+
+/* Never track monospace positively — the even glyph advance is
+   the point of the face. Was +0.01em. */
+.skill-name {
+  font-family: var(--font-mono);
+  font-size: var(--fs-skill-name);
+  line-height: var(--lh-ui);
+  letter-spacing: var(--ls-flat);
+  font-weight: 600;
+  color: var(--accent);
+  margin: 0 0 var(--space-2);         /* was a 4.8px flex gap */
+}
+.skill-leg {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--fs-skill-leg);
+  line-height: var(--lh-ui);          /* was 1.7 — the phantom-leading bug */
+  letter-spacing: var(--ls-caps);
+  margin-inline-end: calc(var(--space-1) * -1);
+  text-transform: uppercase;
+  font-weight: 640;
+  color: var(--ink-soft);
+  margin-block: 0 var(--space-4);     /* was 4.8 + 5.6 */
+}
+.skill-duty {
+  font-size: var(--fs-skill-duty);
+  line-height: var(--lh-normal);      /* was 1.55 — unchanged, it was right */
+  letter-spacing: var(--ls-flat);
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+/* Below this the gutter is too narrow to absorb the outdent,
+   so the outdent goes rather than letting cards overhang. */
+@media (max-width: 1080px) {
+  .skills { grid-template-columns: repeat(2, 1fr); margin-inline: 0; }
+}
+@media (max-width: 680px) {
+  :root { --fs-display: 1.75rem; }
+  .skills {
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;  /* equal heights are dead space at 1-up */
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="doc">
+<div class="doc-inner">
+
+  <h1>Spacing &amp; type tokens — a proposal for the operator skills section</h1>
+  <p class="lede">Measured against the live page at 1280×720. Colour, font-family, radius and shadow are the site's own <code>:root</code> values, copied unchanged. The only new tokens are spacing, line-height and letter-spacing. Content and colour are untouched.</p>
+
+  <h2>0 — What the audit found</h2>
+  <p>The site already has a real token layer: colour, shadow, radius, fonts, easing, <code>--section-pad</code>. What it has no tokens for is <strong>spacing and type rhythm</strong> — and that is exactly where the incoherence shows.</p>
+  <p>This one section currently uses <strong>nine distinct spacing values</strong>: 4.8, 5.6, 17.6, 18.7, 20.16, 22.4, 24, 35.2 and 43.2px. None of them are round, because they are all <code>em</code>-derived — so the same intended gap computes to a different pixel value depending on the font-size it happens to sit next to. That is the mechanism behind the wonkiness, not carelessness.</p>
+
+  <h2>1 — Spacing: eight tokens</h2>
+  <p>Fixed <code>rem</code> on a 4px base. Eight is the useful ceiling — enough for micro, component and section rhythm, few enough that two developers reach for the same one. <code>--section-pad</code> stays fluid and unchanged; section padding legitimately scales with viewport.</p>
+  <ul class="scale">
+    <li><span class="tok">--space-1</span><span class="px">4px</span><span class="bar" style="width:4px"></span></li>
+    <li><span class="tok">--space-2</span><span class="px">8px</span><span class="bar" style="width:8px"></span></li>
+    <li><span class="tok">--space-3</span><span class="px">12px</span><span class="bar" style="width:12px"></span></li>
+    <li><span class="tok">--space-4</span><span class="px">16px</span><span class="bar" style="width:16px"></span></li>
+    <li><span class="tok">--space-5</span><span class="px">24px</span><span class="bar" style="width:24px"></span></li>
+    <li><span class="tok">--space-6</span><span class="px">32px</span><span class="bar" style="width:32px"></span></li>
+    <li><span class="tok">--space-7</span><span class="px">48px</span><span class="bar" style="width:48px"></span></li>
+    <li><span class="tok">--space-8</span><span class="px">64px</span><span class="bar" style="width:64px"></span></li>
+  </ul>
+
+  <h2>2 — Every spacing value in the section, before and after</h2>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Relationship</th><th>Now</th><th>Proposed</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td><code>.eyebrow</code> → <code>h2</code></td><td class="was">17.6px</td><td class="now">--space-4 · 16</td><td class="why">The eyebrow labels the heading; it must read as attached to it.</td></tr>
+      <tr><td><code>h2</code> → <code>.prose</code></td><td class="was">20.16px</td><td class="now">--space-5 · 24</td><td class="why">One step wider than the gap above, so the heading groups upward with its eyebrow rather than floating between the two.</td></tr>
+      <tr><td><code>.prose p</code> → <code>p</code></td><td class="was">18.7px</td><td class="now">--space-4 · 16</td><td class="why">Narrower than the heading gap, so the prose block holds together as one object.</td></tr>
+      <tr><td><code>.prose</code> → <code>.skills</code></td><td class="was">35.2px</td><td class="now">--space-7 · 48</td><td class="why">A change of mode. 35 is too close to the paragraph gap to signal it; 64 would read as a new section.</td></tr>
+      <tr><td><code>.skills</code> gap</td><td class="was">17.6px</td><td class="now">--space-5 · 24</td><td class="why">Set equal to card padding. Gap and padding agreeing is what makes a grid feel machined rather than arranged.</td></tr>
+      <tr><td><code>.skill-card</code> padding</td><td class="was">22.4 / 24px</td><td class="now">--space-5 · 24</td><td class="why">Currently asymmetric — 22.4 block, 24 inline. Almost certainly unintended (1.4em vs 24px).</td></tr>
+      <tr><td><code>.skill-name</code> → <code>.skill-leg</code></td><td class="was">4.8px</td><td class="now">--space-2 · 8</td><td class="why">Tightest pairing on the page — these two are one unit.</td></tr>
+      <tr><td><code>.skill-leg</code> → <code>.skill-duty</code></td><td class="was">10.4px</td><td class="now">--space-4 · 16</td><td class="why">A clean 1:2 against the gap above it. At 4.8 vs 10.4 the header pair and the body are barely differentiated.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p><code>--space-3</code> and <code>--space-6</code> aren't needed here. They carry denser components elsewhere and are listed so nobody invents a 12 or a 32 later.</p>
+
+  <h2>3 — Line-height: the finding that matters most</h2>
+  <p><strong>A line-height of 1.7 is currently inherited by every element in the section, including single-line labels.</strong> That is the root cause of the spacing looking arbitrary, and it is invisible in devtools unless you go looking for it.</p>
+  <p>Concretely: <code>.skill-leg</code> is 11.2px text in a 19.04px line box. That's 7.8px of leading the element carries with it — roughly 3.9px above and below the glyphs. So the 4.8px margin you wrote renders as about 8.7px of visible space. Every label on the page is silently padded by a different amount, because the phantom leading scales with each element's own font-size.</p>
+  <p>Fix the leading and your spacing tokens start meaning what they say. Four values cover the whole page:</p>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Role</th><th>Now</th><th>Proposed</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td>Display heading, ≥32px</td><td class="was">1.14</td><td class="now">--lh-tight · 1.1</td><td class="why">At display size the default gap between lines is visually oversized; tightening keeps the headline reading as one object.</td></tr>
+      <tr><td>Long-form prose</td><td class="was">1.7</td><td class="now">--lh-prose · 1.7</td><td class="why">Unchanged. At a 672px measure this is correct and it's part of the site's voice.</td></tr>
+      <tr><td>Card body copy</td><td class="was">1.55</td><td class="now">--lh-normal · 1.55</td><td class="why">Unchanged — already right. Short measure, small block; 1.7 here would make each card feel disconnected.</td></tr>
+      <tr><td>Single-line labels &amp; titles</td><td class="was">1.7</td><td class="now">--lh-ui · 1.25</td><td class="why"><strong>The fix.</strong> Removes the phantom leading from <code>.eyebrow</code>, <code>.skill-name</code> and <code>.skill-leg</code> so margins are the only thing creating space.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2>4 — Letter-spacing: a function of size and case</h2>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Role</th><th>Now</th><th>Proposed</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td>Display, ≥32px</td><td class="was">-0.012em</td><td class="now">--ls-display · -0.02em</td><td class="why">Large type needs tightening; the gaps that read as correct at 17px read as gaps at 36px.</td></tr>
+      <tr><td>Body &amp; card copy, 14–19px</td><td class="was">normal</td><td class="now">--ls-flat · 0</td><td class="why">Unchanged. The optical band where the face is drawn to be read.</td></tr>
+      <tr><td>Monospace — <code>.skill-name</code></td><td class="was">+0.01em</td><td class="now">--ls-flat · 0</td><td class="why"><strong>Never track monospace positively.</strong> The even glyph advance is the point of the face; adding to it makes it look accidentally broken rather than deliberately wide.</td></tr>
+      <tr><td>Uppercase, ≤13px</td><td class="was">0.17 / 0.12em</td><td class="now">--ls-caps · 0.12em</td><td class="why">Caps have no ascender–descender variety to create rhythm, so small caps need positive tracking. One value, not two.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>The rule behind the table, for anything not listed: <strong>tracking is inversely proportional to size</strong> — negative above 32px, zero in the 14–19px band, positive only for uppercase at 13px and below, always zero for monospace. <strong>Leading is inversely proportional to size and directly proportional to measure.</strong></p>
+
+  <h2>5 — Three layout findings, separate from the tokens</h2>
+  <ul class="notes">
+    <li><strong>Card text is misaligned with the prose by 25px.</strong> Measured on the live page: the heading and prose start at x=96, but the first card's text starts at x=121 — the card <em>border</em> is aligned instead of the card <em>copy</em>. It's a soft misalignment you feel without being able to name. The grid is now outdented by exactly one card-padding plus the 1px border, so all three land on 96.</li>
+    <li><strong>The two card rows are different heights</strong> — 282px and 236px — so the block reads as two mismatched bands rather than one module. <code>grid-auto-rows: 1fr</code> makes all seven equal.</li>
+    <li><strong>The outdent has one precondition: the gutter must exceed it.</strong> The live gutter is a 1088px max-width with a 24px floor — 96px at 1280, 24px at 1100 — which is correct as it stands. But the outdent is 25px, so at narrow widths the cards would overhang by 1px. Either raise the floor to 32px (done here via <code>--gutter</code>) or drop the outdent below the 4-column breakpoint. Worth catching before it ships, because it only appears in a band of viewport widths.</li>
+    <li><strong>The empty eighth slot is correct as-is.</strong> Seven items in a four-column grid will always leave one gap; centring the last row would break the left edge every other element on the page shares. Left-aligned and open is the right read — worth stating so nobody "fixes" it later.</li>
+  </ul>
+
+  <h2>6 — The revised section, live</h2>
+  <p class="note">Fraunces and Albert Sans are declared exactly as the site declares them, but aren't loaded in this standalone file — the example below falls back to system faces. Metrics, spacing and layout are accurate; the letterforms are not.</p>
+
+</div>
+</div>
+
+<div class="example-wrap">
+<div class="doc-inner">
+  <div class="example-frame">
+    <div class="example-caption">Rendered from the tokens above</div>
+
+    <section class="section" aria-label="The operator skills">
+      <div class="container">
+        <span class="eyebrow">the operator skills</span>
+        <h2>devague keeps score; operators make the moves</h2>
+
+        <div class="prose">
+          <p class="muted">Around the CLI sit seven operator skills — authored in the devague repo, broadcast to the AgentCulture mesh — one per leg: /scope surveys before the frame, /think walks an idea to an exported spec, /challenge pressure-tests that exported spec for blind spots before planning, /spec-to-plan walks the challenged spec to an exported plan, /assign-to-workforce fans the plan out to a parallel workforce, /deviate stops the run when execution must leave the plan, and /summarize-delivery closes the loop.</p>
+          <p class="muted">Note what devague itself never does: orchestrate. devague plan waves only describes the dependency graph — deterministic metadata, nothing more. Spawning agents, managing worktrees, gating merges: that is the operator's job. The tool that keeps score should not also play the game.</p>
+        </div>
+
+        <ul class="skills">
+          <li class="card skill-card">
+            <h3 class="skill-name">/scope</h3>
+            <span class="skill-leg muted">idea → scope</span>
+            <p class="skill-duty muted">survey the surfaces the idea touches before framing — each finding lands on the frame citing what was actually read</p>
+          </li>
+          <li class="card skill-card">
+            <h3 class="skill-name">/think</h3>
+            <span class="skill-leg muted">idea → spec</span>
+            <p class="skill-duty muted">drive the frame engine — announce, capture, interrogate, park; export once the frame converges</p>
+          </li>
+          <li class="card skill-card">
+            <h3 class="skill-name">/challenge</h3>
+            <span class="skill-leg muted">between spec and plan</span>
+            <p class="skill-duty muted">run a risk-scaled blind-spot pass over the exported spec — findings land proposed for the human, and a clean pass records the lenses examined and the residual uncertainty, never a claim of no unknown unknowns</p>
+          </li>
+          <li class="card skill-card">
+            <h3 class="skill-name">/spec-to-plan</h3>
+            <span class="skill-leg muted">spec → plan</span>
+            <p class="skill-duty muted">drive the plan engine — tasks that cover every confirmed target, with acceptance criteria and honest dependencies</p>
+          </li>
+          <li class="card skill-card">
+            <h3 class="skill-name">/assign-to-workforce</h3>
+            <span class="skill-leg muted">plan → build</span>
+            <p class="skill-duty muted">fan the plan's waves out to parallel agents in isolated git worktrees, with TDD-gated merges — the human owns three gates: the spec, the split plan, the final PR</p>
+          </li>
+          <li class="card skill-card">
+            <h3 class="skill-name">/deviate</h3>
+            <span class="skill-leg muted">during the build</span>
+            <p class="skill-duty muted">stop the run the moment execution must leave the plan; the approved departure lands on the ledger before work resumes</p>
+          </li>
+          <li class="card skill-card">
+            <h3 class="skill-name">/summarize-delivery</h3>
+            <span class="skill-leg muted">after the build</span>
+            <p class="skill-duty muted">record planned versus actual, mid-work decisions, classified drift, and evidence-backed claims — on complete, partial, and failed runs alike</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+  </div>
+</div>
+</div>
+
+</body>
+</html>
