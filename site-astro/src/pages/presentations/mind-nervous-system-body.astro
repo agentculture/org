@@ -78,7 +78,7 @@ const projectLabels = new Map(
               <span class="eyebrow" data-reveal>{beat.eyebrow}</span>
               <h2 id={`${beat.id}-title`} data-reveal>{beat.headline}</h2>
 
-              {beat.definitions && (
+              {"definitions" in beat && beat.definitions && (
                 <div class="definitions" data-reveal>
                   <span class="structural-label">Definitions</span>
                   <dl>
