@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
-import { dirname, join, relative, resolve } from "node:path";
+import { dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const siteRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -166,6 +166,8 @@ function outputForInternalHref(href) {
   return join(distRoot, path.slice(1), "index.html");
 }
 
+const toPosix = (p) => p.split(sep).join("/");
+
 for (const [label, path] of Object.entries(routeFiles)) {
   if (!existsSync(join(distRoot, path))) {
     failures.push(
@@ -182,7 +184,7 @@ if (failures.length > 0) {
 const builtHtmlFiles = htmlFiles(distRoot);
 const builtPages = new Map(
   builtHtmlFiles.map((path) => [
-    relative(distRoot, path),
+    toPosix(relative(distRoot, path)),
     readFileSync(path, "utf8"),
   ]),
 );
