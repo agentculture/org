@@ -2,7 +2,7 @@
   "plan_slug": "presentations-tab-and-neurosymbolic-robots",
   "schema_version": 1,
   "created": "2026-07-19T13:44:08Z",
-  "updated": "2026-07-19T15:47:09Z",
+  "updated": "2026-07-19T16:29:38Z",
   "deviations": [
     {
       "id": "d1",
@@ -29,6 +29,19 @@
         "h24"
       ],
       "origin": "llm",
+      "status": "approved",
+      "classification": "needs-follow-up"
+    },
+    {
+      "id": "d3",
+      "what": "temporarily hide the per-beat source-note rail and collapse the talk to a single content column; retain the source ledger, source links in the document, and external verification for a second cleanup review",
+      "task_ref": "t6",
+      "reason": "the user observed that visible source notes overlap the architecture diagram and prioritized a working site before a later visual cleanup pass",
+      "affects": [
+        "t7",
+        "t8"
+      ],
+      "origin": "user",
       "status": "approved",
       "classification": "needs-follow-up"
     }
