@@ -262,7 +262,7 @@ const projectLabels = new Map(
 
   .beat-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(14rem, 18rem);
+    grid-template-columns: minmax(0, 1fr);
     gap: clamp(2.5rem, 7vw, 6rem);
     align-items: start;
   }
@@ -367,6 +367,8 @@ const projectLabels = new Map(
   }
 
   .source-notes {
+    /* Temporary under d3; markup remains for the source-notes cleanup PR. */
+    display: none;
     position: sticky;
     top: 1rem;
     min-width: 0;
