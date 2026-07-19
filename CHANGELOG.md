@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/). This project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.0] - 2026-07-19
+
+### Added
+
+- Reusable Presentations index and card for discovering static talks.
+- The sourced ‘Mind, nervous system, body’ talk connecting the agent, code, and robot through Reachy Mini CLI and ARM101 CLI.
+
+### Changed
+
+- Site wayfinding now includes Presentations in the header, footer, and home Explore section, with section-aware current states.
+
 ## [0.12.0] - 2026-07-17
 
 ### Added

@@ -1,0 +1,542 @@
+{
+  "slug": "presentations-tab-and-neurosymbolic-robots",
+  "title": "Presentations tab and neurosymbolic robots",
+  "frame_slug": "presentations-tab-and-neurosymbolic-robots",
+  "schema_version": 3,
+  "status": "exported",
+  "created": "2026-07-19T12:34:42Z",
+  "updated": "2026-07-19T12:46:37Z",
+  "targets": [
+    {
+      "id": "c1",
+      "kind": "announcement",
+      "text": "AgentCulture.org has a Presentations tab: a card-based library of talks, beginning with a presentation on reachy-mini-cli, arm101-cli, and the neurosymbolic architecture of embodied agents \u2014 the harness and model provide neural reasoning while robot-specific code provides the symbolic layer that makes behavior grounded, reactive, safe, extensible, and able to retain what it learns."
+    },
+    {
+      "id": "h1",
+      "kind": "honesty",
+      "text": "The built site exposes the announced Presentations destination and first talk, and every neural, symbolic, reactive, safety, extension, and learning phrase has a resolvable source or an explicit synthesis label."
+    },
+    {
+      "id": "c2",
+      "kind": "after_state",
+      "text": "A new primary Presentations destination opens to a card library; its first card opens a dedicated talk connecting reachy-mini-cli and arm101-cli through a neurosymbolic robotics thesis."
+    },
+    {
+      "id": "h2",
+      "kind": "honesty",
+      "text": "A cold visitor can reach the Presentations index from primary navigation, identify the first card, open the talk, and understand its central thesis without visiting either repository first."
+    },
+    {
+      "id": "c3",
+      "kind": "audience",
+      "text": "The first presentation serves people evaluating embodied AI and a presenter talking over the page; it must remain legible to someone who has not read either robot repository."
+    },
+    {
+      "id": "h3",
+      "kind": "honesty",
+      "text": "The page defines harness, model, symbolic layer, intent, and retained adaptation before relying on them, while each section headline remains usable as a presenter's spoken beat."
+    },
+    {
+      "id": "c4",
+      "kind": "why_it_matters",
+      "text": "The two repositories make the neural-symbolic split concrete: general reasoning lives in an attachable agent runtime, while robot code turns perception, rules, safety, memory, and motion into grounded symbols an agent can use."
+    },
+    {
+      "id": "h4",
+      "kind": "honesty",
+      "text": "Reachy's attachable cognition and deterministic runtime, and ARM101's safe persistent physical mapping, can each be demonstrated from public main-branch artifacts without claiming an integration that does not exist."
+    },
+    {
+      "id": "c5",
+      "kind": "requirement",
+      "text": "Add Presentations as a site-level tab and render one card per presentation, beginning with the reachy-mini-cli plus arm101-cli neurosymbolic robotics presentation."
+    },
+    {
+      "id": "h5",
+      "kind": "honesty",
+      "text": "Header and Footer each contain one current-aware Presentations link, the home Explore area points to the same index, and the index renders one card for every entry in its data collection."
+    },
+    {
+      "id": "c6",
+      "kind": "requirement",
+      "text": "Create a presentations index route and a dedicated first-presentation route, with card metadata and long-form talk copy held in data modules while Astro templates compose the UI."
+    },
+    {
+      "id": "h6",
+      "kind": "honesty",
+      "text": "Both routes build as static HTML, card metadata has one authoritative data source, and narrative copy lives outside the Astro page template except documented structural labels."
+    },
+    {
+      "id": "c8",
+      "kind": "requirement",
+      "text": "Ground the Reachy half in shipped main-branch evidence: its 50 Hz behavior engine, declarative rules, live senses, arbitration, intent spool, runtime feed, external agent attach client, and zero-token presence continue when the agent detaches."
+    },
+    {
+      "id": "h8",
+      "kind": "honesty",
+      "text": "Every Reachy claim is supported by public main at v0.37.0 or its committed delivery evidence, including the zero-token runtime and attach-detach independence; no stale v0.31.0 agent-page copy is treated as current evidence."
+    },
+    {
+      "id": "c9",
+      "kind": "requirement",
+      "text": "Ground the ARM101 half in public main-branch evidence: agent-readable CLI contracts, consent gates, torque ownership, overload-safe motion, contact sensing, append-only exploration logs, and persisted reachability maps; label any feat/arm-limits material as in-flight unless the user chooses otherwise."
+    },
+    {
+      "id": "h9",
+      "kind": "honesty",
+      "text": "Every shipped ARM101 statement exists on origin/main 0.22.1; any 0.24.2 feat/arm-limits material is visibly marked in-flight, and the map-integrity and non-consumption limitations remain stated."
+    },
+    {
+      "id": "c10",
+      "kind": "requirement",
+      "text": "Use learning only for observable retained adaptation: Reachy can generate or stash new reaction seams, and ARM101 can measure and persist physical-envelope knowledge; do not equate this with online neural training."
+    },
+    {
+      "id": "h10",
+      "kind": "honesty",
+      "text": "Each use of learn or learning points to a persisted artifact or validated extension path and explicitly distinguishes adaptation from model-weight training."
+    },
+    {
+      "id": "c11",
+      "kind": "boundary",
+      "text": "Treat ../reachy-mini-cli and ../arm101-cli as read-only source repositories; this delivery changes only the org site and its required version/changelog artifacts."
+    },
+    {
+      "id": "h11",
+      "kind": "honesty",
+      "text": "Git status and diff after authoring show no new or modified files in either sibling robot repository and no unrelated org working-tree artifact included in the change."
+    },
+    {
+      "id": "c12",
+      "kind": "boundary",
+      "text": "Keep the existing /agents/reachy-mini-cli page and agents directory role intact; the new presentation is a cross-repository talk, not a replacement agent profile."
+    },
+    {
+      "id": "h12",
+      "kind": "honesty",
+      "text": "The existing Reachy agent route still builds and its page/data/component files are byte-unchanged; the new talk links to it as related material rather than replacing it."
+    },
+    {
+      "id": "c14",
+      "kind": "requirement",
+      "text": "The new navigation, card index, and presentation page inherit the static Astro design bar: semantic structure, both themes, WCAG-AA contrast, reduced-motion behavior, no client network dependency, and responsive navigation with five primary items."
+    },
+    {
+      "id": "h13",
+      "kind": "honesty",
+      "text": "At mobile through desktop widths the five-item navigation does not clip or obscure content; both themes retain AA contrast; all new motion is transform/opacity-only and disabled or composed under reduced motion; the page makes no client network request."
+    },
+    {
+      "id": "c15",
+      "kind": "boundary",
+      "text": "Ride the existing site build and Cloudflare deploy lanes; no org CLI, Python tests, or GitHub workflow changes are part of this presentation feature."
+    },
+    {
+      "id": "h14",
+      "kind": "honesty",
+      "text": "The delivery diff contains no changes under org/, tests/, or .github/workflows/, while the existing Astro build and link-check lanes pass unchanged."
+    },
+    {
+      "id": "c19",
+      "kind": "boundary",
+      "text": "Scope is documentation and read-only code exploration only; live robot motion, speech, capture sessions, and hardware state changes belong to a later approved build phase."
+    },
+    {
+      "id": "h15",
+      "kind": "honesty",
+      "text": "No command in the scope or build evidence starts, stops, moves, speaks through, or changes persistent state on either robot; all visual evidence comes from code-native diagrams and committed public artifacts."
+    },
+    {
+      "id": "c20",
+      "kind": "success_signal",
+      "text": "A built-site walkthrough reaches Presentations from primary navigation, sees a reusable card index, opens the first talk, and can trace every technical claim to the two source repositories without overstating learning or embodiment."
+    },
+    {
+      "id": "h16",
+      "kind": "honesty",
+      "text": "The acceptance walkthrough mechanically finds both routes, all wayfinding links, exactly one index card, all eight narrative beats, both repository links, visible provenance, and the explicit non-claims."
+    },
+    {
+      "id": "c23",
+      "kind": "before_state",
+      "text": "AgentCulture.org has presentation-grade agent pages but no first-class place for cross-repository talks; the neural-versus-symbolic robotics story is split across two READMEs, long operating guides, source modules, and hardware validation logs."
+    },
+    {
+      "id": "h17",
+      "kind": "honesty",
+      "text": "At the baseline commit there is no /presentations/ route or Presentations nav item, and the cross-repository thesis cannot be read from any single existing site page."
+    },
+    {
+      "id": "c25",
+      "kind": "requirement",
+      "text": "The presentations index owns a reusable card collection with title, summary, route, topic label, and source-project labels; Header, Footer, and the home Explore surface link the new top-level destination."
+    },
+    {
+      "id": "h18",
+      "kind": "honesty",
+      "text": "Adding a second presentation later requires only another data entry plus its route/content, not a structural rewrite of the index; every card exposes title, summary, route, topic, and source projects accessibly."
+    },
+    {
+      "id": "c27",
+      "kind": "requirement",
+      "text": "A code-native architecture diagram shows runtime events flowing from the symbolic robot layer to the attached harness-plus-model agent, durable intents flowing back through validation and arbitration, and physical feedback returning to retained maps or rules."
+    },
+    {
+      "id": "h20",
+      "kind": "honesty",
+      "text": "The diagram distinguishes runtime events from cognition output, routes agent actions through intents, validation, and arbitration rather than directly to hardware, and shows retained rules/maps only where the repositories support them."
+    },
+    {
+      "id": "c28",
+      "kind": "requirement",
+      "text": "Every technical section carries a concise visible source pointer to public repository documentation or committed validation evidence; interpretive neurosymbolic framing is labeled as the presentation's synthesis, not the projects' own terminology."
+    },
+    {
+      "id": "h21",
+      "kind": "honesty",
+      "text": "Every visible source link resolves to a public file, repository, or committed validation artifact, and no sentence implies the repositories themselves use the word neurosymbolic."
+    },
+    {
+      "id": "c30",
+      "kind": "requirement",
+      "text": "The close links both public repositories and the existing Reachy agent page, while making clear that the presentation connects the systems rather than merging their products or runtimes."
+    },
+    {
+      "id": "h22",
+      "kind": "honesty",
+      "text": "The closing controls link to both public repositories and /agents/reachy-mini-cli/, while copy states that the comparison is architectural and no shared runtime or integration shipped."
+    },
+    {
+      "id": "c33",
+      "kind": "requirement",
+      "text": "Ship the site change with the repository's required version bump and changelog entry while preserving unrelated working-tree changes."
+    },
+    {
+      "id": "h24",
+      "kind": "honesty",
+      "text": "The PR changes pyproject.toml and CHANGELOG.md through the repository's version-bump workflow, version-check passes, and pre-existing uv.lock or other dirty files are absent from the commit unless the bump tool legitimately updates them and the diff is reviewed."
+    },
+    {
+      "id": "c34",
+      "kind": "requirement",
+      "text": "Use this exact three-layer thesis as the presentation's hero and organizing model: The agent is the mind. The code is the nervous system. The robot is the body."
+    },
+    {
+      "id": "h25",
+      "kind": "honesty",
+      "text": "The exact sentence appears in the hero, and its explanation defines agent as harness plus model, nervous system as the symbolic code layer of senses, reflexes, arbitration, memory, and safety, and body as the physical robot; none of the three layers is collapsed into another."
+    },
+    {
+      "id": "c37",
+      "kind": "requirement",
+      "text": "The first talk follows a spoken eight-beat arc: the three-layer thesis; agent-as-mind; code-as-symbolic-nervous-system; robot-as-body through Reachy and ARM101; a bounded learning ladder; the perceive-to-retain closed loop; consequences and non-claims; source and repository close."
+    },
+    {
+      "id": "h26",
+      "kind": "honesty",
+      "text": "The built page contains the eight beats in the confirmed order, uses body only for physical hardware and nervous system for robot code, and can be presented top-to-bottom without detouring into repository documentation."
+    },
+    {
+      "id": "c38",
+      "kind": "success_signal",
+      "text": "The static build emits /presentations/ and /presentations/mind-nervous-system-body/; Header, Footer, and home wayfinding reach the index; the index renders exactly one initial card; the talk presents all eight beats, public source links, both repositories, and no unsupported neural-learning or sentience claim."
+    },
+    {
+      "id": "h27",
+      "kind": "honesty",
+      "text": "The build and deterministic content audit prove both named routes, all wayfinding links, one card, the exact three-layer hero, all eight beats, both source projects, and every explicit non-claim."
+    },
+    {
+      "id": "c39",
+      "kind": "requirement",
+      "text": "Presentations remains the programmatically current site section on both /presentations/ and every presentation descendant, including /presentations/mind-nervous-system-body/; Header and Footer use equivalent section-aware current-state semantics without marking unrelated tabs current."
+    },
+    {
+      "id": "h28",
+      "kind": "honesty",
+      "text": "At the built index and talk routes, Header and Footer each expose exactly one Presentations link with an appropriate aria-current value, no unrelated top-level link is current, and existing non-Presentations routes retain their correct current state."
+    },
+    {
+      "id": "c40",
+      "kind": "requirement",
+      "text": "The perceive-to-retain beat and architecture diagram keep the shipped paths separate: Reachy's external agent attach reads the runtime feed and writes the intent spool; Reachy's forge belongs to folded listen --live --cognition agent and auto-activates validator-gated generated code; Reachy's stash is Python-API-only; ARM101 writes a reachability map that arm flex does not consume. Missing connectors are labeled unshipped or future, never drawn as one closed autonomous learning loop."
+    },
+    {
+      "id": "h29",
+      "kind": "honesty",
+      "text": "No arrow or sentence implies that the external agent-attach client can currently forge or stash, that ARM101's saved map currently gates arm flex, that the two repositories share a runtime, or that either repository ships one autonomous closed learning loop."
+    },
+    {
+      "id": "c41",
+      "kind": "requirement",
+      "text": "ARM101 safety and contact language stays inside the evidence envelope: contact is inferred from servo load plus stall behavior rather than a tactile sensor, several per-joint thresholds remain estimates pending physical re-validation, abnormal-exit torque release requires a functioning bus, and a clean successful motion may deliberately leave torque holding."
+    },
+    {
+      "id": "h30",
+      "kind": "honesty",
+      "text": "The talk never describes ARM101 as having tactile sensing, detecting every physical contact reliably, or making motion inherently safe; its visible caveats name the threshold re-validation gap, bus-loss release limit, deliberate clean-exit hold, and map-integrity/non-consumption limits."
+    },
+    {
+      "id": "c42",
+      "kind": "requirement",
+      "text": "The technical source ledger uses immutable commit-pinned public URLs for factual evidence\u2014Reachy origin/main 6eab58e5a2e83082c9b6cba1f50342fb2ecf40cf and ARM101 origin/main c05bda23b2352bc80f7aca97c6268bbde7114c04\u2014while separate repository-home links may follow latest; delivery verifies external evidence links separately because the existing site link checker intentionally skips them."
+    },
+    {
+      "id": "h31",
+      "kind": "honesty",
+      "text": "Every technical evidence link resolves to the expected public file at the recorded 40-character commit, repository-home links remain visibly distinct, and delivery evidence does not treat the internal-only site link check as proof that external sources resolve."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "t1",
+      "summary": "Define the typed presentation catalog and immutable evidence ledger",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "The catalog contains exactly one typed card titled Mind, nervous system, body with summary, /presentations/mind-nervous-system-body/ route, topic label, and both source-project labels; omitting any required field fails TypeScript checking.",
+        "Every factual source entry is a public GitHub blob URL pinned to the specified full 40-character commit, while repository-home URLs are separate latest-following links.",
+        "The exported catalog is iterable and contains no template-specific markup or hard-coded rendering count, so another entry can be consumed without changing the index structure.",
+        "site-astro/src/data/site.ts and site-astro/src/data/types.ts remain byte-unchanged."
+      ],
+      "deps": [],
+      "covers": [
+        "c25",
+        "h18",
+        "c42",
+        "h31"
+      ],
+      "instruction": "Create site-astro/src/data/presentations.ts without widening the frozen SiteData contract. Export typed presentation-card and source-entry contracts, the one-card catalog, distinct repository-home links, and commit-pinned evidence URLs for Reachy 6eab58e5a2e83082c9b6cba1f50342fb2ecf40cf and ARM101 c05bda23b2352bc80f7aca97c6268bbde7114c04."
+    },
+    {
+      "id": "t2",
+      "summary": "Add section-aware Presentations wayfinding",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "Header and Footer each render five primary links with exactly one Presentations link; the home Explore surface links /presentations/ once.",
+        "Built HTML for /presentations/ and /presentations/mind-nervous-system-body/ marks Presentations programmatically current in both Header and Footer and marks no unrelated primary item current.",
+        "Built HTML for existing top-level routes still marks only their own primary item current, and navigation labels and destinations other than the added Presentations entry remain unchanged.",
+        "At 320px and wider the five-item header and footer navigation use an intentional wrapping state with no clipped, overlapping, or obscured link."
+      ],
+      "deps": [],
+      "covers": [
+        "c5",
+        "h5",
+        "c39",
+        "h28"
+      ],
+      "instruction": "Add Presentations to Header, Footer, and the home Explore surface. Centralize or equivalently synchronize primary-nav data and use section-aware current-state matching so both /presentations/ and descendant talks mark only Presentations current while existing top-level routes keep their behavior."
+    },
+    {
+      "id": "t3",
+      "summary": "Author the sourced eight-beat Mind, nervous system, body narrative",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "The module carries the exact hero sentence The agent is the mind. The code is the nervous system. The robot is the body. and exactly eight ordered beats matching the confirmed arc, with presenter-usable headlines.",
+        "Harness, model, symbolic nervous system, intent, and retained adaptation are defined before reliance; body means physical hardware and nervous system means robot-specific code throughout.",
+        "Reachy claims are limited to public main v0.37.0 evidence and ARM101 shipped claims to origin/main 0.22.1, with map non-consumption/integrity, load-and-stall contact inference, threshold re-validation, bus-loss release, and deliberate clean-hold limits visible.",
+        "Learning is limited to retained artifacts or constrained extension paths, explicitly excludes model-weight training, and distinguishes external agent attach, folded-cognition forge auto-activation, Python-API-only stash, and ARM map production rather than presenting one shipped autonomous loop.",
+        "Every technical beat references ledger source ids, labels neurosymbolic as the presentation's synthesis, and the close carries both repository homes plus /agents/reachy-mini-cli/ with an explicit no-shared-runtime statement."
+      ],
+      "deps": [
+        "t1"
+      ],
+      "covers": [
+        "c1",
+        "h1",
+        "c3",
+        "h3",
+        "c4",
+        "h4",
+        "c8",
+        "h8",
+        "c9",
+        "h9",
+        "c10",
+        "h10",
+        "c28",
+        "h21",
+        "c30",
+        "h22",
+        "c34",
+        "h25",
+        "c37",
+        "h26",
+        "c41",
+        "h30"
+      ],
+      "instruction": "Create site-astro/src/data/mind-nervous-system-body.ts as the long-form talk data module. Import the catalog/source ledger, preserve the exact hero sentence and confirmed eight-beat order, define terms before use, and keep every Reachy, ARM101, learning, safety, and synthesis statement inside the challenged evidence boundaries."
+    },
+    {
+      "id": "t4",
+      "summary": "Build the accessible mind\u2013nervous-system\u2013body architecture diagram",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "The component supplies a complete accessible name and text alternative that explains every layer and connector without requiring vision or animation.",
+        "Runtime events and cognition output remain separate; agent actions reach hardware only through intents, validation, arbitration, and the symbolic runtime.",
+        "Agent attach, folded-cognition forge, API-only stash, and ARM map production/non-consumption are distinct tracks; no arrow implies forge/stash tools on agent attach, map-gated flex, a shared runtime, or one shipped closed learning loop.",
+        "The diagram is useful as static inline SVG in both themes, makes no client request, and any optional motion uses transform/opacity only with a composed reduced-motion final state."
+      ],
+      "deps": [
+        "t1"
+      ],
+      "covers": [
+        "c27",
+        "h20",
+        "c40",
+        "h29"
+      ],
+      "instruction": "Create a code-native Astro inline-SVG component in a new file. Show the physical body, symbolic runtime, attached harness-plus-model agent, events, cognition, validated/arbitrated intents, and retained artifacts while making shipped, API-only, and future connectors visually and textually distinct."
+    },
+    {
+      "id": "t5",
+      "summary": "Build the reusable Presentations card index",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "Astro builds /presentations/index.html and the page renders exactly one semantic linked card from the catalog, pointing to /presentations/mind-nervous-system-body/.",
+        "The card exposes title, summary, topic, and both source-project labels accessibly, with no duplicate hard-coded metadata in the template.",
+        "The template maps the catalog collection generically; adding a second valid data entry would render a second card without structural template changes.",
+        "The index remains complete without JavaScript and introduces no client network request."
+      ],
+      "deps": [
+        "t1"
+      ],
+      "covers": [
+        "c5",
+        "h5",
+        "c25",
+        "h18"
+      ],
+      "instruction": "Create site-astro/src/pages/presentations/index.astro using the typed catalog as its only card source. Follow the existing Layout/PageHero/card language and render semantic linked cards with all confirmed metadata."
+    },
+    {
+      "id": "t6",
+      "summary": "Compose the static first presentation route",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "Astro builds /presentations/mind-nervous-system-body/index.html; the card opens it and a cold reader encounters the exact hero thesis before repository-specific detail.",
+        "The rendered page contains exactly eight semantic beats in confirmed order, defines its terms, uses body and nervous system consistently, and is presentable top-to-bottom without detouring into source documents.",
+        "Every technical section renders a concise commit-pinned source pointer, neurosymbolic is explicitly labeled synthesis, and source notes remain subordinate to the spoken narrative.",
+        "The accessible architecture diagram appears in the appropriate beat, and the close links both public repositories and /agents/reachy-mini-cli/ while denying shared runtime or shipped integration.",
+        "Narrative copy lives outside the Astro page except documented structural labels; the route is static, works without JavaScript, and performs no client network request."
+      ],
+      "deps": [
+        "t3",
+        "t4",
+        "t5"
+      ],
+      "covers": [
+        "c2",
+        "h2",
+        "c6",
+        "h6",
+        "c28",
+        "h21",
+        "c30",
+        "h22",
+        "c34",
+        "h25",
+        "c37",
+        "h26"
+      ],
+      "instruction": "Create site-astro/src/pages/presentations/mind-nervous-system-body.astro by composing Layout, the narrative data module, and the architecture diagram. Keep prose in data, templates structural, sources concise, and the page a scrolling spoken narrative rather than a slide deck."
+    },
+    {
+      "id": "t7",
+      "summary": "Add deterministic presentation checks and verify the delivery boundaries",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "The checker fails unless both named routes exist and built HTML contains all Header/Footer/home wayfinding, exactly one index card, the exact three-layer hero, exactly eight ordered beats, both repository links, commit-pinned source links, explicit synthesis/no-integration/no-neural-training limits, and correct current-state navigation.",
+        "npm run build, the new presentation checker, and the existing org site link-check all exit 0; the package lock remains unchanged when no dependency changes are needed.",
+        "A separate external-source check resolves every factual permalink to its expected public file and commit; the internal-only link checker is not reported as external-link evidence.",
+        "A 320px/mobile, tablet, and desktop walkthrough in light, dark, keyboard-only, no-JS, and reduced-motion modes finds no clipping or obscured content, retains AA text contrast, and confirms all new motion is transform/opacity-only or disabled.",
+        "Baseline and final diff checks prove there was no Presentations route before, the existing Reachy agent page/data/component files are byte-unchanged and still build, and no changes land under org/, tests/, .github/workflows/, ../reachy-mini-cli, or ../arm101-cli.",
+        "No verification command starts or changes either robot; the evidence uses only static diagrams, built HTML, git data, and committed public artifacts."
+      ],
+      "deps": [
+        "t2",
+        "t6"
+      ],
+      "covers": [
+        "c11",
+        "h11",
+        "c12",
+        "h12",
+        "c14",
+        "h13",
+        "c15",
+        "h14",
+        "c19",
+        "h15",
+        "c20",
+        "h16",
+        "c23",
+        "h17",
+        "c38",
+        "h27"
+      ],
+      "instruction": "Add a zero-dependency built-output checker under site-astro/scripts and a package script to run it, without altering org/, tests/, or workflows. Build the site, run the existing internal link checker, separately resolve external evidence links, and perform the responsive/theme/reduced-motion/presenter walkthrough while preserving sibling and pre-existing dirty state."
+    },
+    {
+      "id": "t8",
+      "summary": "Apply the required version bump and changelog closeout",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "pyproject.toml carries the approved version increment and CHANGELOG.md has a concise entry for the Presentations index and Mind, nervous system, body talk.",
+        "The repository version-check comparison against main passes and the site build, presentation checker, and internal link check remain green after the bump.",
+        "git diff and staged-path inspection exclude pre-existing uv.lock, settings, wrangler, sibling-repository, and other unrelated dirty artifacts unless a required tool legitimately changed a file and that exact diff was reviewed.",
+        "No implementation, source, test, or workflow file is changed during closeout beyond the already-confirmed task outputs plus pyproject.toml and CHANGELOG.md."
+      ],
+      "deps": [
+        "t7"
+      ],
+      "covers": [
+        "c33",
+        "h24"
+      ],
+      "instruction": "After every site and verification task passes, use the repository version-bump workflow to update pyproject.toml and prepend the Keep-a-Changelog entry. Inspect the exact diff and stage only intended presentation, plan/spec, version, and changelog paths."
+    }
+  ],
+  "risks": [
+    {
+      "id": "r1",
+      "text": "The eight beats plus visible source and safety caveats may read as dense documentation rather than a spoken presentation; settle this only on the built t6 page with the cold-reader and presenter walkthrough, trimming supporting copy without removing confirmed claims.",
+      "kind": "unknown_nonblocking",
+      "task_id": "t6",
+      "resolved": false,
+      "resolution": ""
+    },
+    {
+      "id": "r2",
+      "text": "External GitHub permalink resolution depends on network and public repository availability outside the static build; t7 must report that check separately and may retry it, but must not substitute the internal link checker or unpinned latest links.",
+      "kind": "unknown_nonblocking",
+      "task_id": "t7",
+      "resolved": false,
+      "resolution": ""
+    },
+    {
+      "id": "r3",
+      "text": "The org and sibling worktrees already contain unrelated dirty and untracked files, including uv.lock; t8 must use explicit-path diff/staging and stop if the version workflow overlaps an unrelated edit that cannot be separated safely.",
+      "kind": "unknown_nonblocking",
+      "task_id": "t8",
+      "resolved": false,
+      "resolution": ""
+    },
+    {
+      "id": "r4",
+      "text": "Live robot captures, motion, speech, service changes, and fresh hardware validation are outside this plan; all implementation and verification use static site output plus already committed evidence.",
+      "kind": "out_of_scope",
+      "task_id": "t7",
+      "resolved": false,
+      "resolution": ""
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "plan_slug": "presentations-tab-and-neurosymbolic-robots",
+  "schema_version": 1,
+  "created": "2026-07-19T13:44:08Z",
+  "updated": "2026-07-19T16:29:38Z",
+  "deviations": [
+    {
+      "id": "d1",
+      "what": "replace the full link-check-exits-zero acceptance with a no-regression gate: every new presentation link resolves and the complete checker has only the 16 pre-existing /learn/ failures; keep org/, tests/, workflows, and the Learn route unchanged, and track Learn routing as follow-up",
+      "task_ref": "t7",
+      "reason": "the pre-wave baseline Astro build passed but org site link-check already exits 1 on 16 Header/Footer /learn/ links because this checkout has no local /learn/ route",
+      "affects": [
+        "t8",
+        "h14",
+        "h24"
+      ],
+      "origin": "user",
+      "status": "approved",
+      "classification": "needs-follow-up"
+    },
+    {
+      "id": "d2",
+      "what": "replace d1's exact-16 total failure expectation with a structural no-regression gate: the original 16 /learn/ failures remain unchanged, the two new presentation pages contribute exactly four inherited Header/Footer /learn/ failures, and every presentation destination resolves",
+      "task_ref": "t7",
+      "reason": "the confirmed pages correctly reuse the shared Layout, so each new built page necessarily inherits the existing broken Header and Footer /learn/ links while the Learn route remains intentionally out of scope",
+      "affects": [
+        "t8",
+        "h14",
+        "h24"
+      ],
+      "origin": "llm",
+      "status": "approved",
+      "classification": "needs-follow-up"
+    },
+    {
+      "id": "d3",
+      "what": "temporarily hide the per-beat source-note rail and collapse the talk to a single content column; retain the source ledger, source links in the document, and external verification for a second cleanup review",
+      "task_ref": "t6",
+      "reason": "the user observed that visible source notes overlap the architecture diagram and prioritized a working site before a later visual cleanup pass",
+      "affects": [
+        "t7",
+        "t8"
+      ],
+      "origin": "user",
+      "status": "approved",
+      "classification": "needs-follow-up"
+    }
+  ]
+}

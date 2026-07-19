@@ -1,0 +1,586 @@
+---
+// A static comparison, not a unified system diagram. Reachy Mini CLI and
+// ARM101 CLI stay in separate bounded panels so no connector can imply a
+// shared runtime. The Reachy panel also splits external agent attach, folded
+// forge cognition, and the stash API into separate tracks. ARM map production
+// ends at the persisted artifact; the possible flex gate is drawn with a stop
+// bar and an explicit FUTURE / NOT CONNECTED label.
+//
+// The SVG has its own accessible name and complete description. A visible
+// prose transcription follows it for readers who prefer text or encounter a
+// user agent with incomplete SVG accessibility support. There is no motion,
+// JavaScript, external asset, or client request: reduced-motion users receive
+// the same fully composed diagram.
+---
+
+<figure class="mind-body-diagram">
+  <div class="diagram-viewport">
+    <svg
+      viewBox="0 0 1080 780"
+      fill="none"
+      role="img"
+      aria-labelledby="mind-body-diagram-title mind-body-diagram-desc"
+    >
+      <title id="mind-body-diagram-title">
+        The agent as mind, code as symbolic nervous system, and robot as physical body
+      </title>
+      <desc id="mind-body-diagram-desc">
+        Architecture comparison of two separate products and runtimes. In Reachy Mini CLI,
+        the shipped external agent attach sends runtime events from the symbolic nervous
+        system to an agent mind made of a harness plus model. The separate cognition output
+        returns as a durable intent, then passes through validation, arbitration, the
+        robot-specific symbolic runtime, and only then reaches the physical body. A separate
+        shipped folded live cognition track sends generated code through forge validation
+        before an auto-activated reaction is retained; forge is not a tool on external agent
+        attach. A separate Python API only track can retain a stash behavior record; stash is
+        not an external-attach tool. In ARM101 CLI, servo load and stall feedback from the
+        physical arm enters the symbolic runtime, and the shipped arm explore track writes an
+        append-only log and a persisted reachability map. A dashed line stops before arm flex:
+        arm flex does not consume this map, and that connector is future and not connected.
+        No line joins the two products or claims a shared runtime, shipped integration, or one
+        autonomous closed learning loop.
+      </desc>
+
+      <defs>
+        <marker
+          id="mind-body-arrow-shipped"
+          viewBox="0 0 10 10"
+          refX="8"
+          refY="5"
+          markerWidth="7"
+          markerHeight="7"
+          orient="auto-start-reverse"
+        >
+          <path d="M0 0 L10 5 L0 10 Z" class="arrow-shipped"></path>
+        </marker>
+        <marker
+          id="mind-body-arrow-api"
+          viewBox="0 0 10 10"
+          refX="8"
+          refY="5"
+          markerWidth="7"
+          markerHeight="7"
+          orient="auto-start-reverse"
+        >
+          <path d="M0 0 L10 5 L0 10 Z" class="arrow-api"></path>
+        </marker>
+      </defs>
+
+      <!-- Connector status is encoded by stroke pattern and written text. -->
+      <g class="legend" aria-hidden="true">
+        <line x1="26" y1="30" x2="68" y2="30" class="connector shipped"></line>
+        <text x="78" y="35" class="status-label shipped-label">SHIPPED</text>
+
+        <line x1="214" y1="30" x2="256" y2="30" class="connector api"></line>
+        <text x="266" y="35" class="status-label">API ONLY</text>
+
+        <line x1="414" y1="30" x2="456" y2="30" class="connector future"></line>
+        <line x1="459" y1="22" x2="459" y2="38" class="future-stop"></line>
+        <text x="472" y="35" class="status-label">FUTURE / NOT CONNECTED</text>
+
+        <text x="1054" y="35" text-anchor="end" class="legend-note">
+          status is written, never color-only
+        </text>
+      </g>
+
+      <!-- Reachy Mini CLI: one self-contained product/runtime panel. -->
+      <g class="product-panel reachy-panel" aria-hidden="true">
+        <rect x="20" y="68" width="650" height="612" rx="24" class="panel-box"></rect>
+        <text x="46" y="98" class="product-title">REACHY MINI CLI</text>
+        <text x="644" y="98" text-anchor="end" class="product-note">
+          its own runtime
+        </text>
+
+        <!-- Mind layer: the shipped external attach surface. -->
+        <rect x="420" y="124" width="210" height="114" rx="18" class="layer-box mind-box"></rect>
+        <text x="440" y="151" class="layer-kicker">MIND</text>
+        <text x="440" y="177" class="layer-title">Agent mind</text>
+        <text x="440" y="198" class="layer-copy">harness + model</text>
+        <text x="440" y="220" class="layer-note">external agent attach · SHIPPED</text>
+
+        <!-- Body layer. -->
+        <rect x="44" y="270" width="146" height="190" rx="18" class="layer-box body-box"></rect>
+        <text x="64" y="299" class="layer-kicker">BODY</text>
+        <text x="64" y="325" class="layer-title">Physical body</text>
+        <text x="64" y="350" class="layer-copy">Reachy Mini</text>
+        <text x="64" y="381" class="layer-note">mic · camera · pose</text>
+        <text x="64" y="400" class="layer-note">head · antennas · body</text>
+        <text x="64" y="430" class="layer-note">senses and actuation</text>
+
+        <!-- Nervous-system layer: every action path remains inside it. -->
+        <rect x="224" y="270" width="406" height="190" rx="18" class="layer-box nervous-box"></rect>
+        <text x="244" y="299" class="layer-kicker">NERVOUS SYSTEM</text>
+        <text x="244" y="323" class="layer-title">Symbolic nervous system</text>
+        <text x="610" y="299" text-anchor="end" class="layer-note">robot-specific code</text>
+
+        <rect x="244" y="338" width="98" height="56" rx="10" class="flow-box"></rect>
+        <text x="293" y="361" text-anchor="middle" class="flow-title">runtime events</text>
+        <text x="293" y="379" text-anchor="middle" class="flow-note">feed · SHIPPED</text>
+
+        <rect x="362" y="338" width="96" height="56" rx="10" class="flow-box"></rect>
+        <text x="410" y="361" text-anchor="middle" class="flow-title">durable intent</text>
+        <text x="410" y="379" text-anchor="middle" class="flow-note">spool · SHIPPED</text>
+
+        <rect x="478" y="338" width="68" height="56" rx="10" class="flow-box"></rect>
+        <text x="512" y="361" text-anchor="middle" class="flow-title">validation</text>
+        <text x="512" y="379" text-anchor="middle" class="flow-note">rules</text>
+
+        <rect x="566" y="338" width="48" height="56" rx="10" class="flow-box"></rect>
+        <text x="590" y="359" text-anchor="middle" class="flow-title compact">arbitra-</text>
+        <text x="590" y="374" text-anchor="middle" class="flow-title compact">tion</text>
+        <text x="590" y="388" text-anchor="middle" class="flow-note">priority</text>
+
+        <text x="244" y="432" class="layer-note">
+          senses · reflexes · safety · memory · actuation
+        </text>
+
+        <!-- Main attached-agent path: events out; cognition and intents back. -->
+        <g data-track="reachy-attached-agent">
+          <path
+            d="M190 348 H244"
+            class="connector shipped"
+            marker-end="url(#mind-body-arrow-shipped)"
+          ></path>
+          <text x="217" y="337" text-anchor="middle" class="connector-label">senses</text>
+
+          <path
+            d="M293 338 V258 Q293 210 420 187"
+            class="connector shipped"
+            marker-end="url(#mind-body-arrow-shipped)"
+          ></path>
+          <text x="307" y="246" class="connector-label">runtime events · SHIPPED</text>
+
+          <path
+            d="M525 238 V252 Q525 266 502 266 H428 Q410 266 410 338"
+            class="connector shipped"
+            marker-end="url(#mind-body-arrow-shipped)"
+          ></path>
+          <text x="520" y="283" text-anchor="end" class="connector-label">
+            cognition output → durable intent · SHIPPED
+          </text>
+
+          <path
+            d="M458 366 H478"
+            class="connector shipped"
+            marker-end="url(#mind-body-arrow-shipped)"
+          ></path>
+          <path
+            d="M546 366 H566"
+            class="connector shipped"
+            marker-end="url(#mind-body-arrow-shipped)"
+          ></path>
+          <path
+            d="M614 366 H622 V443 H190"
+            class="connector shipped"
+            marker-end="url(#mind-body-arrow-shipped)"
+          ></path>
+          <text x="414" y="454" text-anchor="middle" class="connector-label">
+            validated + arbitrated actuation · SHIPPED
+          </text>
+        </g>
+
+        <!-- Retained artifacts: separate from external agent attach. -->
+        <text x="46" y="494" class="section-title">retained artifacts · distinct tracks</text>
+
+        <g data-track="reachy-forge">
+          <text x="46" y="518" class="track-status">SHIPPED · FOLDED TRACK</text>
+          <rect x="46" y="530" width="144" height="52" rx="12" class="artifact-box"></rect>
+          <text x="118" y="552" text-anchor="middle" class="artifact-title">folded live cognition</text>
+          <text x="118" y="569" text-anchor="middle" class="artifact-note">not external attach</text>
+
+          <rect x="220" y="530" width="116" height="52" rx="12" class="artifact-box"></rect>
+          <text x="278" y="552" text-anchor="middle" class="artifact-title">forge candidate</text>
+          <text x="278" y="569" text-anchor="middle" class="artifact-note">generated code</text>
+
+          <rect x="366" y="530" width="94" height="52" rx="12" class="artifact-box"></rect>
+          <text x="413" y="552" text-anchor="middle" class="artifact-title">validator</text>
+          <text x="413" y="569" text-anchor="middle" class="artifact-note">gate</text>
+
+          <rect x="490" y="530" width="140" height="52" rx="12" class="artifact-box retained-box"></rect>
+          <text x="560" y="552" text-anchor="middle" class="artifact-title">reaction retained</text>
+          <text x="560" y="569" text-anchor="middle" class="artifact-note">auto-activated</text>
+
+          <path d="M190 556 H220" class="connector shipped" marker-end="url(#mind-body-arrow-shipped)"></path>
+          <path d="M336 556 H366" class="connector shipped" marker-end="url(#mind-body-arrow-shipped)"></path>
+          <path d="M460 556 H490" class="connector shipped" marker-end="url(#mind-body-arrow-shipped)"></path>
+        </g>
+
+        <g data-track="reachy-stash">
+          <text x="46" y="615" class="track-status">API ONLY · SEPARATE TRACK</text>
+          <rect x="46" y="625" width="154" height="40" rx="12" class="artifact-box"></rect>
+          <text x="123" y="649" text-anchor="middle" class="artifact-title">Python API only</text>
+
+          <rect x="300" y="625" width="170" height="40" rx="12" class="artifact-box retained-box"></rect>
+          <text x="385" y="649" text-anchor="middle" class="artifact-title">stash behavior record</text>
+
+          <path d="M200 645 H300" class="connector api" marker-end="url(#mind-body-arrow-api)"></path>
+          <text x="250" y="634" text-anchor="middle" class="connector-label">stash · API ONLY</text>
+          <text x="498" y="649" class="artifact-note">not an external-attach tool</text>
+        </g>
+      </g>
+
+      <!-- ARM101 CLI: a second, explicitly separate product/runtime panel. -->
+      <g class="product-panel arm-panel" aria-hidden="true">
+        <rect x="690" y="68" width="370" height="612" rx="24" class="panel-box"></rect>
+        <text x="716" y="98" class="product-title">ARM101 CLI</text>
+        <text x="1034" y="98" text-anchor="end" class="product-note">
+          its own runtime
+        </text>
+        <text x="716" y="126" class="boundary-note">no attached-agent connector claimed</text>
+
+        <rect x="716" y="150" width="130" height="164" rx="18" class="layer-box body-box"></rect>
+        <text x="734" y="179" class="layer-kicker">BODY</text>
+        <text x="734" y="204" class="layer-title">Physical body</text>
+        <text x="734" y="228" class="layer-copy">SO-101 arm</text>
+        <text x="734" y="258" class="layer-note">servo load + stall</text>
+        <text x="734" y="277" class="layer-note">joints + torque</text>
+
+        <rect x="874" y="150" width="160" height="164" rx="18" class="layer-box nervous-box"></rect>
+        <text x="892" y="179" class="layer-kicker">NERVOUS SYSTEM</text>
+        <text x="892" y="204" class="layer-title">Symbolic nervous</text>
+        <text x="892" y="224" class="layer-title">system</text>
+        <text x="892" y="251" class="layer-copy">ARM101 CLI</text>
+        <text x="892" y="278" class="layer-note">consent · safety</text>
+        <text x="892" y="297" class="layer-note">overload-aware motion</text>
+
+        <path
+          d="M846 209 H874"
+          class="connector shipped"
+          marker-end="url(#mind-body-arrow-shipped)"
+        ></path>
+        <text x="860" y="197" text-anchor="middle" class="connector-label">state</text>
+        <path
+          d="M874 276 H846"
+          class="connector shipped"
+          marker-end="url(#mind-body-arrow-shipped)"
+        ></path>
+        <text x="860" y="294" text-anchor="middle" class="connector-label">motion</text>
+
+        <text x="716" y="350" class="section-title">retained artifacts · map production</text>
+        <g data-track="arm-map">
+          <text x="716" y="374" class="track-status">SHIPPED PRODUCTION</text>
+          <rect x="716" y="388" width="130" height="58" rx="12" class="artifact-box"></rect>
+          <text x="781" y="413" text-anchor="middle" class="artifact-title">arm explore</text>
+          <text x="781" y="431" text-anchor="middle" class="artifact-note">load + stall inference</text>
+
+          <rect x="898" y="388" width="120" height="58" rx="12" class="artifact-box retained-box"></rect>
+          <text x="958" y="413" text-anchor="middle" class="artifact-title">append-only JSONL</text>
+          <text x="958" y="431" text-anchor="middle" class="artifact-note">probe log</text>
+
+          <rect x="898" y="486" width="120" height="70" rx="12" class="artifact-box retained-box"></rect>
+          <text x="958" y="512" text-anchor="middle" class="artifact-title">reachability map</text>
+          <text x="958" y="531" text-anchor="middle" class="artifact-note">persisted · queryable</text>
+          <text x="958" y="547" text-anchor="middle" class="artifact-note">integrity-limited</text>
+
+          <path
+            d="M781 314 V388"
+            class="connector shipped"
+            marker-end="url(#mind-body-arrow-shipped)"
+          ></path>
+          <text x="793" y="357" class="connector-label">physical feedback · SHIPPED</text>
+          <path
+            d="M846 417 H898"
+            class="connector shipped"
+            marker-end="url(#mind-body-arrow-shipped)"
+          ></path>
+          <path
+            d="M958 446 V486"
+            class="connector shipped"
+            marker-end="url(#mind-body-arrow-shipped)"
+          ></path>
+
+          <rect x="716" y="592" width="130" height="48" rx="12" class="artifact-box"></rect>
+          <text x="781" y="615" text-anchor="middle" class="artifact-title">arm flex</text>
+          <text x="781" y="632" text-anchor="middle" class="artifact-note">current motion verb</text>
+
+          <path d="M898 521 Q865 532 856 584" class="connector future"></path>
+          <line x1="850" y1="584" x2="862" y2="584" class="future-stop"></line>
+          <text x="860" y="568" text-anchor="middle" class="connector-label">
+            FUTURE / NOT CONNECTED
+          </text>
+          <text x="875" y="660" text-anchor="middle" class="boundary-note">
+            arm flex does not consume this map
+          </text>
+        </g>
+      </g>
+
+      <!-- Explicit comparison boundary: no cross-product connector exists. -->
+      <rect x="20" y="708" width="1040" height="50" rx="16" class="nonclaim-box"></rect>
+      <text x="540" y="731" text-anchor="middle" class="nonclaim-title">
+        ARCHITECTURAL COMPARISON ONLY
+      </text>
+      <text x="540" y="749" text-anchor="middle" class="nonclaim-copy">
+        separate products and runtimes · no shared runtime · no shipped integration · no autonomous closed learning loop
+      </text>
+    </svg>
+  </div>
+
+  <figcaption class="diagram-caption">
+    Solid, dotted, and dashed connectors mean shipped, API-only, and future/not connected;
+    every status is also written in the diagram.
+  </figcaption>
+
+  <details class="diagram-transcript">
+    <summary>Read the architecture as text</summary>
+    <div class="transcript-copy">
+      <p>
+        <strong>The layers.</strong> The agent mind is its harness plus model. The symbolic
+        nervous system is robot-specific code for senses, reflexes, safety, memory,
+        arbitration, and actuation. The physical body is the robot hardware.
+      </p>
+      <p>
+        <strong>Reachy’s attached-agent track (shipped).</strong> The symbolic runtime sends
+        runtime events to the external agent attach. Cognition output returns as a durable
+        intent, then crosses validation and arbitration inside the symbolic runtime before
+        actuation reaches the body. There is no direct mind-to-hardware connector.
+      </p>
+      <p>
+        <strong>Reachy’s retained-artifact tracks.</strong> Folded live cognition—not the
+        external attach—can send generated code through forge validation and auto-activate a
+        retained reaction. Separately, a Python API caller can write a stash behavior record;
+        stash is API-only and is not an external-attach tool.
+      </p>
+      <p>
+        <strong>ARM101’s map track (shipped production, future consumption).</strong> The
+        physical arm’s servo load and stall behavior feeds <code>arm explore</code>, which
+        writes an append-only probe log and a persisted, integrity-limited reachability map.
+        A stopped dashed connector marks the missing future gate: <code>arm flex</code> does
+        not consume that map today.
+      </p>
+      <p>
+        <strong>Boundary.</strong> Reachy Mini CLI and ARM101 CLI are separate products with
+        separate runtimes. The diagram claims neither a shipped integration nor one autonomous
+        closed learning loop.
+      </p>
+    </div>
+  </details>
+</figure>
+
+<style>
+  .mind-body-diagram {
+    margin: 0;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .diagram-viewport {
+    overflow-x: auto;
+    border-radius: var(--radius);
+    scrollbar-color: var(--line) transparent;
+  }
+
+  .diagram-viewport svg {
+    width: 100%;
+    min-width: 58rem;
+    height: auto;
+  }
+
+  text {
+    font-family: var(--font-mono);
+  }
+
+  .panel-box {
+    fill: color-mix(in srgb, var(--surface) 78%, transparent);
+    stroke: var(--line);
+    stroke-width: 1.5;
+  }
+
+  .layer-box,
+  .artifact-box,
+  .flow-box {
+    fill: var(--surface);
+    stroke: var(--line);
+    stroke-width: 1.4;
+  }
+
+  .mind-box {
+    fill: color-mix(in srgb, var(--accent) 11%, var(--surface));
+    stroke: color-mix(in srgb, var(--accent) 50%, transparent);
+  }
+
+  .nervous-box {
+    fill: color-mix(in srgb, var(--mesh-halo-alt) 9%, var(--surface));
+  }
+
+  .body-box {
+    fill: color-mix(in srgb, var(--mesh-halo) 8%, var(--surface));
+  }
+
+  .retained-box {
+    fill: color-mix(in srgb, var(--accent) 7%, var(--surface));
+  }
+
+  .product-title {
+    fill: var(--accent-strong);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .product-note,
+  .boundary-note,
+  .legend-note {
+    fill: var(--ink-soft);
+    font-size: 10.5px;
+  }
+
+  .layer-kicker,
+  .section-title,
+  .track-status,
+  .status-label {
+    fill: var(--ink-soft);
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .section-title {
+    fill: var(--accent-strong);
+    font-size: 11px;
+  }
+
+  .track-status {
+    font-size: 8.5px;
+  }
+
+  .shipped-label {
+    fill: var(--accent-strong);
+  }
+
+  .layer-title {
+    fill: var(--ink);
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 520;
+  }
+
+  .layer-copy {
+    fill: var(--ink);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .layer-note,
+  .flow-note,
+  .artifact-note {
+    fill: var(--ink-soft);
+    font-size: 9.5px;
+  }
+
+  .flow-title,
+  .artifact-title {
+    fill: var(--ink);
+    font-size: 10.5px;
+    font-weight: 650;
+  }
+
+  .flow-title.compact {
+    font-size: 8.5px;
+  }
+
+  .connector {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+  }
+
+  .connector.shipped {
+    stroke: var(--accent-strong);
+  }
+
+  .connector.api {
+    stroke: var(--ink-soft);
+    stroke-dasharray: 2 6;
+  }
+
+  .connector.future {
+    stroke: var(--ink-soft);
+    stroke-dasharray: 8 7;
+  }
+
+  .future-stop {
+    stroke: var(--ink-soft);
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  .arrow-shipped {
+    fill: var(--accent-strong);
+  }
+
+  .arrow-api {
+    fill: var(--ink-soft);
+  }
+
+  .connector-label {
+    fill: var(--ink-soft);
+    font-size: 8.5px;
+  }
+
+  .nonclaim-box {
+    fill: color-mix(in srgb, var(--surface) 82%, transparent);
+    stroke: var(--line);
+    stroke-width: 1.3;
+  }
+
+  .nonclaim-title {
+    fill: var(--accent-strong);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .nonclaim-copy {
+    fill: var(--ink-soft);
+    font-size: 10px;
+  }
+
+  .diagram-caption {
+    max-width: 44rem;
+    margin: 0 auto;
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+    line-height: 1.55;
+    text-align: center;
+  }
+
+  .diagram-transcript {
+    max-width: 50rem;
+    width: 100%;
+    margin: 0 auto;
+    border: 1px solid var(--line);
+    border-radius: 0.9rem;
+    background: color-mix(in srgb, var(--surface) 72%, transparent);
+  }
+
+  .diagram-transcript summary {
+    padding: 0.8rem 1rem;
+    color: var(--accent);
+    cursor: pointer;
+    font-weight: 620;
+  }
+
+  .transcript-copy {
+    padding: 0 1rem 1rem;
+    color: var(--ink-soft);
+    font-size: 0.94rem;
+    line-height: 1.6;
+  }
+
+  .transcript-copy strong {
+    color: var(--ink);
+  }
+
+  @media (max-width: 40rem) {
+    .diagram-viewport {
+      margin-inline: -0.5rem;
+      padding-inline: 0.5rem;
+    }
+
+    .diagram-caption,
+    .transcript-copy {
+      font-size: 0.88rem;
+    }
+  }
+</style>
