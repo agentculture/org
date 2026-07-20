@@ -296,4 +296,4 @@ reveal system degrades to nothing rather than to blank content.
 | [`agents-directory.html`](agents-directory.html) | Interactive. Findings 1–4, live before/after, three options measured |
 | [`agent-page-scaling.md`](agent-page-scaling.md) | Finding 6 in full, with a proposed component API |
 | [`spacing-type-system.html`](spacing-type-system.html) | Interactive. Spacing and type tokens for the operator-skills section |
-| [`captures-layout.html`](captures-layout.html) | Interactive. Three layouts for the captures section, measured |
+| [`captures-layout.html`](captures-layout.html) | Interactive. Four layouts for the captures section, measured — expand-in-place recommended |
