@@ -1,24 +1,24 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import PageHero from "../../components/PageHero.astro";
-import { presentations } from "../../data/presentations";
+import { articles } from "../../data/presentations";
 
 const intro = [
-  "Talks from the mesh: ideas made concrete, sourced, and ready to share.",
+  "Full-text, sourced talks from the mesh: ideas made concrete and ready to read.",
 ];
 ---
 
 <Layout
-  title="Presentations · AgentCulture"
-  description="A library of sourced talks from the AgentCulture mesh."
+  title="Articles · AgentCulture"
+  description="A library of sourced articles from the AgentCulture mesh."
 >
-  <PageHero title="Presentations" intro={intro} />
+  <PageHero title="Articles" intro={intro} />
 
-  <section class="section library" aria-label="Presentation library">
+  <section class="section library" aria-label="Article library">
     <div class="container">
       <ul class="presentation-grid">
         {
-          presentations.map((presentation, i) => (
+          articles.map((presentation, i) => (
             <li data-reveal style={`--reveal-delay: ${Math.min(i * 0.08, 0.32)}s`}>
               <a class="card presentation-card" href={presentation.route}>
                 <span class="topic">{presentation.topic}</span>
@@ -32,7 +32,7 @@ const intro = [
                     ))}
                   </ul>
                 </div>
-                <span class="go" aria-hidden="true">Read the talk →</span>
+                <span class="go" aria-hidden="true">Read the article →</span>
               </a>
             </li>
           ))
