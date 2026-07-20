@@ -8,6 +8,7 @@ export const primaryNavigation = [
   { href: "/learn/", label: "Learn" },
   { href: "/framework/", label: "Framework" },
   { href: "/agents/", label: "Agents" },
+  { href: "/articles/", label: "Articles", match: "section" },
   { href: "/presentations/", label: "Presentations", match: "section" },
   { href: "/engage/", label: "Engage" },
 ] as const satisfies readonly PrimaryNavigationItem[];

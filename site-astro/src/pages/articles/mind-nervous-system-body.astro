@@ -1,0 +1,479 @@
+---
+// The talk template deliberately authors structure, not narrative. The only
+// inline strings below are interface labels: Presentations, Evidence baseline,
+// Definitions, Source notes, and the accessible names for those regions.
+// Every thesis, explanation, caveat, status, source label, and closing claim
+// comes from the talk data module or the typed presentation evidence ledger.
+import MindNervousSystemBodyDiagram from "../../components/MindNervousSystemBodyDiagram.astro";
+import Layout from "../../layouts/Layout.astro";
+import {
+  mindNervousSystemBodyTalk,
+  type PresentationEvidenceId,
+} from "../../data/mind-nervous-system-body";
+import {
+  presentationEvidence,
+  presentationProjects,
+  type PresentationEvidenceSource,
+} from "../../data/presentations";
+
+const talk = mindNervousSystemBodyTalk;
+
+function sourceFor(id: PresentationEvidenceId): PresentationEvidenceSource {
+  const source = presentationEvidence.find((candidate) => candidate.id === id);
+  if (!source) throw new Error(`Unknown presentation evidence id: ${id}`);
+  return source;
+}
+
+const projectLabels = new Map(
+  presentationProjects.map((project) => [project.id, project.label]),
+);
+---
+
+<Layout
+  title={`${talk.card.title} · Articles · AgentCulture`}
+  description={talk.card.summary}
+>
+  <header class="talk-hero" aria-labelledby="talk-title">
+    <div class="container hero-shell">
+      <a class="back-link" href="/articles/">← Articles</a>
+      <span class="topic">{talk.card.topic}</span>
+      <h1 id="talk-title" data-reveal>{talk.hero}</h1>
+      <p class="hero-summary" data-reveal style="--reveal-delay: 0.1s">
+        {talk.card.summary}
+      </p>
+
+      <div class="baseline" data-reveal style="--reveal-delay: 0.18s">
+        <span class="structural-label">Evidence baseline</span>
+        <ul aria-label="Evidence baseline">
+          {
+            talk.evidenceBaselines.map((baseline) => {
+              const source = sourceFor(baseline.sourceId);
+              return (
+                <li>
+                  <a href={source.url} target="_blank" rel="noreferrer">
+                    <span>{baseline.label}</span>
+                    <code>{source.commit.slice(0, 12)}</code>
+                  </a>
+                </li>
+              );
+            })
+          }
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <article class="talk" aria-label={talk.card.title}>
+    {
+      talk.beats.map((beat, beatIndex) => (
+        <section
+          class="section talk-beat"
+          id={beat.id}
+          data-talk-beat={beat.id}
+          data-beat-index={beatIndex + 1}
+          aria-labelledby={`${beat.id}-title`}
+        >
+          <div class="container beat-grid">
+            <div class="spoken-copy">
+              <span class="eyebrow" data-reveal>{beat.eyebrow}</span>
+              <h2 id={`${beat.id}-title`} data-reveal>{beat.headline}</h2>
+
+              {"definitions" in beat && beat.definitions && (
+                <div class="definitions" data-reveal>
+                  <span class="structural-label">Definitions</span>
+                  <dl>
+                    {beat.definitions.map((definition) => (
+                      <div>
+                        <dt>{definition.term}</dt>
+                        <dd>{definition.meaning}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+              )}
+
+              <div class="prose beat-prose">
+                {beat.paragraphs.map((paragraph, paragraphIndex) => (
+                  <p
+                    class={paragraphIndex === 0 ? "lede" : "muted"}
+                    data-reveal
+                    style={`--reveal-delay: ${Math.min(0.08 + paragraphIndex * 0.06, 0.2)}s`}
+                  >
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
+
+              <ul class="point-grid">
+                {beat.points.map((point, pointIndex) => (
+                  <li
+                    class:list={["point-card", point.status && `is-${point.status}`]}
+                    data-reveal
+                    style={`--reveal-delay: ${Math.min(pointIndex * 0.05, 0.2)}s`}
+                  >
+                    <div class="point-heading">
+                      <h3>{point.label}</h3>
+                      {point.status && <span class="status">{point.status}</span>}
+                    </div>
+                    <p class="muted">{point.detail}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <aside class="source-notes" aria-label={`Sources for ${beat.headline}`}>
+              <span class="structural-label">Source notes</span>
+              <ul>
+                {beat.sourceIds.map((sourceId) => {
+                  const source = sourceFor(sourceId);
+                  return (
+                    <li>
+                      <a href={source.url} target="_blank" rel="noreferrer">
+                        <span class="source-label">{source.label}</span>
+                        <span class="source-meta">
+                          {projectLabels.get(source.project)} · <code>{source.commit.slice(0, 12)}</code>
+                        </span>
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </aside>
+
+            {beat.id === "perceive-to-retain" && (
+              <div class="architecture" data-reveal>
+                <MindNervousSystemBodyDiagram />
+              </div>
+            )}
+
+            {beat.id === "sources-and-repositories" && (
+              <div class="talk-close" data-reveal>
+                <p>{talk.close.boundary}</p>
+                <ul>
+                  {talk.close.repositoryHomes.map((project) => (
+                    <li>
+                      <a href={project.repositoryUrl} target="_blank" rel="noreferrer">
+                        {project.label} ↗
+                      </a>
+                    </li>
+                  ))}
+                  <li>
+                    <a href={talk.close.relatedAgentPage.href}>
+                      {talk.close.relatedAgentPage.label} →
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
+        </section>
+      ))
+    }
+  </article>
+</Layout>
+
+<style>
+  .talk-hero {
+    padding-block: clamp(3.5rem, 9vh, 7.5rem) clamp(4rem, 9vh, 7rem);
+  }
+
+  .hero-shell {
+    display: grid;
+    justify-items: start;
+  }
+
+  .back-link {
+    margin-bottom: clamp(2.5rem, 7vh, 5rem);
+    font-size: 0.9rem;
+    font-weight: 620;
+    text-decoration: none;
+  }
+
+  .topic,
+  .structural-label {
+    color: var(--accent);
+    font-size: 0.72rem;
+    font-weight: 680;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .topic {
+    margin-bottom: 1rem;
+  }
+
+  .talk-hero h1 {
+    max-width: 16ch;
+    margin-bottom: 0.65em;
+    font-size: clamp(2.8rem, 7.8vw, 6rem);
+    line-height: 1.02;
+  }
+
+  .hero-summary {
+    max-width: 47rem;
+    color: var(--ink-soft);
+    font-size: clamp(1.08rem, 2vw, 1.35rem);
+    line-height: 1.62;
+  }
+
+  .baseline {
+    width: min(100%, 47rem);
+    margin-top: clamp(2rem, 5vh, 3.5rem);
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .baseline ul,
+  .source-notes ul,
+  .point-grid,
+  .talk-close ul {
+    list-style: none;
+  }
+
+  .baseline ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem 1.4rem;
+    margin-top: 0.7rem;
+  }
+
+  .baseline a {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: baseline;
+    font-size: 0.9rem;
+  }
+
+  .baseline code,
+  .source-meta code {
+    color: var(--ink-soft);
+    font-size: 0.76rem;
+  }
+
+  .talk-beat {
+    position: relative;
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .talk-beat:nth-child(even) {
+    background: color-mix(in srgb, var(--surface) 28%, transparent);
+  }
+
+  .beat-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(2.5rem, 7vw, 6rem);
+    align-items: start;
+  }
+
+  .spoken-copy {
+    min-width: 0;
+  }
+
+  .spoken-copy > h2 {
+    max-width: 21ch;
+    margin-bottom: 1em;
+    font-size: clamp(2rem, 4.4vw, 3.5rem);
+  }
+
+  .beat-prose {
+    max-width: 46rem;
+  }
+
+  .beat-prose .lede {
+    color: var(--ink);
+  }
+
+  .definitions {
+    margin-bottom: clamp(2rem, 5vh, 3.5rem);
+    padding: 1.25rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--surface) 74%, transparent);
+  }
+
+  .definitions dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem 1.4rem;
+    margin-top: 1rem;
+  }
+
+  .definitions dl > div {
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .definitions dt {
+    font-weight: 680;
+  }
+
+  .definitions dd {
+    margin: 0.25rem 0 0;
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+
+  .point-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    gap: 0.8rem;
+    margin-top: clamp(2rem, 5vh, 3.25rem);
+  }
+
+  .point-card {
+    min-width: 0;
+    padding: 1.15rem;
+    border: 1px solid var(--line-soft);
+    border-radius: 1rem;
+    background: color-mix(in srgb, var(--surface) 78%, transparent);
+  }
+
+  .point-card.is-boundary,
+  .point-card.is-future {
+    border-style: dashed;
+  }
+
+  .point-heading {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.4rem 0.8rem;
+    align-items: baseline;
+    margin-bottom: 0.6rem;
+  }
+
+  .point-heading h3 {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 680;
+  }
+
+  .status {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 650;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .point-card p {
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .source-notes {
+    /* Temporary under d3; markup remains for the source-notes cleanup PR. */
+    display: none;
+    position: sticky;
+    top: 1rem;
+    min-width: 0;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .source-notes ul {
+    display: grid;
+    gap: 0.85rem;
+    margin-top: 0.9rem;
+  }
+
+  .source-notes a {
+    display: grid;
+    gap: 0.18rem;
+    color: var(--ink-soft);
+    font-size: 0.78rem;
+    line-height: 1.4;
+    text-decoration-color: color-mix(in srgb, var(--ink-soft) 28%, transparent);
+  }
+
+  .source-label {
+    color: var(--ink-soft);
+  }
+
+  .source-meta {
+    font-size: 0.68rem;
+  }
+
+  .architecture,
+  .talk-close {
+    grid-column: 1 / -1;
+  }
+
+  .architecture {
+    margin-top: clamp(1rem, 4vh, 2.5rem);
+    padding-top: clamp(2rem, 5vh, 4rem);
+    border-top: 1px solid var(--line);
+  }
+
+  .talk-close {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1.5rem 3rem;
+    align-items: center;
+    margin-top: 1rem;
+    padding: clamp(1.25rem, 4vw, 2rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+
+  .talk-close p {
+    max-width: 44rem;
+    font-size: clamp(1.05rem, 2vw, 1.25rem);
+    font-weight: 520;
+    line-height: 1.55;
+  }
+
+  .talk-close ul {
+    display: grid;
+    gap: 0.45rem;
+    justify-items: start;
+  }
+
+  .talk-close a {
+    font-weight: 620;
+  }
+
+  @media (max-width: 48rem) {
+    .beat-grid,
+    .talk-close {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .source-notes {
+      position: static;
+      margin-top: 0.5rem;
+    }
+
+    .architecture,
+    .talk-close {
+      grid-column: auto;
+    }
+
+    .definitions dl {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 24rem) {
+    .talk-hero h1 {
+      font-size: clamp(2.4rem, 14vw, 3.2rem);
+    }
+
+    .baseline ul {
+      display: grid;
+    }
+
+    .definitions,
+    .point-card,
+    .talk-close {
+      padding: 1rem;
+    }
+  }
+</style>

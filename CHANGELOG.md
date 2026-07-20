@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/). This project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.14.0] - 2026-07-20
+
+### Added
+
+- Articles section: the mind–nervous-system–body talk in full text at /articles/mind-nervous-system-body/ with its own library page and typed catalog
+- Presentations rebuilt as a symbolic slide deck at /presentations/mind-nervous-system-body/ — one route, 10 full-viewport slides derived from the talk beats, one robot per slide, keyboard and visible controls as progressive enhancement, reduced-motion-safe
+- Photo foundation: four placeholder WebP slots (thumb + full pairs) with a typed manifest and contributor shot guide (docs/presentation-photos.md)
+- Deck slide dataset with a node:test suite enforcing evidence resolution, one-robot-per-slide, and photo-slot ownership
+
+### Changed
+
+- Primary navigation grows to six items (Articles + Presentations, both section-matched); navigation tests retaught; home Explore cards updated
+- check-presentations.mjs retaught: 16 deterministic checks over the articles/deck split, fail-on-drift proven
+- Internal-link baseline restated: exactly 24 inherited /learn/ failures across 12 pages (2 per page), zero others — issue #18 still tracks the Learn route
+
 ## [0.13.0] - 2026-07-19
 
 ### Added

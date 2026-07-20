@@ -1,16 +1,37 @@
 ---
+// The Presentations library: symbolic decks — the slides behind the talks.
+// Mirrors the Articles library, but each card leads to a deck, not a read,
+// and carries the deck's robot hero thumbnails as its visual.
 import Layout from "../../layouts/Layout.astro";
 import PageHero from "../../components/PageHero.astro";
+import {
+  photoBySlot,
+  type PresentationPhoto,
+} from "../../data/presentation-photos";
 import { presentations } from "../../data/presentations";
 
 const intro = [
-  "Talks from the mesh: ideas made concrete, sourced, and ready to share.",
+  "The slides behind the talks: symbolic decks that anchor a live, spoken narrative — big imagery, few words.",
 ];
+
+// Card visuals per deck route. Thumbnails are decorative here (the card copy
+// already names the robots), so they render with empty alt inside the link.
+const heroThumbsByRoute: Record<string, readonly PresentationPhoto[]> = {
+  "/presentations/mind-nervous-system-body/": [
+    photoBySlot["reachy-mini-hero"],
+    photoBySlot["so101-hero"],
+  ],
+};
+
+const thumbDims = (photo: PresentationPhoto) => {
+  const [width, height] = photo.targetDimensions.thumb.split("×").map(Number);
+  return { width, height };
+};
 ---
 
 <Layout
   title="Presentations · AgentCulture"
-  description="A library of sourced talks from the AgentCulture mesh."
+  description="Symbolic slide decks from the AgentCulture mesh — the slides behind the talks."
 >
   <PageHero title="Presentations" intro={intro} />
 
@@ -18,24 +39,45 @@ const intro = [
     <div class="container">
       <ul class="presentation-grid">
         {
-          presentations.map((presentation, i) => (
-            <li data-reveal style={`--reveal-delay: ${Math.min(i * 0.08, 0.32)}s`}>
-              <a class="card presentation-card" href={presentation.route}>
-                <span class="topic">{presentation.topic}</span>
-                <h2>{presentation.title}</h2>
-                <p class="summary muted">{presentation.summary}</p>
-                <div class="source-group">
-                  <span class="source-heading">Source projects</span>
-                  <ul class="source-projects" aria-label="Source projects">
-                    {presentation.sourceProjects.map((project) => (
-                      <li>{project}</li>
-                    ))}
-                  </ul>
-                </div>
-                <span class="go" aria-hidden="true">Read the talk →</span>
-              </a>
-            </li>
-          ))
+          presentations.map((presentation, i) => {
+            const thumbs = heroThumbsByRoute[presentation.route] ?? [];
+            return (
+              <li data-reveal style={`--reveal-delay: ${Math.min(i * 0.08, 0.32)}s`}>
+                <a class="card presentation-card" href={presentation.route}>
+                  {thumbs.length > 0 && (
+                    <div class="deck-thumbs" aria-hidden="true">
+                      {thumbs.map((photo) => {
+                        const size = thumbDims(photo);
+                        return (
+                          <img
+                            src={photo.thumbSrc}
+                            alt=""
+                            width={size.width}
+                            height={size.height}
+                            loading="lazy"
+                            decoding="async"
+                            style={`aspect-ratio: ${size.width} / ${size.height}`}
+                          />
+                        );
+                      })}
+                    </div>
+                  )}
+                  <span class="topic">{presentation.topic}</span>
+                  <h2>{presentation.title}</h2>
+                  <p class="summary muted">{presentation.summary}</p>
+                  <div class="source-group">
+                    <span class="source-heading">Source projects</span>
+                    <ul class="source-projects" aria-label="Source projects">
+                      {presentation.sourceProjects.map((project) => (
+                        <li>{project}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <span class="go" aria-hidden="true">Open the deck →</span>
+                </a>
+              </li>
+            );
+          })
         }
       </ul>
     </div>
@@ -60,6 +102,21 @@ const intro = [
     flex-direction: column;
     align-items: flex-start;
     gap: 0.85rem;
+  }
+
+  .deck-thumbs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    width: 100%;
+  }
+
+  .deck-thumbs img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 0.65rem;
+    border: 1px solid var(--line-soft);
   }
 
   .topic,

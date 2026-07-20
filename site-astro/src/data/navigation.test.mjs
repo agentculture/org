@@ -12,18 +12,39 @@ const navigation = existsSync(navigationUrl)
   ? await import(navigationUrl.href)
   : undefined;
 
-test("the shared primary navigation has exactly five expected links", () => {
+test("the shared primary navigation has exactly six expected links", () => {
   assert.ok(navigation, "src/data/navigation.ts must centralize primary navigation");
   assert.deepEqual(navigation.primaryNavigation, [
     { href: "/learn/", label: "Learn" },
     { href: "/framework/", label: "Framework" },
     { href: "/agents/", label: "Agents" },
+    { href: "/articles/", label: "Articles", match: "section" },
     { href: "/presentations/", label: "Presentations", match: "section" },
     { href: "/engage/", label: "Engage" },
   ]);
 });
 
-test("Presentations alone owns its index and descendant talk routes", () => {
+test("Articles alone owns its index and descendant article routes", () => {
+  assert.ok(navigation, "src/data/navigation.ts must export the current-route matcher");
+
+  for (const pathname of [
+    "/articles",
+    "/articles/",
+    "/articles/mind-nervous-system-body/",
+  ]) {
+    const current = navigation.primaryNavigation.filter((item) =>
+      navigation.isPrimaryNavCurrent(pathname, item),
+    );
+    assert.deepEqual(current.map(({ label }) => label), ["Articles"]);
+  }
+
+  const falsePrefix = navigation.primaryNavigation.filter((item) =>
+    navigation.isPrimaryNavCurrent("/articles-old/", item),
+  );
+  assert.deepEqual(falsePrefix, []);
+});
+
+test("Presentations alone owns its index and descendant deck routes", () => {
   assert.ok(navigation, "src/data/navigation.ts must export the current-route matcher");
 
   for (const pathname of [
@@ -80,9 +101,13 @@ test("Header and Footer share navigation and accessible current-state semantics"
   }
 });
 
-test("the home Explore surface links Presentations exactly once", async () => {
+test("the home Explore surface links Articles and Presentations exactly once each", async () => {
   const home = await readFile(homeUrl, "utf8");
+  const articleLinks = home.match(/href:\s*["']\/articles\/["']/g) ?? [];
   const presentationLinks = home.match(/href:\s*["']\/presentations\/["']/g) ?? [];
+
+  assert.equal(articleLinks.length, 1);
+  assert.match(home, /label:\s*["']Articles["']/);
 
   assert.equal(presentationLinks.length, 1);
   assert.match(home, /label:\s*["']Presentations["']/);

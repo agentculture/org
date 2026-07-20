@@ -1,479 +1,624 @@
 ---
-// The talk template deliberately authors structure, not narrative. The only
-// inline strings below are interface labels: Presentations, Evidence baseline,
-// Definitions, Source notes, and the accessible names for those regions.
-// Every thesis, explanation, caveat, status, source label, and closing claim
-// comes from the talk data module or the typed presentation evidence ledger.
-import MindNervousSystemBodyDiagram from "../../components/MindNervousSystemBodyDiagram.astro";
+// The symbolic deck: full-viewport slides the speaker talks over. The data
+// layer (mind-nervous-system-body-slides.ts) owns every word on every slide;
+// this template only stages them — big type, one photograph per robot slide,
+// a single spoken line, never a paragraph block. The deck says less than the
+// article on purpose; the close slide routes depth-seekers to the full text.
+//
+// Navigation is progressive enhancement over natural scroll: the dot rail is
+// plain anchors, the prev/next chrome and keyboard support exist only under
+// html.js, and every snap/reveal runs only behind
+// (prefers-reduced-motion: no-preference). With JavaScript disabled the page
+// is a complete, plainly scrolling document.
 import Layout from "../../layouts/Layout.astro";
 import {
-  mindNervousSystemBodyTalk,
-  type PresentationEvidenceId,
-} from "../../data/mind-nervous-system-body";
-import {
-  presentationEvidence,
-  presentationProjects,
-  type PresentationEvidenceSource,
-} from "../../data/presentations";
+  mindNervousSystemBodySlides,
+  type DeckSlide,
+} from "../../data/mind-nervous-system-body-slides";
+import { photoBySlot } from "../../data/presentation-photos";
+import { evidenceFor } from "../../data/mind-nervous-system-body";
+import { presentationProjects, presentations } from "../../data/presentations";
 
-const talk = mindNervousSystemBodyTalk;
+const card = presentations[0];
+const slides: readonly DeckSlide[] = mindNervousSystemBodySlides;
 
-function sourceFor(id: PresentationEvidenceId): PresentationEvidenceSource {
-  const source = presentationEvidence.find((candidate) => candidate.id === id);
-  if (!source) throw new Error(`Unknown presentation evidence id: ${id}`);
-  return source;
-}
+const dims = (spec: string) => {
+  const [width, height] = spec.split("×").map(Number);
+  return { width, height };
+};
 
+const slideViews = slides.map((slide, index) => {
+  const photo = slide.photoId ? photoBySlot[slide.photoId] : undefined;
+  const size = photo ? dims(photo.targetDimensions.full) : undefined;
+  return {
+    slide,
+    index,
+    photo,
+    size,
+    flipped: photo?.role === "action",
+    headingId: `${slide.id}-headline`,
+  };
+});
+
+// The thesis headline is one verbatim string; the stage splits it into its
+// three sentences so the three layers land as three lines — the middle line,
+// the nervous system, is the deck's through-line.
+const thesisLines = (headline: string) => headline.split(/(?<=\.)\s+/);
+
+// Evidence stays subordinate: one compact, collapsed sources block on the
+// close slide — deduped across the whole deck, commit-pinned, never crowding
+// a slide's visuals.
+const deckSources = evidenceFor([
+  ...new Set(slides.flatMap((slide) => slide.evidenceIds)),
+]);
 const projectLabels = new Map(
   presentationProjects.map((project) => [project.id, project.label]),
 );
 ---
 
 <Layout
-  title={`${talk.card.title} · Presentations · AgentCulture`}
-  description={talk.card.summary}
+  title={`${card.title} · Presentations · AgentCulture`}
+  description={card.summary}
 >
-  <header class="talk-hero" aria-labelledby="talk-title">
-    <div class="container hero-shell">
-      <a class="back-link" href="/presentations/">← Presentations</a>
-      <span class="topic">{talk.card.topic}</span>
-      <h1 id="talk-title" data-reveal>{talk.hero}</h1>
-      <p class="hero-summary" data-reveal style="--reveal-delay: 0.1s">
-        {talk.card.summary}
-      </p>
+  <nav class="deck-rail" aria-label="Slides">
+    <ol>
+      {
+        slideViews.map(({ slide, index }) => (
+          <li>
+            <a
+              href={`#${slide.id}`}
+              data-deck-dot
+              aria-label={`Slide ${index + 1} of ${slides.length}: ${slide.headline}`}
+            />
+          </li>
+        ))
+      }
+    </ol>
+  </nav>
 
-      <div class="baseline" data-reveal style="--reveal-delay: 0.18s">
-        <span class="structural-label">Evidence baseline</span>
-        <ul aria-label="Evidence baseline">
-          {
-            talk.evidenceBaselines.map((baseline) => {
-              const source = sourceFor(baseline.sourceId);
-              return (
-                <li>
-                  <a href={source.url} target="_blank" rel="noreferrer">
-                    <span>{baseline.label}</span>
-                    <code>{source.commit.slice(0, 12)}</code>
-                  </a>
-                </li>
-              );
-            })
-          }
-        </ul>
-      </div>
-    </div>
-  </header>
-
-  <article class="talk" aria-label={talk.card.title}>
+  <article class="deck" aria-label={`${card.title} — slides`}>
     {
-      talk.beats.map((beat, beatIndex) => (
+      slideViews.map(({ slide, index, photo, size, flipped, headingId }) => (
         <section
-          class="section talk-beat"
-          id={beat.id}
-          data-talk-beat={beat.id}
-          data-beat-index={beatIndex + 1}
-          aria-labelledby={`${beat.id}-title`}
+          class:list={["slide", `slide--${slide.kind}`, flipped && "is-flipped"]}
+          id={slide.id}
+          data-deck-slide={slide.id}
+          data-slide-index={index + 1}
+          data-kind={slide.kind}
+          data-robot={slide.robot}
+          aria-labelledby={headingId}
         >
-          <div class="container beat-grid">
-            <div class="spoken-copy">
-              <span class="eyebrow" data-reveal>{beat.eyebrow}</span>
-              <h2 id={`${beat.id}-title`} data-reveal>{beat.headline}</h2>
-
-              {"definitions" in beat && beat.definitions && (
-                <div class="definitions" data-reveal>
-                  <span class="structural-label">Definitions</span>
-                  <dl>
-                    {beat.definitions.map((definition) => (
-                      <div>
-                        <dt>{definition.term}</dt>
-                        <dd>{definition.meaning}</dd>
-                      </div>
-                    ))}
-                  </dl>
+          <div class="container slide-grid">
+            <div class="slide-copy">
+              {slide.kind === "thesis" && (
+                <a class="back-link" href="/presentations/">
+                  ← Presentations
+                </a>
+              )}
+              <span class="eyebrow" data-reveal>
+                {slide.eyebrow}
+              </span>
+              {slide.kind === "thesis" ? (
+                <h1 id={headingId}>
+                  {thesisLines(slide.headline).map((line, lineIndex) => (
+                    <span
+                      class:list={["thesis-line", lineIndex === 1 && "is-bridge"]}
+                      data-reveal
+                      style={`--reveal-delay: ${0.1 + lineIndex * 0.18}s`}
+                    >
+                      {line}
+                    </span>
+                  ))}
+                </h1>
+              ) : (
+                <h2 id={headingId} data-reveal style="--reveal-delay: 0.08s">
+                  {slide.headline}
+                </h2>
+              )}
+              <p class="spoken" data-reveal style="--reveal-delay: 0.22s">
+                {slide.spokenLine}
+              </p>
+              {slide.kind === "thesis" && slides[1] && (
+                <a
+                  class="begin"
+                  href={`#${slides[1].id}`}
+                  data-reveal
+                  style="--reveal-delay: 0.36s"
+                >
+                  Begin <span aria-hidden="true">↓</span>
+                </a>
+              )}
+              {slide.kind === "close" && (
+                <div class="close-actions" data-reveal style="--reveal-delay: 0.3s">
+                  <a class="cta" href="/articles/mind-nervous-system-body/">
+                    The full argument, in text →
+                  </a>
+                  <a class="cta-quiet" href="/presentations/">
+                    All presentations
+                  </a>
                 </div>
               )}
-
-              <div class="prose beat-prose">
-                {beat.paragraphs.map((paragraph, paragraphIndex) => (
-                  <p
-                    class={paragraphIndex === 0 ? "lede" : "muted"}
-                    data-reveal
-                    style={`--reveal-delay: ${Math.min(0.08 + paragraphIndex * 0.06, 0.2)}s`}
-                  >
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-
-              <ul class="point-grid">
-                {beat.points.map((point, pointIndex) => (
-                  <li
-                    class:list={["point-card", point.status && `is-${point.status}`]}
-                    data-reveal
-                    style={`--reveal-delay: ${Math.min(pointIndex * 0.05, 0.2)}s`}
-                  >
-                    <div class="point-heading">
-                      <h3>{point.label}</h3>
-                      {point.status && <span class="status">{point.status}</span>}
-                    </div>
-                    <p class="muted">{point.detail}</p>
-                  </li>
-                ))}
-              </ul>
+              {slide.kind === "close" && (
+                <details class="sources" data-reveal style="--reveal-delay: 0.4s">
+                  <summary>Sources — commit-pinned</summary>
+                  <ul>
+                    {deckSources.map((source) => (
+                      <li>
+                        <a href={source.url} target="_blank" rel="noreferrer">
+                          <span class="source-label">{source.label}</span>
+                          <span class="source-meta">
+                            {projectLabels.get(source.project)} ·{" "}
+                            <code>{source.commit.slice(0, 12)}</code>
+                          </span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              )}
             </div>
 
-            <aside class="source-notes" aria-label={`Sources for ${beat.headline}`}>
-              <span class="structural-label">Source notes</span>
-              <ul>
-                {beat.sourceIds.map((sourceId) => {
-                  const source = sourceFor(sourceId);
-                  return (
-                    <li>
-                      <a href={source.url} target="_blank" rel="noreferrer">
-                        <span class="source-label">{source.label}</span>
-                        <span class="source-meta">
-                          {projectLabels.get(source.project)} · <code>{source.commit.slice(0, 12)}</code>
-                        </span>
-                      </a>
-                    </li>
-                  );
-                })}
-              </ul>
-            </aside>
-
-            {beat.id === "perceive-to-retain" && (
-              <div class="architecture" data-reveal>
-                <MindNervousSystemBodyDiagram />
-              </div>
-            )}
-
-            {beat.id === "sources-and-repositories" && (
-              <div class="talk-close" data-reveal>
-                <p>{talk.close.boundary}</p>
-                <ul>
-                  {talk.close.repositoryHomes.map((project) => (
-                    <li>
-                      <a href={project.repositoryUrl} target="_blank" rel="noreferrer">
-                        {project.label} ↗
-                      </a>
-                    </li>
-                  ))}
-                  <li>
-                    <a href={talk.close.relatedAgentPage.href}>
-                      {talk.close.relatedAgentPage.label} →
-                    </a>
-                  </li>
-                </ul>
-              </div>
+            {photo && size && (
+              <figure
+                class="slide-photo"
+                data-photo-slot={photo.id}
+                data-reveal
+                style="--reveal-delay: 0.16s"
+              >
+                <img
+                  src={photo.src}
+                  alt={photo.alt}
+                  width={size.width}
+                  height={size.height}
+                  loading="lazy"
+                  decoding="async"
+                  style={`aspect-ratio: ${size.width} / ${size.height}`}
+                />
+              </figure>
             )}
           </div>
         </section>
       ))
     }
   </article>
+
+  <div class="deck-chrome">
+    <button type="button" data-deck-prev aria-label="Previous slide" disabled>
+      <span aria-hidden="true">↑</span>
+    </button>
+    <span class="deck-count" data-deck-count aria-hidden="true">
+      1 / {slides.length}
+    </span>
+    <button type="button" data-deck-next aria-label="Next slide">
+      <span aria-hidden="true">↓</span>
+    </button>
+  </div>
+
+  <script is:inline>
+    // Deck navigation — progressive enhancement only. Without JavaScript the
+    // page is a plain scrolling document: the dot rail is real anchors and
+    // the chrome above stays hidden (CSS shows it only under html.js).
+    // Motion: scrollIntoView follows the CSS scroll-behavior, and the global
+    // reduced-motion kill switch forces that to `auto`, so button and
+    // keyboard navigation jump instantly for reduced-motion visitors.
+    (function () {
+      var slides = Array.prototype.slice.call(
+        document.querySelectorAll("[data-deck-slide]")
+      );
+      if (!slides.length) return;
+      var dots = Array.prototype.slice.call(
+        document.querySelectorAll("[data-deck-dot]")
+      );
+      var prev = document.querySelector("[data-deck-prev]");
+      var next = document.querySelector("[data-deck-next]");
+      var count = document.querySelector("[data-deck-count]");
+      var current = 0;
+
+      function update() {
+        if (count) count.textContent = current + 1 + " / " + slides.length;
+        if (prev) prev.disabled = current === 0;
+        if (next) next.disabled = current === slides.length - 1;
+        dots.forEach(function (dot, index) {
+          if (index === current) dot.setAttribute("aria-current", "true");
+          else dot.removeAttribute("aria-current");
+        });
+      }
+
+      function goTo(index) {
+        current = Math.max(0, Math.min(slides.length - 1, index));
+        slides[current].scrollIntoView({ block: "start" });
+        update();
+      }
+
+      if (prev)
+        prev.addEventListener("click", function () {
+          goTo(current - 1);
+        });
+      if (next)
+        next.addEventListener("click", function () {
+          goTo(current + 1);
+        });
+
+      // Scroll-spy: whichever slide crosses the middle band of the viewport
+      // is current. Band-based, so slides taller than the viewport still
+      // register on small screens.
+      if ("IntersectionObserver" in window) {
+        var spy = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                current = slides.indexOf(entry.target);
+                update();
+              }
+            });
+          },
+          { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
+        );
+        slides.forEach(function (slide) {
+          spy.observe(slide);
+        });
+      }
+
+      document.addEventListener("keydown", function (event) {
+        if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey)
+          return;
+        var target = event.target;
+        if (
+          target &&
+          (target.tagName === "INPUT" ||
+            target.tagName === "TEXTAREA" ||
+            target.tagName === "SELECT" ||
+            target.isContentEditable)
+        )
+          return;
+        switch (event.key) {
+          case "ArrowDown":
+          case "ArrowRight":
+          case "PageDown":
+            event.preventDefault();
+            goTo(current + 1);
+            break;
+          case "ArrowUp":
+          case "ArrowLeft":
+          case "PageUp":
+            event.preventDefault();
+            goTo(current - 1);
+            break;
+          case "Home":
+            event.preventDefault();
+            goTo(0);
+            break;
+          case "End":
+            event.preventDefault();
+            goTo(slides.length - 1);
+            break;
+        }
+      });
+
+      update();
+    })();
+  </script>
 </Layout>
 
 <style>
-  .talk-hero {
-    padding-block: clamp(3.5rem, 9vh, 7.5rem) clamp(4rem, 9vh, 7rem);
+  /* ---------- slides ---------- */
+
+  .slide {
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    padding-block: clamp(3.5rem, 7vh, 5.5rem);
   }
 
-  .hero-shell {
+  /* Scroll-snap is a motion opinion: gentle proximity settling, and only for
+     visitors who allow motion. Under prefers-reduced-motion: reduce this
+     whole block is inert and the deck scrolls as a plain document. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html) {
+      scroll-snap-type: y proximity;
+    }
+
+    .slide {
+      scroll-snap-align: start;
+    }
+
+    .slide:first-child {
+      /* the opening slide sits directly under the header — snapping it
+         would tug the header out of view at the top of the page */
+      scroll-snap-align: none;
+    }
+  }
+
+  .slide-grid {
     display: grid;
-    justify-items: start;
+    gap: clamp(1.8rem, 4.5vw, 3.6rem);
+    align-items: center;
+  }
+
+  @media (min-width: 60rem) {
+    .slide--robot .slide-grid {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    }
+
+    .slide--robot.is-flipped .slide-grid {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    }
+
+    .slide--robot.is-flipped .slide-copy {
+      order: 2;
+    }
+  }
+
+  /* ---------- type: the deck is the site at its most cinematic ---------- */
+
+  .slide--thesis h1 {
+    font-size: clamp(2.5rem, 6.4vw, 4.9rem);
+    margin-bottom: 0.45em;
+  }
+
+  .thesis-line {
+    display: block;
+  }
+
+  /* the middle sentence — the nervous system, the CLI — is the through-line:
+     the accent layer between the two ink layers */
+  .thesis-line.is-bridge {
+    color: var(--accent);
+  }
+
+  .slide h2 {
+    font-size: clamp(2.1rem, 4.4vw, 3.3rem);
+    margin-bottom: 0.45em;
+  }
+
+  .spoken {
+    font-size: clamp(1.12rem, 1.9vw, 1.42rem);
+    line-height: 1.62;
+    font-weight: 420;
+    color: var(--ink-soft);
+    max-width: 38rem;
   }
 
   .back-link {
-    margin-bottom: clamp(2.5rem, 7vh, 5rem);
-    font-size: 0.9rem;
-    font-weight: 620;
+    display: inline-block;
+    margin-bottom: 2.4rem;
+    color: var(--ink-soft);
     text-decoration: none;
+    font-size: 0.92rem;
   }
 
-  .topic,
-  .structural-label {
+  .back-link:hover {
     color: var(--accent);
-    font-size: 0.72rem;
-    font-weight: 680;
-    letter-spacing: 0.15em;
+  }
+
+  .begin {
+    display: inline-block;
+    margin-top: 2.4rem;
+    padding: 0.65rem 1.35rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 550;
+  }
+
+  .begin:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ---------- the photograph ---------- */
+
+  .slide-photo {
+    margin: 0;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--line-soft);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .slide-photo img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* ---------- the close ---------- */
+
+  .slide--close {
+    /* room for the fixed chrome under the actions on short viewports */
+    padding-bottom: 7rem;
+  }
+
+  .close-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+    margin-top: 2.2rem;
+  }
+
+  .cta {
+    display: inline-block;
+    padding: 0.78rem 1.5rem;
+    border-radius: 999px;
+    background: var(--accent-strong);
+    color: var(--on-accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .cta:hover {
+    box-shadow: var(--shadow-lift);
+  }
+
+  .cta-quiet {
+    color: var(--ink-soft);
+  }
+
+  .cta-quiet:hover {
+    color: var(--accent);
+  }
+
+  .sources {
+    margin-top: 2.8rem;
+    max-width: 44rem;
+    font-size: 0.86rem;
+  }
+
+  .sources summary {
+    cursor: pointer;
+    color: var(--ink-soft);
+    font-size: 0.78rem;
+    font-weight: 640;
+    letter-spacing: 0.13em;
     text-transform: uppercase;
   }
 
-  .topic {
-    margin-bottom: 1rem;
-  }
-
-  .talk-hero h1 {
-    max-width: 16ch;
-    margin-bottom: 0.65em;
-    font-size: clamp(2.8rem, 7.8vw, 6rem);
-    line-height: 1.02;
-  }
-
-  .hero-summary {
-    max-width: 47rem;
-    color: var(--ink-soft);
-    font-size: clamp(1.08rem, 2vw, 1.35rem);
-    line-height: 1.62;
-  }
-
-  .baseline {
-    width: min(100%, 47rem);
-    margin-top: clamp(2rem, 5vh, 3.5rem);
-    padding-top: 1rem;
-    border-top: 1px solid var(--line);
-  }
-
-  .baseline ul,
-  .source-notes ul,
-  .point-grid,
-  .talk-close ul {
+  .sources ul {
     list-style: none;
-  }
-
-  .baseline ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.55rem 1.4rem;
-    margin-top: 0.7rem;
-  }
-
-  .baseline a {
-    display: inline-flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    align-items: baseline;
-    font-size: 0.9rem;
-  }
-
-  .baseline code,
-  .source-meta code {
-    color: var(--ink-soft);
-    font-size: 0.76rem;
-  }
-
-  .talk-beat {
-    position: relative;
-    border-top: 1px solid var(--line-soft);
-  }
-
-  .talk-beat:nth-child(even) {
-    background: color-mix(in srgb, var(--surface) 28%, transparent);
-  }
-
-  .beat-grid {
+    margin-top: 1.1rem;
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: clamp(2.5rem, 7vw, 6rem);
-    align-items: start;
+    gap: 0.75rem;
   }
 
-  .spoken-copy {
-    min-width: 0;
+  @media (min-width: 48rem) {
+    .sources ul {
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem 2rem;
+    }
   }
 
-  .spoken-copy > h2 {
-    max-width: 21ch;
-    margin-bottom: 1em;
-    font-size: clamp(2rem, 4.4vw, 3.5rem);
-  }
-
-  .beat-prose {
-    max-width: 46rem;
-  }
-
-  .beat-prose .lede {
+  .sources a {
+    display: grid;
+    gap: 0.1rem;
+    text-decoration: none;
     color: var(--ink);
   }
 
-  .definitions {
-    margin-bottom: clamp(2rem, 5vh, 3.5rem);
-    padding: 1.25rem;
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    background: color-mix(in srgb, var(--surface) 74%, transparent);
-  }
-
-  .definitions dl {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem 1.4rem;
-    margin-top: 1rem;
-  }
-
-  .definitions dl > div {
-    padding-top: 0.75rem;
-    border-top: 1px solid var(--line-soft);
-  }
-
-  .definitions dt {
-    font-weight: 680;
-  }
-
-  .definitions dd {
-    margin: 0.25rem 0 0;
-    color: var(--ink-soft);
-    font-size: 0.92rem;
-    line-height: 1.55;
-  }
-
-  .point-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
-    gap: 0.8rem;
-    margin-top: clamp(2rem, 5vh, 3.25rem);
-  }
-
-  .point-card {
-    min-width: 0;
-    padding: 1.15rem;
-    border: 1px solid var(--line-soft);
-    border-radius: 1rem;
-    background: color-mix(in srgb, var(--surface) 78%, transparent);
-  }
-
-  .point-card.is-boundary,
-  .point-card.is-future {
-    border-style: dashed;
-  }
-
-  .point-heading {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 0.4rem 0.8rem;
-    align-items: baseline;
-    margin-bottom: 0.6rem;
-  }
-
-  .point-heading h3 {
-    margin: 0;
-    font-family: var(--font-body);
-    font-size: 1rem;
-    font-weight: 680;
-  }
-
-  .status {
+  .sources a:hover .source-label {
     color: var(--accent);
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    font-weight: 650;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .point-card p {
-    font-size: 0.9rem;
-    line-height: 1.55;
-  }
-
-  .source-notes {
-    /* Temporary under d3; markup remains for the source-notes cleanup PR. */
-    display: none;
-    position: sticky;
-    top: 1rem;
-    min-width: 0;
-    padding-top: 0.9rem;
-    border-top: 1px solid var(--line);
-  }
-
-  .source-notes ul {
-    display: grid;
-    gap: 0.85rem;
-    margin-top: 0.9rem;
-  }
-
-  .source-notes a {
-    display: grid;
-    gap: 0.18rem;
-    color: var(--ink-soft);
-    font-size: 0.78rem;
-    line-height: 1.4;
-    text-decoration-color: color-mix(in srgb, var(--ink-soft) 28%, transparent);
   }
 
   .source-label {
-    color: var(--ink-soft);
+    font-weight: 550;
   }
 
   .source-meta {
-    font-size: 0.68rem;
+    color: var(--ink-soft);
+    font-size: 0.8rem;
   }
 
-  .architecture,
-  .talk-close {
-    grid-column: 1 / -1;
+  /* ---------- the rail: slides as nodes on a thread ---------- */
+
+  .deck-rail {
+    position: fixed;
+    top: 50%;
+    right: clamp(0.4rem, 1.4vw, 1.3rem);
+    transform: translateY(-50%);
+    z-index: 40;
   }
 
-  .architecture {
-    margin-top: clamp(1rem, 4vh, 2.5rem);
-    padding-top: clamp(2rem, 5vh, 4rem);
-    border-top: 1px solid var(--line);
-  }
-
-  .talk-close {
+  .deck-rail ol {
+    position: relative;
+    list-style: none;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 1.5rem 3rem;
+    gap: 0.35rem;
+    justify-items: center;
+  }
+
+  .deck-rail ol::before {
+    content: "";
+    position: absolute;
+    inset: 0.5rem auto 0.5rem 50%;
+    width: 1px;
+    transform: translateX(-50%);
+    background: var(--mesh-thread);
+  }
+
+  .deck-rail a {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 1.05rem;
+    height: 1.05rem;
+  }
+
+  .deck-rail a::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1px solid var(--mesh-thread);
+  }
+
+  .deck-rail a:hover::before {
+    border-color: var(--accent);
+  }
+
+  .deck-rail a[aria-current="true"]::before {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  @media (max-width: 40rem) {
+    .deck-rail {
+      display: none;
+    }
+  }
+
+  /* ---------- the chrome: js-only, hidden for everyone else ---------- */
+
+  .deck-chrome {
+    position: fixed;
+    right: clamp(0.8rem, 2vw, 1.6rem);
+    bottom: clamp(0.8rem, 2vw, 1.6rem);
+    z-index: 40;
+    display: none;
     align-items: center;
-    margin-top: 1rem;
-    padding: clamp(1.25rem, 4vw, 2rem);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    background: var(--surface);
+    gap: 0.55rem;
+    padding: 0.45rem 0.7rem;
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(6px);
+    border: 1px solid var(--line-soft);
+    border-radius: 999px;
     box-shadow: var(--shadow);
   }
 
-  .talk-close p {
-    max-width: 44rem;
-    font-size: clamp(1.05rem, 2vw, 1.25rem);
-    font-weight: 520;
-    line-height: 1.55;
+  :global(html.js) .deck-chrome {
+    display: inline-flex;
   }
 
-  .talk-close ul {
+  .deck-chrome button {
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    cursor: pointer;
     display: grid;
-    gap: 0.45rem;
-    justify-items: start;
+    place-items: center;
   }
 
-  .talk-close a {
-    font-weight: 620;
+  .deck-chrome button:hover:not(:disabled) {
+    border-color: var(--accent);
+    color: var(--accent);
   }
 
-  @media (max-width: 48rem) {
-    .beat-grid,
-    .talk-close {
-      grid-template-columns: minmax(0, 1fr);
-    }
-
-    .source-notes {
-      position: static;
-      margin-top: 0.5rem;
-    }
-
-    .architecture,
-    .talk-close {
-      grid-column: auto;
-    }
-
-    .definitions dl {
-      grid-template-columns: minmax(0, 1fr);
-    }
+  .deck-chrome button:disabled {
+    opacity: 0.35;
+    cursor: default;
   }
 
-  @media (max-width: 24rem) {
-    .talk-hero h1 {
-      font-size: clamp(2.4rem, 14vw, 3.2rem);
-    }
-
-    .baseline ul {
-      display: grid;
-    }
-
-    .definitions,
-    .point-card,
-    .talk-close {
-      padding: 1rem;
-    }
+  .deck-count {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    min-width: 3.4em;
+    text-align: center;
   }
 </style>
