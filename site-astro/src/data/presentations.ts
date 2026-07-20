@@ -44,6 +44,14 @@ export interface PresentationCard {
   sourceProjects: readonly PresentationProjectLabel[];
 }
 
+export interface ArticleCard {
+  title: string;
+  summary: string;
+  route: `/articles/${string}/`;
+  topic: string;
+  sourceProjects: readonly PresentationProjectLabel[];
+}
+
 export const presentationProjects = [
   {
     id: "reachy-mini-cli",
@@ -166,3 +174,14 @@ export const presentations = [
     sourceProjects: ["Reachy Mini CLI", "ARM101 CLI"],
   },
 ] as const satisfies readonly PresentationCard[];
+
+export const articles = [
+  {
+    title: "Mind, nervous system, body",
+    summary:
+      "How an agent's harness and model become the mind, robot-specific code becomes a symbolic nervous system, and physical robots become the body — grounded in Reachy Mini CLI and ARM101 CLI.",
+    route: "/articles/mind-nervous-system-body/",
+    topic: "Neurosymbolic robotics",
+    sourceProjects: ["Reachy Mini CLI", "ARM101 CLI"],
+  },
+] as const satisfies readonly ArticleCard[];
