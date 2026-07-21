@@ -38,6 +38,7 @@ across all 8 routes:
 | [`spacing-type-and-captures.md`](spacing-type-and-captures.md) | Markdown | The write-up for both artefacts below — evidence, tokens, and the layout recommendation |
 | [`spacing-type-system.html`](spacing-type-system.html) | Interactive | Spacing and type tokens, with the operator-skills section rendered live from them |
 | [`captures-layout.html`](captures-layout.html) | Interactive | Four layouts for the captures section, measured, recommending option D |
+| [`captures-story-plan.md`](captures-story-plan.md) | Markdown | Coding-ready handoff: restructure the captures section as a guided timeline with a plain-language narrator, full copy deck included |
 
 The HTML files are self-contained — no build step, no network requests, no
 dependencies. Open them directly in a browser, or serve the folder:
