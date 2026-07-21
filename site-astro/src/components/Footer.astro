@@ -1,13 +1,10 @@
 ---
 import site from "../data/site";
+import {
+  isPrimaryNavCurrent,
+  primaryNavigation,
+} from "../data/navigation";
 import Mark from "./Mark.astro";
-
-const links = [
-  { href: "/learn/", label: "Learn" },
-  { href: "/framework/", label: "Framework" },
-  { href: "/agents/", label: "Agents" },
-  { href: "/engage/", label: "Engage" },
-];
 
 const year = new Date().getFullYear();
 ---
@@ -22,9 +19,16 @@ const year = new Date().getFullYear();
       <nav aria-label="Footer">
         <ul>
           {
-            links.map(({ href, label }) => (
+            primaryNavigation.map((item) => (
               <li>
-                <a href={href}>{label}</a>
+                <a
+                  href={item.href}
+                  aria-current={isPrimaryNavCurrent(Astro.url.pathname, item)
+                    ? "page"
+                    : undefined}
+                >
+                  {item.label}
+                </a>
               </li>
             ))
           }
@@ -84,6 +88,11 @@ const year = new Date().getFullYear();
     color: var(--ink);
   }
 
+  nav a[aria-current="page"] {
+    color: var(--ink);
+    text-decoration-color: var(--accent);
+  }
+
   .note {
     color: var(--ink-soft);
     font-size: 0.9rem;
@@ -91,5 +100,16 @@ const year = new Date().getFullYear();
 
   .sep {
     margin-inline: 0.5rem;
+  }
+
+  @media (max-width: 34rem) {
+    nav {
+      width: 100%;
+    }
+
+    nav ul {
+      justify-content: center;
+      gap: 0.35rem 1rem;
+    }
   }
 </style>

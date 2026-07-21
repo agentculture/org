@@ -1,0 +1,117 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import PageHero from "../../components/PageHero.astro";
+import { articles } from "../../data/presentations";
+
+const intro = [
+  "Full-text, sourced talks from the mesh: ideas made concrete and ready to read.",
+];
+---
+
+<Layout
+  title="Articles · AgentCulture"
+  description="A library of sourced articles from the AgentCulture mesh."
+>
+  <PageHero title="Articles" intro={intro} />
+
+  <section class="section library" aria-label="Article library">
+    <div class="container">
+      <ul class="presentation-grid">
+        {
+          articles.map((presentation, i) => (
+            <li data-reveal style={`--reveal-delay: ${Math.min(i * 0.08, 0.32)}s`}>
+              <a class="card presentation-card" href={presentation.route}>
+                <span class="topic">{presentation.topic}</span>
+                <h2>{presentation.title}</h2>
+                <p class="summary muted">{presentation.summary}</p>
+                <div class="source-group">
+                  <span class="source-heading">Source projects</span>
+                  <ul class="source-projects" aria-label="Source projects">
+                    {presentation.sourceProjects.map((project) => (
+                      <li>{project}</li>
+                    ))}
+                  </ul>
+                </div>
+                <span class="go" aria-hidden="true">Read the article →</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .library {
+    padding-top: 0;
+  }
+
+  .presentation-grid {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    gap: 1.2rem;
+  }
+
+  .presentation-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+  }
+
+  .topic,
+  .source-heading {
+    font-size: 0.75rem;
+    font-weight: 640;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+  }
+
+  .topic {
+    color: var(--accent);
+  }
+
+  .presentation-card h2 {
+    margin: 0;
+    font-size: clamp(1.45rem, 2vw, 1.8rem);
+  }
+
+  .summary {
+    flex-grow: 1;
+    max-width: 48rem;
+    line-height: 1.62;
+  }
+
+  .source-group {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .source-heading {
+    color: var(--ink-soft);
+  }
+
+  .source-projects {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .source-projects li {
+    padding: 0.3rem 0.58rem;
+    border: 1px solid var(--line-soft);
+    border-radius: 999px;
+    color: var(--ink-soft);
+    font-size: 0.82rem;
+  }
+
+  .go {
+    margin-top: 0.4rem;
+    color: var(--accent);
+    font-weight: 620;
+  }
+</style>

@@ -1,16 +1,10 @@
 ---
 import site from "../data/site";
+import {
+  isPrimaryNavCurrent,
+  primaryNavigation,
+} from "../data/navigation";
 import Mark from "./Mark.astro";
-
-const links = [
-  { href: "/learn/", label: "Learn" },
-  { href: "/framework/", label: "Framework" },
-  { href: "/agents/", label: "Agents" },
-  { href: "/engage/", label: "Engage" },
-];
-
-// Normalize so `/framework` and `/framework/` both mark the item current.
-const here = Astro.url.pathname.replace(/\/?$/, "/");
 ---
 
 <header class="site-header">
@@ -22,10 +16,15 @@ const here = Astro.url.pathname.replace(/\/?$/, "/");
     <nav aria-label="Primary">
       <ul>
         {
-          links.map(({ href, label }) => (
+          primaryNavigation.map((item) => (
             <li>
-              <a href={href} aria-current={here === href ? "page" : undefined}>
-                {label}
+              <a
+                href={item.href}
+                aria-current={isPrimaryNavCurrent(Astro.url.pathname, item)
+                  ? "page"
+                  : undefined}
+              >
+                {item.label}
               </a>
             </li>
           ))
@@ -64,6 +63,7 @@ const here = Astro.url.pathname.replace(/\/?$/, "/");
   nav ul {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: clamp(1.1rem, 3vw, 2.2rem);
     list-style: none;
   }
@@ -106,6 +106,17 @@ const here = Astro.url.pathname.replace(/\/?$/, "/");
   @media (prefers-reduced-motion: no-preference) {
     nav a::after {
       transition: transform 0.35s var(--ease-out);
+    }
+  }
+
+  @media (max-width: 34rem) {
+    nav {
+      width: 100%;
+    }
+
+    nav ul {
+      justify-content: center;
+      gap: 0.35rem 1rem;
     }
   }
 </style>
