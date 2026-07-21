@@ -6,6 +6,7 @@
 ## Audience
 
 - Talk audiences and /presentations/ visitors: developers and agent operators deciding how to connect an agent (Claude Code, Codex, Colleague, custom, or none) to a robot — the deck backs a spoken talk, so slides carry symbols, not paragraphs
+- The talk audience is technical roboticists; the deck backs a 15-20 minute spoken presentation (operator directive at the challenge pass; c22's developer/agent-operator audience remains the secondary web audience)
 
 ## Before → After
 
@@ -42,6 +43,12 @@
 - Wire the presentation contract into CI: tests.yml site-build runs npm run check:presentations and the slides test (node --experimental-strip-types --test) after npm run build, so a contract regression fails the PR
   - instruction: Add the two commands to tests.yml site-build after npm run build; verify locally, then rely on the PR run as proof
   - honesty: A deliberately broken deck contract (e.g. wrong slide count) fails the site-build CI job
+- State the tick rate honestly for an expert audience: '50 Hz' is the design rate — reachy CHANGELOG v0.42.0 (#97) records 23 Hz achieved before a partial absolute-deadline fix with tick-work overrun still open — so the deck says 'a deterministic fixed-rate loop (50 Hz design rate)' or omits the number; it never presents 50 Hz as measured fact
+  - honesty: No slide or spoken line presents 50 Hz as an achieved/measured rate; if the number appears it is labeled as the design rate
+- Calibrate explanation depth to roboticists: control-loop, arbitration, and daemon concepts are assumed knowledge; the agent-harness layer (what Claude Code / Codex / Colleague are, and why the agent is optional) gets the one line of explanation instead
+  - honesty: A roboticist hearing the talk is never lectured on what a control loop or arbitration is, and never left guessing what an agent harness is
+- The deck is presentable live: keyboard advance already ships under html.js; type must stay legible at projection distance — verify the built deck at 1920x1080 as part of acceptance
+  - honesty: The built deck reviewed at 1920x1080 has every headline and code line readable
 
 ## Honesty conditions
 
@@ -54,6 +61,7 @@
 - The new deck names the intelligence/embodiment operational boundary explicitly rather than leaving it implied by the metaphor
 - Each element is checkable on the built page: beat count <=8, thesis on beat 2, four-layer diagram with the agent optional, Reachy demo, rules example, ARM101 contrast, close
 - All three commands run green locally and in the PR's site-build job before merge
+- A timed run-through of the built deck lands inside 15-20 minutes for a roboticist audience, with beat pacing per c31
 
 ## Success signals
 
@@ -76,6 +84,7 @@
 - The four existing photo slots (two per robot) suffice — Reachy keeps primary-implementation slides, ARM101 keeps contrast slides; no new photography
 - Ships as a normal org PR: version bump + CHANGELOG (version-check gate), cicd lane, deploy on merge via deploy.yml — no operator DNS step for a content update
 - v0.42.0 strengthens the deck's evidence: a machine-checked zero-LLM boundary suite (tests/test_zero_llm_boundary.py), five senses ported into the runtime and live-verified, service modes reduced to demo|runtime, and 'agent attach remains the external, optional AI surface' — all directly citable for the runtime-for-embodiment thesis
+- Eight beats at roughly 2-2.5 spoken minutes each fits the 15-20 minute slot; spokenLine is a speaking cue, not a script, so the <=2-sentence rule stands
 
 ## Scope exploration
 
@@ -106,6 +115,14 @@
   - seeds: `c14`
 - `s14` — `reachy-mini-cli CHANGELOG.md + CLI surface @ HEAD 92e34b2 (v0.42.0)`: v0.42.0 'retired the AI-first flow': REMOVED think, listen --live + folded hooks, listen noun, cognition/marker engines, live presence mode; cognition demoted to agent attach only; added the zero-LLM AST boundary test; forge/stash files survive but the folded flow that auto-activated forge output is gone — a shared re-pin therefore invalidates the article's folded-cognition claims while strengthening the deck's
   - seeds: `c16`, `c17`
+- `s15` — `challenge pass / audience lens: operator directive`: The talk targets technical roboticists in a 15-20 minute slot — reframes c22 (web/developer audience becomes secondary) and seeds pacing + explanation-depth findings
+  - seeds: `c27`, `c29`, `c31`
+- `s16` — `challenge pass / counter-evidence lens: reachy-mini-cli CHANGELOG v0.42.0 (#97) + README 50 Hz claims`: README states a 'deterministic 50 Hz loop'; the v0.42.0 changelog records 23 Hz achieved before a partial absolute-deadline fix, tick-work overrun still open — an expert audience will probe this, so the deck must phrase the rate as design intent
+  - seeds: `c28`
+- `s17` — `challenge pass / prior-art lens: issue org#21 + exported spec + both repo READMEs`: No surface in the frame mentions ROS 2, ros2 CLI, executors, or behavior trees; for a roboticist audience the layering reads as familiar middleware discipline — whether to position against it is a user decision (q5)
+- `s18` — `challenge pass / delivery failure-mode lens: deck renderer (presentations/mind-nervous-system-body.astro)`: Keyboard prev/next and dot rail already exist under html.js, so live advance works; projection legibility at 1920x1080 is the remaining acceptance check
+  - seeds: `c30`
+- `s19` — `challenge pass / adjacent-systems + reversibility lenses: check script, tests.yml, deploy.yml, article ledger`: Clean pass — these were swept in the scope leg (s5, s6, s13) and are guarded by confirmed claims c4, c9, c19, c20; rollback for a static-site content change is a PR revert; residual venue uncertainty parked as v1
 
 ## Decisions
 

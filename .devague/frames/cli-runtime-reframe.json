@@ -4,7 +4,7 @@
   "schema_version": 3,
   "status": "exported",
   "created": "2026-07-21T22:38:38Z",
-  "updated": "2026-07-21T23:08:12Z",
+  "updated": "2026-07-21T23:31:54Z",
   "claims": [
     {
       "id": "c1",
@@ -410,9 +410,102 @@
       "hard_questions": [],
       "links": [],
       "instruction": ""
+    },
+    {
+      "id": "c27",
+      "kind": "audience",
+      "text": "The talk audience is technical roboticists; the deck backs a 15-20 minute spoken presentation (operator directive at the challenge pass; c22's developer/agent-operator audience remains the secondary web audience)",
+      "origin": "user",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h21",
+          "text": "A timed run-through of the built deck lands inside 15-20 minutes for a roboticist audience, with beat pacing per c31",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c28",
+      "kind": "requirement",
+      "text": "State the tick rate honestly for an expert audience: '50 Hz' is the design rate \u2014 reachy CHANGELOG v0.42.0 (#97) records 23 Hz achieved before a partial absolute-deadline fix with tick-work overrun still open \u2014 so the deck says 'a deterministic fixed-rate loop (50 Hz design rate)' or omits the number; it never presents 50 Hz as measured fact",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h18",
+          "text": "No slide or spoken line presents 50 Hz as an achieved/measured rate; if the number appears it is labeled as the design rate",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c29",
+      "kind": "requirement",
+      "text": "Calibrate explanation depth to roboticists: control-loop, arbitration, and daemon concepts are assumed knowledge; the agent-harness layer (what Claude Code / Codex / Colleague are, and why the agent is optional) gets the one line of explanation instead",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h19",
+          "text": "A roboticist hearing the talk is never lectured on what a control loop or arbitration is, and never left guessing what an agent harness is",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c30",
+      "kind": "requirement",
+      "text": "The deck is presentable live: keyboard advance already ships under html.js; type must stay legible at projection distance \u2014 verify the built deck at 1920x1080 as part of acceptance",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h20",
+          "text": "The built deck reviewed at 1920x1080 has every headline and code line readable",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c31",
+      "kind": "assumption",
+      "text": "Eight beats at roughly 2-2.5 spoken minutes each fits the 15-20 minute slot; spokenLine is a speaking cue, not a script, so the <=2-sentence rule stands",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
     }
   ],
-  "open_vagueness": [],
+  "open_vagueness": [
+    {
+      "id": "v1",
+      "text": "Live venue behavior \u2014 projector color/contrast and an offline fallback (npm run preview on the presenting machine) \u2014 cannot be tested from this repo now",
+      "kind": "unknown_nonblocking",
+      "claim_id": null,
+      "resolved": false,
+      "resolution": "",
+      "resolution_claim_id": null
+    }
+  ],
   "scope_entries": [
     {
       "id": "s1",
@@ -526,6 +619,44 @@
         "c16",
         "c17"
       ]
+    },
+    {
+      "id": "s15",
+      "surface": "challenge pass / audience lens: operator directive",
+      "finding": "The talk targets technical roboticists in a 15-20 minute slot \u2014 reframes c22 (web/developer audience becomes secondary) and seeds pacing + explanation-depth findings",
+      "seeds": [
+        "c27",
+        "c29",
+        "c31"
+      ]
+    },
+    {
+      "id": "s16",
+      "surface": "challenge pass / counter-evidence lens: reachy-mini-cli CHANGELOG v0.42.0 (#97) + README 50 Hz claims",
+      "finding": "README states a 'deterministic 50 Hz loop'; the v0.42.0 changelog records 23 Hz achieved before a partial absolute-deadline fix, tick-work overrun still open \u2014 an expert audience will probe this, so the deck must phrase the rate as design intent",
+      "seeds": [
+        "c28"
+      ]
+    },
+    {
+      "id": "s17",
+      "surface": "challenge pass / prior-art lens: issue org#21 + exported spec + both repo READMEs",
+      "finding": "No surface in the frame mentions ROS 2, ros2 CLI, executors, or behavior trees; for a roboticist audience the layering reads as familiar middleware discipline \u2014 whether to position against it is a user decision (q5)",
+      "seeds": []
+    },
+    {
+      "id": "s18",
+      "surface": "challenge pass / delivery failure-mode lens: deck renderer (presentations/mind-nervous-system-body.astro)",
+      "finding": "Keyboard prev/next and dot rail already exist under html.js, so live advance works; projection legibility at 1920x1080 is the remaining acceptance check",
+      "seeds": [
+        "c30"
+      ]
+    },
+    {
+      "id": "s19",
+      "surface": "challenge pass / adjacent-systems + reversibility lenses: check script, tests.yml, deploy.yml, article ledger",
+      "finding": "Clean pass \u2014 these were swept in the scope leg (s5, s6, s13) and are guarded by confirmed claims c4, c9, c19, c20; rollback for a static-site content change is a PR revert; residual venue uncertainty parked as v1",
+      "seeds": []
     }
   ]
 }
