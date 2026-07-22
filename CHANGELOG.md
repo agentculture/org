@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/). This project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.17.0] - 2026-07-22
+
+### Changed
+
+- The mind–nervous-system–body deck slide 5 reshaped to a uniform trio of animated autonomy situation vignettes (Stuck, Disconnected, Routine) with the photo cell removed; the so101-action photo slot deleted end-to-end (slot, shot-brief, placeholders); slide 5 spoken track made robot-generic; close card retitled to SO-ARM101
+
 ## [0.16.0] - 2026-07-22
 
 ### Added
