@@ -18,14 +18,16 @@ that later work superseded.
 When two documents disagree, use this order:
 
 1. This current-direction map for status and precedence.
-2. The [preserved full-page Devague mock](mocks/devague/2026-07-21-review-style/README.md)
+2. The [`design-system.md`](design-system.md) adoption plan for ownership,
+   containment, promotion, and regression gates.
+3. The [preserved full-page Devague mock](mocks/devague/2026-07-21-review-style/README.md)
    for the last successfully rendered integrated composition.
-3. The two current Devague handoffs:
+4. The two current Devague handoffs:
    [`captures-story-plan.md`](captures-story-plan.md) and
    [`pipeline-layout-plan.md`](pipeline-layout-plan.md).
-4. The original audit for measured evidence:
+5. The original audit for measured evidence:
    [`findings.md`](findings.md).
-5. Earlier interactive explorations for rationale, not implementation
+6. Earlier interactive explorations for rationale, not implementation
    authority.
 
 The full-page Devague review mock is retained in this worktree. Its HTML and
@@ -40,6 +42,7 @@ evidence and the handoff as the intended implementation direction.
 | Artefact | Status | How to use it now |
 |---|---|---|
 | `current-direction.md` | Current map | Start here for precedence and scope. |
+| [`design-system.md`](design-system.md) | Current adoption plan | Use to classify mock patterns, contain changes, assess overwrite risk, and gate promotion into the shared site. |
 | [Devague full-page mock](mocks/devague/2026-07-21-review-style/README.md) | Latest retained mock | Review the complete composition, interactions, and responsive diagram repair. The manifest records the final pipeline requests that did not land in the Claude render. |
 | [`captures-story-plan.md`](captures-story-plan.md) | Current handoff | Governs the Devague real-captures redesign. |
 | [`pipeline-layout-plan.md`](pipeline-layout-plan.md) | Current handoff | Governs the Devague pipeline layout and animation fixes. |
@@ -182,10 +185,11 @@ accessibility, responsive, theme, no-JavaScript, and reduced-motion checks.
 ## Suggested reading order
 
 1. This document.
-2. The [preserved full-page Devague mock](mocks/devague/2026-07-21-review-style/README.md).
-3. [`captures-story-plan.md`](captures-story-plan.md).
-4. [`pipeline-layout-plan.md`](pipeline-layout-plan.md).
-5. [`findings.md`](findings.md), for the measured baseline and verified
+2. [`design-system.md`](design-system.md).
+3. The [preserved full-page Devague mock](mocks/devague/2026-07-21-review-style/README.md).
+4. [`captures-story-plan.md`](captures-story-plan.md).
+5. [`pipeline-layout-plan.md`](pipeline-layout-plan.md).
+6. [`findings.md`](findings.md), for the measured baseline and verified
    strengths.
-6. The relevant supporting prototype or architecture note only when its topic
+7. The relevant supporting prototype or architecture note only when its topic
    is being implemented.

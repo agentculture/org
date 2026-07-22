@@ -9,4 +9,3 @@ repository. They are review artefacts, not implementations of the live site.
 
 Each dated snapshot is immutable. Preserve a later iteration in a new dated
 folder rather than overwriting an earlier review state.
-

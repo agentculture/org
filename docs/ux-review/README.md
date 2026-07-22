@@ -29,6 +29,7 @@ original site-wide audit, and the earlier section-level explorations.
 | File | Kind | Covers |
 |------|------|--------|
 | [`current-direction.md`](current-direction.md) | Markdown | Status, precedence, current decisions, and open calls |
+| [`design-system.md`](design-system.md) | Markdown | Design-system layers, mock-to-site collision map, component catalogue, staged adoption plan, and regression gates |
 | [`mocks/devague/2026-07-21-review-style/`](mocks/devague/2026-07-21-review-style/README.md) | Full-page snapshot | Latest integrated Devague mock plus the documented responsive diagram repair |
 | [`captures-story-plan.md`](captures-story-plan.md) | Markdown | Guided three-session captures handoff and complete copy deck |
 | [`pipeline-layout-plan.md`](pipeline-layout-plan.md) | Markdown | Pipeline hierarchy, reference-list treatment, and animation fixes |
@@ -73,13 +74,14 @@ as proposed and shown against the current value it replaces.
 For a maintainer or an agent picking this up cold:
 
 1. `current-direction.md` — the precedence and status map.
-2. The preserved full-page Devague mock — the latest integrated visual state.
-3. `captures-story-plan.md` and `pipeline-layout-plan.md` — the implementation
+2. `design-system.md` — the safe ownership, containment, and adoption method.
+3. The preserved full-page Devague mock — the latest integrated visual state.
+4. `captures-story-plan.md` and `pipeline-layout-plan.md` — the implementation
    handoffs, including the pipeline work requested after the final mock render.
-4. `findings.md` — the measured baseline and verified strengths.
-5. `agents-directory.html` and `agent-page-scaling.md` — independent site-wide
+5. `findings.md` — the measured baseline and verified strengths.
+6. `agents-directory.html` and `agent-page-scaling.md` — independent site-wide
    proposals not superseded by the Devague work.
-6. The spacing/type and captures explorations when their rationale is needed.
+7. The spacing/type and captures explorations when their rationale is needed.
 
 The site-wide audit finds the pattern library drifting because it is copied per
 page (`agent-page-scaling.md`); the section-level work finds spacing drifting
@@ -95,8 +97,9 @@ The `agents-directory.html` demo re-derives its central measurement live in the
 browser from the rendered DOM rather than asserting it, and independently arrives
 at the same 4% figure quoted in the audit.
 
-**Not verified** — none of the proposals has been implemented against the real
-site, so none has been through the repo's own gates: `npm run build`,
+**Not implemented** — none of the proposals has been applied to the real site.
+The documentation and current-site baseline may be checked with the repo's own
+gates, but the proposed components have not yet been through `npm run build`,
 `org site link-check`, `markdownlint-cli2`, or the SonarCloud quality gate. The
 component API sketched in `agent-page-scaling.md` is a proposal, not tested code;
 it should be treated as a starting shape to argue with, not a specification.
