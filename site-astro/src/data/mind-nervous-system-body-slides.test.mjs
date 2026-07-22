@@ -35,6 +35,7 @@ function sentenceCount(text) {
  *  text-content scans (50 Hz honesty, commit-hash/blob-URL leakage). */
 function flattenSlideText(slide) {
   const parts = [slide.eyebrow, slide.headline, slide.spokenLine, slide.bottomLine];
+  if (slide.byline !== undefined) parts.push(slide.byline);
   for (const column of slide.columns ?? []) parts.push(column.label);
   for (const label of slide.labels ?? []) parts.push(label);
   for (const situation of slide.situations ?? []) {
@@ -43,6 +44,10 @@ function flattenSlideText(slide) {
   for (const robotEntry of slide.robots ?? []) {
     parts.push(robotEntry.status, robotEntry.traits, robotEntry.claim, robotEntry.command);
   }
+  for (const nextEntry of slide.nextEntries ?? []) {
+    parts.push(nextEntry.claim, nextEntry.traits);
+  }
+  for (const separationLine of slide.separation ?? []) parts.push(separationLine);
   return parts.join(" ");
 }
 
