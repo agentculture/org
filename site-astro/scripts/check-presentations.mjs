@@ -51,8 +51,11 @@ const expectedEvidenceUrls = [
   `https://github.com/agentculture/arm101-cli/blob/${armCommit}/arm101/explore/reachmap.py`,
 ];
 
-// The deck: exactly 10 slides, exactly 4 robot slides (2 per robot), each
-// robot slide's photo slot must belong to that robot.
+// The deck (post cli-runtime-reframe, org#21): exactly 10 slides, exactly 4
+// photo-bearing slides — 2 per robot, one "robot"-kind (hero photo) and one
+// "commands"-kind (action photo) each. The renderer stamps `data-robot` on
+// both kinds whenever `slide.robot` is set, so the count/slot checks below
+// key off that attribute generically rather than slide kind.
 const expectedDeckSlideCount = 10;
 const robotPhotoSlots = {
   "reachy-mini": ["reachy-mini-hero", "reachy-mini-action"],
@@ -337,14 +340,17 @@ check("articles library card contract", () => {
 });
 
 check("presentations library card contract", () => {
+  // Retitled by the cli-runtime-reframe (org#21): the presentation card leads
+  // with the operational-architecture story, distinct from the article card
+  // below, which keeps the original mind/nervous-system/body framing.
   const cards = anchors(presentationsIndexHtml).filter((anchor) =>
     hasClass(anchor.attrs, "presentation-card"),
   );
   assert(cards.length === 1, `expected exactly 1 card, found ${cards.length}`);
   assert(cards[0].attrs.href === deckRoute, `card must link to ${deckRoute}`);
   for (const expected of [
-    "Mind, nervous system, body",
-    "Neurosymbolic robotics",
+    "A CLI for intelligence, a runtime for embodiment",
+    "Robot operational architecture",
     "Reachy Mini CLI",
     "ARM101 CLI",
   ]) {
@@ -456,7 +462,7 @@ check("deck is not the article: no article beat-id anchors", () => {
   );
 });
 
-check("deck slide count and one-robot-per-slide structure", () => {
+check("deck slide count and two-photo-slides-per-robot structure", () => {
   // Careful: `data-deck-slide` also appears once as a bare CSS/JS attribute
   // selector (`[data-deck-slide]`); only the attribute-value form below
   // (`data-deck-slide="..."`) counts real slide sections.
@@ -520,6 +526,78 @@ check("deck imagery: four robot photos with alt text", () => {
       `${path} must have non-empty alt text`,
     );
   }
+});
+
+check("deck architecture diagram is accessible and appears exactly once", () => {
+  // CliRuntimeStackDiagram (t2) embeds once, on the "diagram"-kind slide.
+  const diagrams = openings(deckHtml, "svg").filter((svg) => {
+    if (svg.role !== "img") return false;
+    const labelledby = (svg["aria-labelledby"] ?? "").split(/\s+/);
+    return (
+      labelledby.includes("cli-runtime-diagram-title") &&
+      labelledby.includes("cli-runtime-diagram-desc")
+    );
+  });
+  assert(
+    diagrams.length === 1,
+    `expected exactly one accessible architecture diagram, found ${diagrams.length}`,
+  );
+  assert(
+    openings(deckHtml, "title").some(
+      (title) => title.id === "cli-runtime-diagram-title",
+    ),
+    "deck diagram title is missing",
+  );
+  assert(
+    openings(deckHtml, "desc").some(
+      (desc) => desc.id === "cli-runtime-diagram-desc",
+    ),
+    "deck diagram text alternative is missing",
+  );
+});
+
+check("deck states the thesis verbatim", () => {
+  // The renderer splits the two-sentence headline across reveal spans
+  // (thesisLines()), so normalize whitespace before matching textContent.
+  const deckText = textContent(deckHtml);
+  assert(
+    deckText.includes("A CLI for intelligence. A runtime for embodiment."),
+    "deck must state the verbatim thesis “A CLI for intelligence. A runtime for embodiment.”",
+  );
+});
+
+check("every deck “50 Hz” mention is labeled design rate", () => {
+  const deckText = textContent(deckHtml);
+  const matches = [...deckText.matchAll(/50\s*Hz/g)];
+  assert(matches.length > 0, "deck must mention 50 Hz at least once");
+  for (const match of matches) {
+    const window = deckText.slice(match.index, match.index + 40);
+    assert(
+      /design rate/.test(window),
+      `“50 Hz” at position ${match.index} is not labeled design rate within 40 chars: “${window}”`,
+    );
+  }
+});
+
+check("deck links both repo homes, never pinned evidence blobs", () => {
+  // Sources are subordinate on the deck (deckSources): repo-home links only.
+  // The commit-pinned blob ledger stays article-side (see the evidence check
+  // above) — the deck must carry none of it.
+  for (const href of [
+    "https://github.com/agentculture/reachy-mini-cli",
+    "https://github.com/agentculture/arm101-cli",
+  ]) {
+    assert(linksTo(deckHtml, href).length >= 1, `deck is missing ${href}`);
+  }
+  const blobLinks = anchors(deckHtml).filter((anchor) =>
+    /^https:\/\/github\.com\/agentculture\/(reachy-mini-cli|arm101-cli)\/blob\//.test(
+      anchor.attrs.href ?? "",
+    ),
+  );
+  assert(
+    blobLinks.length === 0,
+    `deck must not link pinned evidence blobs; found ${blobLinks.map((a) => a.attrs.href).join(", ")}`,
+  );
 });
 
 check("deck routes depth-seekers to the article", () => {
@@ -609,5 +687,7 @@ console.log(
     `1 article + 8 ordered beats + ${expectedEvidenceUrls.length} immutable evidence links; ` +
     `1 deck with ${expectedDeckSlideCount} slides (${Object.entries(expectedRobotSlideCounts)
       .map(([robot, count]) => `${count} ${robot}`)
-      .join(", ")}) and 4 captioned photos.`,
+      .join(", ")}) and 4 captioned photos, ` +
+    `one accessible architecture diagram, the verbatim thesis, design-rate-labeled 50 Hz, ` +
+    `and repo-home-only sources.`,
 );
