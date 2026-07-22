@@ -1,6 +1,6 @@
 [project]
 name = "org"
-version = "0.16.0"
+version = "0.17.0"
 description = "The AgentCulture org site — source of the web presence published to AgentCulture.org. Replaces the deleted landing-page repo. Not distributed on PyPI: the CLI stays repo-local; the deliverable is the published site."
 readme = "README.md"
 license = "Apache-2.0"
