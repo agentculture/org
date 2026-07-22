@@ -71,7 +71,10 @@ const copy = COPY[situation];
 const accTitle = title ?? copy.title;
 const accDesc = desc ?? copy.desc;
 
-const uid = "vignette-" + Math.random().toString(36).slice(2, 9);
+// Deterministic id: random ids at build time make every `astro build` emit a
+// different dist (PR #24 review). Each situation renders at most once per
+// page, so the situation name keys the aria-labelledby target ids.
+const uid = `vignette-${situation}`;
 const titleId = `${uid}-title`;
 const descId = `${uid}-desc`;
 ---

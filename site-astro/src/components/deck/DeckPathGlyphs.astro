@@ -21,6 +21,11 @@
 //                           <title>/<desc> wired via aria-labelledby.
 //   title?:      string   — overrides the default accessible name used when
 //                           decorative={false}. Ignored when decorative.
+//   id?:         string   — base for the <title>/<desc> element ids used when
+//                           decorative={false}. Defaults to "glyph-<path>",
+//                           which is unique while each path appears at most
+//                           once per page informatively; pass an explicit id
+//                           to render the same path informatively twice.
 //
 // This is one component switched on `path` (not three named sub-marks) so a
 // column loop can render <DeckPathGlyphs path={col.path} /> directly.
@@ -44,9 +49,10 @@ interface Props {
   size?: number;
   decorative?: boolean;
   title?: string;
+  id?: string;
 }
 
-const { path, size = 64, decorative = true, title } = Astro.props;
+const { path, size = 64, decorative = true, title, id } = Astro.props;
 
 const DEFAULTS: Record<GlyphPath, { name: string; desc: string }> = {
   coded: {
@@ -63,7 +69,10 @@ const DEFAULTS: Record<GlyphPath, { name: string; desc: string }> = {
   },
 };
 
-const uid = "glyph-" + Math.random().toString(36).slice(2, 9);
+// Deterministic id: random ids at build time make every `astro build` emit a
+// different dist (PR #24 review). One path renders informatively at most once
+// per page here; the `id` prop is the escape hatch if that ever changes.
+const uid = id ?? `glyph-${path}`;
 const titleId = `${uid}-title`;
 const descId = `${uid}-desc`;
 const accName = title ?? DEFAULTS[path].name;
