@@ -166,11 +166,11 @@ export const presentationEvidence = [
 
 export const presentations = [
   {
-    title: "Mind, nervous system, body",
+    title: "A CLI for intelligence, a runtime for embodiment",
     summary:
-      "How an agent's harness and model become the mind, robot-specific code becomes a symbolic nervous system, and physical robots become the body — grounded in Reachy Mini CLI and ARM101 CLI.",
+      "Every robot should expose two interfaces: a deterministic CLI that lets humans and agents operate it, and a persistent runtime that keeps it alive, reactive, and bounded — shown end-to-end on Reachy Mini CLI and supported by ARM101 CLI's operating contract.",
     route: "/presentations/mind-nervous-system-body/",
-    topic: "Neurosymbolic robotics",
+    topic: "Robot operational architecture",
     sourceProjects: ["Reachy Mini CLI", "ARM101 CLI"],
   },
 ] as const satisfies readonly PresentationCard[];

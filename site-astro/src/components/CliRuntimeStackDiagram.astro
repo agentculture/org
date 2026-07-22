@@ -1,0 +1,397 @@
+---
+// CliRuntimeStackDiagram — the primary architecture diagram for the
+// cli-runtime-reframe deck (org#21). Five layers, top to bottom:
+//
+//   Agent harness (optional) ─┐
+//   Human · shell script · CI ─┴─> Robot CLI — control plane
+//                                        │  (direct, one-shot ops)
+//                                        ▼           ╲
+//                              Behavior runtime        ╲
+//                                        │               ▼
+//                                        ▼        Device daemon /
+//                              Device daemon / <────  hardware adapter
+//                              hardware adapter
+//                                        ↕
+//                                Physical robot
+//
+// Every box and arrow label is taken verbatim from org#21's proposed
+// mermaid diagram and terminology table:
+//
+//   AGENT --> CLI ; HUMAN --> CLI
+//   CLI -->|"lifecycle · configuration · direct operations"| RUNTIME
+//   CLI -->|"one-shot device operations"| DEVICE   (required direct path)
+//   RUNTIME -->|"validated and arbitrated actions"| DEVICE
+//   DEVICE <-->|"state and actuation"| ROBOT
+//   RUNTIME -.->|"runtime event feed"| AGENT
+//   AGENT -.->|"named intents through attach/spool"| RUNTIME
+//
+// The agent and the physical robot are drawn replaceable (dashed border,
+// "optional" / "replaceable" labels) — the architecture accepts any
+// intelligence and any body. The CLI and the behavior runtime carry the
+// visual emphasis: they are the stable center of the story. "reachy-mini-
+// daemon" is named only on the device layer, never on the runtime — the
+// behavior runtime and the lower-level device daemon are never conflated.
+// Any tick-rate label reads "50 Hz design rate", never a measured claim
+// (reachy-mini-cli CHANGELOG v0.42.0 records 23 Hz achieved so far).
+//
+// Pure inline SVG, no script, no external asset. Theming rides the same
+// CSS custom properties as MindNervousSystemBodyDiagram.astro / ReachyDiagram
+// (--surface, --line, --ink, --ink-soft, --accent, --accent-strong,
+// --font-mono, --font-display, --radius from src/styles/global.css), so
+// both dawn themes stay legible. role="img" + aria-labelledby point at a
+// <title>/<desc> pair that narrates every layer and every arrow for a
+// screen reader. viewBox-based sizing keeps the diagram legible whether
+// it renders small inline or full-bleed on a 1920x1080 projected slide.
+---
+
+<figure class="cli-runtime-diagram">
+  <div class="diagram-viewport">
+    <svg
+      viewBox="0 0 1200 1100"
+      fill="none"
+      role="img"
+      aria-labelledby="cli-runtime-diagram-title cli-runtime-diagram-desc"
+    >
+      <title id="cli-runtime-diagram-title">
+        A CLI for intelligence, a runtime for embodiment: the five-layer robot architecture
+      </title>
+      <desc id="cli-runtime-diagram-desc">
+        Five layers, drawn top to bottom. At the top, two replaceable entry points feed the
+        same control plane: an optional agent harness — Claude Code, Codex, Colleague, a
+        custom agent, or none, drawn with a dashed border — and a human, shell script, or CI
+        system. Both connect straight down into the robot CLI, the control plane, which
+        inspects, configures, intervenes, and reports start, stop, and status through JSON
+        contracts; the CLI and the layer below it, the behavior runtime, carry the strongest
+        visual weight in this diagram. The CLI sends lifecycle, configuration, and direct
+        operations down into the behavior runtime, a continuous fixed-rate loop — 50 Hz is a
+        design rate, not a measured one — that runs senses, rules, intents, and arbitration.
+        The CLI also has a direct, required path straight down to the device layer, for
+        one-shot device operations that bypass the runtime entirely. The behavior runtime
+        sends validated, arbitrated actions down to the device daemon or hardware adapter,
+        which exchanges state and actuation with the physical robot at the bottom — Reachy
+        Mini, SO-ARM101, or a future body, drawn replaceable like the agent above it. Two
+        dotted paths connect the agent and the runtime directly, bypassing the CLI: the
+        runtime emits a runtime event feed up to the agent, and the agent submits named
+        intents back down to the runtime through attach and spool.
+      </desc>
+
+      <defs>
+        <marker
+          id="cli-runtime-arrow-solid"
+          viewBox="0 0 10 10"
+          refX="8"
+          refY="5"
+          markerWidth="8"
+          markerHeight="8"
+          orient="auto-start-reverse"
+        >
+          <path d="M0 0 L10 5 L0 10 Z" class="arrow-head solid-head"></path>
+        </marker>
+        <marker
+          id="cli-runtime-arrow-dotted"
+          viewBox="0 0 10 10"
+          refX="8"
+          refY="5"
+          markerWidth="7"
+          markerHeight="7"
+          orient="auto-start-reverse"
+        >
+          <path d="M0 0 L10 5 L0 10 Z" class="arrow-head dotted-head"></path>
+        </marker>
+      </defs>
+
+      <!-- ============ top row: two replaceable entry points ============ -->
+
+      <g aria-hidden="true">
+        <rect x="120" y="20" width="470" height="150" rx="20" class="layer-box replaceable"></rect>
+        <text x="355" y="52" text-anchor="middle" class="kicker">OPTIONAL — REPLACEABLE</text>
+        <text x="355" y="88" text-anchor="middle" class="layer-title">Agent harness</text>
+        <text x="355" y="114" text-anchor="middle" class="layer-sub">Claude Code · Codex · Colleague</text>
+        <text x="355" y="134" text-anchor="middle" class="layer-sub">custom agent · none</text>
+
+        <rect x="610" y="20" width="470" height="150" rx="20" class="layer-box"></rect>
+        <text x="845" y="52" text-anchor="middle" class="kicker">DIRECT OPERATOR</text>
+        <text x="845" y="90" text-anchor="middle" class="layer-title">Human · shell script · CI</text>
+        <text x="845" y="118" text-anchor="middle" class="layer-sub">operates the same CLI surface</text>
+        <text x="845" y="138" text-anchor="middle" class="layer-sub">no agent required</text>
+      </g>
+
+      <!-- AGENT --> CLI ; HUMAN --> CLI -->
+      <path d="M355 170 L355 220" class="connector solid" marker-end="url(#cli-runtime-arrow-solid)"></path>
+      <path d="M845 170 L845 220" class="connector solid" marker-end="url(#cli-runtime-arrow-solid)"></path>
+
+      <!-- ============ Robot CLI — control plane (EMPHASIZED) ============ -->
+
+      <g aria-hidden="true">
+        <rect x="120" y="220" width="960" height="160" rx="24" class="layer-box emphasis"></rect>
+        <text x="600" y="254" text-anchor="middle" class="kicker kicker-strong">CONTROL PLANE</text>
+        <text x="600" y="296" text-anchor="middle" class="layer-title layer-title-lg">Robot CLI</text>
+        <text x="600" y="326" text-anchor="middle" class="layer-sub layer-sub-lg">
+          inspect · configure · intervene
+        </text>
+        <text x="600" y="350" text-anchor="middle" class="layer-sub layer-sub-lg">
+          start / stop / status · JSON contracts
+        </text>
+      </g>
+
+      <!-- CLI -->|"lifecycle · configuration · direct operations"| RUNTIME -->
+      <path d="M355 380 L355 470" class="connector solid emphasis" marker-end="url(#cli-runtime-arrow-solid)"></path>
+      <text x="600" y="422" text-anchor="middle" class="connector-label">
+        lifecycle · configuration · direct operations
+      </text>
+
+      <!-- CLI -->|"one-shot device operations"| DEVICE — required direct-intervention path -->
+      <path
+        d="M1080 300 H1140 V805 H1080"
+        class="connector solid bypass required"
+        marker-end="url(#cli-runtime-arrow-solid)"
+      ></path>
+      <text
+        x="1170"
+        y="552"
+        text-anchor="middle"
+        class="connector-label connector-label-required"
+        transform="rotate(-90 1170 552)"
+      >
+        one-shot device operations
+      </text>
+
+      <!-- ============ Behavior runtime (EMPHASIZED) ============ -->
+
+      <g aria-hidden="true">
+        <rect x="120" y="470" width="960" height="190" rx="24" class="layer-box emphasis"></rect>
+        <text x="600" y="506" text-anchor="middle" class="kicker kicker-strong">PERSISTENT EMBODIMENT</text>
+        <text x="600" y="550" text-anchor="middle" class="layer-title layer-title-lg">Behavior runtime</text>
+        <text x="600" y="582" text-anchor="middle" class="layer-sub layer-sub-lg">
+          continuous fixed-rate loop — 50 Hz design rate
+        </text>
+        <text x="600" y="604" text-anchor="middle" class="layer-sub layer-sub-lg">
+          senses · rules · intents · arbitration
+        </text>
+        <text x="600" y="626" text-anchor="middle" class="layer-note">
+          stays alive with no agent attached
+        </text>
+      </g>
+
+      <!-- RUNTIME -->|"validated and arbitrated actions"| DEVICE -->
+      <path d="M355 660 L355 740" class="connector solid emphasis" marker-end="url(#cli-runtime-arrow-solid)"></path>
+      <text x="600" y="704" text-anchor="middle" class="connector-label">validated, arbitrated actions</text>
+
+      <!-- ============ Device daemon / hardware adapter ============ -->
+
+      <g aria-hidden="true">
+        <rect x="120" y="740" width="960" height="130" rx="20" class="layer-box"></rect>
+        <text x="600" y="772" text-anchor="middle" class="kicker">HARDWARE ADAPTER</text>
+        <text x="600" y="808" text-anchor="middle" class="layer-title">
+          Device daemon / hardware adapter
+        </text>
+        <text x="600" y="836" text-anchor="middle" class="layer-sub">
+          reachy-mini-daemon + SDK/HTTP · or the Feetech serial bus
+        </text>
+      </g>
+
+      <!-- DEVICE <-->|"state and actuation"| ROBOT -->
+      <path
+        d="M355 870 L355 940"
+        class="connector solid"
+        marker-start="url(#cli-runtime-arrow-solid)"
+        marker-end="url(#cli-runtime-arrow-solid)"
+      ></path>
+      <text x="600" y="908" text-anchor="middle" class="connector-label">state and actuation</text>
+
+      <!-- ============ Physical robot — replaceable body ============ -->
+
+      <g aria-hidden="true">
+        <rect x="120" y="940" width="960" height="140" rx="20" class="layer-box replaceable"></rect>
+        <text x="600" y="974" text-anchor="middle" class="kicker">REPLACEABLE</text>
+        <text x="600" y="1012" text-anchor="middle" class="layer-title">Physical robot</text>
+        <text x="600" y="1042" text-anchor="middle" class="layer-sub">
+          Reachy Mini · SO-ARM101 · future bodies
+        </text>
+      </g>
+
+      <!-- ============ dotted agent <-> runtime paths, bypassing the CLI ============ -->
+
+      <!-- RUNTIME -.->|"runtime event feed"| AGENT -->
+      <path
+        d="M120 500 H70 V150 H120"
+        class="connector dotted"
+        marker-end="url(#cli-runtime-arrow-dotted)"
+      ></path>
+      <text
+        x="95"
+        y="325"
+        text-anchor="middle"
+        class="connector-label connector-label-dotted"
+        transform="rotate(-90 95 325)"
+      >
+        runtime event feed
+      </text>
+
+      <!-- AGENT -.->|"named intents through attach/spool"| RUNTIME -->
+      <path
+        d="M120 45 H30 V630 H120"
+        class="connector dotted"
+        marker-end="url(#cli-runtime-arrow-dotted)"
+      ></path>
+      <text
+        x="55"
+        y="337"
+        text-anchor="middle"
+        class="connector-label connector-label-dotted"
+        transform="rotate(-90 55 337)"
+      >
+        named intents via attach/spool
+      </text>
+    </svg>
+  </div>
+
+  <figcaption class="diagram-caption">
+    Solid lines are direct, synchronous calls; the CLI's direct line to the device layer is a
+    required one-shot path that bypasses the runtime. Dotted lines are the optional runtime
+    event feed and named-intent path an attached agent can use instead.
+  </figcaption>
+</figure>
+
+<style>
+  .cli-runtime-diagram {
+    margin: 0;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .diagram-viewport {
+    overflow-x: auto;
+    border-radius: var(--radius);
+    scrollbar-color: var(--line) transparent;
+  }
+
+  .diagram-viewport svg {
+    width: 100%;
+    min-width: 42rem;
+    height: auto;
+  }
+
+  text {
+    font-family: var(--font-mono);
+  }
+
+  /* ---------- layer boxes ---------- */
+
+  .layer-box {
+    fill: color-mix(in srgb, var(--surface) 80%, transparent);
+    stroke: var(--line);
+    stroke-width: 1.6;
+  }
+
+  .layer-box.replaceable {
+    stroke-dasharray: 9 7;
+  }
+
+  .layer-box.emphasis {
+    fill: color-mix(in srgb, var(--accent) 10%, var(--surface));
+    stroke: var(--accent-strong);
+    stroke-width: 2.6;
+  }
+
+  /* ---------- text ---------- */
+
+  .kicker {
+    fill: var(--ink-soft);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+  }
+
+  .kicker-strong {
+    fill: var(--accent-strong);
+  }
+
+  .layer-title {
+    fill: var(--ink);
+    font-family: var(--font-display);
+    font-size: 27px;
+    font-weight: 560;
+  }
+
+  .layer-title-lg {
+    fill: var(--accent-strong);
+    font-size: 36px;
+    font-weight: 620;
+  }
+
+  .layer-sub {
+    fill: var(--ink);
+    font-size: 16px;
+  }
+
+  .layer-sub-lg {
+    font-size: 18px;
+    font-weight: 560;
+  }
+
+  .layer-note {
+    fill: var(--ink-soft);
+    font-size: 14px;
+  }
+
+  /* ---------- connectors ---------- */
+
+  .connector {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .connector.solid {
+    stroke: var(--accent-strong);
+    stroke-width: 2.4;
+  }
+
+  .connector.solid.emphasis {
+    stroke-width: 3;
+  }
+
+  .connector.dotted {
+    stroke: var(--ink-soft);
+    stroke-width: 2;
+    stroke-dasharray: 2 7;
+  }
+
+  .arrow-head.solid-head {
+    fill: var(--accent-strong);
+  }
+
+  .arrow-head.dotted-head {
+    fill: var(--ink-soft);
+  }
+
+  .connector-label {
+    fill: var(--ink-soft);
+    font-size: 16px;
+  }
+
+  .connector-label-required {
+    fill: var(--accent-strong);
+    font-weight: 650;
+  }
+
+  .connector-label-dotted {
+    font-size: 15px;
+  }
+
+  .diagram-caption {
+    max-width: 46rem;
+    margin: 0 auto;
+    color: var(--ink-soft);
+    font-size: 0.94rem;
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  @media (max-width: 40rem) {
+    .diagram-caption {
+      font-size: 0.88rem;
+    }
+  }
+</style>

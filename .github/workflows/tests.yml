@@ -94,6 +94,10 @@ jobs:
 
       - run: npm run build
 
+      - run: npm run check:presentations
+
+      - run: node --experimental-strip-types --test src/data/mind-nervous-system-body-slides.test.mjs
+
   version-check:
     # Only run on PR events. On push to main after a merged PR, the comparison
     # would always fail (PR_VERSION == MAIN_VERSION because HEAD and origin/main

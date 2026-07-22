@@ -17,3 +17,8 @@ MD024:
 # off for this tree. Escaping such tokens at export time is a devague
 # exporter concern, tracked as a follow-up on agentculture/devague.
 MD033: false
+# Same trap, different rule: claim text can name literal HTML elements
+# (e.g. a check-script honesty condition reading "one <img> per photo
+# path"), which MD045 misreads as an alt-less image element. Verbatim
+# exported claim text is not markup; same exporter follow-up applies.
+MD045: false
