@@ -1,16 +1,18 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-// The slide dataset (`mind-nervous-system-body-slides.ts`) now imports ONLY
+// The slide dataset (`mind-nervous-system-body-slides.ts`) still imports ONLY
 // types from its neighbours (`./presentations`, `./presentation-photos`), so
 // type stripping erases every import and the module loads bare under
 // `node --experimental-strip-types` — no resolve-hook shim is needed here
 // (drop it if a future edit reintroduces a value import).
 //
-// The deck no longer derives from the article: there is no `evidenceFor()`
-// dependency and no per-slide `evidenceIds`. Sources are a subordinate,
-// deck-level `deckSources` export (repo-home links + one dated note),
-// asserted once, not per slide.
+// SIX-SLIDE SHAPE (org#23): this file re-pins the deck's contract from the
+// ten-slide/eight-beat org#21 reframe to issue 23's six slides — bridge,
+// paths, stack, surfaces, autonomy, close. The deck still does not derive
+// from the article: there is no `evidenceFor()` dependency and no per-slide
+// `evidenceIds`. Sources remain a subordinate, deck-level `deckSources`
+// export (repo-home links + one dated note), asserted once, not per slide.
 
 const slidesUrl = new URL(
   "./mind-nervous-system-body-slides.ts",
@@ -29,58 +31,165 @@ function sentenceCount(text) {
   return (text.match(/[.!?]+(?=\s|$)/g) ?? []).length;
 }
 
-/** The two kinds whose slides anchor a robot photo slot. */
-const PHOTO_BEARING_KINDS = new Set(["robot", "commands"]);
-
-test("slide count and primary-beat count stay within budget; beats are contiguous from 1", () => {
-  assert.ok(
-    mindNervousSystemBodySlides.length <= 10,
-    `expected at most 10 slides, got ${mindNervousSystemBodySlides.length}`,
-  );
-  const beats = mindNervousSystemBodySlides.map((slide) => slide.beat);
-  const distinctBeats = new Set(beats);
-  assert.ok(
-    distinctBeats.size <= 8,
-    `expected at most 8 primary beats, got ${distinctBeats.size}`,
-  );
-  assert.equal(beats[0], 1, "the first slide must belong to beat 1");
-  for (let i = 1; i < beats.length; i += 1) {
-    assert.ok(
-      beats[i] === beats[i - 1] || beats[i] === beats[i - 1] + 1,
-      `beat must be nondecreasing and advance by at most 1 per slide ` +
-        `(slide index ${i}: beat ${beats[i - 1]} -> ${beats[i]})`,
-    );
+/** Flatten every human-readable text field on a slide, across all kinds, for
+ *  text-content scans (50 Hz honesty, commit-hash/blob-URL leakage). */
+function flattenSlideText(slide) {
+  const parts = [slide.eyebrow, slide.headline, slide.spokenLine, slide.bottomLine];
+  for (const column of slide.columns ?? []) parts.push(column.label);
+  for (const label of slide.labels ?? []) parts.push(label);
+  for (const situation of slide.situations ?? []) {
+    parts.push(situation.label, situation.outcome);
   }
+  for (const robotEntry of slide.robots ?? []) {
+    parts.push(robotEntry.status, robotEntry.traits, robotEntry.claim, robotEntry.command);
+  }
+  return parts.join(" ");
+}
+
+/** The deck's six slides, in order, per issue org#23. */
+const EXPECTED_SLIDE_IDS = ["bridge", "paths", "stack", "surfaces", "autonomy", "close"];
+
+test("exactly six slides, ids in beat order per org#23", () => {
   assert.equal(
-    Math.max(...beats),
-    distinctBeats.size,
-    "beats must be contiguous 1..N with no gaps",
+    mindNervousSystemBodySlides.length,
+    6,
+    `expected exactly 6 slides, got ${mindNervousSystemBodySlides.length}`,
+  );
+  assert.deepEqual(
+    mindNervousSystemBodySlides.map((slide) => slide.id),
+    EXPECTED_SLIDE_IDS,
+  );
+  mindNervousSystemBodySlides.forEach((slide, index) => {
+    assert.equal(
+      slide.beat,
+      index + 1,
+      `slide ${slide.id}: beat must equal its 1-indexed position`,
+    );
+  });
+});
+
+test("slide 1 (bridge) matches the issue verbatim", () => {
+  const slide = mindNervousSystemBodySlides[0];
+  assert.equal(slide.kind, "bridge");
+  assert.equal(slide.eyebrow, "the bridge");
+  assert.equal(slide.headline, "CLI — The Bridge Between Agents and Robots");
+  assert.equal(
+    slide.bottomLine,
+    "Agent-authored behavior. Robot-owned execution.",
   );
 });
 
-test("slide ids are unique", () => {
-  const ids = mindNervousSystemBodySlides.map((slide) => slide.id);
-  assert.equal(new Set(ids).size, ids.length, "slide ids must be unique");
+test("slide 2 (paths) carries the three intelligence-path columns verbatim", () => {
+  const slide = mindNervousSystemBodySlides[1];
+  assert.equal(slide.kind, "paths");
+  assert.equal(slide.headline, "Intelligence reaches robots in different ways");
+  assert.deepEqual(
+    slide.columns.map((column) => column.label),
+    ["Coded behavior", "Learned policy", "Agent tools"],
+  );
+  assert.equal(slide.bottomLine, "What's missing is a stable boundary.");
 });
 
-test("slide index 1 is the thesis slide with the verbatim thesis headline", () => {
-  const thesisSlide = mindNervousSystemBodySlides[1];
-  assert.equal(thesisSlide.kind, "thesis", "slide index 1 must be the thesis slide");
+test("slide 3 (stack) embeds the architecture diagram", () => {
+  const slide = mindNervousSystemBodySlides[2];
+  assert.equal(slide.kind, "stack");
+  assert.equal(slide.diagram, true);
+  assert.equal(slide.headline, "Keep execution below the model");
+  assert.equal(slide.bottomLine, "The agent never owns the motors.");
+});
+
+test("slide 4 (surfaces) carries the three runtime-surface labels and the Reachy Mini action photo", () => {
+  const slide = mindNervousSystemBodySlides[3];
+  assert.equal(slide.kind, "surfaces");
+  assert.equal(slide.headline, "Open the runtime to coder agents");
+  assert.deepEqual(slide.labels, [
+    "Configure behavior",
+    "Command ad hoc",
+    "Observe and repair",
+  ]);
+  assert.equal(slide.robot, "reachy-mini");
+  assert.equal(slide.photoId, "reachy-mini-action");
   assert.equal(
-    thesisSlide.headline,
+    slide.bottomLine,
+    "The agent maintains the automation. The runtime executes it.",
+  );
+});
+
+test("slide 5 (autonomy) carries the three situations, only 'Stuck' photo-bearing", () => {
+  const slide = mindNervousSystemBodySlides[4];
+  assert.equal(slide.kind, "autonomy");
+  assert.equal(slide.headline, "The robot continues without the agent");
+  assert.equal(slide.situations.length, 3);
+  const [stuck, disconnected, routine] = slide.situations;
+  assert.equal(stuck.label, "Stuck");
+  assert.equal(stuck.outcome, "inspect and adapt");
+  assert.equal(stuck.robot, "so101");
+  assert.equal(stuck.photoId, "so101-action");
+  assert.equal(disconnected.label, "Disconnected");
+  assert.equal(disconnected.outcome, "behavior continues");
+  assert.ok(
+    !Object.prototype.hasOwnProperty.call(disconnected, "photoId"),
+    "'Disconnected' must not carry a photo",
+  );
+  assert.equal(routine.label, "Routine operation");
+  assert.equal(routine.outcome, "no model required");
+  assert.ok(
+    !Object.prototype.hasOwnProperty.call(routine, "photoId"),
+    "'Routine operation' must not carry a photo",
+  );
+  assert.equal(slide.bottomLine, "Spend intelligence on change—not repetition.");
+});
+
+test("slide 6 (close) is last, carries both robots and the verbatim thesis", () => {
+  const slide = mindNervousSystemBodySlides[5];
+  assert.equal(slide.kind, "close");
+  assert.equal(
+    slide,
+    mindNervousSystemBodySlides[mindNervousSystemBodySlides.length - 1],
+    "close must be the last slide",
+  );
+  assert.equal(slide.headline, "Two robots, one direction");
+  assert.equal(
+    slide.bottomLine,
     "A CLI for intelligence. A runtime for embodiment.",
   );
+  assert.equal(slide.robots.length, 2);
+  const [reachy, arm] = slide.robots;
+  assert.deepEqual(reachy, {
+    robot: "reachy-mini",
+    photoId: "reachy-mini-hero",
+    status: "working system",
+    traits: "Rules · behavior runtime · device daemon",
+    claim: "The complete native-runtime pattern.",
+    command: "reachy-mini-cli behavior engine start",
+  });
+  assert.deepEqual(arm, {
+    robot: "so101",
+    photoId: "so101-hero",
+    status: "in progress",
+    traits: "JSON · preview/apply · bounded motion",
+    claim: "Building the operational contract first; persistent behavior comes next.",
+    command: "arm101 arm flex --apply",
+  });
 });
 
-test("every spokenLine is nonempty and at most 2 sentences", () => {
+test("close spokenLine is exactly the 4-sentence passage from the issue", () => {
+  const slide = mindNervousSystemBodySlides[5];
+  const expected =
+    "Reachy Mini demonstrates the complete architecture: the agent can maintain rules while the runtime and daemon retain execution and hardware ownership. ARM101 is the next implementation. It already demonstrates the bounded CLI contract—observable state, explicit application, and guarded motion—and is progressing toward the same persistent runtime model. Whether execution happens through ROS or a native runtime, the principle is the same: give the coder agent a language for behavior, while robot software keeps control.";
+  assert.equal(slide.spokenLine, expected);
+  assert.equal(sentenceCount(slide.spokenLine), 4);
+});
+
+test("every spokenLine is nonempty and at most 4 sentences", () => {
   for (const slide of mindNervousSystemBodySlides) {
     assert.ok(
       typeof slide.spokenLine === "string" && slide.spokenLine.trim().length > 0,
       `slide ${slide.id} must have a spoken line`,
     );
     assert.ok(
-      sentenceCount(slide.spokenLine) <= 2,
-      `slide ${slide.id} spoken line is more than 2 sentences: ${slide.spokenLine}`,
+      sentenceCount(slide.spokenLine) <= 4,
+      `slide ${slide.id} spoken line is more than 4 sentences: ${slide.spokenLine}`,
     );
   }
 });
@@ -88,85 +197,112 @@ test("every spokenLine is nonempty and at most 2 sentences", () => {
 test("kind/shape agreement — each optional field appears only on its matching kind", () => {
   for (const slide of mindNervousSystemBodySlides) {
     assert.equal(
+      Array.isArray(slide.columns) && slide.columns.length > 0,
+      slide.kind === "paths",
+      `slide ${slide.id}: nonempty 'columns' present iff kind === "paths"`,
+    );
+    assert.equal(
       slide.diagram === true,
-      slide.kind === "diagram",
-      `slide ${slide.id}: 'diagram' present iff kind === "diagram"`,
+      slide.kind === "stack",
+      `slide ${slide.id}: 'diagram' present iff kind === "stack"`,
     );
     assert.equal(
-      Array.isArray(slide.contrastRows) && slide.contrastRows.length > 0,
-      slide.kind === "contrast",
-      `slide ${slide.id}: nonempty 'contrastRows' present iff kind === "contrast"`,
+      Array.isArray(slide.labels) && slide.labels.length > 0,
+      slide.kind === "surfaces",
+      `slide ${slide.id}: nonempty 'labels' present iff kind === "surfaces"`,
     );
-    assert.equal(
-      Array.isArray(slide.commandLines) && slide.commandLines.length > 0,
-      slide.kind === "commands",
-      `slide ${slide.id}: nonempty 'commandLines' present iff kind === "commands"`,
-    );
-    assert.equal(
-      typeof slide.rulesToml === "string" && slide.rulesToml.length > 0,
-      slide.kind === "rules",
-      `slide ${slide.id}: nonempty 'rulesToml' present iff kind === "rules"`,
-    );
-    const expectsPhoto = PHOTO_BEARING_KINDS.has(slide.kind);
     assert.equal(
       slide.robot !== undefined,
-      expectsPhoto,
-      `slide ${slide.id}: 'robot' present iff kind is "robot" or "commands"`,
+      slide.kind === "surfaces",
+      `slide ${slide.id}: top-level 'robot' present iff kind === "surfaces"`,
     );
     assert.equal(
       slide.photoId !== undefined,
-      expectsPhoto,
-      `slide ${slide.id}: 'photoId' present iff kind is "robot" or "commands"`,
+      slide.kind === "surfaces",
+      `slide ${slide.id}: top-level 'photoId' present iff kind === "surfaces"`,
     );
+    assert.equal(
+      Array.isArray(slide.situations) && slide.situations.length > 0,
+      slide.kind === "autonomy",
+      `slide ${slide.id}: nonempty 'situations' present iff kind === "autonomy"`,
+    );
+    assert.equal(
+      Array.isArray(slide.robots) && slide.robots.length > 0,
+      slide.kind === "close",
+      `slide ${slide.id}: nonempty 'robots' present iff kind === "close"`,
+    );
+    for (const retired of ["contrastRows", "commandLines", "rulesToml"]) {
+      assert.ok(
+        !Object.prototype.hasOwnProperty.call(slide, retired),
+        `slide ${slide.id} must not carry the retired '${retired}' field`,
+      );
+    }
   }
 });
 
 test("photo discipline — each of the four slots is used exactly once, each on its own robot", () => {
   const allSlots = Object.values(photoSlotsByRobot).flat();
-  const photoSlides = mindNervousSystemBodySlides.filter(
-    (slide) => slide.photoId !== undefined,
-  );
-  const usedSlots = photoSlides.map((slide) => slide.photoId);
+  const usedPhotos = [];
+  for (const slide of mindNervousSystemBodySlides) {
+    if (slide.photoId !== undefined) {
+      usedPhotos.push({ photoId: slide.photoId, robot: slide.robot });
+    }
+    for (const situation of slide.situations ?? []) {
+      if (situation.photoId !== undefined) {
+        usedPhotos.push({ photoId: situation.photoId, robot: situation.robot });
+      }
+    }
+    for (const robotEntry of slide.robots ?? []) {
+      usedPhotos.push({ photoId: robotEntry.photoId, robot: robotEntry.robot });
+    }
+  }
   assert.equal(
-    usedSlots.length,
+    usedPhotos.length,
     allSlots.length,
-    `expected all ${allSlots.length} photo slots used exactly once, ` +
-      `got ${usedSlots.length} photo-bearing slides`,
+    `expected all ${allSlots.length} photo slots used exactly once, got ${usedPhotos.length}`,
   );
   assert.deepEqual(
-    [...usedSlots].sort(),
+    usedPhotos.map((p) => p.photoId).sort(),
     [...allSlots].sort(),
     "every photo slot must be used exactly once, with no duplicates or leftovers",
   );
-  for (const slide of photoSlides) {
-    const ownSlots = photoSlotsByRobot[slide.robot];
+  for (const { photoId, robot } of usedPhotos) {
     assert.ok(
-      ownSlots.includes(slide.photoId),
-      `slide ${slide.id}: photo ${slide.photoId} is not one of ${slide.robot}'s slots`,
+      photoSlotsByRobot[robot].includes(photoId),
+      `photo ${photoId} is not one of ${robot}'s slots`,
     );
   }
+  assert.equal(
+    mindNervousSystemBodySlides[3].photoId,
+    "reachy-mini-action",
+    "reachy-mini-action must sit on the surfaces slide",
+  );
+  assert.equal(
+    mindNervousSystemBodySlides[4].situations[0].photoId,
+    "so101-action",
+    "so101-action must sit on autonomy's 'Stuck' situation",
+  );
+  const closeRobots = mindNervousSystemBodySlides[5].robots;
+  assert.deepEqual(
+    closeRobots.map((r) => r.photoId).sort(),
+    ["reachy-mini-hero", "so101-hero"],
+    "both hero photos must sit on the close slide",
+  );
 });
 
-test("each robot has at least one slide, and both robots appear", () => {
-  const robots = new Set(
-    mindNervousSystemBodySlides
-      .filter((slide) => slide.robot !== undefined)
-      .map((slide) => slide.robot),
-  );
-  assert.ok(robots.has("reachy-mini"), "Reachy Mini needs at least one slide");
-  assert.ok(robots.has("so101"), "SO-101 needs at least one slide");
-  assert.ok(robotLabel["reachy-mini"], "robotLabel must cover reachy-mini");
-  assert.ok(robotLabel.so101, "robotLabel must cover so101");
+test("robotLabel and photoSlotsByRobot cover both robots", () => {
+  assert.ok(robotLabel["reachy-mini"]);
+  assert.ok(robotLabel.so101);
+  assert.deepEqual(photoSlotsByRobot["reachy-mini"], [
+    "reachy-mini-hero",
+    "reachy-mini-action",
+  ]);
+  assert.deepEqual(photoSlotsByRobot.so101, ["so101-hero", "so101-action"]);
 });
 
 test("design-rate honesty — any 50 Hz mention is always qualified as 'design rate'", () => {
   for (const slide of mindNervousSystemBodySlides) {
-    const text = [
-      slide.headline,
-      slide.spokenLine,
-      slide.rulesToml ?? "",
-      (slide.commandLines ?? []).join(" "),
-    ].join(" ");
+    const text = flattenSlideText(slide);
     if (/50\s*Hz/.test(text)) {
       assert.ok(
         text.includes("design rate"),
@@ -176,67 +312,46 @@ test("design-rate honesty — any 50 Hz mention is always qualified as 'design r
   }
 });
 
-test("no commit hashes or /blob/ URLs leak into headline or spokenLine", () => {
+test("no commit hashes or /blob/ URLs leak into any slide text", () => {
   const commitHash = /\b[0-9a-f]{40}\b/i;
   for (const slide of mindNervousSystemBodySlides) {
-    for (const field of ["headline", "spokenLine"]) {
-      const text = slide[field];
-      assert.ok(
-        !commitHash.test(text),
-        `slide ${slide.id}.${field} contains a 40-char commit hash`,
-      );
-      assert.ok(
-        !text.includes("/blob/"),
-        `slide ${slide.id}.${field} contains a /blob/ URL`,
-      );
-    }
+    const text = flattenSlideText(slide);
+    assert.ok(!commitHash.test(text), `slide ${slide.id} contains a 40-char commit hash`);
+    assert.ok(!text.includes("/blob/"), `slide ${slide.id} contains a /blob/ URL`);
   }
 });
 
-test("the rules slide's rulesToml contains a react rule and an inhibit rule", () => {
-  const rulesSlide = mindNervousSystemBodySlides.find(
-    (slide) => slide.kind === "rules",
-  );
-  assert.ok(rulesSlide, "expected exactly one 'rules'-kind slide");
+test("close robots' commands are prefixed with the correct robot's CLI binary, one each", () => {
+  const closeSlide = mindNervousSystemBodySlides[5];
+  const reachy = closeSlide.robots.find((r) => r.robot === "reachy-mini");
+  const arm = closeSlide.robots.find((r) => r.robot === "so101");
+  assert.ok(reachy, "expected a close-slide entry for reachy-mini");
+  assert.ok(arm, "expected a close-slide entry for so101");
+  assert.equal(typeof reachy.command, "string");
+  assert.equal(typeof arm.command, "string");
   assert.ok(
-    rulesSlide.rulesToml.includes("[[react]]"),
-    "rulesToml must contain a [[react]] rule",
+    reachy.command.startsWith("reachy-mini-cli "),
+    `reachy command does not start with "reachy-mini-cli ": ${reachy.command}`,
   );
   assert.ok(
-    rulesSlide.rulesToml.includes("[[inhibit]]"),
-    "rulesToml must contain an [[inhibit]] rule",
+    arm.command.startsWith("arm101 "),
+    `arm101 command does not start with "arm101 ": ${arm.command}`,
   );
 });
 
-test("commandLines are prefixed with the correct robot's CLI binary", () => {
-  const reachyCommands = mindNervousSystemBodySlides.find(
-    (slide) => slide.kind === "commands" && slide.robot === "reachy-mini",
+test("the ARM101 close entry is honestly in-progress, never claiming a persistent runtime", () => {
+  const closeSlide = mindNervousSystemBodySlides[5];
+  const arm = closeSlide.robots.find((r) => r.robot === "so101");
+  assert.equal(arm.status, "in progress");
+  const entryText = [arm.status, arm.traits, arm.claim, arm.command].join(" ");
+  assert.ok(
+    !/persistent runtime/i.test(entryText),
+    `ARM101 close entry must not claim a persistent runtime: ${entryText}`,
   );
-  const arm101Commands = mindNervousSystemBodySlides.find(
-    (slide) => slide.kind === "commands" && slide.robot === "so101",
-  );
-  assert.ok(reachyCommands, "expected a commands slide for reachy-mini");
-  assert.ok(arm101Commands, "expected a commands slide for so101");
-  for (const line of reachyCommands.commandLines) {
-    assert.ok(
-      line.startsWith("reachy-mini-cli "),
-      `reachy commandLine does not start with "reachy-mini-cli ": ${line}`,
-    );
-  }
-  for (const line of arm101Commands.commandLines) {
-    assert.ok(
-      line.startsWith("arm101 "),
-      `arm101 commandLine does not start with "arm101 ": ${line}`,
-    );
-  }
 });
 
 test("deckSources names exactly 2 GitHub projects and a note; no slide carries evidenceIds", () => {
-  assert.equal(
-    deckSources.projects.length,
-    2,
-    "expected exactly 2 source projects",
-  );
+  assert.equal(deckSources.projects.length, 2, "expected exactly 2 source projects");
   for (const project of deckSources.projects) {
     assert.ok(
       project.repositoryUrl.startsWith("https://github.com/"),
@@ -253,25 +368,4 @@ test("deckSources names exactly 2 GitHub projects and a note; no slide carries e
       `slide ${slide.id} must not carry an evidenceIds property — the deck no longer derives from the article`,
     );
   }
-});
-
-test("the ARM101 robot slide says it does not ship a persistent runtime", () => {
-  const arm101RobotSlide = mindNervousSystemBodySlides.find(
-    (slide) => slide.kind === "robot" && slide.robot === "so101",
-  );
-  assert.ok(arm101RobotSlide, "expected a 'robot'-kind slide for so101");
-  assert.match(
-    arm101RobotSlide.spokenLine,
-    /does not ship a persistent runtime/,
-  );
-});
-
-test("the close slide's spokenLine is the deck's final line, verbatim", () => {
-  const closeSlide =
-    mindNervousSystemBodySlides[mindNervousSystemBodySlides.length - 1];
-  assert.equal(closeSlide.kind, "close", "the last slide must be the close slide");
-  assert.equal(
-    closeSlide.spokenLine,
-    "Every robot should expose a CLI for intelligence and a runtime for embodiment.",
-  );
 });

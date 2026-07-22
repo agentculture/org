@@ -63,7 +63,7 @@
         inspects, configures, intervenes, and reports start, stop, and status through JSON
         contracts; the CLI and the layer below it, the behavior runtime, carry the strongest
         visual weight in this diagram. The CLI sends lifecycle, configuration, and direct
-        operations down into the behavior runtime, a continuous fixed-rate loop — 50 Hz is a
+        operations down into the behavior runtime, implemented in ROS 2 or a native runtime — a continuous fixed-rate loop — 50 Hz is a
         design rate, not a measured one — that runs senses, rules, intents, and arbitration.
         The CLI also has a direct, required path straight down to the device layer, for
         one-shot device operations that bypass the runtime entirely. The behavior runtime
@@ -163,7 +163,7 @@
         <text x="600" y="506" text-anchor="middle" class="kicker kicker-strong">PERSISTENT EMBODIMENT</text>
         <text x="600" y="550" text-anchor="middle" class="layer-title layer-title-lg">Behavior runtime</text>
         <text x="600" y="582" text-anchor="middle" class="layer-sub layer-sub-lg">
-          continuous fixed-rate loop — 50 Hz design rate
+          ROS 2 or native · continuous fixed-rate loop — 50 Hz design rate
         </text>
         <text x="600" y="604" text-anchor="middle" class="layer-sub layer-sub-lg">
           senses · rules · intents · arbitration

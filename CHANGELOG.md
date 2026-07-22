@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/). This project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.0] - 2026-07-22
+
+### Added
+
+- The mind–nervous-system–body deck restructured to six visual, declarative slides per issue #23 — new visual components, diagram runtime layer labeled "ROS 2 or native", thesis moved to the close slide, spoken cues relaxed to 4 sentences.
+
 ## [0.15.0] - 2026-07-22
 
 ### Changed
