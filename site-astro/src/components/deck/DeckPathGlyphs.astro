@@ -1,0 +1,252 @@
+---
+// DeckPathGlyphs — three small marks for the "Intelligence reaches robots in
+// different ways" columns of the anchor talk. Each reads at ~48–80px beside a
+// column label:
+//   • "coded"   — curly braces framing authored rules: conventional,
+//                 deterministic automation, written by hand.
+//   • "learned" — a ball settled in a bowl: a policy learned by optimization
+//                 (e.g. a vision-language-action model).
+//   • "agent"   — a hub reaching out to three tool blocks: an agent invoking
+//                 tools.
+//
+// PROPS API
+//   path:        "coded" | "learned" | "agent"   (required) — which glyph.
+//   size?:       number   — rendered px width/height. Default 64. viewBox is
+//                           always 0 0 64 64, so it stays crisp at any size.
+//   decorative?: boolean  — default true. When true the mark is aria-hidden
+//                           (the column label beside it carries the meaning,
+//                           so the glyph must not double-announce). Pass
+//                           decorative={false} to make it standalone-
+//                           informative: it then gets role="img" + a
+//                           <title>/<desc> wired via aria-labelledby.
+//   title?:      string   — overrides the default accessible name used when
+//                           decorative={false}. Ignored when decorative.
+//
+// This is one component switched on `path` (not three named sub-marks) so a
+// column loop can render <DeckPathGlyphs path={col.path} /> directly.
+//
+// CONSUMER: the deck renderer (wave-2 task t5) places one glyph per column,
+// beside a visible label — hence decorative by default.
+//
+// THEMING: site palette custom properties from src/styles/global.css
+// (--surface, --ink, --ink-soft, --accent, --accent-strong, --line), so both
+// dawn themes stay legible. MOTION: one restrained ambient beat per glyph
+// (the coded node pulses, the learned ball bobs, the agent tools light in
+// sequence) — transform/opacity only, gated behind
+// (prefers-reduced-motion: no-preference); the resting state is the complete
+// mark. The SVG is authored inline here (not set:html), so this component's
+// scoped styles reach every child directly.
+
+type GlyphPath = "coded" | "learned" | "agent";
+
+interface Props {
+  path: GlyphPath;
+  size?: number;
+  decorative?: boolean;
+  title?: string;
+}
+
+const { path, size = 64, decorative = true, title } = Astro.props;
+
+const DEFAULTS: Record<GlyphPath, { name: string; desc: string }> = {
+  coded: {
+    name: "Coded behavior",
+    desc: "Curly braces framing authored rules — conventional, deterministic automation written by hand.",
+  },
+  learned: {
+    name: "Learned policy",
+    desc: "A ball settled at the bottom of a bowl — a policy learned by optimization, as in a vision-language-action model.",
+  },
+  agent: {
+    name: "Agent tools",
+    desc: "A central hub reaching out to three tool blocks — an agent invoking tools.",
+  },
+};
+
+const uid = "glyph-" + Math.random().toString(36).slice(2, 9);
+const titleId = `${uid}-title`;
+const descId = `${uid}-desc`;
+const accName = title ?? DEFAULTS[path].name;
+const accDesc = DEFAULTS[path].desc;
+
+// a11y attributes differ for decorative vs informative marks.
+const a11y = decorative
+  ? { "aria-hidden": "true" }
+  : { role: "img", "aria-labelledby": `${titleId} ${descId}` };
+---
+
+<svg
+  class:list={["glyph", `glyph-${path}`]}
+  width={size}
+  height={size}
+  viewBox="0 0 64 64"
+  fill="none"
+  {...a11y}
+>
+  {
+    !decorative && (
+      <>
+        <title id={titleId}>{accName}</title>
+        <desc id={descId}>{accDesc}</desc>
+      </>
+    )
+  }
+
+  {
+    path === "coded" && (
+      <g class="mark">
+        <path
+          class="brace"
+          d="M25 15 C 17 15, 22 27, 15 32 C 22 37, 17 49, 25 49"
+        />
+        <path
+          class="brace"
+          d="M39 15 C 47 15, 42 27, 49 32 C 42 37, 47 49, 39 49"
+        />
+        <line class="rule" x1="28" y1="25" x2="36" y2="25" />
+        <line class="rule" x1="28" y1="39" x2="36" y2="39" />
+        <circle class="node" cx="32" cy="32" r="4.5" />
+      </g>
+    )
+  }
+
+  {
+    path === "learned" && (
+      <g class="mark">
+        <path class="surface" d="M12 20 Q 32 58, 52 20 Z" />
+        <path class="bowl" d="M12 20 Q 32 58, 52 20" />
+        <line class="axis" x1="32" y1="18" x2="32" y2="40" />
+        <circle class="ball" cx="32" cy="38" r="6" />
+      </g>
+    )
+  }
+
+  {
+    path === "agent" && (
+      <g class="mark">
+        <line class="stub" x1="32" y1="24" x2="32" y2="16" />
+        <line class="stub" x1="26" y1="37" x2="16" y2="45" />
+        <line class="stub" x1="38" y1="37" x2="48" y2="45" />
+        <rect class="tool" style="--td: 0s" x="25" y="4" width="14" height="14" rx="3.5" />
+        <rect class="tool" style="--td: 0.5s" x="6" y="44" width="14" height="14" rx="3.5" />
+        <rect class="tool" style="--td: 1s" x="44" y="44" width="14" height="14" rx="3.5" />
+        <circle class="hub" cx="32" cy="32" r="8" />
+      </g>
+    )
+  }
+</svg>
+
+<style>
+  .glyph {
+    display: inline-block;
+    vertical-align: middle;
+    flex: none;
+  }
+
+  /* ---------- shared marks ---------- */
+
+  .node,
+  .ball,
+  .hub {
+    fill: var(--accent-strong);
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  /* ---------- coded ---------- */
+
+  .brace {
+    stroke: var(--accent-strong);
+    stroke-width: 3;
+    stroke-linecap: round;
+    fill: none;
+  }
+
+  .rule {
+    stroke: var(--ink-soft);
+    stroke-width: 2.6;
+    stroke-linecap: round;
+  }
+
+  /* ---------- learned ---------- */
+
+  .surface {
+    fill: color-mix(in srgb, var(--accent) 14%, transparent);
+    stroke: none;
+  }
+
+  .bowl {
+    stroke: var(--ink-soft);
+    stroke-width: 3;
+    stroke-linecap: round;
+    fill: none;
+  }
+
+  .axis {
+    stroke: var(--line);
+    stroke-width: 1.6;
+    stroke-dasharray: 2 4;
+  }
+
+  /* ---------- agent ---------- */
+
+  .tool {
+    fill: color-mix(in srgb, var(--accent) 16%, var(--surface));
+    stroke: var(--accent-strong);
+    stroke-width: 2.4;
+  }
+
+  .stub {
+    stroke: var(--ink-soft);
+    stroke-width: 2.6;
+    stroke-linecap: round;
+  }
+
+  /* ---------- motion: one restrained beat each ---------- */
+
+  @media (prefers-reduced-motion: no-preference) {
+    .glyph-coded .node {
+      animation: glyph-node-pulse 3.4s var(--ease-gentle, ease-in-out) infinite alternate;
+    }
+
+    .glyph-learned .ball {
+      animation: glyph-ball-bob 3.8s var(--ease-gentle, ease-in-out) infinite alternate;
+    }
+
+    .glyph-agent .tool {
+      animation: glyph-tool-wave 4.5s var(--ease-gentle, ease-in-out) infinite;
+      animation-delay: var(--td, 0s);
+    }
+  }
+
+  @keyframes glyph-node-pulse {
+    from {
+      transform: scale(0.9);
+      opacity: 0.7;
+    }
+    to {
+      transform: scale(1.15);
+      opacity: 1;
+    }
+  }
+
+  @keyframes glyph-ball-bob {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(-3px);
+    }
+  }
+
+  @keyframes glyph-tool-wave {
+    0%,
+    60%,
+    100% {
+      opacity: 0.75;
+    }
+    25% {
+      opacity: 1;
+    }
+  }
+</style>
