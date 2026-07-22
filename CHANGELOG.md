@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/). This project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.2] - 2026-07-22
+
+### Changed
+
+- Real photographs replace all three placeholder slates in the presentation deck: a Reachy Mini table portrait (hero), a Reachy Mini close-up mid-gesture (action), and the SO-ARM101 arm reaching in side profile (hero). Converted to WebP at the manifest's existing pixel targets, so the drop-in contract held with no path or dimension change. Alt text and `subject` descriptions rewritten to describe the photographs that actually ship — the previous text described intended shots that differ from these frames.
+
 ## [0.18.1] - 2026-07-22
 
 ### Changed

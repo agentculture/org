@@ -1,14 +1,14 @@
 // Photo manifest for the symbolic presentation deck (/presentations/).
 //
-// The deck anchors each robot slide on a real photograph. Those photographs do
-// not exist in the repo yet, so this module ships three intentional *placeholder*
-// images — duotone slates in the site palette — under public/presentations/,
-// and names, for each slot, exactly what the real photo should be.
+// The deck anchors each robot slide on a real photograph. All three slots now
+// carry real photographs under public/presentations/ — the duotone placeholder
+// slates they replaced are gone. Each slot's `subject` and `alt` describe the
+// photograph that actually ships, not an intended shot.
 //
-// Drop-in contract: the site owner exports a real photo over the same filename
-// (same WebP format, same public path) and nothing in code changes. The `src`
-// / `thumbSrc` paths, the pixel targets, and the alt text are the brief for the
-// shoot; see docs/presentation-photos.md for the human-facing guidance.
+// Drop-in contract (still live for re-shoots): export a new photo over the same
+// filename — same WebP format, same public path, same pixel target — and
+// nothing in code changes. Only `subject` and `alt` need revisiting, and only
+// if the new frame shows something different; see docs/presentation-photos.md.
 //
 // Three slots — a hero + action pair for Reachy Mini, and a hero for SO-ARM101 —
 // one robot per slot, so the deck can guarantee "one robot per slide" (plan
@@ -51,7 +51,7 @@ export interface PresentationPhoto {
     /** e.g. "480×270". */
     thumb: string;
   };
-  /** Real alt text describing the *intended* photo (not the placeholder). */
+  /** Alt text describing the photograph that actually ships in this slot. */
   alt: string;
 }
 
@@ -63,10 +63,10 @@ export const presentationPhotos = [
     subjectRobot: "Reachy Mini",
     role: "hero",
     subject:
-      "Reachy Mini on a clean desk in three-quarter view, head turned toward the lens with antennas up, lit by a warm key light.",
+      "Reachy Mini on a wooden table, facing the lens with antennas up, a marble fireplace softly out of focus behind it.",
     orientation: "landscape 16:9",
     targetDimensions: { full: "1920×1080", thumb: "480×270" },
-    alt: "Reachy Mini, a small expressive desk robot with a rounded movable head, two antennas, a single camera eye and a speaker in its base, seen in three-quarter view on a desk.",
+    alt: "Reachy Mini, a small white desk robot with a rounded movable head and a pair of dark camera lenses, facing the viewer on a wooden table, its two thin antennas rising out of the top of the frame and a marble fireplace blurred behind it.",
   },
   {
     id: "reachy-mini-action",
@@ -75,10 +75,10 @@ export const presentationPhotos = [
     subjectRobot: "Reachy Mini",
     role: "action",
     subject:
-      "Reachy Mini mid-gesture with its head tilted and antennas in motion, a human hand near it for scale, shallow depth of field.",
+      "Reachy Mini in close-up mid-gesture, head tilted up and back on its jointed neck, antennas angled out, shallow depth of field.",
     orientation: "landscape 3:2",
     targetDimensions: { full: "1800×1200", thumb: "480×320" },
-    alt: "Reachy Mini mid-gesture, its head tilted and antennas swinging, a person's hand beside it for scale, background softly out of focus.",
+    alt: "Reachy Mini in close-up mid-gesture, its head tilted up and back on a jointed metal neck and its two antennas angled out, the pair of dark camera lenses reflecting the room, against a warm interior softly out of focus.",
   },
   {
     id: "so101-hero",
@@ -87,10 +87,10 @@ export const presentationPhotos = [
     subjectRobot: "SO-ARM101",
     role: "hero",
     subject:
-      "The SO-ARM101 robot arm at rest in its home pose, gripper open, in a clean side profile against a plain seamless backdrop.",
+      "The SO-ARM101 robot arm in side profile on a white surface, raised and reaching forward with its gripper open, plain pale backdrop.",
     orientation: "landscape 16:9",
     targetDimensions: { full: "1920×1080", thumb: "480×270" },
-    alt: "The SO-ARM101 hobby robot arm at rest in a clean side profile, its jointed segments folded into the home pose and its two-finger gripper open, against a plain backdrop.",
+    alt: "The SO-ARM101 robot arm in side profile on a white surface, its black 3D-printed segments raised and reaching forward, its two-finger gripper open with one white jaw and one black jaw, against a plain pale backdrop.",
   },
 ] as const satisfies readonly PresentationPhoto[];
 
