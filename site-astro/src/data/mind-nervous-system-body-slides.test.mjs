@@ -115,7 +115,7 @@ test("slide 4 (surfaces) carries the three runtime-surface labels and the Reachy
   );
 });
 
-test("slide 5 (autonomy) carries the three situations, only 'Stuck' photo-bearing", () => {
+test("slide 5 (autonomy) carries the three situations, all three photo-free", () => {
   const slide = mindNervousSystemBodySlides[4];
   assert.equal(slide.kind, "autonomy");
   assert.equal(slide.headline, "The robot continues without the agent");
@@ -123,10 +123,20 @@ test("slide 5 (autonomy) carries the three situations, only 'Stuck' photo-bearin
   const [stuck, disconnected, routine] = slide.situations;
   assert.equal(stuck.label, "Stuck");
   assert.equal(stuck.outcome, "inspect and adapt");
-  assert.equal(stuck.robot, "so101");
-  assert.equal(stuck.photoId, "so101-action");
+  assert.ok(
+    !Object.prototype.hasOwnProperty.call(stuck, "robot"),
+    "'Stuck' must not carry a robot",
+  );
+  assert.ok(
+    !Object.prototype.hasOwnProperty.call(stuck, "photoId"),
+    "'Stuck' must not carry a photo",
+  );
   assert.equal(disconnected.label, "Disconnected");
   assert.equal(disconnected.outcome, "behavior continues");
+  assert.ok(
+    !Object.prototype.hasOwnProperty.call(disconnected, "robot"),
+    "'Disconnected' must not carry a robot",
+  );
   assert.ok(
     !Object.prototype.hasOwnProperty.call(disconnected, "photoId"),
     "'Disconnected' must not carry a photo",
@@ -134,10 +144,18 @@ test("slide 5 (autonomy) carries the three situations, only 'Stuck' photo-bearin
   assert.equal(routine.label, "Routine operation");
   assert.equal(routine.outcome, "no model required");
   assert.ok(
+    !Object.prototype.hasOwnProperty.call(routine, "robot"),
+    "'Routine operation' must not carry a robot",
+  );
+  assert.ok(
     !Object.prototype.hasOwnProperty.call(routine, "photoId"),
     "'Routine operation' must not carry a photo",
   );
   assert.equal(slide.bottomLine, "Spend intelligence on change—not repetition.");
+  assert.ok(
+    slide.spokenLine.startsWith("When the robot gets stuck"),
+    `slide 5 spokenLine must start with "When the robot gets stuck": ${slide.spokenLine}`,
+  );
 });
 
 test("slide 6 (close) is last, carries both robots and the verbatim thesis", () => {
@@ -240,7 +258,7 @@ test("kind/shape agreement — each optional field appears only on its matching 
   }
 });
 
-test("photo discipline — each of the four slots is used exactly once, each on its own robot", () => {
+test("photo discipline — each of the three slots is used exactly once, each on its own robot", () => {
   const allSlots = Object.values(photoSlotsByRobot).flat();
   const usedPhotos = [];
   for (const slide of mindNervousSystemBodySlides) {
@@ -277,11 +295,6 @@ test("photo discipline — each of the four slots is used exactly once, each on 
     "reachy-mini-action",
     "reachy-mini-action must sit on the surfaces slide",
   );
-  assert.equal(
-    mindNervousSystemBodySlides[4].situations[0].photoId,
-    "so101-action",
-    "so101-action must sit on autonomy's 'Stuck' situation",
-  );
   const closeRobots = mindNervousSystemBodySlides[5].robots;
   assert.deepEqual(
     closeRobots.map((r) => r.photoId).sort(),
@@ -292,12 +305,12 @@ test("photo discipline — each of the four slots is used exactly once, each on 
 
 test("robotLabel and photoSlotsByRobot cover both robots", () => {
   assert.ok(robotLabel["reachy-mini"]);
-  assert.ok(robotLabel.so101);
+  assert.equal(robotLabel.so101, "SO-ARM101");
   assert.deepEqual(photoSlotsByRobot["reachy-mini"], [
     "reachy-mini-hero",
     "reachy-mini-action",
   ]);
-  assert.deepEqual(photoSlotsByRobot.so101, ["so101-hero", "so101-action"]);
+  assert.deepEqual(photoSlotsByRobot.so101, ["so101-hero"]);
 });
 
 test("design-rate honesty — any 50 Hz mention is always qualified as 'design rate'", () => {

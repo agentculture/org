@@ -13,7 +13,8 @@
 //   2. paths    — three columns, each a DeckPathGlyphs over its label.
 //   3. stack    — CliRuntimeStackDiagram embedded exactly once beside the copy.
 //   4. surfaces — the reachy-mini-action photo with three labels around it.
-//   5. autonomy — a triptych: the so101-action photo + two DeckSituationVignettes.
+//   5. autonomy — a triptych of three DeckSituationVignettes (stuck,
+//      disconnected, routine); no photo.
 //   6. close    — two dual-maturity robot cards, the verbatim thesis, sources.
 //
 // Navigation is progressive enhancement over natural scroll: the dot rail is
@@ -64,21 +65,24 @@ const photoView = (slotId: PhotoSlotId) => {
 // learned, Agent tools → agent (plan task t5 / component task t3).
 const PATH_GLYPHS = ["coded", "learned", "agent"] as const;
 
-// A photo-free autonomy situation maps to one of the two vignette scenes.
-const vignetteFor = (label: string): "disconnected" | "routine" =>
-  label.toLowerCase().includes("routine") ? "routine" : "disconnected";
+// Every autonomy situation is photo-free now — each maps by label to one of
+// the three vignette scenes.
+const vignetteFor = (
+  label: string
+): "disconnected" | "routine" | "stuck" => {
+  const lower = label.toLowerCase();
+  if (lower.includes("stuck")) return "stuck";
+  if (lower.includes("routine")) return "routine";
+  return "disconnected";
+};
 
 const slideViews = slides.map((slide, index) => {
   // The section-level data-robot marker sits on exactly the surfaces slide
-  // (its Reachy photo) and the autonomy slide (its SO-101 "Stuck" photo); the
-  // close slide leaves it to the two per-robot cards. bridge/paths/stack carry
-  // no robot.
-  const sectionRobot =
-    slide.kind === "surfaces"
-      ? slide.robot
-      : slide.kind === "autonomy"
-        ? slide.situations?.find((situation) => situation.robot)?.robot
-        : undefined;
+  // (its Reachy photo); the close slide leaves it to its two per-robot cards.
+  // bridge/paths/stack/autonomy carry no section robot. Deck-wide the stamp
+  // totals reachy-mini ×2 (surfaces section + close card) and so101 ×1 (close
+  // card), over three photo figures (surfaces + close ×2).
+  const sectionRobot = slide.kind === "surfaces" ? slide.robot : undefined;
   return { slide, index, sectionRobot, headingId: `${slide.id}-headline` };
 });
 ---
@@ -286,30 +290,7 @@ const slideViews = slides.map((slide, index) => {
                     style={`--reveal-delay: ${0.16 + situationIndex * 0.1}s`}
                   >
                     <div class="autonomy-figure">
-                      {situation.photoId ? (
-                        (() => {
-                          const pv = photoView(situation.photoId);
-                          return (
-                            <figure
-                              class="cell-photo"
-                              data-photo-slot={pv.photo.id}
-                            >
-                              <img
-                                src={pv.photo.src}
-                                alt={pv.photo.alt}
-                                width={pv.width}
-                                height={pv.height}
-                                loading="lazy"
-                                decoding="async"
-                              />
-                            </figure>
-                          );
-                        })()
-                      ) : (
-                        <DeckSituationVignettes
-                          situation={vignetteFor(situation.label)}
-                        />
-                      )}
+                      <DeckSituationVignettes situation={vignetteFor(situation.label)} />
                     </div>
                     <p class="autonomy-caption">
                       <span class="cap-label">{situation.label}</span>
@@ -862,22 +843,6 @@ const slideViews = slides.map((slide, index) => {
   .autonomy-cell {
     display: grid;
     gap: 0.9rem;
-  }
-
-  .cell-photo {
-    margin: 0;
-    aspect-ratio: 4 / 5;
-    border-radius: var(--radius);
-    overflow: hidden;
-    border: 1px solid var(--line-soft);
-    box-shadow: var(--shadow-lift);
-  }
-
-  .cell-photo img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
   }
 
   .autonomy-caption {

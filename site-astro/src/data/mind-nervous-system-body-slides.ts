@@ -31,18 +31,17 @@
 //      coder agents across three `labels` (configure, command ad hoc,
 //      observe/repair); carries the reachy-mini-action photo.
 //   5. autonomy   · autonomy · beat 5 — three `situations` the robot faces
-//      without the agent (stuck, disconnected, routine operation); only
-//      "Stuck" carries a photo (so101-action) — the other two are
-//      photo-free.
+//      without the agent (stuck, disconnected, routine operation); all
+//      three are photo-free vignettes.
 //   6. close      · close    · beat 6 — the verbatim thesis as `bottomLine`;
 //      a `robots` field carries both maturity levels side by side (Reachy
 //      Mini's complete native-runtime pattern, ARM101's in-progress
 //      contract), one command each, both hero photos.
 //
-// Photo slots: each of the four `PhotoSlotId`s (reachy-mini-hero,
-// reachy-mini-action, so101-hero, so101-action) is referenced EXACTLY once —
-// reachy-mini-action on "surfaces", so101-action on "autonomy"'s "Stuck"
-// situation, and both hero slots on "close" (one per robot entry).
+// Photo slots: each of the THREE `PhotoSlotId`s this module references
+// (reachy-mini-hero, reachy-mini-action, so101-hero) is referenced EXACTLY
+// once — reachy-mini-action on "surfaces", and both hero slots on "close"
+// (one per robot entry). "autonomy" carries no photo slot at all.
 //
 // Terminology discipline (never conflate): "behavior engine" / "behavior
 // runtime" / "runtime" name the fixed-rate symbolic loop; "daemon" names only
@@ -64,7 +63,7 @@
 //   - labels?/robot?/photoId? — present only on "surfaces": the three
 //     runtime-surface labels plus the one robot photo this slide anchors.
 //   - situations? — present only on "autonomy": three `DeckAutonomySituation`
-//     entries, in order; only one carries `robot`/`photoId`.
+//     entries, in order, all photo-free.
 //   - robots? — present only on "close": two `DeckCloseRobot` entries, one
 //     per robot, each with its own photo, maturity status, traits, claim,
 //     and exactly one CLI command.
@@ -105,10 +104,6 @@ export interface DeckAutonomySituation {
   label: string;
   /** What happens in that situation. */
   outcome: string;
-  /** Present only on the situation carrying a photo (today: "Stuck"). */
-  robot?: DeckRobot;
-  /** Present only on the situation carrying a photo (today: "Stuck"). */
-  photoId?: PhotoSlotId;
 }
 
 /** One robot's entry on the "close" slide — its maturity, claim, and one command. */
@@ -165,13 +160,13 @@ export interface DeckSlide {
 /** Display label per robot, for the renderer. */
 export const robotLabel = {
   "reachy-mini": "Reachy Mini",
-  so101: "SO-101",
+  so101: "SO-ARM101",
 } as const satisfies Record<DeckRobot, string>;
 
 /** Photo slots each robot owns — a robot-anchored slide may only use its own slot. */
 export const photoSlotsByRobot = {
   "reachy-mini": ["reachy-mini-hero", "reachy-mini-action"],
-  so101: ["so101-hero", "so101-action"],
+  so101: ["so101-hero"],
 } as const satisfies Record<DeckRobot, readonly PhotoSlotId[]>;
 
 export const mindNervousSystemBodySlides = [
@@ -231,14 +226,9 @@ export const mindNervousSystemBodySlides = [
     eyebrow: "beyond the agent",
     headline: "The robot continues without the agent",
     spokenLine:
-      "When SO-101 gets stuck, an agent can inspect the state and adapt the plan — that's exactly where intelligence earns its keep. When the agent disconnects, the behavior runtime keeps running unattended; during routine operation, no model is in the loop at all.",
+      "When the robot gets stuck, an agent can inspect the state and adapt the plan — that's exactly where intelligence earns its keep. When the agent disconnects, the behavior runtime keeps running unattended; during routine operation, no model is in the loop at all.",
     situations: [
-      {
-        label: "Stuck",
-        outcome: "inspect and adapt",
-        robot: "so101",
-        photoId: "so101-action",
-      },
+      { label: "Stuck", outcome: "inspect and adapt" },
       { label: "Disconnected", outcome: "behavior continues" },
       { label: "Routine operation", outcome: "no model required" },
     ],
