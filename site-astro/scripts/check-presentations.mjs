@@ -51,17 +51,20 @@ const expectedEvidenceUrls = [
   `https://github.com/agentculture/arm101-cli/blob/${armCommit}/arm101/explore/reachmap.py`,
 ];
 
-// The deck (post deck-six-slide-narrative, org#23): exactly 6 slides, one per
-// primary beat, in a pinned id/order — bridge, paths, stack, surfaces,
-// autonomy, close. `data-robot` is no longer only a section-level attribute:
-// it appears exactly twice per robot — once on the robot's dedicated section
-// (surfaces -> reachy-mini, autonomy -> so101) and once on that robot's card
-// inside the close slide (Reachy card, ARM101 card). The four photo-bearing
-// <figure data-photo-slot> elements are likewise split: one action photo
-// inside its robot's dedicated section, both hero photos inside the close
-// slide's two cards. The checks below key off `data-deck-slide` section ids
-// rather than slide kind, since kind is a dataset-only concept not stamped
-// onto the built HTML.
+// The deck (post deck-six-slide-narrative, org#23; later re-pinned by the
+// autonomy-stuck-vignette plan): exactly 6 slides, one per primary beat, in a
+// pinned id/order — bridge, paths, stack, surfaces, autonomy, close. The
+// autonomy slide went robot-generic and photo-free: `data-robot` appears
+// exactly twice for reachy-mini (its dedicated "surfaces" section, plus its
+// close-slide card) and exactly once for so101 (only its close-slide card —
+// the "autonomy" section itself carries no `data-robot` attribute at all).
+// The three surviving photo-bearing <figure data-photo-slot> elements are
+// likewise down from four: one action photo inside the "surfaces" section,
+// both hero photos inside the close slide's two cards. The "autonomy"
+// section instead renders three photo-free DeckSituationVignettes figures —
+// stuck, disconnected, routine — as one matched trio. The checks below key
+// off `data-deck-slide` section ids rather than slide kind, since kind is a
+// dataset-only concept not stamped onto the built HTML.
 const expectedDeckSlideCount = 6;
 const expectedDeckSlideIds = [
   "bridge",
@@ -71,22 +74,22 @@ const expectedDeckSlideIds = [
   "autonomy",
   "close",
 ];
-// Section-level data-robot: the one slide (besides "close") each robot
-// anchors, and the one action-photo slot that lives inside it.
-const expectedSectionRobots = { surfaces: "reachy-mini", autonomy: "so101" };
-// Where each of the four photo slots' <figure data-photo-slot> must live.
+// Section-level data-robot: the one slide (besides "close") reachy-mini
+// anchors, and the one action-photo slot that lives inside it. "autonomy" is
+// robot-generic — it anchors no robot and carries no data-robot attribute.
+const expectedSectionRobots = { surfaces: "reachy-mini" };
+// Where each of the three surviving photo slots' <figure data-photo-slot>
+// must live.
 const expectedPhotoSlotSections = {
   "reachy-mini-action": "surfaces",
-  "so101-action": "autonomy",
   "reachy-mini-hero": "close",
   "so101-hero": "close",
 };
-const expectedRobotSlideCounts = { "reachy-mini": 2, so101: 2 };
+const expectedRobotSlideCounts = { "reachy-mini": 2, so101: 1 };
 const deckImagePaths = [
   "/presentations/reachy-mini-hero.webp",
   "/presentations/reachy-mini-action.webp",
   "/presentations/so101-hero.webp",
-  "/presentations/so101-action.webp",
 ];
 
 const failures = [];
@@ -513,8 +516,8 @@ check(
       slides.map((slide) => [slide.attrs["data-deck-slide"], slide]),
     );
 
-    // Section-level data-robot: surfaces carries reachy-mini, autonomy
-    // carries so101 (one robot each, stamped on the section itself).
+    // Section-level data-robot: surfaces carries reachy-mini (one robot,
+    // stamped on the section itself).
     for (const [slideId, robot] of Object.entries(expectedSectionRobots)) {
       const slide = bySlideId.get(slideId);
       assert(slide, `deck is missing the "${slideId}" slide section`);
@@ -523,6 +526,18 @@ check(
         `"${slideId}" section must carry data-robot="${robot}", found "${slide.attrs["data-robot"] ?? ""}"`,
       );
     }
+
+    // Autonomy is robot-generic and photo-free (autonomy-stuck-vignette
+    // plan): its section must carry no data-robot attribute at all.
+    const autonomySectionSlide = bySlideId.get("autonomy");
+    assert(
+      autonomySectionSlide,
+      'deck is missing the "autonomy" slide section',
+    );
+    assert(
+      autonomySectionSlide.attrs["data-robot"] === undefined,
+      `"autonomy" section must not carry a data-robot attribute, found "${autonomySectionSlide.attrs["data-robot"]}"`,
+    );
 
     // Card-level data-robot: the close slide carries both robots, one per
     // card, inside its section rather than on the section's opening tag.
@@ -536,8 +551,10 @@ check(
       );
     }
 
-    // Deck-wide: each robot's data-robot attribute appears exactly twice —
-    // once on its section, once on its close-slide card.
+    // Deck-wide: reachy-mini's data-robot attribute appears exactly twice —
+    // once on its "surfaces" section, once on its close-slide card. so101 is
+    // robot-generic on autonomy now, so it appears exactly once — only on
+    // its close-slide card.
     for (const [robot, expectedCount] of Object.entries(
       expectedRobotSlideCounts,
     )) {
@@ -548,9 +565,9 @@ check(
       );
     }
 
-    // Each of the four photo slots' <figure data-photo-slot> must live
-    // inside exactly the section named in expectedPhotoSlotSections —
-    // reachy-mini-action inside surfaces, so101-action inside autonomy, and
+    // Each of the three surviving photo slots' <figure data-photo-slot>
+    // must live inside exactly the section named in
+    // expectedPhotoSlotSections — reachy-mini-action inside surfaces, and
     // both hero slots inside the close slide's two cards.
     const foundIn = {};
     for (const [slideId, slide] of bySlideId) {
@@ -576,7 +593,44 @@ check(
   },
 );
 
-check("deck imagery: four robot photos with alt text", () => {
+check("deck autonomy trio: three situation vignettes, no photo", () => {
+  // The autonomy slide (autonomy-stuck-vignette plan) is robot-generic and
+  // photo-free: it renders three DeckSituationVignettes figures — stuck,
+  // disconnected, routine — as a matched trio, never a <figure
+  // data-photo-slot> photo.
+  const autonomySlide = deckSlideSections(deckHtml).find(
+    (slide) => slide.attrs["data-deck-slide"] === "autonomy",
+  );
+  assert(autonomySlide, 'deck is missing the "autonomy" slide section');
+
+  const figures = elements(autonomySlide.inner, "figure");
+  assert(
+    figures.length === 3,
+    `autonomy section must contain exactly 3 <figure> vignettes, found ${figures.length}`,
+  );
+
+  for (const situation of ["stuck", "disconnected", "routine"]) {
+    const className = `vignette-${situation}`;
+    const matches = figures.filter((figure) =>
+      hasClass(figure.attrs, className),
+    );
+    assert(
+      matches.length === 1,
+      `autonomy section must contain exactly one figure.${className}, found ${matches.length}`,
+    );
+  }
+
+  const photoSlotCount = countOccurrences(
+    autonomySlide.inner,
+    "data-photo-slot",
+  );
+  assert(
+    photoSlotCount === 0,
+    `autonomy section must contain zero data-photo-slot occurrences, found ${photoSlotCount}`,
+  );
+});
+
+check("deck imagery: three robot photos with alt text", () => {
   const images = openings(deckHtml, "img");
   for (const path of deckImagePaths) {
     const matches = images.filter((img) => img.src === path);
@@ -759,7 +813,7 @@ console.log(
     `1 article + 8 ordered beats + ${expectedEvidenceUrls.length} immutable evidence links; ` +
     `1 deck with ${expectedDeckSlideCount} slides (${Object.entries(expectedRobotSlideCounts)
       .map(([robot, count]) => `${count} ${robot}`)
-      .join(", ")}) and 4 captioned photos, ` +
+      .join(", ")}) and 3 captioned photos, ` +
     `one accessible architecture diagram, the verbatim thesis, design-rate-labeled 50 Hz, ` +
     `and repo-home-only sources.`,
 );
