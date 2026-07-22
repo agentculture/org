@@ -51,9 +51,12 @@ const expectedEvidenceUrls = [
   `https://github.com/agentculture/arm101-cli/blob/${armCommit}/arm101/explore/reachmap.py`,
 ];
 
-// The deck (post deck-six-slide-narrative, org#23; later re-pinned by the
-// autonomy-stuck-vignette plan): exactly 6 slides, one per primary beat, in a
-// pinned id/order — bridge, paths, stack, surfaces, autonomy, close. The
+// The deck (post deck-six-slide-narrative, org#23; re-pinned by the
+// autonomy-stuck-vignette plan, then extended by whats-next-finale-slide):
+// exactly 7 slides, one per primary beat, in a pinned id/order — bridge,
+// paths, stack, surfaces, autonomy, close, whats-next. The finale carries the
+// See/Remember/Act glyph triad, two next-step cards, and the separation band,
+// with no photo slot and no data-robot of its own. The
 // autonomy slide went robot-generic and photo-free: `data-robot` appears
 // exactly twice for reachy-mini (its dedicated "surfaces" section, plus its
 // close-slide card) and exactly once for so101 (only its close-slide card —
@@ -65,7 +68,7 @@ const expectedEvidenceUrls = [
 // stuck, disconnected, routine — as one matched trio. The checks below key
 // off `data-deck-slide` section ids rather than slide kind, since kind is a
 // dataset-only concept not stamped onto the built HTML.
-const expectedDeckSlideCount = 6;
+const expectedDeckSlideCount = 7;
 const expectedDeckSlideIds = [
   "bridge",
   "paths",
@@ -73,6 +76,7 @@ const expectedDeckSlideIds = [
   "surfaces",
   "autonomy",
   "close",
+  "whats-next",
 ];
 // Section-level data-robot: the one slide (besides "close") reachy-mini
 // anchors, and the one action-photo slot that lives inside it. "autonomy" is
@@ -485,7 +489,7 @@ check("deck is not the article: no article beat-id anchors", () => {
   );
 });
 
-check("deck slide count and id order (six slides, org#23)", () => {
+check("deck slide count and id order (seven slides: org#23 + the finale)", () => {
   // Careful: `data-deck-slide` also appears once as a bare CSS/JS attribute
   // selector (`[data-deck-slide]`); only the attribute-value form below
   // (`data-deck-slide="..."`) counts real slide sections.
@@ -627,6 +631,47 @@ check("deck autonomy trio: three situation vignettes, no photo", () => {
   assert(
     photoSlotCount === 0,
     `autonomy section must contain zero data-photo-slot occurrences, found ${photoSlotCount}`,
+  );
+});
+
+check("deck finale: whats-next is last with the triad, separation band, no photo", () => {
+  // The whats-next finale (whats-next-finale-slide spec) closes the deck:
+  // the See/Remember/Act glyph triad, two next-step cards, and the shared
+  // separation band — no photo slot and no data-robot, so the deck-wide
+  // robot/photo counts stay owned by surfaces and close.
+  const sections = deckSlideSections(deckHtml);
+  const finale = sections[sections.length - 1];
+  assert(
+    finale && finale.attrs["data-deck-slide"] === "whats-next",
+    `the last deck section must be "whats-next", found "${finale?.attrs["data-deck-slide"]}"`,
+  );
+
+  for (const step of ["see", "remember", "act"]) {
+    const count = countOccurrences(finale.inner, `glyph-${step}`);
+    assert(
+      count === 1,
+      `finale must contain exactly one glyph-${step}, found ${count}`,
+    );
+  }
+
+  for (const separationLine of [
+    "agent authors and supervises",
+    "runtime persists and arbitrates",
+    "body retains control",
+  ]) {
+    assert(
+      finale.inner.includes(separationLine),
+      `finale is missing the separation line "${separationLine}"`,
+    );
+  }
+
+  assert(
+    countOccurrences(finale.inner, "data-photo-slot") === 0,
+    "finale must contain no data-photo-slot",
+  );
+  assert(
+    finale.attrs["data-robot"] === undefined,
+    "finale section must carry no data-robot attribute",
   );
 });
 
