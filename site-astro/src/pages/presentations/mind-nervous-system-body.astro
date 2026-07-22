@@ -157,9 +157,7 @@ const thesisLines = (headline: string) => headline.split(/(?<=\.)\s+/);
               )}
 
               {slide.kind === "commands" && slide.commandLines && (
-                <pre class="command-block" data-reveal style="--reveal-delay: 0.3s"><code>{
-                  slide.commandLines.join("\n")
-                }</code></pre>
+                <pre class="command-block" data-reveal style="--reveal-delay: 0.3s">{slide.commandLines.map((line) => <code>{line}</code>)}</pre>
               )}
 
               {slide.kind === "rules" && slide.rulesToml && (
@@ -540,7 +538,15 @@ const thesisLines = (headline: string) => headline.split(/(?<=\.)\s+/);
     line-height: 1.75;
     color: var(--ink);
     overflow-x: auto;
-    white-space: pre;
+    /* A projected audience can't scroll: long invocations wrap with a hanging
+       indent instead of clipping past the block's edge. */
+    white-space: pre-wrap;
+  }
+
+  .command-block code {
+    display: block;
+    padding-left: 2ch;
+    text-indent: -2ch;
   }
 
   /* ---------- the photograph ---------- */
