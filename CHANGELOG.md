@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/). This project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.0] - 2026-07-22
+
+### Changed
+
+- The presentations deck at /presentations/mind-nervous-system-body/ is reframed around the operational architecture (org#21): a CLI for intelligence, a runtime for embodiment — at most 8 primary beats, a five-layer architecture diagram, command-sequence and rules slides, the presentation card retitled, and the deck contracts (check:presentations + slides test) newly enforced in CI.
+
 ## [0.14.0] - 2026-07-20
 
 ### Added
