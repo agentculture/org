@@ -1,5 +1,10 @@
 # UX review — spacing, type and layout
 
+> **Status:** The spacing, leading, tracking, and legibility diagnosis remains
+> supporting evidence. The option D captures recommendation is historical and
+> has been superseded by the
+> [`captures-story-plan.md`](captures-story-plan.md) guided-session direction.
+
 A UX/UI contribution for `/agents/devague/`. Two areas: a **spacing and type token
 system**, and the **captures section layout**.
 

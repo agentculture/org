@@ -78,6 +78,10 @@ td.why { line-height: var(--lh-normal); }
 .doc ul.notes li { margin-bottom: var(--space-3); line-height: var(--lh-normal); }
 .verdict { border-left: 3px solid var(--accent); padding: var(--space-2) 0 var(--space-2) var(--space-4);
            margin: var(--space-5) 0 0; max-width: 62ch; }
+.status-note { background: var(--line-soft); border-radius: .75rem;
+               padding: var(--space-4) var(--space-5); margin: 0 0 var(--space-6);
+               max-width: 62ch; }
+.status-note a { color: var(--accent); }
 
 /* ---------------- MOCK FRAMES ---------------- */
 .mock { padding: var(--space-5) var(--space-5) var(--space-8); font-family: var(--font-body); }
@@ -228,6 +232,11 @@ td.why { line-height: var(--lh-normal); }
 <div class="doc">
 <div class="doc-inner">
   <h1>Captures section — three ways to kill the whitespace</h1>
+  <p class="status-note"><strong>Historical exploration.</strong> Option D was
+  the strongest gallery treatment measured here, but it is no longer the
+  intended end state. The later <a href="captures-story-plan.md">guided-session
+  handoff</a> and <a href="mocks/devague/2026-07-21-review-style/agents/devague/">
+  preserved full-page mock</a> supersede this layout recommendation.</p>
   <p class="lede">Measured on the live page at 1280&times;720. All three options below use the real captured transcripts, so the card heights are truthful. Colour and content unchanged.</p>
 
   <h2>What is actually causing it</h2>

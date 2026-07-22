@@ -8,7 +8,11 @@ approach that was tried and rejected (change 2), and a card treatment
 (changes 3–4) that was later superseded by the reference-list treatment
 (change 5, the reviewer-approved direction). Three animation bugs found
 along the way are specced at the bottom; they ship regardless of the
-layout choices. No code in this plan has been applied to the site.
+layout choices. The
+[21 July full-page mock](mocks/devague/2026-07-21-review-style/README.md)
+retains the last successful integrated render; its manifest records the two
+pipeline restoration requests made after that render. No code in this plan has
+been applied to the site.
 
 ## The problems, measured
 

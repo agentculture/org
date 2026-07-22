@@ -10,16 +10,28 @@ Reviewed against a local production build at commit `d71a719`
 
 ## Start here
 
-**[`findings.md`](findings.md)** — the audit. Seven findings, each with the
-measurement behind it and a re-run recipe. It also records what was checked and
-found correct, which matters as much as the findings: contrast, heading order,
-scrollable-table accessibility, mobile layout and the reduced-motion / no-JS
-handling are all in good shape, and it would be easy to regress them while
-addressing something else.
+**[`current-direction.md`](current-direction.md)** is the current decision map.
+It reconciles the measured audit with the later Devague work and labels each
+artefact as current, supporting, or superseded.
+
+The original [`findings.md`](findings.md) remains the evidence baseline: seven
+findings with measurements and re-run recipes, plus the accessibility,
+responsive, reduced-motion, and no-JavaScript behaviour that later work must
+preserve.
 
 ## The artefacts
 
-The review comes in two halves, written independently and gathered here.
+The work now has three layers: the current decision and handoff layer, the
+original site-wide audit, and the earlier section-level explorations.
+
+**Current direction and handoffs** — use these for the latest Devague state:
+
+| File | Kind | Covers |
+|------|------|--------|
+| [`current-direction.md`](current-direction.md) | Markdown | Status, precedence, current decisions, and open calls |
+| [`mocks/devague/2026-07-21-review-style/`](mocks/devague/2026-07-21-review-style/README.md) | Full-page snapshot | Latest integrated Devague mock plus the documented responsive diagram repair |
+| [`captures-story-plan.md`](captures-story-plan.md) | Markdown | Guided three-session captures handoff and complete copy deck |
+| [`pipeline-layout-plan.md`](pipeline-layout-plan.md) | Markdown | Pipeline hierarchy, reference-list treatment, and animation fixes |
 
 **Site-wide** — information architecture, affordance and pattern consistency
 across all 8 routes:
@@ -35,17 +47,20 @@ across all 8 routes:
 
 | File | Kind | Covers |
 |------|------|--------|
-| [`spacing-type-and-captures.md`](spacing-type-and-captures.md) | Markdown | The write-up for both artefacts below — evidence, tokens, and the layout recommendation |
+| [`spacing-type-and-captures.md`](spacing-type-and-captures.md) | Markdown | Supporting spacing, leading, tracking, and legibility evidence; its captures recommendation is superseded |
 | [`spacing-type-system.html`](spacing-type-system.html) | Interactive | Spacing and type tokens, with the operator-skills section rendered live from them |
-| [`captures-layout.html`](captures-layout.html) | Interactive | Four layouts for the captures section, measured, recommending option D |
-| [`captures-story-plan.md`](captures-story-plan.md) | Markdown | Coding-ready handoff: restructure the captures section as a guided timeline with a plain-language narrator, full copy deck included |
+| [`captures-layout.html`](captures-layout.html) | Historical interactive exploration | Four measured gallery layouts; option D was later superseded by the guided-session direction |
 
-The HTML files are self-contained — no build step, no network requests, no
-dependencies. Open them directly in a browser, or serve the folder:
+The early HTML prototypes are self-contained and can be opened directly. The
+preserved full-page mock is a small static bundle with local CSS and fonts; serve
+its snapshot folder as the HTTP root:
 
 ```bash
-npx serve docs/ux-review -l 4400
+python3 -m http.server 4601 \
+  --directory docs/ux-review/mocks/devague/2026-07-21-review-style
 ```
+
+Then open <http://localhost:4601/agents/devague/>.
 
 Each one copies the site's own token values verbatim from
 `site-astro/src/styles/global.css`. No artefact introduces a colour, font, radius
@@ -57,22 +72,20 @@ as proposed and shown against the current value it replaces.
 
 For a maintainer or an agent picking this up cold:
 
-1. `findings.md` — the summary table alone gives the shape of it.
-2. `agents-directory.html` — the highest-value change, and the one with the
-   smallest diff. Findings 1 and 2 share a fix that costs one derived boolean.
-3. `agent-page-scaling.md` — the finding that compounds. Cheaper to act on before
-   the fifth agent page than after.
-4. `spacing-type-and-captures.md` and its two artefacts, which are narrower,
-   measured against `/agents/devague/`, and can be picked up independently of
-   everything above.
+1. `current-direction.md` — the precedence and status map.
+2. The preserved full-page Devague mock — the latest integrated visual state.
+3. `captures-story-plan.md` and `pipeline-layout-plan.md` — the implementation
+   handoffs, including the pipeline work requested after the final mock render.
+4. `findings.md` — the measured baseline and verified strengths.
+5. `agents-directory.html` and `agent-page-scaling.md` — independent site-wide
+   proposals not superseded by the Devague work.
+6. The spacing/type and captures explorations when their rationale is needed.
 
-The two halves reach the same conclusion from opposite ends. The site-wide audit
-finds the pattern library drifting because it is copied per page
-(`agent-page-scaling.md`); the section-level work finds spacing drifting because
-it is `em`-derived rather than tokenised (`spacing-type-and-captures.md`). Both
-are the same class of problem — a value that is re-decided in each new place
-instead of being defined once — and the fixes are complementary rather than
-overlapping.
+The site-wide audit finds the pattern library drifting because it is copied per
+page (`agent-page-scaling.md`); the section-level work finds spacing drifting
+because it is `em`-derived rather than tokenised
+(`spacing-type-and-captures.md`). The later Devague work turns those observations
+into a concrete page direction without making either diagnosis obsolete.
 
 ## What has and has not been verified
 

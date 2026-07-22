@@ -3,7 +3,9 @@
 A coding-ready plan for restructuring the "Real captures" section of
 `/agents/devague/` so a non-technical reader can follow the story the
 transcripts tell. Direction and copy were agreed in review; this document is
-the handoff. No code in this plan has been applied to the site.
+the handoff. The complete treatment is preserved in the
+[21 July full-page mock](mocks/devague/2026-07-21-review-style/README.md).
+No code in this plan has been applied to the site.
 
 ## The problem, in one paragraph
 
@@ -111,8 +113,10 @@ lines.
 - Section rewrite in `devague.astro`: the five `term-grid` wrappers are
   replaced by the three session blocks. The pane components and their props
   are unchanged.
-- The transcript modal (already prototyped in review): frosted light
-  backdrop `rgba(244,245,251,.72)` with `blur(10px) saturate(140%)` (include
+- The transcript modal (retained in the
+  [full-page mock](mocks/devague/2026-07-21-review-style/README.md)):
+  frosted light backdrop `rgba(244,245,251,.72)` with
+  `blur(10px) saturate(140%)` (include
   the `-webkit-backdrop-filter` prefix — without it Safari renders no blur),
   panel `min-height: min(28rem, 70vh)`, `max-height: 86vh`, `role="dialog"`,
   `aria-modal`, focus to close button and back to the trigger, Escape and

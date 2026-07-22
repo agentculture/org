@@ -18,23 +18,29 @@ that later work superseded.
 When two documents disagree, use this order:
 
 1. This current-direction map for status and precedence.
-2. The two current Devague handoffs:
+2. The [preserved full-page Devague mock](mocks/devague/2026-07-21-review-style/README.md)
+   for the last successfully rendered integrated composition.
+3. The two current Devague handoffs:
    [`captures-story-plan.md`](captures-story-plan.md) and
    [`pipeline-layout-plan.md`](pipeline-layout-plan.md).
-3. The original audit for measured evidence:
+4. The original audit for measured evidence:
    [`findings.md`](findings.md).
-4. Earlier interactive explorations for rationale, not implementation
+5. Earlier interactive explorations for rationale, not implementation
    authority.
 
-The full-page Devague review mock referenced by the later handoffs is not
-retained as a file in this worktree. The two handoff plans are therefore the
-canonical repository record of the decisions made in that mock.
+The full-page Devague review mock is retained in this worktree. Its HTML and
+assets match the final successful Claude render; its page CSS contains one
+documented, branch-only repair for the diagram's responsive layout. This map and
+the snapshot manifest also record two pipeline requests made after the Claude
+render. Where the snapshot and a handoff differ, use the snapshot as visual
+evidence and the handoff as the intended implementation direction.
 
 ## Artefact status
 
 | Artefact | Status | How to use it now |
 |---|---|---|
 | `current-direction.md` | Current map | Start here for precedence and scope. |
+| [Devague full-page mock](mocks/devague/2026-07-21-review-style/README.md) | Latest retained mock | Review the complete composition, interactions, and responsive diagram repair. The manifest records the final pipeline requests that did not land in the Claude render. |
 | [`captures-story-plan.md`](captures-story-plan.md) | Current handoff | Governs the Devague real-captures redesign. |
 | [`pipeline-layout-plan.md`](pipeline-layout-plan.md) | Current handoff | Governs the Devague pipeline layout and animation fixes. |
 | [`agents-directory.html`](agents-directory.html) | Current independent proposal | The directory affordance and wayfinding work remains valid; the Devague mock does not supersede it. |
@@ -43,7 +49,7 @@ canonical repository record of the decisions made in that mock.
 | [`spacing-type-system.html`](spacing-type-system.html) | Supporting prototype | Demonstrates the proposed rhythm system; it is not an approved global token migration by itself. |
 | [`captures-layout.html`](captures-layout.html) | Superseded exploration | Retain the four-option comparison and measurements as rationale. Do not implement option D as the final captures experience. |
 | [`findings.md`](findings.md) | Baseline snapshot | A measured audit of `d71a719`, not a current backlog in priority order. |
-| [`README.md`](README.md) | Original review guide | Useful as an index to the first review; use this document for the later status overlay. |
+| [`README.md`](README.md) | Master index | Inventory, reading order, and run instructions for the complete UX-review branch. |
 
 ## Current Devague direction
 
@@ -66,6 +72,12 @@ retellings of the same material.
 
 The current handoff keeps pipeline copy unchanged. Two possible copy reductions
 remain human decisions and are listed under [Open decisions](#open-decisions).
+
+The retained composition stops at the last successful 21:11 Claude render; the
+branch adds only the responsive diagram repair documented in its manifest. The
+subsequent requests to restore the pipeline eyebrow and original animation are
+not visible there; they remain implementation work rather than a reason to
+discard the snapshot.
 
 ### The real captures
 
@@ -154,10 +166,7 @@ plan:
    operator-skills section own it, leaving the pipeline with three engine-level
    summaries.
 2. Whether to reduce the eight-line flow caption to one or two sentences.
-3. Whether to retain a complete, reviewable full-page Devague mock in the repo
-   before implementation, or use the two written handoffs as the sole source of
-   truth.
-4. Where the directory and shared agent-page work sit relative to the Devague
+3. Where the directory and shared agent-page work sit relative to the Devague
    implementation in delivery order.
 
 ## Implementation boundary
@@ -173,9 +182,10 @@ accessibility, responsive, theme, no-JavaScript, and reduced-motion checks.
 ## Suggested reading order
 
 1. This document.
-2. [`captures-story-plan.md`](captures-story-plan.md).
-3. [`pipeline-layout-plan.md`](pipeline-layout-plan.md).
-4. [`findings.md`](findings.md), for the measured baseline and verified
+2. The [preserved full-page Devague mock](mocks/devague/2026-07-21-review-style/README.md).
+3. [`captures-story-plan.md`](captures-story-plan.md).
+4. [`pipeline-layout-plan.md`](pipeline-layout-plan.md).
+5. [`findings.md`](findings.md), for the measured baseline and verified
    strengths.
-5. The relevant supporting prototype or architecture note only when its topic
+6. The relevant supporting prototype or architecture note only when its topic
    is being implemented.
