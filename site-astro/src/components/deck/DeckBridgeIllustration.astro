@@ -1,0 +1,429 @@
+---
+// DeckBridgeIllustration — the slide-1 hero visual for the anchor conference
+// talk: an *agent* hands an intent *across a stable interface* into a *robot*.
+// Left, an intelligence (a small breathing mesh cluster, echoing the org
+// mark); centre, the stable CLI boundary drawn as a lit pillar the hand-off
+// crosses; right, a friendly robot that lights up as the intent arrives. A
+// flow of pulses travels the connector agent -> boundary -> robot, and a
+// single "intent" token rests on the seam — the hand-off itself.
+//
+// PROPS API
+//   title?: string  — the SVG's accessible name (role="img" <title>).
+//                      Default: a one-line description of the hand-off.
+//   desc?:  string  — the long screen-reader description (<desc>).
+//                      Default: narrates agent -> interface -> robot in full.
+// No other props: this is a fixed composition. It renders standalone.
+//
+// CONSUMER: the deck renderer (wave-2 task t5) embeds this as slide 1's hero
+// image; it is self-contained inline SVG (no external asset, no script).
+//
+// THEMING: rides the site palette custom properties from src/styles/global.css
+// (--surface, --line, --ink, --ink-soft, --accent, --accent-strong,
+// --mesh-node, --mesh-halo, --font-mono, --radius), so both dawn themes stay
+// legible. role="img" + aria-labelledby wire the <title>/<desc> pair.
+//
+// MOTION: mesh nodes breathe, the pulse-flow crosses the boundary, the intent
+// token pulses on the seam, and the robot's antennas sway over a breathing
+// glow ring — transform/opacity only, each gated behind
+// (prefers-reduced-motion: no-preference). The resting scene (motion off) is
+// the complete image: a lit trail from agent to robot, token on the seam, and
+// a lit robot. The SVG is authored inline in this template (not injected via
+// set:html), so Astro's scoped styles reach every child element directly — no
+// :global() needed, unlike the set:html terminal components.
+
+interface Props {
+  title?: string;
+  desc?: string;
+}
+
+const {
+  title = "An agent hands an intent across a stable interface into a robot",
+  desc = "Left to right, three zones tell one story. On the left, an intelligence — drawn as a small constellation of three linked, gently breathing nodes, the AgentCulture mesh mark — stands for any agent or model. In the centre, a tall lit pillar is the stable CLI interface: the boundary the hand-off must cross. On the right, a friendly robot with two antennas and a softly glowing head stands for any body. A trail of pulses flows from the intelligence, through the pillar, to the robot, and a single rounded intent token rests on the pillar's seam — the moment of hand-off. The intelligence and the robot are interchangeable; the interface between them is what stays fixed.",
+} = Astro.props;
+
+// Unique id suffix so multiple instances on one page never collide on the
+// aria-labelledby target ids.
+const uid = "bridge-" + Math.random().toString(36).slice(2, 9);
+const titleId = `${uid}-title`;
+const descId = `${uid}-desc`;
+---
+
+<figure class="bridge">
+  <div class="bridge-viewport">
+    <svg
+      viewBox="0 0 1000 470"
+      fill="none"
+      role="img"
+      aria-labelledby={`${titleId} ${descId}`}
+    >
+      <title id={titleId}>{title}</title>
+      <desc id={descId}>{desc}</desc>
+
+      <defs>
+        <radialGradient id={`${uid}-halo`}>
+          <stop offset="0%" stop-color="var(--mesh-halo)"></stop>
+          <stop offset="100%" stop-color="var(--mesh-halo)" stop-opacity="0"></stop>
+        </radialGradient>
+        <radialGradient id={`${uid}-glow`}>
+          <stop offset="0%" stop-color="var(--mesh-halo-alt)"></stop>
+          <stop offset="100%" stop-color="var(--mesh-halo-alt)" stop-opacity="0"></stop>
+        </radialGradient>
+        <marker
+          id={`${uid}-arrow`}
+          viewBox="0 0 10 10"
+          refX="8"
+          refY="5"
+          markerWidth="7"
+          markerHeight="7"
+          orient="auto-start-reverse"
+        >
+          <path d="M0 0 L10 5 L0 10 Z" class="arrow-head"></path>
+        </marker>
+      </defs>
+
+      <!-- ===================== the connector, drawn first (behind) ==================== -->
+      <!-- a gentle S-curve from the intelligence, through the pillar seam, to
+           the robot head; the pillar is painted on top so the line reads as
+           crossing the boundary. -->
+      <path
+        class="bridge-line"
+        d="M232 232 C 330 180, 405 180, 500 232 S 685 292, 758 244"
+        marker-end={`url(#${uid}-arrow)`}
+      ></path>
+
+      <!-- pulses travelling agent -> robot: a staggered opacity+scale wave -->
+      <g class="flow" aria-hidden="true">
+        <circle class="pulse" style="--pd: 0s" cx="300" cy="196" r="6.5"></circle>
+        <circle class="pulse" style="--pd: 0.28s" cx="372" cy="182" r="6.5"></circle>
+        <circle class="pulse" style="--pd: 0.56s" cx="440" cy="196" r="6.5"></circle>
+        <circle class="pulse" style="--pd: 0.98s" cx="560" cy="268" r="6.5"></circle>
+        <circle class="pulse" style="--pd: 1.26s" cx="632" cy="278" r="6.5"></circle>
+        <circle class="pulse" style="--pd: 1.54s" cx="702" cy="262" r="6.5"></circle>
+      </g>
+
+      <!-- ===================== left: the intelligence (mesh cluster) ==================== -->
+      <g class="agent">
+        <circle class="agent-halo" cx="176" cy="212" r="86" fill={`url(#${uid}-halo)`}></circle>
+        <!-- two threads (echoing Mark.astro) -->
+        <path
+          class="agent-thread"
+          d="M120 260 Q 156 214 178 150 M178 150 Q 210 200 244 224"
+        ></path>
+        <circle class="agent-node" style="--bd: 0s" cx="120" cy="260" r="10"></circle>
+        <circle class="agent-node" style="--bd: -1.6s" cx="178" cy="150" r="13"></circle>
+        <circle class="agent-node" style="--bd: -3s" cx="244" cy="224" r="8.5"></circle>
+      </g>
+
+      <!-- ===================== centre: the stable interface pillar ==================== -->
+      <g class="interface">
+        <rect class="pillar" x="454" y="96" width="92" height="272" rx="26"></rect>
+        <!-- the seam the hand-off crosses -->
+        <line class="seam" x1="500" y1="118" x2="500" y2="346"></line>
+        <!-- contract chevrons, quietly marking a boundary -->
+        <path class="seam-chevron" d="M486 150 L500 162 L486 174"></path>
+        <path class="seam-chevron" d="M486 300 L500 312 L486 324"></path>
+        <!-- the intent token, resting on the seam: the hand-off itself -->
+        <rect class="token" x="482" y="212" width="36" height="36" rx="10"></rect>
+        <circle class="token-core" cx="500" cy="230" r="6.5"></circle>
+      </g>
+
+      <!-- ===================== right: the robot (any body) ==================== -->
+      <g class="robot">
+        <circle class="robot-glow" cx="820" cy="206" r="104" fill={`url(#${uid}-glow)`}></circle>
+
+        <!-- antennas: thin stalks with ball tips, gently swaying -->
+        <g class="antenna antenna-l">
+          <line class="antenna-stalk" x1="792" y1="156" x2="780" y2="112"></line>
+          <circle class="antenna-tip" cx="778" cy="106" r="9"></circle>
+        </g>
+        <g class="antenna antenna-r">
+          <line class="antenna-stalk" x1="848" y1="156" x2="860" y2="112"></line>
+          <circle class="antenna-tip" cx="862" cy="106" r="9"></circle>
+        </g>
+
+        <!-- body base -->
+        <path class="robot-body" d="M770 300 Q770 268 820 268 Q870 268 870 300 L882 344 Q820 360 758 344 Z"></path>
+        <!-- head -->
+        <circle class="robot-head" cx="820" cy="206" r="58"></circle>
+        <!-- visor -->
+        <rect class="robot-visor" x="788" y="190" width="64" height="32" rx="16"></rect>
+        <circle class="robot-eye" cx="806" cy="206" r="6"></circle>
+        <circle class="robot-eye" cx="834" cy="206" r="6"></circle>
+      </g>
+
+      <!-- ===================== labels ==================== -->
+      <g class="labels" aria-hidden="true">
+        <text class="label" x="176" y="426">AGENT</text>
+        <text class="sub" x="176" y="448">any intelligence</text>
+
+        <text class="label" x="500" y="426">INTERFACE</text>
+        <text class="sub" x="500" y="448">stable CLI boundary</text>
+
+        <text class="label" x="820" y="426">ROBOT</text>
+        <text class="sub" x="820" y="448">any body</text>
+      </g>
+    </svg>
+  </div>
+</figure>
+
+<style>
+  .bridge {
+    margin: 0;
+  }
+
+  .bridge-viewport {
+    overflow-x: auto;
+    border-radius: var(--radius);
+    scrollbar-color: var(--line) transparent;
+  }
+
+  .bridge-viewport svg {
+    width: 100%;
+    min-width: 34rem;
+    height: auto;
+  }
+
+  text {
+    font-family: var(--font-mono);
+    text-anchor: middle;
+  }
+
+  /* ---------- connector + flow ---------- */
+
+  .bridge-line {
+    fill: none;
+    stroke: var(--accent-strong);
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    opacity: 0.85;
+  }
+
+  .arrow-head {
+    fill: var(--accent-strong);
+  }
+
+  .pulse {
+    fill: var(--accent-strong);
+    opacity: 0.55;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  /* ---------- the intelligence ---------- */
+
+  .agent-halo {
+    opacity: 0.7;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .agent-thread {
+    fill: none;
+    stroke: var(--mesh-thread);
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+
+  .agent-node {
+    fill: var(--mesh-node);
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  /* ---------- the interface ---------- */
+
+  .pillar {
+    fill: color-mix(in srgb, var(--accent) 12%, var(--surface));
+    stroke: var(--accent-strong);
+    stroke-width: 2.6;
+  }
+
+  .seam {
+    stroke: var(--accent-strong);
+    stroke-width: 1.6;
+    stroke-dasharray: 3 7;
+    opacity: 0.7;
+  }
+
+  .seam-chevron {
+    fill: none;
+    stroke: var(--accent-strong);
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.6;
+  }
+
+  .token {
+    fill: color-mix(in srgb, var(--accent) 30%, var(--surface));
+    stroke: var(--accent-strong);
+    stroke-width: 2.2;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .token-core {
+    fill: var(--accent-strong);
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  /* ---------- the robot ---------- */
+
+  .robot-glow {
+    opacity: 0.65;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .robot-body {
+    fill: color-mix(in srgb, var(--surface) 88%, var(--ink));
+    stroke: var(--ink);
+    stroke-width: 2.4;
+    stroke-linejoin: round;
+  }
+
+  .robot-head {
+    fill: color-mix(in srgb, var(--surface) 92%, var(--accent));
+    stroke: var(--ink);
+    stroke-width: 2.6;
+  }
+
+  .robot-visor {
+    fill: color-mix(in srgb, var(--accent) 22%, var(--surface));
+    stroke: var(--accent-strong);
+    stroke-width: 1.8;
+  }
+
+  .robot-eye {
+    fill: var(--accent-strong);
+  }
+
+  .antenna-stalk {
+    stroke: var(--ink);
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+
+  .antenna-tip {
+    fill: var(--accent-strong);
+  }
+
+  .antenna {
+    transform-box: fill-box;
+    transform-origin: bottom center;
+  }
+
+  /* ---------- labels ---------- */
+
+  .label {
+    fill: var(--ink);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+  }
+
+  .sub {
+    fill: var(--ink-soft);
+    font-size: 14px;
+    letter-spacing: 0.02em;
+  }
+
+  /* ---------- motion (only when the viewer allows it) ---------- */
+
+  @media (prefers-reduced-motion: no-preference) {
+    .agent-node {
+      animation: bridge-node-breathe 8s var(--ease-gentle, ease-in-out) infinite alternate;
+      animation-delay: var(--bd, 0s);
+    }
+
+    .agent-halo,
+    .robot-glow {
+      animation: bridge-glow-breathe 11s var(--ease-gentle, ease-in-out) infinite alternate;
+    }
+
+    .robot-glow {
+      animation-duration: 9s;
+    }
+
+    .pulse {
+      animation: bridge-pulse 3.6s var(--ease-gentle, ease-in-out) infinite;
+      animation-delay: var(--pd, 0s);
+    }
+
+    .token,
+    .token-core {
+      animation: bridge-token 3.4s var(--ease-gentle, ease-in-out) infinite alternate;
+    }
+
+    .antenna-l {
+      animation: bridge-sway-l 5.5s var(--ease-gentle, ease-in-out) infinite alternate;
+    }
+
+    .antenna-r {
+      animation: bridge-sway-r 6.2s var(--ease-gentle, ease-in-out) infinite alternate;
+    }
+  }
+
+  @keyframes bridge-node-breathe {
+    from {
+      transform: scale(1);
+      opacity: 0.82;
+    }
+    to {
+      transform: scale(1.1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes bridge-glow-breathe {
+    from {
+      transform: scale(1);
+      opacity: 0.5;
+    }
+    to {
+      transform: scale(1.1);
+      opacity: 0.85;
+    }
+  }
+
+  @keyframes bridge-pulse {
+    0%,
+    70%,
+    100% {
+      opacity: 0.5;
+      transform: scale(1);
+    }
+    20% {
+      opacity: 1;
+      transform: scale(1.5);
+    }
+  }
+
+  @keyframes bridge-token {
+    from {
+      transform: scale(1);
+    }
+    to {
+      transform: scale(1.12);
+    }
+  }
+
+  @keyframes bridge-sway-l {
+    from {
+      transform: rotate(-5deg);
+    }
+    to {
+      transform: rotate(3deg);
+    }
+  }
+
+  @keyframes bridge-sway-r {
+    from {
+      transform: rotate(5deg);
+    }
+    to {
+      transform: rotate(-3deg);
+    }
+  }
+</style>
