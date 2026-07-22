@@ -1,0 +1,522 @@
+---
+// DeckSituationVignettes — two framed "situation" cards for the autonomy
+// slide of the anchor talk. They sit in a triptych whose third cell is a real
+// robot photo, so each is a full, captioned, photo-weight panel (not a small
+// glyph): a framed scene above a caption strip.
+//
+//   • "disconnected" — the link to the agent is severed (a broken, sparking
+//                      dashed line with a clear gap) yet the robot stays lit
+//                      and active inside a turning runtime loop: behavior
+//                      continues.
+//   • "routine"      — no model is attached (an empty, dashed agent slot),
+//                      and the robot runs a steady cycle above an even
+//                      heartbeat line: steady operation, no model required.
+//
+// PROPS API
+//   situation: "disconnected" | "routine"   (required) — which vignette.
+//   title?:    string  — overrides the SVG's accessible name (role="img"
+//                        <title>). Default: a one-line description of the
+//                        situation.
+//   desc?:     string  — overrides the long screen-reader <desc>. Default:
+//                        narrates the full scene for the chosen situation.
+//
+// CONSUMER: the deck renderer (wave-2 task t5) places the two vignettes as
+// cells 1 and 2 of the autonomy triptych, matching the third (photo) cell's
+// weight. Self-contained inline SVG — no external asset, no script.
+//
+// THEMING: site palette custom properties from src/styles/global.css
+// (--surface, --line, --ink, --ink-soft, --accent, --accent-strong,
+// --mesh-halo, --mesh-halo-alt, --font-display, --font-mono, --radius), so
+// both dawn themes stay legible. MOTION: the robot stays alive (glow breathes,
+// antennas sway) while the situation-specific motif animates — the runtime
+// loop pulses (disconnected), the cycle arrow turns and the heartbeat blips
+// (routine); the break sparks. All transform/opacity, each gated behind
+// (prefers-reduced-motion: no-preference). The resting scene (motion off) is
+// the complete, legible image. SVG is authored inline here (not set:html), so
+// this component's scoped styles reach every child directly.
+
+type Situation = "disconnected" | "routine";
+
+interface Props {
+  situation: Situation;
+  title?: string;
+  desc?: string;
+}
+
+const { situation, title, desc } = Astro.props;
+
+const COPY: Record<
+  Situation,
+  { kicker: string; heading: string; line: string; title: string; desc: string }
+> = {
+  disconnected: {
+    kicker: "AUTONOMY",
+    heading: "Disconnected",
+    line: "Link severed — the behavior continues.",
+    title:
+      "Disconnected: the link to the agent is severed, and the robot's behavior continues",
+    desc: "On the left, a dimmed agent chip is cut off — the connection to it is drawn as a broken, dashed line with a clear gap and a small spark at the break. On the right, the robot is fully lit and active, wrapped in a glowing runtime loop that keeps turning: its behavior continues without any agent attached.",
+  },
+  routine: {
+    kicker: "AUTONOMY",
+    heading: "Routine",
+    line: "Steady operation — no model required.",
+    title:
+      "Routine: the robot runs steady, cyclic operation with no model attached",
+    desc: "An empty, dashed agent slot marks that no model is attached. The robot runs a steady cycle, wrapped in a slowly turning loop arrow, above a regular, even heartbeat line — steady, routine operation that needs no model.",
+  },
+};
+
+const copy = COPY[situation];
+const accTitle = title ?? copy.title;
+const accDesc = desc ?? copy.desc;
+
+// Deterministic id: random ids at build time make every `astro build` emit a
+// different dist (PR #24 review). Each situation renders at most once per
+// page, so the situation name keys the aria-labelledby target ids.
+const uid = `vignette-${situation}`;
+const titleId = `${uid}-title`;
+const descId = `${uid}-desc`;
+---
+
+<figure class:list={["vignette", `vignette-${situation}`]}>
+  <svg
+    viewBox="0 0 640 720"
+    fill="none"
+    role="img"
+    aria-labelledby={`${titleId} ${descId}`}
+  >
+    <title id={titleId}>{accTitle}</title>
+    <desc id={descId}>{accDesc}</desc>
+
+    <defs>
+      <radialGradient id={`${uid}-glow`}>
+        <stop offset="0%" stop-color="var(--mesh-halo)"></stop>
+        <stop offset="100%" stop-color="var(--mesh-halo)" stop-opacity="0"></stop>
+      </radialGradient>
+      <marker
+        id={`${uid}-arrow`}
+        viewBox="0 0 10 10"
+        refX="8"
+        refY="5"
+        markerWidth="7"
+        markerHeight="7"
+        orient="auto-start-reverse"
+      >
+        <path d="M0 0 L10 5 L0 10 Z" class="arrow-head"></path>
+      </marker>
+    </defs>
+
+    <!-- framed panel: photo-weight -->
+    <rect class="panel" x="10" y="10" width="620" height="700" rx="30"></rect>
+
+    <!-- shared glow behind the robot -->
+    <circle class="robot-glow" cx="446" cy="300" r="120" fill={`url(#${uid}-glow)`}></circle>
+
+    {
+      situation === "disconnected" && (
+        <g class="scene" aria-hidden="true">
+          {/* dimmed, cut-off agent chip */}
+          <g class="agent-off">
+            <rect x="48" y="118" width="196" height="120" rx="18" class="agent-chip" />
+            <text x="146" y="166" class="chip-title">AGENT</text>
+            <text x="146" y="192" class="chip-note">model</text>
+            <text x="146" y="214" class="chip-note">offline</text>
+          </g>
+
+          {/* the severed link: two dashed segments with a clear gap */}
+          <path class="link-live" d="M244 182 L318 244" />
+          <path class="link-dead" d="M356 276 L384 300" />
+
+          {/* the break: a spark at the gap */}
+          <g class="break">
+            <path class="spark-bolt" d="M334 250 L326 266 L340 266 L332 282" />
+            <line class="spark-tick" x1="316" y1="256" x2="306" y2="250" />
+            <line class="spark-tick" x1="352" y1="270" x2="362" y2="276" />
+          </g>
+
+          {/* runtime loop: still turning around the robot */}
+          <path
+            class="runtime-loop"
+            d="M494 217 A 96 96 0 1 1 398 217"
+            marker-end={`url(#${uid}-arrow)`}
+          />
+        </g>
+      )
+    }
+
+    {
+      situation === "routine" && (
+        <g class="scene" aria-hidden="true">
+          {/* empty, dashed agent slot — no model attached */}
+          <g class="agent-empty">
+            <rect x="48" y="118" width="196" height="120" rx="18" class="agent-slot" />
+            <g class="no-mark">
+              <circle cx="146" cy="152" r="14" />
+              <line x1="136" y1="142" x2="156" y2="162" />
+            </g>
+            <text x="146" y="196" class="chip-title">NO AGENT</text>
+            <text x="146" y="220" class="chip-note">no model required</text>
+          </g>
+
+          {/* cycle arrow: the steady routine, slowly turning */}
+          <path
+            class="cycle"
+            d="M494 217 A 96 96 0 1 1 398 217"
+            marker-end={`url(#${uid}-arrow)`}
+          />
+
+          {/* steady heartbeat line */}
+          <path
+            class="heartbeat"
+            d="M60 500 H150 l10 -30 l10 30 H300 l10 -30 l10 30 H450 l10 -30 l10 30 H580"
+          />
+          <circle class="blip" cx="310" cy="470" r="6"></circle>
+        </g>
+      )
+    }
+
+    <!-- shared robot: lit and alive in both situations -->
+    <g class="robot">
+      <g class="antenna antenna-l">
+        <line class="antenna-stalk" x1="424" y1="246" x2="412" y2="204"></line>
+        <circle class="antenna-tip" cx="409" cy="197" r="8"></circle>
+      </g>
+      <g class="antenna antenna-r">
+        <line class="antenna-stalk" x1="468" y1="246" x2="480" y2="204"></line>
+        <circle class="antenna-tip" cx="483" cy="197" r="8"></circle>
+      </g>
+
+      <path
+        class="robot-body"
+        d="M402 350 Q402 320 446 320 Q490 320 490 350 L500 394 Q446 408 392 394 Z"
+      ></path>
+      <circle class="robot-head" cx="446" cy="300" r="60"></circle>
+      <rect class="robot-visor" x="412" y="284" width="68" height="34" rx="17"></rect>
+      <circle class="robot-eye" cx="430" cy="300" r="6"></circle>
+      <circle class="robot-eye" cx="462" cy="300" r="6"></circle>
+    </g>
+
+    <!-- caption strip -->
+    <line class="divider" x1="44" y1="588" x2="596" y2="588"></line>
+    <g class="caption" aria-hidden="true">
+      <text x="44" y="628" class="kicker">{copy.kicker}</text>
+      <text x="44" y="666" class="heading">{copy.heading}</text>
+      <text x="44" y="694" class="cap-line">{copy.line}</text>
+    </g>
+  </svg>
+</figure>
+
+<style>
+  .vignette {
+    margin: 0;
+  }
+
+  .vignette svg {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+  }
+
+  text {
+    font-family: var(--font-mono);
+  }
+
+  /* ---------- frame ---------- */
+
+  .panel {
+    fill: color-mix(in srgb, var(--surface) 90%, transparent);
+    stroke: var(--line);
+    stroke-width: 1.8;
+  }
+
+  .divider {
+    stroke: var(--line);
+    stroke-width: 1.4;
+  }
+
+  /* ---------- agent chip / slot ---------- */
+
+  .agent-chip {
+    fill: color-mix(in srgb, var(--surface) 70%, transparent);
+    stroke: var(--line);
+    stroke-width: 1.8;
+    stroke-dasharray: 7 6;
+    opacity: 0.55;
+  }
+
+  .agent-slot {
+    fill: none;
+    stroke: var(--ink-soft);
+    stroke-width: 1.8;
+    stroke-dasharray: 7 6;
+    opacity: 0.6;
+  }
+
+  .no-mark circle {
+    fill: none;
+    stroke: var(--ink-soft);
+    stroke-width: 2.4;
+  }
+
+  .no-mark line {
+    stroke: var(--ink-soft);
+    stroke-width: 2.4;
+    stroke-linecap: round;
+  }
+
+  .agent-off {
+    opacity: 0.7;
+  }
+
+  .chip-title {
+    fill: var(--ink);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-anchor: middle;
+  }
+
+  .chip-note {
+    fill: var(--ink-soft);
+    font-size: 14px;
+    text-anchor: middle;
+  }
+
+  /* ---------- severed link + break ---------- */
+
+  .link-live,
+  .link-dead {
+    fill: none;
+    stroke: var(--ink-soft);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-dasharray: 6 7;
+  }
+
+  .link-dead {
+    opacity: 0.5;
+  }
+
+  .spark-bolt {
+    fill: none;
+    stroke: var(--accent-strong);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .spark-tick {
+    stroke: var(--accent-strong);
+    stroke-width: 2.6;
+    stroke-linecap: round;
+  }
+
+  /* ---------- runtime loop / cycle ---------- */
+
+  .runtime-loop,
+  .cycle {
+    fill: none;
+    stroke: var(--accent-strong);
+    stroke-width: 3.2;
+    stroke-linecap: round;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .arrow-head {
+    fill: var(--accent-strong);
+  }
+
+  /* ---------- heartbeat ---------- */
+
+  .heartbeat {
+    fill: none;
+    stroke: var(--accent-strong);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.85;
+  }
+
+  .blip {
+    fill: var(--accent-strong);
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  /* ---------- robot ---------- */
+
+  .robot-glow {
+    opacity: 0.6;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .robot-body {
+    fill: color-mix(in srgb, var(--surface) 86%, var(--ink));
+    stroke: var(--ink);
+    stroke-width: 2.4;
+    stroke-linejoin: round;
+  }
+
+  .robot-head {
+    fill: color-mix(in srgb, var(--surface) 90%, var(--accent));
+    stroke: var(--ink);
+    stroke-width: 2.6;
+  }
+
+  .robot-visor {
+    fill: color-mix(in srgb, var(--accent) 22%, var(--surface));
+    stroke: var(--accent-strong);
+    stroke-width: 1.8;
+  }
+
+  .robot-eye {
+    fill: var(--accent-strong);
+  }
+
+  .antenna-stalk {
+    stroke: var(--ink);
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+
+  .antenna-tip {
+    fill: var(--accent-strong);
+  }
+
+  .antenna {
+    transform-box: fill-box;
+    transform-origin: bottom center;
+  }
+
+  /* ---------- caption ---------- */
+
+  .kicker {
+    fill: var(--ink-soft);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+  }
+
+  .heading {
+    fill: var(--ink);
+    font-family: var(--font-display);
+    font-size: 34px;
+    font-weight: 560;
+  }
+
+  .cap-line {
+    fill: var(--ink-soft);
+    font-size: 17px;
+  }
+
+  /* ---------- motion ---------- */
+
+  @media (prefers-reduced-motion: no-preference) {
+    .robot-glow {
+      animation: vignette-glow 9s var(--ease-gentle, ease-in-out) infinite alternate;
+    }
+
+    .antenna-l {
+      animation: vignette-sway-l 5.5s var(--ease-gentle, ease-in-out) infinite alternate;
+    }
+
+    .antenna-r {
+      animation: vignette-sway-r 6.3s var(--ease-gentle, ease-in-out) infinite alternate;
+    }
+
+    .runtime-loop {
+      animation: vignette-loop-pulse 3.6s var(--ease-gentle, ease-in-out) infinite alternate;
+    }
+
+    .cycle {
+      animation: vignette-spin 16s linear infinite;
+    }
+
+    .spark-bolt {
+      animation: vignette-spark 2.4s steps(1, end) infinite;
+    }
+
+    .blip {
+      animation: vignette-blip 2.2s var(--ease-gentle, ease-in-out) infinite;
+    }
+  }
+
+  @keyframes vignette-glow {
+    from {
+      transform: scale(1);
+      opacity: 0.45;
+    }
+    to {
+      transform: scale(1.08);
+      opacity: 0.72;
+    }
+  }
+
+  @keyframes vignette-sway-l {
+    from {
+      transform: rotate(-5deg);
+    }
+    to {
+      transform: rotate(3deg);
+    }
+  }
+
+  @keyframes vignette-sway-r {
+    from {
+      transform: rotate(5deg);
+    }
+    to {
+      transform: rotate(-3deg);
+    }
+  }
+
+  @keyframes vignette-loop-pulse {
+    from {
+      transform: scale(0.97);
+      opacity: 0.7;
+    }
+    to {
+      transform: scale(1.03);
+      opacity: 1;
+    }
+  }
+
+  @keyframes vignette-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes vignette-spark {
+    0%,
+    55%,
+    100% {
+      opacity: 1;
+    }
+    60%,
+    95% {
+      opacity: 0.25;
+    }
+  }
+
+  @keyframes vignette-blip {
+    0%,
+    70%,
+    100% {
+      transform: scale(1);
+      opacity: 0.7;
+    }
+    18% {
+      transform: scale(1.6);
+      opacity: 1;
+    }
+  }
+</style>

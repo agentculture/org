@@ -1,81 +1,73 @@
 // Slide dataset for the symbolic presentation deck (/presentations/mind-nervous-system-body/).
 //
-// THE REFRAME (org#21): the deck's protagonist flips from "an agent entering
-// a robot" to "a robot architecture that accepts any intelligence". It leads
-// with the operational boundary — an interchangeable, optional agent talking
-// to a stable CLI control plane, in front of a persistent behavior runtime
-// that stays alive with no model attached — rather than the mind/nervous
-// system/body metaphor. That metaphor, and the article's full evidence-pinned
-// beat text, stay put in `mind-nervous-system-body.ts`; this module no longer
-// derives from it and does not carry per-slide evidence ids. Sources are
-// subordinate here: see `deckSources` below (repo homes + one dated note),
-// consumed once on the deck's close slide, never per-slide.
+// SIX-SLIDE SHAPE (org#23): the ten-slide, eight-beat deck (org#21's
+// reframe) compresses into six visual, declarative slides — one hero line
+// each, the architecture diagram kept at the center of the stack slide, and
+// a dual-maturity close. Technical nuance that used to live on-slide (the
+// CLI-vs-runtime contrast table, the 7-line bring-up sequence, the
+// rules.toml excerpt) moves into the speaker's voice or is dropped
+// entirely; nothing is `contrastRows` / `commandLines` / `rulesToml` any
+// more. The mind/nervous-system/body metaphor and the article's full
+// evidence-pinned beat text stay put in `mind-nervous-system-body.ts`; this
+// module still does not derive from it and carries no per-slide evidence
+// ids. Sources stay subordinate: see `deckSources` below (repo homes + one
+// dated note), rendered once on the close slide, never per-slide.
 //
-// DECK SHAPE — at most 8 primary beats (org#21's sequence), at most 10
-// slides total. A beat spans two slides only where a robot photo demands a
-// second slide (Reachy Mini's full stack = beat 5, ARM101's contrast = beat
-// 7); every other beat is exactly one slide. `beat` (1-8) is the field that
-// groups slides into beats — count `new Set(slides.map(s => s.beat)).size`
-// to get the primary-beat count, and `slides.length` for the slide count.
-// The thesis headline sits on slide index 1 (the second slide, id "thesis")
-// and is the verbatim string "A CLI for intelligence. A runtime for
-// embodiment." — downstream tests pin both the position and the exact text.
+// DECK SHAPE — exactly six slides, one per primary beat (`beat` 1-6, in
+// slide order). `slides.length` is always 6.
 //
 // Slide sequence (id · kind · beat):
-//   1. opener                  · opener   · beat 1 — the problem: Model -> SDK
-//      -> motors couples nondeterministic reasoning to hardware ownership.
-//   2. thesis                  · thesis   · beat 2 — the verbatim headline;
-//      names the agent-harness layer (Claude Code / Codex / Colleague /
-//      custom / none) in one line, and that the agent is optional/replaceable.
-//   3. cli-control-plane       · diagram  · beat 3 — the CLI as the robot's
-//      control plane; carries `diagram: true` so the renderer (t6) embeds
-//      the five-layer architecture component (t2) beside the copy. Names all
-//      four control surfaces (rules, actions, ad-hoc operational commands,
-//      daemon or runtime lifecycle) as slide content.
-//   4. runtime-nervous-system  · contrast · beat 4 — the runtime as the
-//      robot's nervous system (senses, rules, intent admission, per-channel
-//      arbitration; 50 Hz ALWAYS labeled design rate); carries the ROS aside
-//      and `contrastRows` (the CLI-vs-runtime table).
-//   5. reachy-mini-stack       · robot    · beat 5 — Reachy Mini as the
-//      complete implementation (hero photo).
-//   6. reachy-mini-commands    · commands · beat 5 — the verbatim bring-up
-//      command sequence (action photo).
-//   7. rules-example           · rules    · beat 6 — a small [[react]] +
-//      [[inhibit]] rules.toml excerpt; the agent authors/selects bounded
-//      rules, the runtime executes them deterministically.
-//   8. arm101-cli-discipline   · robot    · beat 7 — ARM101: same CLI
-//      contract, no shipped runtime (hero photo).
-//   9. arm101-commands         · commands · beat 7 — the verbatim
-//      read/flex/explore command sequence, dry-run vs --apply (action photo).
-//  10. close                   · close    · beat 8 — "Replace the model —
-//      the runtime remains. Replace the robot — the pattern remains."
+//   1. bridge     · bridge   · beat 1 — the CLI as the bridge between an
+//      agent's authored behavior and a robot's owned execution; the
+//      agent -> interface -> robot illustration is a standalone component
+//      (plan task t3), not a dataset field.
+//   2. paths      · paths    · beat 2 — three ways intelligence reaches a
+//      robot today (coded behavior, learned policy, agent tools) via
+//      `columns`; none of them draws a stable boundary.
+//   3. stack      · stack    · beat 3 — carries `diagram: true` so the
+//      renderer embeds the five-layer architecture component beside the
+//      copy; the agent stays above the CLI line, execution stays below it.
+//   4. surfaces   · surfaces · beat 4 — Reachy Mini's runtime opened to
+//      coder agents across three `labels` (configure, command ad hoc,
+//      observe/repair); carries the reachy-mini-action photo.
+//   5. autonomy   · autonomy · beat 5 — three `situations` the robot faces
+//      without the agent (stuck, disconnected, routine operation); only
+//      "Stuck" carries a photo (so101-action) — the other two are
+//      photo-free.
+//   6. close      · close    · beat 6 — the verbatim thesis as `bottomLine`;
+//      a `robots` field carries both maturity levels side by side (Reachy
+//      Mini's complete native-runtime pattern, ARM101's in-progress
+//      contract), one command each, both hero photos.
 //
 // Photo slots: each of the four `PhotoSlotId`s (reachy-mini-hero,
-// reachy-mini-action, so101-hero, so101-action) is referenced EXACTLY once,
-// on slides 5/6 and 8/9 respectively.
+// reachy-mini-action, so101-hero, so101-action) is referenced EXACTLY once —
+// reachy-mini-action on "surfaces", so101-action on "autonomy"'s "Stuck"
+// situation, and both hero slots on "close" (one per robot entry).
 //
 // Terminology discipline (never conflate): "behavior engine" / "behavior
 // runtime" / "runtime" name the fixed-rate symbolic loop; "daemon" names only
-// the lower-level `reachy-mini-daemon` device service. ARM101 slides never
-// draw or claim a persistent runtime — only the CLI contract (JSON output,
-// dry-run unless --apply, torque ownership, overload-aware motion).
+// the lower-level `reachy-mini-daemon` device service. ARM101 copy never
+// claims a shipped or persistent runtime — only the CLI contract (JSON
+// output, dry-run unless --apply, torque ownership, overload-aware motion)
+// and that persistent behavior is a direction, not a shipped state. Any
+// "50 Hz" mention must stay qualified as "design rate".
 //
 // `DeckSlide` fields, by kind:
-//   - id/kind/beat/eyebrow/headline/spokenLine — present on every slide.
-//     `headline` is a few words (verbatim on slides 2 and 10, per org#21);
-//     `spokenLine` is the speaker's cue, at most 2 sentences, never a
-//     paragraph.
-//   - robot?/photoId? — present when the slide anchors one robot's photo
-//     slot (kind "robot" and the two robot-scoped "commands" slides here).
-//   - diagram? — `true` only on the "diagram"-kind slide; tells the renderer
-//     to embed the five-layer architecture component next to the copy.
-//   - contrastRows? — present only on the "contrast"-kind slide; a short
-//     CLI-vs-runtime table (`ContrastRow[]`).
-//   - commandLines? — present only on "commands"-kind slides; the verbatim
-//     CLI invocations to render in an ordered code block, one per line.
-//   - rulesToml? — present only on the "rules"-kind slide; a verbatim
-//     rules.toml excerpt (`[[react]]` + `[[inhibit]]`) to render in a code
-//     block.
+//   - id/kind/beat/eyebrow/headline/spokenLine/bottomLine — present on every
+//     slide. `headline` is the on-slide hero line; `bottomLine` is the
+//     closing declarative line rendered beneath it (verbatim thesis on
+//     "close"); `spokenLine` is the speaker's cue, at most 4 sentences.
+//   - columns? — present only on "paths": the three intelligence-path
+//     columns (`DeckPathColumn[]`).
+//   - diagram? — present only on "stack": tells the renderer to embed the
+//     five-layer architecture component.
+//   - labels?/robot?/photoId? — present only on "surfaces": the three
+//     runtime-surface labels plus the one robot photo this slide anchors.
+//   - situations? — present only on "autonomy": three `DeckAutonomySituation`
+//     entries, in order; only one carries `robot`/`photoId`.
+//   - robots? — present only on "close": two `DeckCloseRobot` entries, one
+//     per robot, each with its own photo, maturity status, traits, claim,
+//     and exactly one CLI command.
 //
 // Runtime note: this module imports ONLY types from its neighbours, so type
 // stripping erases every import and the module loads under plain
@@ -91,59 +83,83 @@ import type { PhotoSlotId } from "./presentation-photos";
 
 /** A slide's structural role in the deck; see the file header for per-kind fields. */
 export type DeckSlideKind =
-  | "opener"
-  | "thesis"
-  | "diagram"
-  | "contrast"
-  | "robot"
-  | "commands"
-  | "rules"
+  | "bridge"
+  | "paths"
+  | "stack"
+  | "surfaces"
+  | "autonomy"
   | "close";
 
-/** The two physical bodies; a robot-anchored slide names exactly one. */
+/** The two physical bodies; a robot-anchored slide or entry names exactly one. */
 export type DeckRobot = "reachy-mini" | "so101";
 
-/** One row of the CLI-vs-runtime contrast table (see the "contrast" slide). */
-export interface ContrastRow {
-  /** The dimension being contrasted, e.g. "Lifetime". */
-  dimension: string;
-  /** How the CLI behaves along that dimension. */
-  cli: string;
-  /** How the runtime behaves along that dimension. */
-  runtime: string;
+/** One column of the "paths" slide — a way intelligence reaches a robot today. */
+export interface DeckPathColumn {
+  /** Short column label, e.g. "Coded behavior". */
+  label: string;
+}
+
+/** One situation on the "autonomy" slide — the robot continuing without the agent. */
+export interface DeckAutonomySituation {
+  /** Short situational label, e.g. "Stuck". */
+  label: string;
+  /** What happens in that situation. */
+  outcome: string;
+  /** Present only on the situation carrying a photo (today: "Stuck"). */
+  robot?: DeckRobot;
+  /** Present only on the situation carrying a photo (today: "Stuck"). */
+  photoId?: PhotoSlotId;
+}
+
+/** One robot's entry on the "close" slide — its maturity, claim, and one command. */
+export interface DeckCloseRobot {
+  robot: DeckRobot;
+  photoId: PhotoSlotId;
+  /** Maturity label, e.g. "working system" or "in progress". */
+  status: string;
+  /** Short trait summary shown under the status. */
+  traits: string;
+  /** One-line claim about this robot's place in the pattern. */
+  claim: string;
+  /** Exactly one verbatim CLI invocation for this robot. */
+  command: string;
 }
 
 /**
  * One full-viewport slide. The renderer draws big imagery/copy from
- * `headline`; the speaker talks `spokenLine`. `beat` groups slides into the
- * deck's <=8 primary beats. See the file header for which optional fields
- * apply to which `kind`.
+ * `headline` and `bottomLine`; the speaker talks `spokenLine`. `beat`
+ * numbers the deck's six slides in order. See the file header for which
+ * optional fields apply to which `kind`.
  */
 export interface DeckSlide {
   /** Stable slide id (used for anchors and the trace table). */
   id: string;
   /** Structural role; determines which optional fields are populated. */
   kind: DeckSlideKind;
-  /** Which of the deck's <=8 primary beats this slide belongs to (1-indexed). */
+  /** This slide's position in the deck's six-slide sequence (1-indexed). */
   beat: number;
-  /** Present iff the slide anchors one robot's photo slot. */
+  /** Present iff `kind === "surfaces"` — the one robot photo this slide anchors. */
   robot?: DeckRobot;
-  /** Present iff the slide anchors one robot's photo slot. */
+  /** Present iff `kind === "surfaces"` — the one robot photo this slide anchors. */
   photoId?: PhotoSlotId;
   /** Small structural label above the headline. */
   eyebrow: string;
-  /** A few words — the symbol the slide anchors. Verbatim on slides 2 and 10. */
+  /** The on-slide hero line — a few words, read at a glance. */
   headline: string;
-  /** At most 2 sentences the speaker talks over the slide. */
+  /** At most 4 sentences the speaker talks over the slide. */
   spokenLine: string;
-  /** Present iff `kind === "diagram"` — embed the five-layer architecture component. */
+  /** The on-slide closing declarative line; verbatim thesis on "close". */
+  bottomLine: string;
+  /** Present iff `kind === "paths"` — the three intelligence-path columns. */
+  columns?: readonly DeckPathColumn[];
+  /** Present iff `kind === "stack"` — embed the five-layer architecture component. */
   diagram?: true;
-  /** Present iff `kind === "contrast"` — the CLI-vs-runtime table. */
-  contrastRows?: readonly ContrastRow[];
-  /** Present iff `kind === "commands"` — verbatim CLI invocations, one per line. */
-  commandLines?: readonly string[];
-  /** Present iff `kind === "rules"` — a verbatim rules.toml excerpt. */
-  rulesToml?: string;
+  /** Present iff `kind === "surfaces"` — the three runtime-surface labels. */
+  labels?: readonly string[];
+  /** Present iff `kind === "autonomy"` — the three situations, in order. */
+  situations?: readonly DeckAutonomySituation[];
+  /** Present iff `kind === "close"` — one entry per robot, in order. */
+  robots?: readonly DeckCloseRobot[];
 }
 
 /** Display label per robot, for the renderer. */
@@ -160,153 +176,102 @@ export const photoSlotsByRobot = {
 
 export const mindNervousSystemBodySlides = [
   {
-    id: "opener",
-    kind: "opener",
+    id: "bridge",
+    kind: "bridge",
     beat: 1,
-    eyebrow: "the problem",
-    headline: "The agent should not own the motors",
+    eyebrow: "the bridge",
+    headline: "CLI — The Bridge Between Agents and Robots",
     spokenLine:
-      "Model to SDK to motors is a straight line that couples nondeterministic reasoning to hardware ownership. The model should propose; robot software should decide and execute.",
+      "The agent authors behavior; the robot owns how that behavior actually runs. This talk walks the bridge between those two worlds — a CLI that lets intelligence reach a robot without ever touching the motors directly.",
+    bottomLine: "Agent-authored behavior. Robot-owned execution.",
   },
   {
-    // Verbatim thesis headline — pinned to slide index 1 by contract.
-    id: "thesis",
-    kind: "thesis",
+    id: "paths",
+    kind: "paths",
     beat: 2,
-    eyebrow: "the thesis",
-    headline: "A CLI for intelligence. A runtime for embodiment.",
+    eyebrow: "three paths, one gap",
+    headline: "Intelligence reaches robots in different ways",
     spokenLine:
-      "The agent — Claude Code, Codex, Colleague, a custom tool-use agent, or none — is optional and replaceable; the CLI is the stable control plane, the behavior runtime keeps the robot continuously alive, and the daemon owns the hardware underneath it.",
+      "Some robots run fixed, hand-coded behavior; others run a learned policy trained end to end; a growing set let an agent call tools directly against the hardware. Each path works, but none of them draws a clean line between what the agent decides and what the robot's software is responsible for executing.",
+    columns: [
+      { label: "Coded behavior" },
+      { label: "Learned policy" },
+      { label: "Agent tools" },
+    ],
+    bottomLine: "What's missing is a stable boundary.",
   },
   {
-    id: "cli-control-plane",
-    kind: "diagram",
+    id: "stack",
+    kind: "stack",
     beat: 3,
     diagram: true,
-    eyebrow: "the control plane",
-    headline: "One deterministic language, four surfaces",
+    eyebrow: "the architecture",
+    headline: "Keep execution below the model",
     spokenLine:
-      "The CLI is one deterministic language for humans, agents, scripts, and CI — structured args in, structured stdout out, diagnostics on stderr, an exit code, and dry-run until an explicit apply. Through it you reach the same four surfaces whether a human types them or an agent calls them: rules, actions, ad-hoc operational commands, and daemon or runtime lifecycle control.",
+      "The stack has five layers: an optional agent, a stable CLI, a deterministic behavior runtime, a device daemon, and the hardware itself. Reasoning stays above the CLI line; execution stays below it, in the runtime and daemon, so the model can be interchangeable without ever owning the motors.",
+    bottomLine: "The agent never owns the motors.",
   },
   {
-    id: "runtime-nervous-system",
-    kind: "contrast",
+    id: "surfaces",
+    kind: "surfaces",
     beat: 4,
-    eyebrow: "the nervous system",
-    headline: "Continuously alive, with or without a mind attached",
-    spokenLine:
-      "The behavior runtime is a deterministic fixed-rate loop (50 Hz design rate) composing senses, rules, intent admission, and per-channel arbitration — it stays operational with no model attached. The layering is deliberately familiar — ros2 CLI, nodes, drivers, behavior trees — and the contribution here is the agent-facing CLI contract plus the machine-checked zero-LLM runtime boundary.",
-    contrastRows: [
-      {
-        dimension: "Lifetime",
-        cli: "short-lived, one invocation",
-        runtime: "long-lived, continuous process",
-      },
-      {
-        dimension: "Invocation",
-        cli: "explicit, one call per intent",
-        runtime: "continuous execution, no calling required",
-      },
-      {
-        dimension: "Scope",
-        cli: "lifecycle control plus direct operational intervention",
-        runtime: "sensing, arbitration, and behavior execution",
-      },
-      {
-        dimension: "Cadence",
-        cli: "one command at a time",
-        runtime: "a persistent loop",
-      },
-    ],
-  },
-  {
-    id: "reachy-mini-stack",
-    kind: "robot",
-    beat: 5,
-    robot: "reachy-mini",
-    photoId: "reachy-mini-hero",
-    eyebrow: "the body · Reachy Mini",
-    headline: "Reachy Mini: the complete implementation",
-    spokenLine:
-      "Every layer ships and runs on this one robot — CLI, behavior runtime, device daemon, hardware. The agent is the only optional part.",
-  },
-  {
-    id: "reachy-mini-commands",
-    kind: "commands",
-    beat: 5,
     robot: "reachy-mini",
     photoId: "reachy-mini-action",
-    eyebrow: "commands · Reachy Mini",
-    headline: "Bring the whole stack up, layer by layer",
+    eyebrow: "opening the runtime",
+    headline: "Open the runtime to coder agents",
     spokenLine:
-      "One sequence takes the robot from a cold daemon to a running behavior engine with its rules validated and an agent attached over the runtime feed. Daemon lifecycle, ad-hoc status, rules, and agent attach — the same CLI, every time.",
-    commandLines: [
-      "reachy-mini-cli daemon start",
-      "reachy-mini-cli device status",
-      "reachy-mini-cli behavior rules check --json",
-      "reachy-mini-cli behavior engine start",
-      "reachy-mini-cli behavior status --json",
-      "reachy-mini-cli behavior reload",
-      "reachy-mini-cli agent attach --feed runtime.jsonl --export -",
+      "A coder agent doesn't just call the robot once — it can configure the behavior runtime's rules, issue ad hoc commands outside those rules, and observe the runtime's own feed to repair or extend automation over time. Reachy Mini's CLI opens all three surfaces the same way a human operator would use them.",
+    labels: ["Configure behavior", "Command ad hoc", "Observe and repair"],
+    bottomLine: "The agent maintains the automation. The runtime executes it.",
+  },
+  {
+    id: "autonomy",
+    kind: "autonomy",
+    beat: 5,
+    eyebrow: "beyond the agent",
+    headline: "The robot continues without the agent",
+    spokenLine:
+      "When SO-101 gets stuck, an agent can inspect the state and adapt the plan — that's exactly where intelligence earns its keep. When the agent disconnects, the behavior runtime keeps running unattended; during routine operation, no model is in the loop at all.",
+    situations: [
+      {
+        label: "Stuck",
+        outcome: "inspect and adapt",
+        robot: "so101",
+        photoId: "so101-action",
+      },
+      { label: "Disconnected", outcome: "behavior continues" },
+      { label: "Routine operation", outcome: "no model required" },
     ],
-  },
-  {
-    id: "rules-example",
-    kind: "rules",
-    beat: 6,
-    eyebrow: "rules are executable culture",
-    headline: "Rules are executable culture",
-    spokenLine:
-      "The agent authors or selects bounded rules — a reaction, a cooldown, an inhibition. The runtime executes them deterministically, every tick, with no model in the loop.",
-    rulesToml: `[[react]]
-id = "pat-acknowledge"
-when = { field = "pat", op = "is_true" }
-run = "pet-reaction"
-cooldown_s = 5.0
-
-[[inhibit]]
-id = "quiet-while-patted"
-when = { field = "pat", op = "is_true" }
-disable = ["feel-alive", "antenna-sway"]
-cooldown_s = 2.0`,
-  },
-  {
-    id: "arm101-cli-discipline",
-    kind: "robot",
-    beat: 7,
-    robot: "so101",
-    photoId: "so101-hero",
-    eyebrow: "the body · SO-101",
-    headline: "ARM101: same CLI discipline, a different runtime maturity",
-    spokenLine:
-      "Every arm command speaks the identical contract — JSON output, dry-run unless --apply, torque ownership, overload-aware motion. ARM101 does not ship a persistent runtime; there is no behavior engine here.",
-  },
-  {
-    id: "arm101-commands",
-    kind: "commands",
-    beat: 7,
-    robot: "so101",
-    photoId: "so101-action",
-    eyebrow: "commands · SO-101",
-    headline: "Read, flex, explore — one process at a time",
-    spokenLine:
-      "A run without --apply always prints a dry-run plan first, so --apply is the only way to actually move the arm. This is the CLI contract standing alone, with no continuously alive process behind it.",
-    commandLines: [
-      "arm101 arm read --json",
-      "arm101 arm flex",
-      "arm101 arm flex --apply",
-      "arm101 arm explore --apply",
-    ],
+    bottomLine: "Spend intelligence on change—not repetition.",
   },
   {
     id: "close",
     kind: "close",
-    beat: 8,
-    eyebrow: "the boundary: interchangeable intelligence, persistent embodiment",
-    headline:
-      "Replace the model — the runtime remains. Replace the robot — the pattern remains.",
+    beat: 6,
+    eyebrow: "the direction",
+    headline: "Two robots, one direction",
     spokenLine:
-      "Every robot should expose a CLI for intelligence and a runtime for embodiment.",
+      "Reachy Mini demonstrates the complete architecture: the agent can maintain rules while the runtime and daemon retain execution and hardware ownership. ARM101 is the next implementation. It already demonstrates the bounded CLI contract—observable state, explicit application, and guarded motion—and is progressing toward the same persistent runtime model. Whether execution happens through ROS or a native runtime, the principle is the same: give the coder agent a language for behavior, while robot software keeps control.",
+    robots: [
+      {
+        robot: "reachy-mini",
+        photoId: "reachy-mini-hero",
+        status: "working system",
+        traits: "Rules · behavior runtime · device daemon",
+        claim: "The complete native-runtime pattern.",
+        command: "reachy-mini-cli behavior engine start",
+      },
+      {
+        robot: "so101",
+        photoId: "so101-hero",
+        status: "in progress",
+        traits: "JSON · preview/apply · bounded motion",
+        claim:
+          "Building the operational contract first; persistent behavior comes next.",
+        command: "arm101 arm flex --apply",
+      },
+    ],
+    bottomLine: "A CLI for intelligence. A runtime for embodiment.",
   },
 ] as const satisfies readonly DeckSlide[];
 
