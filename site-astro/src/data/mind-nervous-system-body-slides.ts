@@ -13,8 +13,9 @@
 // ids. Sources stay subordinate: see `deckSources` below (repo homes + one
 // dated note), rendered once on the close slide, never per-slide.
 //
-// DECK SHAPE — exactly six slides, one per primary beat (`beat` 1-6, in
-// slide order). `slides.length` is always 6.
+// DECK SHAPE — exactly seven slides, one per primary beat (`beat` 1-7, in
+// slide order): org#23's six plus the whats-next-finale-slide trajectory
+// finale. `slides.length` is always 7.
 //
 // Slide sequence (id · kind · beat):
 //   1. bridge     · bridge   · beat 1 — the CLI as the bridge between an
@@ -38,6 +39,9 @@
 //      a `robots` field carries both maturity levels side by side (Reachy
 //      Mini's complete native-runtime pattern, ARM101's in-progress
 //      contract), one command each, both hero photos.
+//   7. whats-next · next     · beat 7 — the trajectory finale: each robot's
+//      next step (`nextEntries`, no photos, no commands) plus the shared
+//      `separation` band; the six-sentence spoken close ends the talk.
 //
 // Photo slots: each of the THREE `PhotoSlotId`s this module references
 // (reachy-mini-hero, reachy-mini-action, so101-hero) is referenced EXACTLY
@@ -56,7 +60,8 @@
 //   - id/kind/beat/eyebrow/headline/spokenLine/bottomLine — present on every
 //     slide. `headline` is the on-slide hero line; `bottomLine` is the
 //     closing declarative line rendered beneath it (verbatim thesis on
-//     "close"); `spokenLine` is the speaker's cue, at most 4 sentences.
+//     "close"); `spokenLine` is the speaker's cue — at most 4 sentences,
+//     except the finale which may run to 6.
 //   - columns? — present only on "paths": the three intelligence-path
 //     columns (`DeckPathColumn[]`).
 //   - diagram? — present only on "stack": tells the renderer to embed the
@@ -68,6 +73,9 @@
 //   - robots? — present only on "close": two `DeckCloseRobot` entries, one
 //     per robot, each with its own photo, maturity status, traits, claim,
 //     and exactly one CLI command.
+//   - byline? — present only on "bridge": the speaker byline, rendered small.
+//   - nextEntries?/separation? — present only on "whats-next": each robot's
+//     next step, and the shared separation band's three lines.
 //
 // Runtime note: this module imports ONLY types from its neighbours, so type
 // stripping erases every import and the module loads under plain
@@ -88,7 +96,8 @@ export type DeckSlideKind =
   | "stack"
   | "surfaces"
   | "autonomy"
-  | "close";
+  | "close"
+  | "next";
 
 /** The two physical bodies; a robot-anchored slide or entry names exactly one. */
 export type DeckRobot = "reachy-mini" | "so101";
@@ -105,6 +114,15 @@ export interface DeckAutonomySituation {
   label: string;
   /** What happens in that situation. */
   outcome: string;
+}
+
+/** One robot's entry on the "next" finale — its next step, no photo, no command. */
+export interface DeckNextEntry {
+  robot: DeckRobot;
+  /** One-line next-step claim, e.g. "Give presence understanding and history." */
+  claim: string;
+  /** Short trait summary of what that step is made of. */
+  traits: string;
 }
 
 /** One robot's entry on the "close" slide — its maturity, claim, and one command. */
@@ -146,6 +164,8 @@ export interface DeckSlide {
   spokenLine: string;
   /** The on-slide closing declarative line; verbatim thesis on "close". */
   bottomLine: string;
+  /** Present iff `kind === "bridge"` — the speaker byline, rendered small. */
+  byline?: string;
   /** Present iff `kind === "paths"` — the three intelligence-path columns. */
   columns?: readonly DeckPathColumn[];
   /** Present iff `kind === "stack"` — embed the five-layer architecture component. */
@@ -156,6 +176,10 @@ export interface DeckSlide {
   situations?: readonly DeckAutonomySituation[];
   /** Present iff `kind === "close"` — one entry per robot, in order. */
   robots?: readonly DeckCloseRobot[];
+  /** Present iff `kind === "next"` — the two robots' next steps, in order. */
+  nextEntries?: readonly DeckNextEntry[];
+  /** Present iff `kind === "next"` — the shared separation band's three lines. */
+  separation?: readonly string[];
 }
 
 /** Display label per robot, for the renderer. */
@@ -176,6 +200,7 @@ export const mindNervousSystemBodySlides = [
     kind: "bridge",
     beat: 1,
     eyebrow: "the bridge",
+    byline: "Ori Nachum",
     headline: "CLI — The Bridge Between Agents and Robots",
     spokenLine:
       "The agent authors behavior; the robot owns how that behavior actually runs. This talk walks the bridge between those two worlds — a CLI that lets intelligence reach a robot without ever touching the motors directly.",
@@ -263,6 +288,34 @@ export const mindNervousSystemBodySlides = [
       },
     ],
     bottomLine: "A CLI for intelligence. A runtime for embodiment.",
+  },
+  {
+    id: "whats-next",
+    kind: "next",
+    beat: 7,
+    eyebrow: "the trajectory",
+    headline: "What's next: See. Remember. Act.",
+    spokenLine:
+      "Reachy already has an autonomous presence. Next, it should understand more of what it sees and retain useful memory of people, objects, events, and its environment. ARM101 already has the beginning of a safe operational language: observable state, guarded motion, overload sensing, and reachability exploration. Next, it gets the same persistent sense–rule–intent runtime—adapted for manipulation rather than expression. First, we gave an expressive robot an agent-maintainable presence. Next, we give that presence memory—and give a robotic arm the same autonomy.",
+    nextEntries: [
+      {
+        robot: "reachy-mini",
+        claim: "Give presence understanding and history.",
+        traits: "Semantic vision · embodied memory · behavior informed by experience",
+      },
+      {
+        robot: "so101",
+        claim: "Apply the same autonomy pattern to manipulation.",
+        traits:
+          "Persistent runtime · reachability memory · load-aware rules · supervised recovery",
+      },
+    ],
+    separation: [
+      "agent authors and supervises",
+      "runtime persists and arbitrates",
+      "body retains control",
+    ],
+    bottomLine: "The same architecture, expressed through a different body.",
   },
 ] as const satisfies readonly DeckSlide[];
 

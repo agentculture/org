@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/). This project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.0] - 2026-07-22
+
+### Added
+
+- Seventh deck slide — the trajectory finale "What's next: See. Remember. Act.": a See/Remember/Act glyph triad (new DeckNextGlyphs component), two next-step cards (Reachy Mini gains semantic vision and embodied memory; SO-ARM101 inherits the same autonomy pattern for manipulation), the shared separation band, and a six-sentence spoken close (deck-wide cap relaxed to 6, slides 1-6 still capped at 4); plus a small Ori Nachum byline on the bridge slide.
+
 ## [0.17.1] - 2026-07-22
 
 ### Fixed

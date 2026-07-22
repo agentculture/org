@@ -16,6 +16,9 @@
 //   5. autonomy — a triptych of three DeckSituationVignettes (stuck,
 //      disconnected, routine); no photo.
 //   6. close    — two dual-maturity robot cards, the verbatim thesis, sources.
+//   7. whats-next — the trajectory finale: See/Remember/Act glyph triad, two
+//                 next-step cards (no photos, no data-robot), the shared
+//                 separation band, the six-sentence spoken close.
 //
 // Navigation is progressive enhancement over natural scroll: the dot rail is
 // plain anchors, the prev/next chrome and keyboard support exist only under
@@ -45,6 +48,7 @@ import CliRuntimeStackDiagram from "../../components/CliRuntimeStackDiagram.astr
 import DeckBridgeIllustration from "../../components/deck/DeckBridgeIllustration.astro";
 import DeckPathGlyphs from "../../components/deck/DeckPathGlyphs.astro";
 import DeckSituationVignettes from "../../components/deck/DeckSituationVignettes.astro";
+import DeckNextGlyphs from "../../components/deck/DeckNextGlyphs.astro";
 
 const card = presentations[0];
 const slides: readonly DeckSlide[] = mindNervousSystemBodySlides;
@@ -64,6 +68,13 @@ const photoView = (slotId: PhotoSlotId) => {
 // Column order fixed by the issue: Coded behavior → coded, Learned policy →
 // learned, Agent tools → agent (plan task t5 / component task t3).
 const PATH_GLYPHS = ["coded", "learned", "agent"] as const;
+
+// The finale triad: one glyph + word per step of "See. Remember. Act."
+const NEXT_STEPS = [
+  { step: "see", word: "See" },
+  { step: "remember", word: "Remember" },
+  { step: "act", word: "Act" },
+] as const;
 
 // Every autonomy situation is photo-free now — each maps by label to one of
 // the three vignette scenes.
@@ -136,6 +147,11 @@ const slideViews = slides.map((slide, index) => {
                 >
                   {slide.headline}
                 </h1>
+                {slide.byline && (
+                  <p class="byline" data-reveal style="--reveal-delay: 0.14s">
+                    {slide.byline}
+                  </p>
+                )}
                 <p
                   class="bottom-line bottom-line--lead"
                   data-reveal
@@ -402,6 +418,66 @@ const slideViews = slides.map((slide, index) => {
                   <p class="source-note">{deckSources.note}</p>
                 </details>
               </div>
+            </div>
+          )}
+
+          {slide.kind === "next" && (
+            <div class="container stack-flow next-flow">
+              <div class="slide-head">
+                <span class="eyebrow" data-reveal>
+                  {slide.eyebrow}
+                </span>
+                <h2 id={headingId} data-reveal style="--reveal-delay: 0.06s">
+                  {slide.headline}
+                </h2>
+              </div>
+              <ul class="next-triad" data-reveal style="--reveal-delay: 0.14s">
+                {NEXT_STEPS.map((stepEntry) => (
+                  <li class="triad-item">
+                    <DeckNextGlyphs step={stepEntry.step} size={56} />
+                    <span class="triad-word">{stepEntry.word}</span>
+                  </li>
+                ))}
+              </ul>
+              <div class="next-grid">
+                {slide.nextEntries?.map((entry, entryIndex) => (
+                  <article
+                    class="next-card"
+                    data-reveal
+                    style={`--reveal-delay: ${0.24 + entryIndex * 0.12}s`}
+                  >
+                    <h3 class="card-name">{robotLabel[entry.robot]}</h3>
+                    <p class="next-claim">{entry.claim}</p>
+                    <p class="card-traits">{entry.traits}</p>
+                  </article>
+                ))}
+              </div>
+              <p class="separation-band" data-reveal style="--reveal-delay: 0.48s">
+                {slide.separation?.map((separationLine, lineIndex) => (
+                  <>
+                    {lineIndex > 0 && (
+                      <span class="sep-divider" aria-hidden="true">
+                        ·
+                      </span>
+                    )}
+                    <span class="sep-line">{separationLine}</span>
+                  </>
+                ))}
+              </p>
+              <p
+                class="bottom-line bottom-line--center"
+                data-reveal
+                style="--reveal-delay: 0.58s"
+              >
+                {slide.bottomLine}
+              </p>
+              <p
+                class="spoken spoken--center"
+                data-reveal
+                style="--reveal-delay: 0.66s"
+              >
+                {slide.spokenLine}
+              </p>
             </div>
           )}
         </section>
@@ -876,6 +952,93 @@ const slideViews = slides.map((slide, index) => {
 
   .close-flow {
     gap: clamp(1.6rem, 3.8vw, 2.6rem);
+  }
+
+  /* ---------- slide 7: the whats-next finale ---------- */
+
+  .next-flow {
+    gap: clamp(1.4rem, 3.4vw, 2.2rem);
+  }
+
+  .byline {
+    margin: 0;
+    color: var(--ink-soft);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .next-triad {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: clamp(1.6rem, 5vw, 3.4rem);
+    flex-wrap: wrap;
+  }
+
+  .triad-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .triad-word {
+    font-family: var(--font-display);
+    font-size: clamp(1.05rem, 1.8vw, 1.3rem);
+    font-weight: 560;
+  }
+
+  .next-grid {
+    display: grid;
+    gap: clamp(1.2rem, 3vw, 2rem);
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 48rem) {
+    .next-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .next-card {
+    display: grid;
+    gap: 0.7rem;
+    align-content: start;
+    padding: clamp(1.1rem, 2.5vw, 1.6rem);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    box-shadow: var(--shadow);
+  }
+
+  .next-claim {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 2vw, 1.45rem);
+    font-weight: 560;
+    line-height: 1.35;
+  }
+
+  .separation-band {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: clamp(0.82rem, 1.4vw, 0.95rem);
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+  }
+
+  .sep-divider {
+    color: var(--accent-strong);
   }
 
   .slide--close {
