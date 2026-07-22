@@ -169,14 +169,21 @@ plan:
    operator-skills section own it, leaving the pipeline with three engine-level
    summaries.
 2. Whether to reduce the eight-line flow caption to one or two sentences.
-3. Where the directory and shared agent-page work sit relative to the Devague
-   implementation in delivery order.
+3. Which existing route becomes the second design-system consumer after
+   Devague, and where the directory/shared-agent-page work sits in that later
+   migration order.
 
 ## Implementation boundary
 
 No proposal in this folder has been applied to `site-astro/` in this worktree.
 The original Devague page and its capture data remain unchanged. Adding this
 document does not change that boundary.
+
+The delivery order is now fixed: establish and prove the opt-in system against
+an isolated reference specimen first; migrate Devague as its first production
+consumer second; then plan migration of the remaining routes separately. The
+system-first phase must not alter a current public route or redefine a current
+global primitive.
 
 If implementation is requested later, begin with the current handoffs, preserve
 the safeguards above, and then run the repository's build, link, lint,

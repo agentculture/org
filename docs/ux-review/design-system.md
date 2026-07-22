@@ -14,9 +14,13 @@ The safe approach is therefore:
 
 1. keep the current Astro source as the production baseline;
 2. extract decisions from the mock, not generated markup or CSS;
-3. contain the first implementation inside a Devague page namespace;
-4. prove each pattern locally and across the regression matrix; and
-5. promote a pattern globally only when it has a second real consumer.
+3. establish an opt-in system of tokens, primitives, components, and contracts
+   before changing the live Devague route;
+4. prove that system against an isolated reference specimen based on the mock;
+5. migrate Devague as the first production consumer only after the system gate;
+   and
+6. migrate other routes later, promoting a pattern to a global default only
+   when it has a second real consumer.
 
 This document records what belongs at each layer, where adoption would collide
 with the current site, and the sequence for implementing the work without a
@@ -107,8 +111,8 @@ inside the Devague change.
 ## Candidate foundations
 
 The following are candidates extracted from the mock. “Candidate” means they
-may be used in a Devague-scoped implementation; it does not mean they are
-approved root replacements.
+may enter the opt-in system and its reference specimen; it does not mean they
+are approved root replacements or may change a production route yet.
 
 ### Spacing
 
@@ -130,9 +134,11 @@ should map them to local semantic roles such as `--card-padding`,
 `--label-to-title`, or `--section-intro-gap`. That leaves room to tune a
 component without changing every use of `space-5`.
 
-For the first implementation, scope the raw values to `.devague-page` and
-prefix them if necessary, for example `--devague-space-5`. Promote the scale to
-`:root` only in a dedicated migration after a collision check.
+For the system implementation, give new tokens a collision-safe namespace, for
+example `--ac-space-5`, and define them in the system layer or the component
+that owns them. Keep the existing root tokens as the compatibility layer. The
+Devague page namespace begins consuming the new tokens only during migration;
+promoting them to root defaults is a later, dedicated change.
 
 ### Type roles
 
@@ -197,7 +203,11 @@ the gutter model and can double-count the inset.
 Use these maturity labels:
 
 - **Existing** — already shared in production; preserve its public contract.
-- **Candidate** — strong enough to implement locally and test.
+- **Candidate** — specified strongly enough to build and test in the reference
+  specimen.
+- **Established** — implemented as opt-in and has passed the system acceptance
+  gate without changing a production route.
+- **Migrated** — adopted by a named production consumer.
 - **Page-only** — deliberately belongs to the Devague composition.
 - **Dormant** — retained comparison or unused prototype; do not ship from it.
 - **Promoted** — proven by at least two real consumers and cross-route tests.
@@ -232,8 +242,9 @@ Use these maturity labels:
 | Closing band | Compact page CTA separated from the site footer | Devague's closing mark and wording. |
 
 The modal and terminal are reusable in principle, but they are not yet generic
-production components. Implement the current capture handoff against a single
-source of transcript data; do not clone snapshot DOM into a second data path.
+production components. Build the opt-in versions against a single source of
+transcript data in the reference specimen; do not clone snapshot DOM into a
+second data path.
 
 ### Page-only visual language
 
@@ -267,7 +278,7 @@ test while still breaking its geometry.
 | Change `.prose` or `.lede` globally | Agent intros, articles, framework, and presentation copy | Medium–high | Preserve the 42rem measure. Add a specific intro role if needed. |
 | Restyle generic `code` as a chip or change its size | Inline commands, terminal descendants, articles, and presentation code | Medium–high | Use `.command-chip`; reset terminal descendants locally to `font-size: inherit`. |
 | Tighten global `.card` padding and move hover motion | Home, directory, agent, article, presentation, and engage grids | High | Create a Devague card grammar. Keep hover transforms inside the no-preference motion query. |
-| Add unscoped mock `--space-*` / `--fs-*` root tokens | Future namespace collisions and accidental cross-route consumption | Medium | Scope or prefix on `.devague-page`; promote through a separate global-token change. |
+| Add unscoped mock `--space-*` / `--fs-*` root tokens | Future namespace collisions and accidental cross-route consumption | Medium | Use a collision-safe system namespace; only the Devague consumer opts in during its migration. Promote through a separate global-token change. |
 | Change global `.section` padding or introduce `vh` seams | Every content page; viewport-height-dependent blank bands | High | Give Devague one local vertical-rhythm owner. Test every adjacent section boundary. |
 | Replace `DevagueFlow` from generated snapshot CSS | Devague only, but duplicates DOM, observer, and stale breakpoints | Medium–high | Author a source component or explicit mode from accepted markup. Remove the old path only when the replacement is accepted. |
 | Rebuild method, gate, and skill cards | Devague only | Medium | Use semantic source components/data maps; preserve heading levels and accessible copy feedback. |
@@ -279,6 +290,23 @@ test while still breaking its geometry.
 
 Each phase should be a separate, reviewable change. Do not combine a global
 primitive migration with a page composition rewrite.
+
+“System established” has a concrete meaning here. Before the production
+Devague route changes, the following must exist:
+
+- a named token registry covering spacing, type, colour, surface, elevation,
+  motion, page rail, reading measure, and component inset roles;
+- opt-in primitives and component APIs, including their states and variants;
+- an isolated reference specimen that exercises the system against the approved
+  Devague mock without replacing a public route;
+- responsive, theme, keyboard, focus, reduced-motion, and no-JavaScript
+  acceptance contracts; and
+- a status record separating established system rules from Devague-only content
+  and unresolved decisions.
+
+This is system-first without pretending the design is universal. The mock is
+the reference evidence, the specimen proves the implementation, and Devague is
+the first production migration.
 
 ### Phase 0 — freeze the baseline
 
@@ -292,64 +320,79 @@ primitive migration with a page composition rewrite.
 **Gate:** the baseline is reproducible and failures are known before code is
 changed.
 
-### Phase 1 — add a Devague namespace with no visual change
+### Phase 1 — specify and approve the system
 
-- Add one `.devague-page` root around page-owned sections.
-- Define candidate spacing/type aliases on that root, without switching existing
-  consumers yet.
-- Establish one page rail, one reading measure, and named component insets.
-- Add component names based on responsibility, not appearance.
+- Complete the token registry and map every accepted mock value to a semantic
+  role, an existing compatibility token, or a documented page-only exception.
+- Freeze the page rail, reading measure, component-inset, type-role, surface,
+  motion, and breakpoint contracts.
+- Define component responsibilities, props, states, semantics, and ownership.
+- Record the approved light pipeline surface, larger card-title role, and
+  content that deliberately remains Devague-only.
+- Do not edit `devague.astro` or change a current global selector.
 
-**Gate:** computed tokens do not leak to a second route; all baseline images are
-unchanged.
+**Gate:** the system contract is reviewable as a whole, every mock pattern has
+an owner/status, and no production route has changed.
 
-### Phase 2 — adopt low-interaction visual components
+### Phase 2 — build and prove the opt-in system
 
-- Implement facts, reference rows, method cards, gate cards, skill cards, and
-  command chips from source data.
-- Apply the larger card-title role where the hierarchy requires it.
-- Correct UI leading, monospace tracking, and local terminal inheritance.
-- Keep the production `PageHero`, header, footer, and global card primitive.
+- Add collision-safe tokens and opt-in primitives without changing the current
+  global defaults.
+- Build the facts, reference-row, method-card, gate-card, capability-card,
+  command-chip, terminal, pipeline, guided-session, disclosure, and modal
+  contracts as source components.
+- Exercise them together in an isolated reference specimen using the real mock
+  content and transcript data.
+- Resolve excerpts by exact transcript anchors and fail validation when an
+  anchor drifts.
+- Keep the live `PageHero`, header, footer, Devague route, and other routes
+  unchanged.
 
-**Gate:** heading outline, keyboard names, copy result states, 3/2/1-column
-behaviour, gutters, and theme contrast pass.
+**Gate:** the specimen reaches visual and interaction parity with the approved
+mock; heading outline, keyboard names, copy states, focus lifecycle, 3/2/1
+layouts, pipeline breakpoints, gutters, themes, reduced motion, no-JavaScript,
+and transcript integrity pass; production route snapshots remain unchanged.
 
-### Phase 3 — replace the pipeline deliberately
+### Phase 3 — migrate Devague as the first consumer
 
-- Implement the approved light diagram surface in both site themes, with an
-  explicit component-owned surface/ink pairing rather than a global theme
-  override.
-- Build the accepted source component with one semantic DOM path.
-- Preserve a readable no-JavaScript list and the global reduced-motion contract.
-- Verify one-column up to 40rem, 3×3 from 40–60rem, and 5+4 above 60rem.
-- Remove a superseded flow and observer only in the same change that proves the
-  replacement.
+- Add the `.devague-page` consumer namespace and assemble the established
+  system components in the live source route.
+- Cut over in small commits on the UX branch, but judge acceptance against the
+  complete page rather than shipping a mixture of old and new systems.
+- Preserve the current source Layout, `PageHero`, header, footer, data
+  provenance, and global progressive-enhancement contracts.
+- Use the approved light pipeline surface with one semantic DOM path and verify
+  one column up to 40rem, 3×3 from 40–60rem, and 5+4 above 60rem.
+- Migrate all three guided sessions, disclosures, and transcript-modal
+  interactions from the established components.
+- Remove superseded Devague components, hidden variants, and observers only
+  after parity is proven.
 
-**Gate:** node order and labels are correct; no duplicate hidden flow, observer,
-or horizontal overflow remains.
+**Gate:** the production Devague page matches the accepted specimen across the
+full regression matrix, with no duplicate flow, data source, observer, listener,
+or horizontal overflow.
 
-### Phase 4 — implement guided captures
+### Phase 4 — harden the system after first migration
 
-- Follow the data and component boundary in
-  [`captures-story-plan.md`](captures-story-plan.md).
-- Resolve excerpts by exact anchors from the single transcript source and fail
-  the build when an anchor drifts.
-- Implement session headers, beats, terminal preview, disclosure, and modal as
-  separate source components.
-- Make the full evidence readable or reachable without JavaScript.
-- Test repeated open/close cycles so focus, scroll state, and listeners do not
-  leak.
+- Run the cross-route containment suite, including the presentation deck.
+- Fix weaknesses in the system owner rather than adding Devague-local patches.
+- Reconcile the implemented token/component registry with this document and
+  record any deliberate exceptions.
+- Keep all non-Devague routes on their existing design until separately planned.
 
-**Gate:** transcript bytes and chronological order are unchanged; modal focus,
-Escape/backdrop close, focus restoration, previous/next boundaries, no-JS, and
-reduced motion all pass.
+**Gate:** Devague is a clean first consumer, the system contract still describes
+the implementation, and no other route has visually migrated by accident.
 
-### Phase 5 — promote only proven patterns
+### Phase 5 — migrate the rest of the site separately
 
-- Use a candidate on a second real page before calling it global.
-- Compare both consumers and name only the shared semantics.
-- Move the component and its tokens together, with a migration note.
-- Leave Devague content and glyphs local.
+- Choose a second real consumer through a separate migration plan.
+- Compare it with Devague and generalise only the semantics both genuinely
+  share.
+- Promote opt-in tokens or primitives to global defaults only with cross-route
+  evidence and an explicit compatibility strategy.
+- Migrate remaining routes in bounded groups rather than through one global CSS
+  switch.
+- Keep Devague content, glyphs, and composition local.
 
 Likely first promotion candidates are the copy control, terminal shell, quiet
 reference row, and transcript modal. The shared terminal work should follow the
@@ -431,7 +474,7 @@ Every design-system PR should answer these questions in its description:
 |---|---|
 | Decision | What user or content problem is being solved? |
 | Layer and owner | Foundation, primitive, component, composition, or experiment; which source file owns it? |
-| Status | Candidate, page-only, promoted, or superseded. |
+| Status | Candidate, established, page-only, migrated, promoted, or superseded. |
 | Existing contract touched | Selectors, components, tokens, data, and interaction lifecycle. |
 | Consumers | Every route/component that currently matches the changed contract. |
 | Containment | Namespace, component scope, modifier, or migration strategy. |
@@ -451,9 +494,14 @@ Every design-system PR should answer these questions in its description:
   to the earlier dark treatment.
 - Devague card titles use the larger `1.25rem` semantic role where the mock has
   established that hierarchy; this does not retune global `h3` elements.
-- The first implementation is Devague-scoped.
+- The system is specified, built, and proven in an isolated reference specimen
+  before the live Devague route is migrated.
+- Devague is the first production consumer; other routes migrate in later,
+  separately approved passes.
 - Page rail, reading measure, and component inset are separate roles.
-- A shared token or component requires a second consumer and regression proof.
+- A token or component may be established as opt-in from the mock and reference
+  specimen; becoming a global default requires a second real consumer and
+  regression proof.
 - Dormant comparison variants do not enter the production system.
 
 ### Human decisions still required before their phase
@@ -465,6 +513,6 @@ Every design-system PR should answer these questions in its description:
 3. Whether the raw spacing scale eventually becomes global or remains expressed
    through component-owned semantic tokens.
 
-Those choices do not block the documentation, namespace, or baseline work. They
-do block treating the relevant visual decision as a shared, finished system
-rule.
+Those choices do not block establishing the opt-in system or migrating Devague
+as its first consumer. They do block later global promotion and the migration of
+other routes.
