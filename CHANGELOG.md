@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/). This project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.1] - 2026-07-22
+
+### Changed
+
+- The deck's closing footer — the "full argument, in text" CTA, the all-presentations link, and the subordinate Sources disclosure — moved from slide 6 (close) to slide 7 (the whats-next finale), so it sits on the deck's actual last slide; the fixed-chrome padding follows it, and check-presentations pins the new location.
+
 ## [0.18.0] - 2026-07-22
 
 ### Added

@@ -197,6 +197,16 @@ function linksTo(html, href) {
   return anchors(html).filter((anchor) => anchor.attrs.href === href);
 }
 
+/** Count semantic <summary>Sources</summary> disclosures. Element-based rather
+ *  than a raw-substring count, so Astro's scope attributes and any harmless
+ *  whitespace/formatting change in the rendered markup can't cause a false
+ *  failure (PR #28 review). */
+function countSourcesSummaries(html) {
+  return elements(html, "summary").filter(
+    (summary) => textContent(summary.inner) === "Sources",
+  ).length;
+}
+
 function countOccurrences(html, needle) {
   return (html.match(new RegExp(needle.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g")) ?? [])
     .length;
@@ -672,6 +682,30 @@ check("deck finale: whats-next is last with the triad, separation band, no photo
   assert(
     finale.attrs["data-robot"] === undefined,
     "finale section must carry no data-robot attribute",
+  );
+
+  // The deck's closing footer (article CTA, all-presentations link, the
+  // subordinate Sources disclosure) sits on the LAST slide — it moved off
+  // the close slide when the finale became slide 7.
+  const finaleArticleLinks = linksTo(finale.inner, articleRoute).length;
+  assert(
+    finaleArticleLinks === 1,
+    `the finale must carry the article CTA (${articleRoute}) exactly once; found ${finaleArticleLinks}`,
+  );
+  const finalePresentationsLinks = linksTo(finale.inner, presentationsRoute).length;
+  assert(
+    finalePresentationsLinks === 1,
+    `the finale must carry the all-presentations link (${presentationsRoute}) exactly once; found ${finalePresentationsLinks}`,
+  );
+  const finaleSources = countSourcesSummaries(finale.inner);
+  assert(
+    finaleSources === 1,
+    `the Sources disclosure must render exactly once, on the finale; found ${finaleSources} there`,
+  );
+  const deckSourcesTotal = countSourcesSummaries(deckHtml);
+  assert(
+    deckSourcesTotal === 1,
+    `the deck must render exactly one Sources disclosure, found ${deckSourcesTotal}`,
   );
 });
 

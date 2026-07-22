@@ -236,7 +236,7 @@ wheels = [
 
 [[package]]
 name = "org"
-version = "0.18.0"
+version = "0.18.1"
 source = { editable = "." }
 
 [package.dev-dependencies]

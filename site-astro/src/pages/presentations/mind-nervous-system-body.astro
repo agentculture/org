@@ -15,10 +15,13 @@
 //   4. surfaces — the reachy-mini-action photo with three labels around it.
 //   5. autonomy — a triptych of three DeckSituationVignettes (stuck,
 //      disconnected, routine); no photo.
-//   6. close    — two dual-maturity robot cards, the verbatim thesis, sources.
+//   6. close    — two dual-maturity robot cards and the verbatim thesis.
 //   7. whats-next — the trajectory finale: See/Remember/Act glyph triad, two
 //                 next-step cards (no photos, no data-robot), the shared
-//                 separation band, the six-sentence spoken close.
+//                 separation band, the six-sentence spoken close, and the
+//                 deck's closing footer (article CTA, all-presentations link,
+//                 the subordinate Sources disclosure) — it sits on the last
+//                 slide, so it moved off "close" when the finale landed.
 //
 // Navigation is progressive enhancement over natural scroll: the dot rail is
 // plain anchors, the prev/next chrome and keyboard support exist only under
@@ -390,34 +393,6 @@ const slideViews = slides.map((slide, index) => {
               <p class="thesis-final" data-reveal style="--reveal-delay: 0.42s">
                 {slide.bottomLine}
               </p>
-              <div class="close-foot" data-reveal style="--reveal-delay: 0.52s">
-                <div class="close-actions">
-                  <a class="cta" href="/articles/mind-nervous-system-body/">
-                    The full argument, in text →
-                  </a>
-                  <a class="cta-quiet" href="/presentations/">
-                    All presentations
-                  </a>
-                </div>
-                <details class="sources">
-                  <summary>Sources</summary>
-                  <ul>
-                    {deckSources.projects.map((project) => (
-                      <li>
-                        <a
-                          href={project.repositoryUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          <span class="source-label">{project.label}</span>
-                          <span class="source-meta">{project.repositoryUrl}</span>
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                  <p class="source-note">{deckSources.note}</p>
-                </details>
-              </div>
             </div>
           )}
 
@@ -478,6 +453,34 @@ const slideViews = slides.map((slide, index) => {
               >
                 {slide.spokenLine}
               </p>
+              <div class="close-foot" data-reveal style="--reveal-delay: 0.74s">
+                <div class="close-actions">
+                  <a class="cta" href="/articles/mind-nervous-system-body/">
+                    The full argument, in text →
+                  </a>
+                  <a class="cta-quiet" href="/presentations/">
+                    All presentations
+                  </a>
+                </div>
+                <details class="sources">
+                  <summary>Sources</summary>
+                  <ul>
+                    {deckSources.projects.map((project) => (
+                      <li>
+                        <a
+                          href={project.repositoryUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <span class="source-label">{project.label}</span>
+                          <span class="source-meta">{project.repositoryUrl}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                  <p class="source-note">{deckSources.note}</p>
+                </details>
+              </div>
             </div>
           )}
         </section>
@@ -1041,8 +1044,9 @@ const slideViews = slides.map((slide, index) => {
     color: var(--accent-strong);
   }
 
-  .slide--close {
-    /* room for the fixed chrome beneath the sources on short viewports */
+  .slide--next {
+    /* room for the fixed chrome beneath the sources on short viewports —
+       the closing footer moved here when the finale became the last slide */
     padding-bottom: 7rem;
   }
 
