@@ -2,13 +2,13 @@
 
 The symbolic deck at `/presentations/mind-nervous-system-body/` anchors each
 robot slide on a real photograph. Until those photographs are taken, the deck
-ships four **placeholder** images — duotone slates in the site palette — so the
+ships three **placeholder** images — duotone slates in the site palette — so the
 built site looks intentional, with zero broken-image icons.
 
 This page is the shot brief. The typed manifest the deck imports lives at
 `site-astro/src/data/presentation-photos.ts`; the two must stay in step.
 
-## The four shots
+## The three shots
 
 Every file lives under `site-astro/public/presentations/`. Each slot has a
 full-size image and a thumbnail. The placeholders ship at these exact filenames
@@ -19,7 +19,6 @@ so a real photo is a drop-in replacement (see below).
 | `reachy-mini-hero` | `reachy-mini-hero.webp` | `reachy-mini-hero-thumb.webp` | Reachy Mini on a clean desk, three-quarter view, head toward the lens, antennas up, warm key light | landscape 16:9 | 1920×1080 / 480×270 |
 | `reachy-mini-action` | `reachy-mini-action.webp` | `reachy-mini-action-thumb.webp` | Reachy Mini mid-gesture, head tilted and antennas in motion, a hand near it for scale | landscape 3:2 | 1800×1200 / 480×320 |
 | `so101-hero` | `so101-hero.webp` | `so101-hero-thumb.webp` | SO-101 arm at rest in its home pose, gripper open, clean side profile on a plain backdrop | landscape 16:9 | 1920×1080 / 480×270 |
-| `so101-action` | `so101-action.webp` | `so101-action-thumb.webp` | SO-101 arm reaching to grip a small object, joints articulated mid-motion, gripper closing | landscape 3:2 | 1800×1200 / 480×320 |
 
 Reachy Mini is a small expressive desk robot with a movable head, two antennas,
 a camera and a speaker. The SO-101 (also called ARM101) is a hobby robot arm
@@ -36,7 +35,6 @@ you do not need to touch it.
 | `reachy-mini-hero` | Reachy Mini, a small expressive desk robot with a rounded movable head, two antennas, a single camera eye and a speaker in its base, seen in three-quarter view on a desk. |
 | `reachy-mini-action` | Reachy Mini mid-gesture, its head tilted and antennas swinging, a person's hand beside it for scale, background softly out of focus. |
 | `so101-hero` | The SO-101 hobby robot arm at rest in a clean side profile, its jointed segments folded into the home pose and its two-finger gripper open, against a plain backdrop. |
-| `so101-action` | The SO-101 robot arm reaching mid-motion, its joints articulated and its two-finger gripper closing around a small object, background softly out of focus. |
 
 ## Replacing a placeholder with a real photo
 
