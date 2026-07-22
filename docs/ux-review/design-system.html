@@ -1,0 +1,3039 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>AgentCulture visual system — Devague reference</title>
+  <script>
+    (function () {
+      document.documentElement.classList.add("js");
+      try {
+        var savedTheme = window.localStorage.getItem("ac-visual-system-theme");
+        document.documentElement.dataset.theme = savedTheme || "light";
+      } catch (error) {
+        document.documentElement.dataset.theme = "light";
+      }
+    }());
+  </script>
+  <style>
+    @font-face {
+      font-family: "Albert Sans Variable";
+      src: url("mocks/devague/2026-07-21-review-style/_astro/albert-sans-latin-wght-normal.BJ0ssN8N.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 100 900;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Fraunces Variable";
+      src: url("mocks/devague/2026-07-21-review-style/_astro/fraunces-latin-full-normal.CFFu7zhK.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 100 900;
+      font-display: swap;
+    }
+
+    :root {
+      color-scheme: light;
+
+      /* Existing AgentCulture theme contract */
+      --ac-bg: #f4f5fb;
+      --ac-surface: #ffffff;
+      --ac-ink: #232a4d;
+      --ac-ink-soft: #4d546f;
+      --ac-accent: #0b655c;
+      --ac-accent-strong: #0c5a53;
+      --ac-on-accent: #ffffff;
+      --ac-line: rgba(35, 42, 77, 0.14);
+      --ac-line-soft: rgba(35, 42, 77, 0.08);
+      --ac-sky-upper: rgba(198, 210, 248, 0.55);
+      --ac-sky-mist: rgba(167, 216, 205, 0.35);
+      --ac-mesh-thread: rgba(35, 42, 77, 0.32);
+      --ac-shadow: 0 4px 24px rgba(35, 42, 77, 0.07), 0 1px 4px rgba(35, 42, 77, 0.05);
+      --ac-shadow-lift: 0 14px 40px rgba(35, 42, 77, 0.12), 0 2px 8px rgba(35, 42, 77, 0.06);
+
+      /* Candidate opt-in foundations */
+      --ac-space-1: 0.25rem;
+      --ac-space-2: 0.5rem;
+      --ac-space-3: 0.75rem;
+      --ac-space-4: 1rem;
+      --ac-space-5: 1.5rem;
+      --ac-space-6: 2rem;
+      --ac-space-7: 3rem;
+      --ac-space-8: 4rem;
+      --ac-lh-tight: 1.1;
+      --ac-lh-ui: 1.25;
+      --ac-lh-normal: 1.55;
+      --ac-lh-prose: 1.7;
+      --ac-ls-display: -0.02em;
+      --ac-ls-heading: -0.01em;
+      --ac-ls-flat: 0;
+      --ac-ls-caps: 0.12em;
+
+      /* Candidate type scale: raw sizes stay small; roles consume these tokens. */
+      --ac-font-size-micro: 0.625rem;
+      --ac-font-size-caption: 0.6875rem;
+      --ac-font-size-label: 0.75rem;
+      --ac-font-size-ui: 0.8125rem;
+      --ac-font-size-small: 0.875rem;
+      --ac-font-size-copy-small: 0.9375rem;
+      --ac-font-size-base: 1rem;
+      --ac-font-size-body: 1.0625rem;
+      --ac-font-size-card-title: 1.25rem;
+      --ac-font-size-dialog-title: 1.375rem;
+      --ac-font-size-inline-code: 0.9em;
+      --ac-font-size-lead: clamp(1.15rem, 2vw, 1.4rem);
+      --ac-font-size-subsection: clamp(1.6rem, 3vw, 2.1rem);
+      --ac-font-size-section: clamp(2rem, 4vw, 3.2rem);
+      --ac-font-size-display: clamp(2.6rem, 6vw, 4.5rem);
+      --ac-font-size-hero: clamp(3rem, 7.5vw, 6.4rem);
+      --ac-font-size-hero-mobile: clamp(2.75rem, 15vw, 4.6rem);
+
+      --ac-font-display: "Fraunces Variable", "Iowan Old Style", Georgia, serif;
+      --ac-font-body: "Albert Sans Variable", -apple-system, "Segoe UI", system-ui, sans-serif;
+      --ac-font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+      --ac-radius: 1.25rem;
+      --ac-radius-small: 0.625rem;
+      --ac-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+      --ac-ease-gentle: cubic-bezier(0.45, 0, 0.25, 1);
+      --ac-page-rail: 68rem;
+      --ac-presentation-rail: 58rem;
+      --ac-reading-measure: 42rem;
+
+      /* Fixed component palettes */
+      --terminal-bg: #10142b;
+      --terminal-border: rgba(233, 236, 248, 0.12);
+      --terminal-divider: rgba(233, 236, 248, 0.1);
+      --terminal-strong: #e9ecf8;
+      --terminal-text: #c7cde8;
+      --terminal-muted: #8790b8;
+      --terminal-quiet: #7d84a8;
+      --terminal-accent: #7fdcc9;
+
+      /* Approved always-light diagram pairing */
+      --pipeline-bg: #ffffff;
+      --pipeline-ink: #232a4d;
+      --pipeline-ink-soft: #4d546f;
+      --pipeline-accent: #0b655c;
+      --pipeline-line: rgba(35, 42, 77, 0.18);
+      --pipeline-line-soft: rgba(35, 42, 77, 0.09);
+    }
+
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --ac-bg: #0b0f20;
+      --ac-surface: #161b36;
+      --ac-ink: #e9ecf8;
+      --ac-ink-soft: #a9b0cf;
+      --ac-accent: #7fdcc9;
+      --ac-accent-strong: #7fdcc9;
+      --ac-on-accent: #0b0f20;
+      --ac-line: rgba(233, 236, 248, 0.14);
+      --ac-line-soft: rgba(233, 236, 248, 0.07);
+      --ac-sky-upper: rgba(64, 92, 181, 0.25);
+      --ac-sky-mist: rgba(88, 214, 181, 0.14);
+      --ac-mesh-thread: rgba(233, 236, 248, 0.28);
+      --ac-shadow: 0 4px 24px rgba(2, 4, 12, 0.5), 0 1px 4px rgba(2, 4, 12, 0.4);
+      --ac-shadow-lift: 0 14px 40px rgba(2, 4, 12, 0.6), 0 2px 8px rgba(2, 4, 12, 0.4);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      html:not([data-theme]),
+      html[data-theme="system"] {
+        color-scheme: dark;
+        --ac-bg: #0b0f20;
+        --ac-surface: #161b36;
+        --ac-ink: #e9ecf8;
+        --ac-ink-soft: #a9b0cf;
+        --ac-accent: #7fdcc9;
+        --ac-accent-strong: #7fdcc9;
+        --ac-on-accent: #0b0f20;
+        --ac-line: rgba(233, 236, 248, 0.14);
+        --ac-line-soft: rgba(233, 236, 248, 0.07);
+        --ac-sky-upper: rgba(64, 92, 181, 0.25);
+        --ac-sky-mist: rgba(88, 214, 181, 0.14);
+        --ac-mesh-thread: rgba(233, 236, 248, 0.28);
+        --ac-shadow: 0 4px 24px rgba(2, 4, 12, 0.5), 0 1px 4px rgba(2, 4, 12, 0.4);
+        --ac-shadow-lift: 0 14px 40px rgba(2, 4, 12, 0.6), 0 2px 8px rgba(2, 4, 12, 0.4);
+      }
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: clip;
+      background: var(--ac-bg);
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      color: var(--ac-ink);
+      background:
+        radial-gradient(95% 46rem at 12% -10rem, var(--ac-sky-upper), transparent 62%),
+        radial-gradient(75% 38rem at 90% -8rem, var(--ac-sky-mist), transparent 64%),
+        var(--ac-bg);
+      font-family: var(--ac-font-body);
+      font-size: var(--ac-font-size-body);
+      line-height: var(--ac-lh-prose);
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body.dialog-open {
+      overflow: hidden;
+    }
+
+    button,
+    a {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    a {
+      color: var(--ac-accent);
+      text-decoration-color: color-mix(in srgb, var(--ac-accent) 42%, transparent);
+      text-underline-offset: 0.2em;
+    }
+
+    a:hover {
+      text-decoration-color: var(--ac-accent);
+    }
+
+    code,
+    pre {
+      font-family: var(--ac-font-mono);
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--ac-accent);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .skip-link {
+      position: fixed;
+      top: var(--ac-space-3);
+      left: var(--ac-space-3);
+      z-index: 200;
+      padding: var(--ac-space-2) var(--ac-space-4);
+      border: 1px solid var(--ac-line);
+      border-radius: 999px;
+      background: var(--ac-surface);
+      box-shadow: var(--ac-shadow);
+      transform: translateY(-200%);
+    }
+
+    .skip-link:focus-visible {
+      transform: none;
+    }
+
+    .page-rail {
+      width: min(calc(100% - 3rem), 88rem);
+      margin-inline: auto;
+    }
+
+    .system-header {
+      padding: clamp(3.5rem, 8vw, 7rem) 0 var(--ac-space-8);
+    }
+
+    .brand-line {
+      display: flex;
+      align-items: center;
+      gap: var(--ac-space-3);
+      margin-bottom: var(--ac-space-7);
+      font-size: var(--ac-font-size-ui);
+      font-weight: 650;
+      letter-spacing: var(--ac-ls-caps);
+      text-transform: uppercase;
+      color: var(--ac-accent);
+    }
+
+    .brand-mark {
+      width: 2.25rem;
+      height: 2.25rem;
+      flex: none;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(18rem, 0.75fr);
+      gap: clamp(2rem, 6vw, 6rem);
+      align-items: end;
+    }
+
+    .system-header h1 {
+      max-width: 12ch;
+      margin: 0 0 var(--ac-space-5);
+      font-family: var(--ac-font-display);
+      font-size: var(--ac-font-size-hero);
+      line-height: 0.98;
+      font-weight: 400;
+      letter-spacing: var(--ac-ls-display);
+      font-variation-settings: "SOFT" 75, "WONK" 0;
+      text-wrap: balance;
+    }
+
+    .hero-copy {
+      max-width: 43rem;
+      margin: 0;
+      color: var(--ac-ink-soft);
+      font-size: var(--ac-font-size-lead);
+      line-height: 1.6;
+    }
+
+    .hero-meta {
+      display: grid;
+      gap: var(--ac-space-4);
+      align-content: end;
+    }
+
+    .meta-card,
+    .specimen,
+    .foundation-card,
+    .decision-card {
+      background: var(--ac-surface);
+      border: 1px solid var(--ac-line-soft);
+      border-radius: var(--ac-radius);
+      box-shadow: var(--ac-shadow);
+    }
+
+    .meta-card {
+      padding: var(--ac-space-5);
+    }
+
+    .meta-card p {
+      margin: 0;
+      color: var(--ac-ink-soft);
+      font-size: var(--ac-font-size-copy-small);
+      line-height: var(--ac-lh-normal);
+    }
+
+    .meta-card strong {
+      color: var(--ac-ink);
+    }
+
+    .status-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--ac-space-2);
+      margin-bottom: var(--ac-space-4);
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      min-height: 1.75rem;
+      padding: 0.3rem 0.65rem;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      font-family: var(--ac-font-mono);
+      font-size: var(--ac-font-size-caption);
+      line-height: 1;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .status-existing {
+      color: var(--ac-accent);
+      background: color-mix(in srgb, var(--ac-accent) 9%, transparent);
+    }
+
+    .status-candidate {
+      color: color-mix(in srgb, var(--ac-accent) 65%, #b06c00);
+      background: color-mix(in srgb, #f2b774 16%, transparent);
+    }
+
+    .status-page {
+      color: color-mix(in srgb, var(--ac-ink) 72%, #7254a4);
+      background: color-mix(in srgb, #b49cf2 15%, transparent);
+    }
+
+    .status-open {
+      color: color-mix(in srgb, var(--ac-ink) 70%, #9b5b00);
+      background: color-mix(in srgb, #e6cd7a 20%, transparent);
+    }
+
+    .status-dormant {
+      color: var(--ac-ink-soft);
+      background: var(--ac-line-soft);
+    }
+
+    .review-controls {
+      display: none;
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+
+    .js .review-controls {
+      display: block;
+    }
+
+    .review-controls legend {
+      margin-bottom: var(--ac-space-2);
+      font-family: var(--ac-font-mono);
+      font-size: var(--ac-font-size-caption);
+      letter-spacing: var(--ac-ls-caps);
+      text-transform: uppercase;
+      color: var(--ac-ink-soft);
+    }
+
+    .segmented {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+      padding: 0.3rem;
+      border: 1px solid var(--ac-line);
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--ac-surface) 80%, transparent);
+      width: fit-content;
+    }
+
+    .segmented button {
+      min-height: 2.75rem;
+      padding: 0.55rem 1rem;
+      border: 0;
+      border-radius: 999px;
+      color: var(--ac-ink-soft);
+      background: transparent;
+      cursor: pointer;
+      font-size: var(--ac-font-size-ui);
+      font-weight: 600;
+    }
+
+    .segmented button[aria-pressed="true"] {
+      color: var(--ac-on-accent);
+      background: var(--ac-accent-strong);
+    }
+
+    .source-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--ac-space-3) var(--ac-space-5);
+      margin-top: var(--ac-space-4);
+      font-size: var(--ac-font-size-ui);
+    }
+
+    .docs-layout {
+      display: grid;
+      grid-template-columns: 15rem minmax(0, 1fr);
+      gap: clamp(2rem, 5vw, 5rem);
+      align-items: start;
+      padding-bottom: 8rem;
+    }
+
+    .contents {
+      position: sticky;
+      top: var(--ac-space-4);
+      max-height: calc(100dvh - 2rem);
+      overflow: auto;
+      padding: var(--ac-space-5);
+      border: 1px solid var(--ac-line-soft);
+      border-radius: var(--ac-radius);
+      background: color-mix(in srgb, var(--ac-surface) 90%, transparent);
+      box-shadow: var(--ac-shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .contents-title {
+      display: block;
+      margin-bottom: var(--ac-space-3);
+      font-family: var(--ac-font-mono);
+      font-size: var(--ac-font-size-caption);
+      letter-spacing: var(--ac-ls-caps);
+      text-transform: uppercase;
+      color: var(--ac-ink-soft);
+    }
+
+    .contents ol {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .contents a {
+      display: block;
+      padding: 0.5rem 0;
+      color: var(--ac-ink-soft);
+      text-decoration: none;
+      font-size: var(--ac-font-size-small);
+      line-height: 1.35;
+    }
+
+    .contents a:hover {
+      color: var(--ac-accent);
+    }
+
+    .content {
+      min-width: 0;
+    }
+
+    .system-section {
+      padding: clamp(3.5rem, 7vw, 6rem) 0;
+      border-top: 1px solid var(--ac-line);
+      scroll-margin-top: var(--ac-space-4);
+    }
+
+    .section-heading {
+      max-width: 52rem;
+      margin-bottom: var(--ac-space-7);
+    }
+
+    .eyebrow {
+      display: block;
+      margin: 0 0 var(--ac-space-4);
+      color: var(--ac-accent);
+      font-family: var(--ac-font-mono);
+      font-size: var(--ac-font-size-label);
+      font-weight: 640;
+      line-height: var(--ac-lh-ui);
+      letter-spacing: var(--ac-ls-caps);
+      text-transform: uppercase;
+    }
+
+    .section-heading h2 {
+      margin: 0 0 var(--ac-space-4);
+      font-family: var(--ac-font-display);
+      font-size: var(--ac-font-size-section);
+      line-height: var(--ac-lh-tight);
+      font-weight: 440;
+      letter-spacing: var(--ac-ls-display);
+      font-variation-settings: "SOFT" 75, "WONK" 0;
+      text-wrap: pretty;
+    }
+
+    .section-heading p {
+      max-width: var(--ac-reading-measure);
+      margin: 0;
+      color: var(--ac-ink-soft);
+    }
+
+    .review-key {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(8rem, 1fr));
+      gap: var(--ac-space-3);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .review-key li {
+      position: relative;
+      min-height: 7rem;
+      padding: var(--ac-space-4);
+      border: 1px solid var(--ac-line);
+      border-radius: var(--ac-radius-small);
+      background: var(--ac-surface);
+    }
+
+    .review-key li:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      right: calc(var(--ac-space-3) * -1);
+      top: 50%;
+      z-index: 2;
+      color: var(--ac-ink-soft);
+      transform: translate(50%, -50%);
+    }
+
+    .review-key strong {
+      display: block;
+      margin-bottom: var(--ac-space-2);
+      font-family: var(--ac-font-display);
+      font-size: var(--ac-font-size-body);
+      font-weight: 500;
+    }
+
+    .review-key span {
+      display: block;
+      color: var(--ac-ink-soft);
+      font-size: var(--ac-font-size-ui);
+      line-height: 1.4;
+    }
+
+    .branch-key {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--ac-space-3);
+      margin-top: var(--ac-space-4);
+    }
+
+    .branch-key .decision-card {
+      flex: 1 1 16rem;
+      padding: var(--ac-space-4);
+      box-shadow: none;
+    }
+
+    .colour-grid,
+    .foundation-grid,
+    .surface-grid,
+    .component-grid,
+    .decision-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--ac-space-5);
+    }
+
+    .colour-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .colour-token {
+      overflow: hidden;
+      border: 1px solid var(--ac-line);
+      border-radius: var(--ac-radius-small);
+      background: var(--ac-surface);
+    }
+
+    .colour-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      height: 6rem;
+    }
+
+    .colour-pair span {
+      display: grid;
+      place-items: end start;
+      padding: var(--ac-space-2);
+      color: #ffffff;
+      font-family: var(--ac-font-mono);
+      font-size: var(--ac-font-size-micro);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.75);
+    }
+
+    .colour-pair .light-swatch {
+      background: var(--token-light);
+    }
+
+    .colour-pair .dark-swatch {
+      background: var(--token-dark);
+    }
+
+    .token-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: var(--ac-space-3);
+      padding: var(--ac-space-3);
+      align-items: center;
+    }
+
+    .token-meta code {
+      color: var(--ac-ink);
+      font-size: var(--ac-font-size-ui);
+    }
+
+    .token-meta span {
+      color: var(--ac-ink-soft);
+      font-size: var(--ac-font-size-caption);
+      text-align: right;
+    }
+
+    .terminal-palette {
+      margin-top: var(--ac-space-7);
+      padding: var(--ac-space-5);
+      border-radius: var(--ac-radius);
+      background: var(--terminal-bg);
+      color: var(--terminal-strong);
+    }
+
+    .terminal-palette h3 {
+      margin: 0 0 var(--ac-space-4);
+      font-family: var(--ac-font-display);
+      font-size: var(--ac-font-size-card-title);
+      font-weight: 500;
+      color: var(--terminal-strong);
+    }
+
+    .terminal-swatches {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(5rem, 1fr));
+      gap: var(--ac-space-2);
+    }
+
+    .terminal-swatch {
+      min-height: 5.5rem;
+      padding: var(--ac-space-3);
+      border: 1px solid var(--terminal-border);
+      border-radius: var(--ac-radius-small);
+      background: color-mix(in srgb, var(--swatch) 18%, var(--terminal-bg));
+    }
+
+    .terminal-swatch i {
+      display: block;
+      width: 1.25rem;
+      height: 1.25rem;
+      margin-bottom: var(--ac-space-2);
+      border-radius: 50%;
+      background: var(--swatch);
+    }
+
+    .terminal-swatch code {
+      display: block;
+      color: var(--terminal-text);
+      font-size: var(--ac-font-size-micro);
+      overflow-wrap: anywhere;
+    }
+
+    .type-list {
+      display: grid;
+      gap: 0;
+      border-block: 1px solid var(--ac-line);
+    }
+
+    .type-row {
+      display: grid;
+      grid-template-columns: 12rem minmax(0, 1fr);
+      gap: var(--ac-space-5);
+      padding: var(--ac-space-5) 0;
+      border-bottom: 1px solid var(--ac-line-soft);
+      align-items: baseline;
+    }
+
+    .type-row:last-child {
+      border-bottom: 0;
+    }
+
+    .type-meta code {
+      display: block;
+      margin-bottom: var(--ac-space-2);
+      color: var(--ac-accent);
+      font-size: var(--ac-font-size-label);
+    }
+
+    .type-meta span {
+      display: block;
+      color: var(--ac-ink-soft);
+      font-size: var(--ac-font-size-caption);
+      line-height: 1.4;
+    }
+
+    .type-display {
+      font-family: var(--ac-font-display);
+      font-size: var(--ac-font-size-display);
+      line-height: 1.05;
+      letter-spacing: var(--ac-ls-display);
+      font-weight: 400;
+    }
+
+    .type-section {
+      font-family: var(--ac-font-display);
+      font-size: var(--ac-font-size-subsection);
+      line-height: 1.14;
+      letter-spacing: -0.012em;
+      font-weight: 440;
+    }
+
+    .type-card-title {
+      font-family: var(--ac-font-display);
+      font-size: var(--ac-font-size-card-title);
+      line-height: var(--ac-lh-ui);
+      letter-spacing: var(--ac-ls-heading);
+      font-weight: 500;
+    }
+
+    .type-prose {
+      max-width: 42rem;
+      color: var(--ac-ink-soft);
+      font-size: var(--ac-font-size-body);
+      line-height: var(--ac-lh-prose);
+    }
+
+    .type-label {
+      color: var(--ac-accent);
+      font-family: var(--ac-font-mono);
+      font-size: var(--ac-font-size-label);
+      line-height: var(--ac-lh-ui);
+      letter-spacing: var(--ac-ls-caps);
+      text-transform: uppercase;
+    }
+
+    .type-terminal {
+      padding: var(--ac-space-3) var(--ac-space-4);
+      border-radius: var(--ac-radius-small);
+      background: var(--terminal-bg);
+      color: var(--terminal-text);
+      font-family: var(--ac-font-mono);
+      font-size: var(--ac-font-size-ui);
+      line-height: var(--ac-lh-normal);
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--ac-space-3);
+      margin-top: var(--ac-space-6);
+    }
+
+    .metric-card,
+    .foundation-card {
+      padding: var(--ac-space-5);
+    }
+
+    .metric-card {
+      border: 1px solid var(--ac-line);
+      border-radius: var(--ac-radius-small);
+      background: var(--ac-surface);
+    }
+
+    .metric-card code {
+      display: block;
+      color: var(--ac-accent);
+      font-size: var(--ac-font-size-caption);
+    }
+
+    .metric-card strong {
+      display: block;
+      margin: var(--ac-space-2) 0;
+      font-family: var(--ac-font-display);
+      font-size: var(--ac-font-size-card-title);
+      font-weight: 500;
+    }
+
+    .metric-card span {
+      color: var(--ac-ink-soft);
+      font-size: var(--ac-font-size-label);
+    }
+
+    .spacing-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: var(--ac-space-2);
+    }
+
+    .spacing-list li {
+      display: grid;
+      grid-template-columns: 9rem 4rem minmax(0, 1fr);
+      gap: var(--ac-space-4);
+      align-items: center;
+      min-height: 2.5rem;
+      border-bottom: 1px solid var(--ac-line-soft);
+    }
+
+    .spacing-list code,
+    .spacing-list span {
+      font-size: var(--ac-font-size-label);
+    }
+
+    .spacing-list span {
+      color: var(--ac-ink-soft);
+      text-align: right;
+    }
+
+    .space-bar-track {
+      height: 0.75rem;
+      border-radius: 999px;
+      background: var(--ac-line-soft);
+    }
+
+    .space-bar {
+      width: calc(var(--bar) * 2);
+      min-width: 0.25rem;
+      max-width: 100%;
+      height: 100%;
+      border-radius: 999px;
+      background: var(--ac-accent);
+    }
+
+    .mapping-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--ac-space-3);
+      margin-top: var(--ac-space-6);
+    }
+
+    .mapping-grid .foundation-card {
+      box-shadow: none;
+    }
+
+    .mapping-grid code {
+      display: block;
+      margin-bottom: var(--ac-space-2);
+      color: var(--ac-accent);
+      font-size: var(--ac-font-size-caption);
+    }
+
+    .mapping-grid strong {
+      display: block;
+      font-family: var(--ac-font-display);
+      font-weight: 500;
+    }
+
+    .rail-demo {
+      position: relative;
+      min-height: 27rem;
+      padding: var(--ac-space-6);
+      overflow: hidden;
+      border: 1px solid var(--ac-line);
+      border-radius: var(--ac-radius);
+      background:
+        linear-gradient(var(--ac-line-soft) 1px, transparent 1px),
+        linear-gradient(90deg, var(--ac-line-soft) 1px, transparent 1px),
+        color-mix(in srgb, var(--ac-bg) 74%, var(--ac-surface));
+      background-size: 2rem 2rem;
+    }
+
+    .rail-current,
+    .rail-candidate,
+    .rail-measure,
+    .rail-inset {
+      display: grid;
+      place-items: start;
+      min-height: 5rem;
+      padding: var(--ac-space-3);
+      border-radius: var(--ac-radius-small);
+      font-family: var(--ac-font-mono);
+      font-size: var(--ac-font-size-caption);
+      line-height: 1.35;
+    }
+
+    .rail-current {
+      width: min(100%, 68rem);
+      min-height: 21rem;
+      margin-inline: auto;
+      border: 2px solid color-mix(in srgb, var(--ac-accent) 46%, transparent);
+      background: color-mix(in srgb, var(--ac-accent) 5%, transparent);
+    }
+
+    .rail-candidate {
+      width: min(90%, 58rem);
+      min-height: 16rem;
+      margin: var(--ac-space-4) auto 0;
+      border: 2px dashed color-mix(in srgb, #b49cf2 65%, var(--ac-ink));
+      background: color-mix(in srgb, #b49cf2 8%, transparent);
+    }
+
+    .rail-measure {
+      width: min(82%, 42rem);
+      min-height: 10rem;
+      margin: var(--ac-space-4) 0 0;
+      border: 2px solid color-mix(in srgb, #f2b774 72%, var(--ac-ink));
+      background: color-mix(in srgb, #f2b774 11%, transparent);
+    }
+
+    .rail-inset {
+      width: min(88%, 24rem);
+      min-height: 4rem;
+      margin-top: var(--ac-space-4);
+      border: 1px solid var(--ac-line);
+      background: var(--ac-surface);
+      box-shadow: var(--ac-shadow);
+    }
+
+    .rail-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--ac-space-3);
+      margin-top: var(--ac-space-4);
+      color: var(--ac-ink-soft);
+      font-size: var(--ac-font-size-ui);
+    }
+
+    .rail-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--ac-space-2);
+    }
+
+    .rail-legend i {
+      width: 0.75rem;
+      height: 0.75rem;
+      border: 2px solid currentColor;
+      border-radius: 2px;
+    }
+
+    .surface-grid {
+      margin-top: var(--ac-space-6);
+    }
+
+    .surface-sample {
+      min-height: 12rem;
+      padding: var(--ac-space-5);
+      border: 1px solid var(--ac-line-soft);
+      border-radius: var(--ac-radius);
+      background: var(--ac-surface);
+      box-shadow: var(--ac-shadow);
+    }
+
+    .surface-sample.lifted {
+      box-shadow: var(--ac-shadow-lift);
+    }
+
+    .surface-sample h3 {
+      margin: 0 0 var(--ac-space-3);
+      font-family: var(--ac-font-display);
+      font-size: var(--ac-font-size-card-title);
+      font-weight: 500;
+    }
+
+    .surface-sample p {
+      margin: 0;
+      color: var(--ac-ink-soft);
+      font-size: var(--ac-font-size-small);
+    }
+
+    .specimen {
+      overflow: hidden;
+      margin-top: var(--ac-space-6);
+    }
+
+    .specimen-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--ac-space-3);
+      padding: var(--ac-space-3) var(--ac-space-4);
+      border-bottom: 1px solid var(--ac-line-soft);
+      background: color-mix(in srgb, var(--ac-bg) 48%, var(--ac-surface));
+    }
+
+    .specimen-meta strong {
+      font-size: var(--ac-font-size-ui);
+    }
+
+    .meta-pairs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--ac-space-2);
+    }
+
+    .specimen-canvas {
+      padding: clamp(1.25rem, 4vw, 3rem);
+    }
+
+    .section-intro-demo {
+      max-width: 44rem;
+    }
+
+    .section-intro-demo h3 {
+      margin: 0 0 var(--ac-space-4);
+      font-family: var(--ac-font-display);
+      font-size: var(--ac-font-size-subsection);
+      font-weight: 440;
+      line-height: 1.14;
+      letter-spacing: -0.012em;
+    }
+
+    .section-intro-demo p {
+      max-width: 42rem;
+      margin: 0;
+      color: var(--ac-ink-soft);
+    }
+
+    .command-chip {
+      display: inline-block;
+      padding: 0.12em 0.38em;
+      border-radius: 4px;
+      background: var(--ac-line-soft);
+      color: var(--ac-ink);
+      font-family: var(--ac-font-mono);
+      font-size: var(--ac-font-size-inline-code);
+      letter-spacing: 0;
+    }
+
+    .facts {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1px;
+      margin: 0;
+      padding: 1px;
+      list-style: none;
+      border-radius: var(--ac-radius);
+      overflow: hidden;
+      background: var(--ac-line);
+    }
+
+    .fact {
+      min-width: 0;
+      padding: var(--ac-space-4);
+      background: var(--ac-surface);
+    }
+
+    .fact-label {
+      display: block;
+      margin-bottom: var(--ac-space-2);
+      color: var(--ac-ink-soft);
+      font-family: var(--ac-font-mono);
+      font-size: var(--ac-font-size-caption);
+      letter-spacing: var(--ac-ls-caps);
+      text-transform: uppercase;
+    }
+
+    .fact-value {
+      display: block;
+      color: var(--ac-ink);
+      font-family: var(--ac-font-mono);
+      font-size: var(--ac-font-size-ui);
+      overflow-wrap: anywhere;
+    }
+
+    .reference-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border-block: 1px solid var(--ac-line);
+    }
+
+    .reference-row {
+      display: grid;
+      grid-template-columns: 10rem minmax(0, 1fr) minmax(11rem, auto);
+      gap: var(--ac-space-5);
+      padding: var(--ac-space-5) 0;
+      border-bottom: 1px solid var(--ac-line-soft);
+      align-items: start;
+    }
+
+    .reference-row:last-child {
+      border-bottom: 0;
+    }
+
+    .reference-name {
+      font-family: var(--ac-font-display);
+      font-size: var(--ac-font-size-card-title);
+      line-height: var(--ac-lh-ui);
+      font-weight: 500;
+    }
+
+    .reference-engine {
+      display: block;
+      margin-top: var(--ac-space-2);
+      color: var(--ac-accent);
+      font-family: var(--ac-font-mono);
+      font-size: var(--ac-font-size-micro);
+      letter-spacing: var(--ac-ls-caps);
+      text-transform: uppercase;
+    }
+
+    .reference-detail {
+      margin: 0;
+      color: var(--ac-ink-soft);
+      font-size: var(--ac-font-size-small);
+      line-height: var(--ac-lh-normal);
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: var(--ac-space-2);
+    }
+
+    .chip {
+      padding: 0.25rem 0.55rem;
+      border-radius: 0.35rem;
+      background: var(--ac-line-soft);
+      color: var(--ac-ink-soft);
+      font-family: var(--ac-font-mono);
+      font-size: var(--ac-font-size-caption);
+      white-space: nowrap;
+    }
+
+    .responsive-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--ac-space-3);
+      padding: var(--ac-space-3) var(--ac-space-4);
+      border-bottom: 1px solid var(--ac-line-soft);
+    }
+
+    .responsive-toolbar span {
+      color: var(--ac-ink-soft);
+      font-size: var(--ac-font-size-ui);
+    }
+
+    .responsive-canvas {
+      --demo-width: 58rem;
+      container: pipeline / inline-size;
+      width: min(100%, var(--demo-width));
+      margin-inline: auto;
+      transition: width 0.25s var(--ac-ease-out);
+    }
+
+    .pipeline-card {
+      margin: 0;
+      overflow: hidden;
+      border: 1px solid var(--pipeline-line-soft);
+      border-radius: var(--ac-radius);
+      background: var(--pipeline-bg);
+      color: var(--pipeline-ink);
+      box-shadow: var(--ac-shadow);
+    }
+
+    .pipeline-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 1.75rem 0.45rem;
+      margin: 0;
+      padding: 2.25rem 1.5rem;
+      list-style: none;
+      border-bottom: 1px solid var(--pipeline-line-soft);
+    }
+
+    .pipeline-stage {
+      position: relative;
+      display: flex;
+      flex: 0 0 6.4rem;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      text-align: center;
+    }
+
+    .pipeline-arrow {
+      flex: 0 0 0.8rem;
+      margin-top: 2.05rem;
+      color: var(--pipeline-ink-soft);
+      opacity: 0.55;
+      text-align: center;
+    }
+
+    .pipeline-break {
+      flex: 0 0 100%;
+      width: 0;
+      height: 0;
+    }
+
+    .stage-glyph {
+      width: 4.25rem;
+      height: 4.25rem;
+      color: var(--pipeline-ink-soft);
+    }
+
+    .stage-glyph .line {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0.58;
+    }
+
+    .stage-glyph .accent-stroke {
+      fill: none;
+      stroke: var(--pipeline-accent);
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .stage-glyph .accent-fill {
+      fill: color-mix(in srgb, var(--pipeline-accent) 75%, #ffffff);
+    }
+
+    .stage-label {
+      font-family: var(--ac-font-display);
+      font-size: var(--ac-font-size-copy-small);
+      font-weight: 500;
+      line-height: var(--ac-lh-ui);
+    }
+
+    .stage-kind {
+      color: var(--pipeline-accent);
+      font-family: var(--ac-font-mono);
+      font-size: var(--ac-font-size-micro);
+      line-height: 1.3;
+      letter-spacing: var(--ac-ls-caps);
+      text-transform: uppercase;
+    }
+
+    .pipeline-card figcaption {
+      max-width: 42rem;
+      margin-inline: auto;
+      padding: var(--ac-space-5);
+      color: var(--pipeline-ink-soft);
+      font-size: var(--ac-font-size-small);
+      line-height: var(--ac-lh-normal);
+    }
+
+    @container pipeline (max-width: 50rem) {
+      .pipeline-list {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--ac-space-7) var(--ac-space-4);
+      }
+
+      .pipeline-stage {
+        display: flex;
+        min-width: 0;
+      }
+
+      .pipeline-arrow,
+      .pipeline-break {
+        display: none;
+      }
+    }
+
+    @container pipeline (max-width: 40rem) {
+      .pipeline-list {
+        grid-template-columns: 1fr;
+        gap: 0;
+        padding: var(--ac-space-5);
+      }
+
+      .pipeline-stage {
+        display: grid;
+        grid-template-columns: 4rem minmax(0, 1fr);
+        grid-template-areas:
+          "glyph label"
+          "glyph kind";
+        gap: 0 var(--ac-space-4);
+        padding: var(--ac-space-4) 0;
+        text-align: left;
+        align-items: center;
+      }
+
+      .pipeline-stage:not(.pipeline-last)::after {
+        content: "";
+        position: absolute;
+        left: 2rem;
+        top: calc(100% - 0.5rem);
+        width: 1px;
+        height: 1rem;
+        background: var(--pipeline-line);
+      }
+
+      .stage-glyph {
+        grid-area: glyph;
+        width: 3.5rem;
+        height: 3.5rem;
+      }
+
+      .stage-label {
+        grid-area: label;
+        align-self: end;
+      }
+
+      .stage-kind {
+        grid-area: kind;
+        align-self: start;
+      }
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--ac-space-5);
+    }
+
+    .component-card {
+      min-width: 0;
+      padding: var(--ac-space-5);
+      border: 1px solid var(--ac-line-soft);
+      border-radius: var(--ac-radius);
+      background: var(--ac-surface);
+      box-shadow: var(--ac-shadow);
+    }
+
+    .component-eyebrow {
+      display: block;
+      margin-bottom: var(--ac-space-3);
+      color: var(--ac-accent);
+      font-family: var(--ac-font-mono);
+      font-size: var(--ac-font-size-caption);
+      line-height: var(--ac-lh-ui);
+      letter-spacing: var(--ac-ls-caps);
+      text-transform: uppercase;
+    }
+
+    .component-card h3 {
+      margin: 0 0 var(--ac-space-3);
+      font-family: var(--ac-font-display);
+      font-size: var(--ac-font-size-card-title);
+      line-height: var(--ac-lh-ui);
+      letter-spacing: var(--ac-ls-heading);
+      font-weight: 500;
+    }
+
+    .component-card p {
+      margin: 0;
+      color: var(--ac-ink-soft);
+      font-size: var(--ac-font-size-copy-small);
+      line-height: var(--ac-lh-normal);
+    }
+
+    .gate-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 12rem;
+      gap: var(--ac-space-6);
+      align-items: start;
+    }
+
+    .terminal-thumb {
+      min-height: 12rem;
+      overflow: hidden;
+      border: 1px solid var(--terminal-border);
+      border-radius: var(--ac-radius-small);
+      background: var(--terminal-bg);
+      color: var(--terminal-strong);
+    }
+
+    .terminal-head,
+    .terminal-thumb-head {
+      display: flex;
+      align-items: center;
+      gap: var(--ac-space-2);
+      min-height: 3rem;
+      padding: 0.65rem 0.9rem;
+      border-bottom: 1px solid var(--terminal-divider);
+    }
+
+    .terminal-dot {
+      width: 0.55rem;
+      height: 0.55rem;
+      flex: none;
+      border-radius: 50%;
+      background: var(--terminal-accent);
+    }
+
+    .terminal-label {
+      color: var(--terminal-text);
+      font-family: var(--ac-font-mono);
+      font-size: var(--ac-font-size-caption);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .terminal-thumb code {
+      display: block;
+      padding: var(--ac-space-4);
+      color: var(--terminal-strong);
+      font-size: var(--ac-font-size-ui);
+      line-height: var(--ac-lh-normal);
+      overflow-wrap: anywhere;
+    }
+
+    .prompt {
+      color: var(--terminal-accent);
+      font-weight: 650;
+    }
+
+    .copy-button {
+      display: none;
+      width: 2.75rem;
+      height: 2.75rem;
+      align-items: center;
+      justify-content: center;
+      flex: none;
+      margin-left: auto;
+      padding: 0;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .js .copy-button {
+      display: inline-flex;
+    }
+
+    .copy-button:hover {
+      background: color-mix(in srgb, currentColor 10%, transparent);
+    }
+
+    .copy-button svg {
+      width: 1rem;
+      height: 1rem;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .copy-button .check-icon {
+      display: none;
+    }
+
+    .copy-button.is-copied .copy-icon {
+      display: none;
+    }
+
+    .copy-button.is-copied .check-icon {
+      display: block;
+    }
+
+    .copy-status {
+      min-height: 1.5rem;
+      margin-top: var(--ac-space-3);
+      color: var(--ac-accent);
+      font-size: var(--ac-font-size-ui);
+    }
+
+    .terminal {
+      overflow: hidden;
+      margin: 0;
+      border: 1px solid var(--terminal-border);
+      border-radius: var(--ac-radius);
+      background: var(--terminal-bg);
+      color: var(--terminal-text);
+      box-shadow: var(--ac-shadow);
+    }
+
+    .terminal figcaption {
+      display: flex;
+      align-items: center;
+      gap: var(--ac-space-2);
+      min-height: 3.5rem;
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid var(--terminal-divider);
+    }
+
+    .terminal-title {
+      color: var(--terminal-strong);
+      font-family: var(--ac-font-mono);
+      font-size: var(--ac-font-size-ui);
+      font-weight: 600;
+    }
+
+    .terminal-context {
+      color: var(--terminal-muted);
+      font-family: var(--ac-font-mono);
+      font-size: var(--ac-font-size-caption);
+    }
+
+    .terminal pre {
+      max-height: 24rem;
+      margin: 0;
+      padding: var(--ac-space-5);
+      overflow: auto;
+      color: var(--terminal-text);
+      font-size: var(--ac-font-size-ui);
+      line-height: var(--ac-lh-normal);
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .terminal pre:focus-visible {
+      outline-offset: -4px;
+    }
+
+    .terminal .strong {
+      color: var(--terminal-strong);
+    }
+
+    .terminal .muted {
+      color: var(--terminal-muted);
+      font-style: italic;
+    }
+
+    .session-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(16rem, 1fr);
+      gap: var(--ac-space-5);
+      align-items: start;
+    }
+
+    .session-card {
+      padding: var(--ac-space-6);
+      border: 1px solid var(--ac-line-soft);
+      border-radius: var(--ac-radius);
+      background: var(--ac-surface);
+      box-shadow: var(--ac-shadow);
+    }
+
+    .session-card h3 {
+      margin: 0 0 var(--ac-space-3);
+      font-family: var(--ac-font-display);
+      font-size: var(--ac-font-size-dialog-title);
+      font-weight: 500;
+      line-height: var(--ac-lh-ui);
+    }
+
+    .session-intro {
+      margin: 0 0 var(--ac-space-5);
+      color: var(--ac-ink-soft);
+      font-size: var(--ac-font-size-copy-small);
+    }
+
+    .beat-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .beat {
+      display: grid;
+      grid-template-columns: 0.75rem minmax(0, 1fr);
+      gap: var(--ac-space-3);
+      padding-bottom: var(--ac-space-5);
+    }
+
+    .beat:last-child {
+      padding-bottom: 0;
+    }
+
+    .beat-rail {
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+
+    .beat-rail::before {
+      content: "";
+      position: absolute;
+      top: 0.65rem;
+      bottom: calc(var(--ac-space-5) * -1);
+      width: 1px;
+      background: var(--ac-line);
+    }
+
+    .beat:last-child .beat-rail::before {
+      display: none;
+    }
+
+    .beat-dot {
+      position: relative;
+      z-index: 1;
+      width: 0.65rem;
+      height: 0.65rem;
+      margin-top: 0.25rem;
+      border-radius: 50%;
+      background: var(--ac-accent);
+    }
+
+    .beat h4 {
+      margin: 0 0 var(--ac-space-2);
+      font-size: var(--ac-font-size-copy-small);
+    }
+
+    .beat p {
+      margin: 0;
+      color: var(--ac-ink-soft);
+      font-family: var(--ac-font-display);
+      font-size: var(--ac-font-size-base);
+      line-height: var(--ac-lh-normal);
+    }
+
+    .beat-excerpt {
+      margin-top: var(--ac-space-3);
+      padding: var(--ac-space-3) var(--ac-space-4);
+      overflow-x: auto;
+      border-radius: var(--ac-radius-small);
+      background: var(--terminal-bg);
+      color: var(--terminal-text);
+      font-family: var(--ac-font-mono);
+      font-size: var(--ac-font-size-label);
+      line-height: 1.6;
+    }
+
+    details.disclosure {
+      margin-top: var(--ac-space-5);
+    }
+
+    details.disclosure summary {
+      display: inline-flex;
+      min-height: 2.75rem;
+      align-items: center;
+      gap: var(--ac-space-2);
+      padding: 0.55rem 1rem;
+      border: 1px solid var(--ac-line);
+      border-radius: 999px;
+      background: var(--ac-surface);
+      color: var(--ac-accent);
+      box-shadow: var(--ac-shadow);
+      cursor: pointer;
+      font-family: var(--ac-font-mono);
+      font-size: var(--ac-font-size-ui);
+      font-weight: 650;
+      list-style: none;
+    }
+
+    details.disclosure summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details.disclosure summary::after {
+      content: "";
+      width: 0.5rem;
+      height: 0.5rem;
+      border-right: 1.5px solid currentColor;
+      border-bottom: 1.5px solid currentColor;
+      transform: translateY(-2px) rotate(45deg);
+    }
+
+    details.disclosure[open] summary::after {
+      transform: translateY(2px) rotate(225deg);
+    }
+
+    .disclosure-body {
+      padding-top: var(--ac-space-4);
+    }
+
+    .raw-link {
+      display: inline-flex;
+      min-height: 2.75rem;
+      align-items: center;
+      margin-top: var(--ac-space-4);
+      padding: 0.45rem 0.85rem;
+      border: 1px solid var(--ac-line);
+      border-radius: 999px;
+      background: var(--ac-surface);
+      color: var(--ac-ink-soft);
+      font-family: var(--ac-font-mono);
+      font-size: var(--ac-font-size-label);
+      text-decoration: none;
+    }
+
+    .raw-link:hover {
+      color: var(--ac-accent);
+      border-color: var(--ac-accent);
+    }
+
+    .primary-button,
+    .secondary-button {
+      display: inline-flex;
+      min-height: 2.75rem;
+      align-items: center;
+      justify-content: center;
+      padding: 0.6rem 1rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: var(--ac-font-size-ui);
+      font-weight: 650;
+    }
+
+    .primary-button {
+      border: 1px solid var(--ac-accent-strong);
+      background: var(--ac-accent-strong);
+      color: var(--ac-on-accent);
+    }
+
+    .secondary-button {
+      border: 1px solid var(--ac-line);
+      background: var(--ac-surface);
+      color: var(--ac-ink);
+    }
+
+    .primary-button:disabled,
+    .secondary-button:disabled {
+      opacity: 0.42;
+      cursor: default;
+    }
+
+    .js-only {
+      display: none !important;
+    }
+
+    .js .js-only {
+      display: inline-flex !important;
+    }
+
+    .interaction-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--ac-space-3);
+      margin-top: var(--ac-space-5);
+    }
+
+    .interaction-note {
+      color: var(--ac-ink-soft);
+      font-size: var(--ac-font-size-ui);
+    }
+
+    .page-only-register {
+      padding: var(--ac-space-6);
+      border: 2px dashed color-mix(in srgb, #b49cf2 65%, var(--ac-line));
+      border-radius: var(--ac-radius);
+      background: color-mix(in srgb, #b49cf2 8%, var(--ac-surface));
+    }
+
+    .page-only-register h3,
+    .quarantine h3 {
+      margin: 0 0 var(--ac-space-3);
+      font-family: var(--ac-font-display);
+      font-size: var(--ac-font-size-dialog-title);
+      font-weight: 500;
+    }
+
+    .page-only-register ul,
+    .quarantine ul {
+      columns: 2;
+      margin: 0;
+      padding-left: 1.2rem;
+      color: var(--ac-ink-soft);
+    }
+
+    .quarantine {
+      margin-top: var(--ac-space-5);
+      padding: var(--ac-space-6);
+      border: 2px dashed var(--ac-line);
+      border-radius: var(--ac-radius);
+      background: color-mix(in srgb, var(--ac-line-soft) 70%, transparent);
+    }
+
+    .acceptance-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--ac-space-4);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .acceptance-grid li {
+      min-height: 8rem;
+      padding: var(--ac-space-4);
+      border: 1px solid var(--ac-line);
+      border-radius: var(--ac-radius-small);
+      background: var(--ac-surface);
+    }
+
+    .acceptance-grid strong {
+      display: block;
+      margin-bottom: var(--ac-space-2);
+      font-family: var(--ac-font-display);
+      font-size: var(--ac-font-size-body);
+      font-weight: 500;
+    }
+
+    .acceptance-grid span {
+      color: var(--ac-ink-soft);
+      font-size: var(--ac-font-size-ui);
+      line-height: 1.45;
+    }
+
+    .decision-card {
+      padding: var(--ac-space-5);
+    }
+
+    .decision-card h3 {
+      margin: 0 0 var(--ac-space-3);
+      font-family: var(--ac-font-display);
+      font-size: var(--ac-font-size-card-title);
+      font-weight: 500;
+    }
+
+    .decision-card ul {
+      margin: 0;
+      padding-left: 1.15rem;
+      color: var(--ac-ink-soft);
+      font-size: var(--ac-font-size-small);
+    }
+
+    .decision-card li + li {
+      margin-top: var(--ac-space-2);
+    }
+
+    .system-footer {
+      padding: var(--ac-space-7) 0;
+      border-top: 1px solid var(--ac-line);
+      color: var(--ac-ink-soft);
+      font-size: var(--ac-font-size-ui);
+    }
+
+    dialog {
+      width: min(calc(100% - 2rem), 68rem);
+      max-height: min(52rem, calc(100dvh - 2rem));
+      margin: auto;
+      padding: 0;
+      overflow: hidden;
+      border: 1px solid var(--ac-line);
+      border-radius: var(--ac-radius);
+      background:
+        radial-gradient(95% 70% at 12% -12%, var(--ac-sky-upper), transparent 58%),
+        radial-gradient(85% 62% at 88% -6%, var(--ac-sky-mist), transparent 60%),
+        var(--ac-bg);
+      color: var(--ac-ink);
+      box-shadow: var(--ac-shadow-lift);
+    }
+
+    dialog::backdrop {
+      background: rgba(9, 12, 26, 0.72);
+      backdrop-filter: blur(3px);
+    }
+
+    .dialog-shell {
+      display: flex;
+      max-height: inherit;
+      flex-direction: column;
+    }
+
+    .dialog-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--ac-space-4);
+      padding: var(--ac-space-4) var(--ac-space-5);
+      border-bottom: 1px solid var(--ac-line);
+      background: color-mix(in srgb, var(--ac-surface) 88%, transparent);
+    }
+
+    .dialog-heading {
+      min-width: 0;
+    }
+
+    .dialog-heading h2 {
+      margin: 0;
+      font-family: var(--ac-font-display);
+      font-size: var(--ac-font-size-dialog-title);
+      font-weight: 500;
+    }
+
+    .dialog-heading p {
+      margin: 0.2rem 0 0;
+      color: var(--ac-ink-soft);
+      font-family: var(--ac-font-mono);
+      font-size: var(--ac-font-size-caption);
+    }
+
+    .dialog-close {
+      width: 2.75rem;
+      height: 2.75rem;
+      flex: none;
+      border: 1px solid var(--ac-line);
+      border-radius: 999px;
+      background: var(--ac-surface);
+      color: var(--ac-ink);
+      cursor: pointer;
+      font-size: var(--ac-font-size-card-title);
+      line-height: 1;
+    }
+
+    .dialog-body {
+      overflow: auto;
+      padding: clamp(1.25rem, 4vw, 3rem);
+    }
+
+    .dialog-body .terminal {
+      max-width: 58rem;
+      margin-inline: auto;
+    }
+
+    .dialog-caption {
+      max-width: 58rem;
+      margin: 0 auto var(--ac-space-4);
+      color: var(--ac-accent);
+      font-family: var(--ac-font-mono);
+      font-size: var(--ac-font-size-ui);
+    }
+
+    .dialog-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--ac-space-2);
+      padding: var(--ac-space-3) var(--ac-space-4);
+      border-top: 1px solid var(--ac-line);
+      background: var(--ac-surface);
+    }
+
+    .dialog-position {
+      min-width: 6rem;
+      color: var(--ac-ink-soft);
+      font-family: var(--ac-font-mono);
+      font-size: var(--ac-font-size-caption);
+      text-align: center;
+    }
+
+    @media (max-width: 72rem) {
+      .docs-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .contents {
+        position: sticky;
+        top: 0;
+        z-index: 30;
+        max-height: none;
+        margin-inline: -1.5rem;
+        padding: var(--ac-space-2) 1.5rem;
+        border-inline: 0;
+        border-radius: 0;
+      }
+
+      .contents-title {
+        display: none;
+      }
+
+      .contents ol {
+        display: flex;
+        gap: var(--ac-space-5);
+        overflow-x: auto;
+        scrollbar-width: thin;
+      }
+
+      .contents a {
+        white-space: nowrap;
+      }
+    }
+
+    @media (max-width: 60rem) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-meta {
+        max-width: 38rem;
+      }
+
+      .colour-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .terminal-swatches {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .review-key {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .review-key li::after {
+        display: none;
+      }
+
+      .card-grid,
+      .acceptance-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .metric-grid,
+      .mapping-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .session-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 46rem) {
+      .page-rail {
+        width: min(calc(100% - 2rem), 88rem);
+      }
+
+      .system-header {
+        padding-top: var(--ac-space-7);
+      }
+
+      .system-header h1 {
+        font-size: var(--ac-font-size-hero-mobile);
+      }
+
+      .contents {
+        margin-inline: -1rem;
+        padding-inline: 1rem;
+      }
+
+      .colour-grid,
+      .foundation-grid,
+      .surface-grid,
+      .component-grid,
+      .decision-grid,
+      .card-grid,
+      .acceptance-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .type-row {
+        grid-template-columns: 1fr;
+      }
+
+      .spacing-list li {
+        grid-template-columns: 7rem 3rem minmax(0, 1fr);
+      }
+
+      .review-key {
+        grid-template-columns: 1fr;
+      }
+
+      .terminal-swatches {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .facts {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .reference-row {
+        grid-template-columns: 1fr;
+        gap: var(--ac-space-3);
+      }
+
+      .chip-row {
+        justify-content: flex-start;
+      }
+
+      .gate-card {
+        grid-template-columns: 1fr;
+      }
+
+      .terminal-thumb {
+        width: min(100%, 18rem);
+      }
+
+      .page-only-register ul,
+      .quarantine ul {
+        columns: 1;
+      }
+
+      .dialog-position {
+        display: none;
+      }
+    }
+
+    @media (max-width: 28rem) {
+      .facts {
+        grid-template-columns: 1fr;
+      }
+
+      .metric-grid,
+      .mapping-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .spacing-list li {
+        grid-template-columns: 1fr;
+        gap: var(--ac-space-2);
+        padding-block: var(--ac-space-3);
+      }
+
+      .spacing-list span {
+        text-align: left;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+
+    @media print {
+      .contents,
+      .review-controls,
+      .responsive-toolbar,
+      .js-only,
+      .copy-button {
+        display: none !important;
+      }
+
+      .docs-layout {
+        display: block;
+      }
+
+      .system-section {
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to visual system</a>
+
+  <header class="system-header">
+    <div class="page-rail">
+      <div class="brand-line">
+        <svg class="brand-mark" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+          <path d="M14 46 Q24 38 33 21 M33 21 Q40 36 51 41" stroke="var(--ac-mesh-thread)" stroke-width="2.5" stroke-linecap="round"></path>
+          <circle cx="14" cy="46" r="5" fill="var(--ac-accent)"></circle>
+          <circle cx="33" cy="21" r="6.5" fill="var(--ac-accent)"></circle>
+          <circle cx="51" cy="41" r="4.5" fill="var(--ac-accent)"></circle>
+        </svg>
+        AgentCulture visual system
+      </div>
+
+      <div class="hero-grid">
+        <div>
+          <div class="status-row">
+            <span class="status status-candidate">Candidate</span>
+            <span class="status status-page">Devague reference</span>
+            <span class="status status-existing">System-first</span>
+          </div>
+          <h1>First light over the mesh.</h1>
+          <p class="hero-copy">
+            A visual reference for reviewing the system before any production page migrates.
+            The Devague mock supplies the evidence; this page separates reusable rules from
+            page-owned composition and makes the proposed interactions real enough to test.
+          </p>
+        </div>
+
+        <div class="hero-meta">
+          <div class="meta-card">
+            <div class="status-row">
+              <span class="status status-open">Review artefact</span>
+            </div>
+            <p><strong>No production route has changed.</strong> Appearance here means “ready to review”, not “established in Astro”.</p>
+            <div class="source-links">
+              <a href="design-system.md">Written adoption plan</a>
+              <a href="mocks/devague/2026-07-21-review-style/agents/devague/index.html">Retained mock</a>
+              <a href="current-direction.md">Decision map</a>
+            </div>
+          </div>
+
+          <fieldset class="review-controls" aria-label="Specimen theme">
+            <legend>Review theme</legend>
+            <div class="segmented">
+              <button type="button" data-theme-choice="system" aria-pressed="false">System</button>
+              <button type="button" data-theme-choice="light" aria-pressed="true">Dawn</button>
+              <button type="button" data-theme-choice="dark" aria-pressed="false">Pre-dawn</button>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-rail docs-layout">
+    <nav class="contents" aria-label="Visual system sections">
+      <span class="contents-title">On this page</span>
+      <ol>
+        <li><a href="#review-key">Review key</a></li>
+        <li><a href="#colour">Colour</a></li>
+        <li><a href="#typography">Typography</a></li>
+        <li><a href="#spacing">Spacing</a></li>
+        <li><a href="#layout">Layout</a></li>
+        <li><a href="#primitives">Primitives</a></li>
+        <li><a href="#pipeline">Pipeline</a></li>
+        <li><a href="#components">Components</a></li>
+        <li><a href="#interactions">Interactions</a></li>
+        <li><a href="#boundaries">Boundaries</a></li>
+        <li><a href="#acceptance">Acceptance</a></li>
+      </ol>
+    </nav>
+
+    <main id="main" class="content">
+      <section class="system-section" id="review-key">
+        <div class="section-heading">
+          <span class="eyebrow">01 · review key</span>
+          <h2>See the lifecycle before judging the details.</h2>
+          <p>
+            The visual system is deliberately opt-in. A pattern can be visible and operable here
+            while still waiting for approval, source implementation, and a production consumer.
+          </p>
+        </div>
+
+        <ol class="review-key" aria-label="Design-system maturity lifecycle">
+          <li><strong>Existing</strong><span>Already part of the production contract.</span></li>
+          <li><strong>Candidate</strong><span>Specified strongly enough to review and build.</span></li>
+          <li><strong>Established</strong><span>Opt-in source implementation passes its system gate.</span></li>
+          <li><strong>Migrated</strong><span>A named production page consumes it.</span></li>
+          <li><strong>Promoted</strong><span>Two real consumers prove it can become a shared default.</span></li>
+        </ol>
+
+        <div class="branch-key">
+          <div class="decision-card">
+            <span class="status status-page">Page-only</span>
+            <p>Devague content, glyphs, ordering, and evidence remain local even when their shell is reusable.</p>
+          </div>
+          <div class="decision-card">
+            <span class="status status-dormant">Dormant</span>
+            <p>Retained comparison variants stay in provenance only and are not presented as options.</p>
+          </div>
+          <div class="decision-card">
+            <span class="status status-open">Open decision</span>
+            <p>A review choice that must not be hidden inside implementation work.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="system-section" id="colour">
+        <div class="section-heading">
+          <span class="eyebrow">02 · foundations</span>
+          <h2>One sky at two hours.</h2>
+          <p>
+            Dawn and pre-dawn use the same semantic roles. The diagram keeps its approved light
+            pairing in both themes; terminals remain dark evidence windows.
+          </p>
+        </div>
+
+        <div class="colour-grid" aria-label="Semantic colour tokens">
+          <article class="colour-token" style="--token-light:#f4f5fb;--token-dark:#0b0f20">
+            <div class="colour-pair"><span class="light-swatch">Dawn</span><span class="dark-swatch">Pre-dawn</span></div>
+            <div class="token-meta"><code>--bg</code><span>#f4f5fb / #0b0f20</span></div>
+          </article>
+          <article class="colour-token" style="--token-light:#ffffff;--token-dark:#161b36">
+            <div class="colour-pair"><span class="light-swatch">Dawn</span><span class="dark-swatch">Pre-dawn</span></div>
+            <div class="token-meta"><code>--surface</code><span>#ffffff / #161b36</span></div>
+          </article>
+          <article class="colour-token" style="--token-light:#232a4d;--token-dark:#e9ecf8">
+            <div class="colour-pair"><span class="light-swatch">Dawn</span><span class="dark-swatch">Pre-dawn</span></div>
+            <div class="token-meta"><code>--ink</code><span>#232a4d / #e9ecf8</span></div>
+          </article>
+          <article class="colour-token" style="--token-light:#4d546f;--token-dark:#a9b0cf">
+            <div class="colour-pair"><span class="light-swatch">Dawn</span><span class="dark-swatch">Pre-dawn</span></div>
+            <div class="token-meta"><code>--ink-soft</code><span>#4d546f / #a9b0cf</span></div>
+          </article>
+          <article class="colour-token" style="--token-light:#0b655c;--token-dark:#7fdcc9">
+            <div class="colour-pair"><span class="light-swatch">Dawn</span><span class="dark-swatch">Pre-dawn</span></div>
+            <div class="token-meta"><code>--accent</code><span>#0b655c / #7fdcc9</span></div>
+          </article>
+          <article class="colour-token" style="--token-light:rgba(35,42,77,.14);--token-dark:rgba(233,236,248,.14)">
+            <div class="colour-pair"><span class="light-swatch">Dawn</span><span class="dark-swatch">Pre-dawn</span></div>
+            <div class="token-meta"><code>--line</code><span>14% semantic ink</span></div>
+          </article>
+        </div>
+
+        <div class="terminal-palette">
+          <h3>Devague evidence palette</h3>
+          <div class="terminal-swatches">
+            <div class="terminal-swatch" style="--swatch:#7fdcc9"><i></i><code>frame · #7fdcc9</code></div>
+            <div class="terminal-swatch" style="--swatch:#f2b774"><i></i><code>plan · #f2b774</code></div>
+            <div class="terminal-swatch" style="--swatch:#a9b0cf"><i></i><code>check · #a9b0cf</code></div>
+            <div class="terminal-swatch" style="--swatch:#7fb3f2"><i></i><code>scope · #7fb3f2</code></div>
+            <div class="terminal-swatch" style="--swatch:#e6cd7a"><i></i><code>challenge · #e6cd7a</code></div>
+            <div class="terminal-swatch" style="--swatch:#f2789a"><i></i><code>deviate · #f2789a</code></div>
+            <div class="terminal-swatch" style="--swatch:#b49cf2"><i></i><code>summary · #b49cf2</code></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="system-section" id="typography">
+        <div class="section-heading">
+          <span class="eyebrow">03 · typography</span>
+          <h2>Editorial argument, technical evidence.</h2>
+          <p>
+            Fraunces carries the idea; Albert Sans explains it; monospace identifies state,
+            commands, and provenance. Sizes are roles rather than nested percentages.
+          </p>
+        </div>
+
+        <div class="type-list">
+          <div class="type-row">
+            <div class="type-meta"><code>Display / H1</code><span>Existing · fluid 41.6–72px</span></div>
+            <div class="type-display">Accountable delivery.</div>
+          </div>
+          <div class="type-row">
+            <div class="type-meta"><code>Section / H2</code><span>Existing · fluid 25.6–33.6px</span></div>
+            <div class="type-section">A vague idea in, an accountable delivery out.</div>
+          </div>
+          <div class="type-row">
+            <div class="type-meta"><code>Card title</code><span>Candidate · 20px / 1.25 / −.01em</span></div>
+            <div class="type-card-title">What does this idea touch?</div>
+          </div>
+          <div class="type-row">
+            <div class="type-meta"><code>Prose</code><span>Existing alias · 17px / 1.7</span></div>
+            <div class="type-prose">The frame engine works backwards from the announcement, keeping each claim inspectable before anything becomes a plan.</div>
+          </div>
+          <div class="type-row">
+            <div class="type-meta"><code>Eyebrow / label</code><span>Candidate metrics · 12px / 1.25 / .12em</span></div>
+            <div class="type-label">The operator skills</div>
+          </div>
+          <div class="type-row">
+            <div class="type-meta"><code>Terminal</code><span>Candidate · 13px / 1.55 / flat tracking</span></div>
+            <div class="type-terminal"><span class="prompt">$</span> devague capture --kind audience</div>
+          </div>
+        </div>
+
+        <div class="metric-grid">
+          <div class="metric-card"><code>--ac-lh-tight</code><strong>1.1</strong><span>Display</span></div>
+          <div class="metric-card"><code>--ac-lh-ui</code><strong>1.25</strong><span>Labels and titles</span></div>
+          <div class="metric-card"><code>--ac-lh-normal</code><strong>1.55</strong><span>Card body</span></div>
+          <div class="metric-card"><code>--ac-lh-prose</code><strong>1.7</strong><span>Long reading</span></div>
+        </div>
+      </section>
+
+      <section class="system-section" id="spacing">
+        <div class="section-heading">
+          <span class="eyebrow">04 · spacing</span>
+          <h2>A fixed rhythm with semantic ownership.</h2>
+          <p>
+            Eight raw steps replace accidental em compounding. Components map those steps to
+            named relationships rather than scattering raw scale values through markup.
+          </p>
+        </div>
+
+        <ol class="spacing-list">
+          <li><code>--ac-space-1</code><span>4px</span><div class="space-bar-track"><div class="space-bar" style="--bar:.25rem"></div></div></li>
+          <li><code>--ac-space-2</code><span>8px</span><div class="space-bar-track"><div class="space-bar" style="--bar:.5rem"></div></div></li>
+          <li><code>--ac-space-3</code><span>12px</span><div class="space-bar-track"><div class="space-bar" style="--bar:.75rem"></div></div></li>
+          <li><code>--ac-space-4</code><span>16px</span><div class="space-bar-track"><div class="space-bar" style="--bar:1rem"></div></div></li>
+          <li><code>--ac-space-5</code><span>24px</span><div class="space-bar-track"><div class="space-bar" style="--bar:1.5rem"></div></div></li>
+          <li><code>--ac-space-6</code><span>32px</span><div class="space-bar-track"><div class="space-bar" style="--bar:2rem"></div></div></li>
+          <li><code>--ac-space-7</code><span>48px</span><div class="space-bar-track"><div class="space-bar" style="--bar:3rem"></div></div></li>
+          <li><code>--ac-space-8</code><span>64px</span><div class="space-bar-track"><div class="space-bar" style="--bar:4rem"></div></div></li>
+        </ol>
+
+        <div class="mapping-grid">
+          <div class="foundation-card"><code>space-3</code><strong>Label → title</strong></div>
+          <div class="foundation-card"><code>space-5</code><strong>Card / terminal inset</strong></div>
+          <div class="foundation-card"><code>space-6</code><strong>Capability grid gap</strong></div>
+          <div class="foundation-card"><code>space-7</code><strong>Intro → module</strong></div>
+        </div>
+      </section>
+
+      <section class="system-section" id="layout">
+        <div class="section-heading">
+          <span class="eyebrow">05 · layout</span>
+          <h2>Rail, measure, and inset are three different jobs.</h2>
+          <p>
+            Consistent gutters come from one page edge. Reading measure constrains prose inside
+            it; component inset creates breathing room inside a surface. None should masquerade
+            as another container.
+          </p>
+        </div>
+
+        <div class="rail-demo" aria-label="Nested layout roles">
+          <div class="rail-current">Existing production rail · 68rem max / 24px minimum edge
+            <div class="rail-candidate">Candidate Devague presentation rail · 58rem max
+              <div class="rail-measure">Existing reading measure · 42rem
+                <div class="rail-inset">Candidate surface inset · 24px</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="rail-legend">
+          <span style="color:var(--ac-accent)"><i></i>Existing page rail</span>
+          <span style="color:#8c70ca"><i></i>Candidate local rail</span>
+          <span style="color:#b77927"><i></i>Reading measure</span>
+        </div>
+
+        <div class="surface-grid">
+          <article class="surface-sample">
+            <span class="status status-existing">Existing</span>
+            <h3>Default surface</h3>
+            <p><code>--radius: 1.25rem</code> with the established low elevation.</p>
+          </article>
+          <article class="surface-sample lifted">
+            <span class="status status-existing">Existing</span>
+            <h3>Lifted surface</h3>
+            <p>Reserved for interaction emphasis and full transcript focus.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="system-section" id="primitives">
+        <div class="section-heading">
+          <span class="eyebrow">06 · primitives</span>
+          <h2>The smallest repeatable agreements.</h2>
+          <p>These specimens show the vocabulary from which larger Devague compositions are assembled.</p>
+        </div>
+
+        <article class="specimen">
+          <header class="specimen-meta">
+            <strong>Section introduction</strong>
+            <div class="meta-pairs"><span class="status status-existing">Existing</span><span class="status status-candidate">Metrics candidate</span></div>
+          </header>
+          <div class="specimen-canvas">
+            <div class="section-intro-demo">
+              <span class="eyebrow">The frame engine</span>
+              <h3>Before there is a frame, survey the surfaces.</h3>
+              <p>Each finding lands as first-class state citing what was actually read—provenance, not disclaimers.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="specimen">
+          <header class="specimen-meta">
+            <strong>Fast facts</strong>
+            <div class="meta-pairs"><span class="status status-candidate">Candidate shell</span><span class="status status-page">Devague content</span></div>
+          </header>
+          <div class="specimen-canvas">
+            <ul class="facts">
+              <li class="fact"><span class="fact-label">Install</span><span class="fact-value">uv tool install devague</span></li>
+              <li class="fact"><span class="fact-label">Repo</span><span class="fact-value">agentculture/devague</span></li>
+              <li class="fact"><span class="fact-label">Package</span><span class="fact-value">devague · PyPI</span></li>
+              <li class="fact"><span class="fact-label">License</span><span class="fact-value">Apache-2.0</span></li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="specimen">
+          <header class="specimen-meta">
+            <strong>Quiet reference rows</strong>
+            <div class="meta-pairs"><span class="status status-candidate">Candidate shell</span><span class="status status-page">Seven transitions</span></div>
+          </header>
+          <div class="specimen-canvas">
+            <ol class="reference-list">
+              <li class="reference-row">
+                <div><span class="reference-name">idea → scope</span><span class="reference-engine">The frame engine</span></div>
+                <p class="reference-detail">Survey the surfaces the idea touches before framing it.</p>
+                <div class="chip-row"><span class="chip">scope "&lt;surface&gt;"</span><span class="chip">--finding</span><span class="chip">--seeds</span></div>
+              </li>
+              <li class="reference-row">
+                <div><span class="reference-name">idea → spec</span><span class="reference-engine">The frame engine</span></div>
+                <p class="reference-detail">Work backwards from the announcement and pressure-test every claim.</p>
+                <div class="chip-row"><span class="chip">capture</span><span class="chip">interrogate</span><span class="chip">converge</span></div>
+              </li>
+            </ol>
+          </div>
+        </article>
+      </section>
+
+      <section class="system-section" id="pipeline">
+        <div class="section-heading">
+          <span class="eyebrow">07 · responsive process</span>
+          <h2>One semantic sequence, three spatial arrangements.</h2>
+          <p>
+            The shell is a candidate component. The exact glyphs, labels, and nine-stage order
+            remain Devague-owned. The surface stays light in every review theme.
+          </p>
+        </div>
+
+        <article class="specimen">
+          <header class="specimen-meta">
+            <strong>Pipeline summary</strong>
+            <div class="meta-pairs"><span class="status status-candidate">Candidate shell</span><span class="status status-page">Page-only narrative</span></div>
+          </header>
+          <div class="responsive-toolbar">
+            <span>Preview container width</span>
+            <div class="segmented js-only" aria-label="Pipeline preview width">
+              <button type="button" data-frame-width="24rem" aria-pressed="false">Phone</button>
+              <button type="button" data-frame-width="48rem" aria-pressed="false">Tablet</button>
+              <button type="button" data-frame-width="58rem" aria-pressed="true">Desktop</button>
+            </div>
+          </div>
+          <div class="specimen-canvas">
+            <div class="responsive-canvas" data-responsive-canvas>
+              <figure class="pipeline-card">
+                <ol class="pipeline-list" aria-label="Devague method from idea to delivery summary">
+                  <li class="pipeline-stage">
+                    <svg class="stage-glyph" viewBox="0 0 64 64" aria-hidden="true"><ellipse class="line" cx="32" cy="32" rx="24" ry="19" stroke-dasharray="4 5"></ellipse><circle class="accent-fill" cx="32" cy="32" r="7"></circle></svg>
+                    <span class="stage-label">idea</span><span class="stage-kind">announcement</span>
+                  </li>
+                  <li class="pipeline-arrow" aria-hidden="true">→</li>
+                  <li class="pipeline-stage">
+                    <svg class="stage-glyph" viewBox="0 0 64 64" aria-hidden="true"><rect class="line" x="10" y="10" width="44" height="44" rx="13"></rect><path class="accent-stroke" d="m18 24 4 4 7-9M18 35l4 4 7-9M18 46l4 4 7-9"></path><path class="line" d="M34 25h12M34 36h12M34 47h12"></path></svg>
+                    <span class="stage-label">frame</span><span class="stage-kind">capture · confirm</span>
+                  </li>
+                  <li class="pipeline-arrow" aria-hidden="true">→</li>
+                  <li class="pipeline-stage">
+                    <svg class="stage-glyph" viewBox="0 0 64 64" aria-hidden="true"><rect class="line" x="11" y="13" width="42" height="38" rx="7"></rect><path class="line" d="M32 13v38"></path><path class="accent-stroke" d="m19 32 8 8 18-19"></path></svg>
+                    <span class="stage-label">converge</span><span class="stage-kind">gate</span>
+                  </li>
+                  <li class="pipeline-arrow" aria-hidden="true">→</li>
+                  <li class="pipeline-stage">
+                    <svg class="stage-glyph" viewBox="0 0 64 64" aria-hidden="true"><path class="line" d="M17 8h22l9 9v39H17zM39 8v10h9"></path><path class="accent-stroke" d="M23 30h18M23 39h18M23 48h11"></path></svg>
+                    <span class="stage-label">spec</span><span class="stage-kind">export</span>
+                  </li>
+                  <li class="pipeline-arrow" aria-hidden="true">→</li>
+                  <li class="pipeline-stage">
+                    <svg class="stage-glyph" viewBox="0 0 64 64" aria-hidden="true"><path class="line" d="M15 8h22l9 9v35H15zM37 8v10h9"></path><circle class="accent-stroke" cx="37" cy="39" r="11"></circle><path class="accent-stroke" d="m45 47 9 9M31 39l4 4 7-8"></path></svg>
+                    <span class="stage-label">challenge</span><span class="stage-kind">blind spots</span>
+                  </li>
+                  <li class="pipeline-break" aria-hidden="true"></li>
+                  <li class="pipeline-stage">
+                    <svg class="stage-glyph" viewBox="0 0 64 64" aria-hidden="true"><path class="line" d="M13 32h17M30 32l17-15M30 32l17 15"></path><circle class="accent-fill" cx="13" cy="32" r="5"></circle><circle class="accent-fill" cx="30" cy="32" r="4"></circle><circle class="accent-fill" cx="48" cy="17" r="4"></circle><circle class="accent-fill" cx="48" cy="47" r="4"></circle></svg>
+                    <span class="stage-label">waves</span><span class="stage-kind">plan</span>
+                  </li>
+                  <li class="pipeline-arrow" aria-hidden="true">→</li>
+                  <li class="pipeline-stage">
+                    <svg class="stage-glyph" viewBox="0 0 64 64" aria-hidden="true"><rect class="line" x="12" y="12" width="40" height="40" rx="10"></rect><path class="accent-stroke" d="m20 33 9 9 17-21"></path></svg>
+                    <span class="stage-label">build</span><span class="stage-kind">workforce</span>
+                  </li>
+                  <li class="pipeline-arrow" aria-hidden="true">→</li>
+                  <li class="pipeline-stage">
+                    <svg class="stage-glyph" viewBox="0 0 64 64" aria-hidden="true"><rect class="line" x="14" y="8" width="36" height="48" rx="7"></rect><path class="accent-stroke" d="M22 25h20M22 34h13M22 46h14m3-3 5 4 7-8"></path></svg>
+                    <span class="stage-label">deviate</span><span class="stage-kind">ledger</span>
+                  </li>
+                  <li class="pipeline-arrow" aria-hidden="true">→</li>
+                  <li class="pipeline-stage pipeline-last">
+                    <svg class="stage-glyph" viewBox="0 0 64 64" aria-hidden="true"><path class="line" d="M17 8h22l9 9v39H17zM39 8v10h9"></path><path class="accent-stroke" d="M23 30h10m-10 9h10m-10 9h10m4-18 4 4 7-9m-11 14 4 4 7-9"></path></svg>
+                    <span class="stage-label">summary</span><span class="stage-kind">artifact</span>
+                  </li>
+                </ol>
+                <figcaption>
+                  A vague idea becomes an announcement frame, a defensible spec, a challenged plan,
+                  a workforce build, an append-only departure ledger, and a closing accountability artifact.
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="system-section" id="components">
+        <div class="section-heading">
+          <span class="eyebrow">08 · component gallery</span>
+          <h2>Reusable shells, explicitly local content.</h2>
+          <p>Each component owns its layout, state, semantics, and tokens. Devague owns the example data.</p>
+        </div>
+
+        <article class="specimen">
+          <header class="specimen-meta">
+            <strong>Method cards</strong>
+            <div class="meta-pairs"><span class="status status-candidate">Candidate shell</span><span class="status status-page">Seven moves</span></div>
+          </header>
+          <div class="specimen-canvas">
+            <div class="card-grid">
+              <article class="component-card"><span class="component-eyebrow">01 · scope</span><h3>What does this idea touch?</h3><p>Read the surfaces before a frame exists.</p></article>
+              <article class="component-card"><span class="component-eyebrow">02 · capture</span><h3>What must be true?</h3><p>Turn claims into inspectable proposed state.</p></article>
+              <article class="component-card"><span class="component-eyebrow">03 · converge</span><h3>Who confirms the frame?</h3><p>A human closes every gate a machine cannot grade.</p></article>
+            </div>
+          </div>
+        </article>
+
+        <article class="specimen">
+          <header class="specimen-meta">
+            <strong>Human gate</strong>
+            <div class="meta-pairs"><span class="status status-candidate">Candidate shell</span><span class="status status-page">Six gates</span></div>
+          </header>
+          <div class="specimen-canvas">
+            <article class="component-card gate-card">
+              <div><span class="component-eyebrow">01 · human gate</span><h3>Confirm the frame</h3><p>Nothing converges until a person confirms that specific claim.</p></div>
+              <div>
+                <div class="terminal-thumb">
+                  <div class="terminal-thumb-head"><span class="terminal-dot"></span><span class="terminal-label">Human gate</span>
+                    <button class="copy-button" type="button" data-copy="devague confirm c1" aria-label="Copy devague confirm c1">
+                      <svg class="copy-icon" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.4"></rect><path d="M3.5 10.5h-1a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v1"></path></svg>
+                      <svg class="check-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="m3 8.5 3 3 7-7"></path></svg>
+                    </button>
+                  </div>
+                  <code><span class="prompt">$</span> devague confirm c1</code>
+                </div>
+                <div class="copy-status" aria-live="polite"></div>
+              </div>
+            </article>
+          </div>
+        </article>
+
+        <article class="specimen">
+          <header class="specimen-meta">
+            <strong>Capability cards</strong>
+            <div class="meta-pairs"><span class="status status-candidate">Candidate shell</span><span class="status status-page">Seven skills</span></div>
+          </header>
+          <div class="specimen-canvas">
+            <div class="card-grid">
+              <article class="component-card">
+                <span class="component-eyebrow">Frame · operator skill</span>
+                <h3>/scope
+                  <button class="copy-button" type="button" data-copy="/scope" aria-label="Copy /scope">
+                    <svg class="copy-icon" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.4"></rect><path d="M3.5 10.5h-1a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v1"></path></svg>
+                    <svg class="check-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="m3 8.5 3 3 7-7"></path></svg>
+                  </button>
+                </h3>
+                <p>Surveys before the frame.</p>
+                <div class="copy-status" aria-live="polite"></div>
+              </article>
+              <article class="component-card"><span class="component-eyebrow">Frame · operator skill</span><h3>/think</h3><p>Walks an idea to an exported spec.</p></article>
+              <article class="component-card"><span class="component-eyebrow">Challenge · operator skill</span><h3>/challenge</h3><p>Pressure-tests the exported spec for blind spots.</p></article>
+            </div>
+          </div>
+        </article>
+
+        <article class="specimen">
+          <header class="specimen-meta">
+            <strong>Terminal</strong>
+            <div class="meta-pairs"><span class="status status-candidate">Candidate shell</span><span class="status status-page">Transcript data</span></div>
+          </header>
+          <div class="specimen-canvas">
+            <figure class="terminal">
+              <figcaption><span class="terminal-dot"></span><span class="terminal-title">FRAME LEG</span><span class="terminal-context">idea → spec</span>
+                <button class="copy-button" type="button" data-copy="devague capture --kind audience" aria-label="Copy devague capture command">
+                  <svg class="copy-icon" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.4"></rect><path d="M3.5 10.5h-1a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v1"></path></svg>
+                  <svg class="check-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="m3 8.5 3 3 7-7"></path></svg>
+                </button>
+              </figcaption>
+              <pre tabindex="0" aria-label="Example Devague terminal transcript"><code><span class="prompt">$</span> <span class="strong">devague capture --kind audience "operators"</span>
+captured c2 (proposed)
+
+<span class="prompt">$</span> <span class="strong">devague confirm c2</span>
+confirmed c2
+
+<span class="muted">… settled transcript, never nested smaller than 13px</span></code></pre>
+            </figure>
+            <div class="copy-status" aria-live="polite"></div>
+          </div>
+        </article>
+
+        <article class="specimen">
+          <header class="specimen-meta">
+            <strong>Guided session</strong>
+            <div class="meta-pairs"><span class="status status-candidate">Candidate shell</span><span class="status status-page">Three sessions · 14 beats</span></div>
+          </header>
+          <div class="specimen-canvas">
+            <div class="session-grid">
+              <article class="session-card">
+                <span class="component-eyebrow">Session 01 · frame engine</span>
+                <h3>An idea becomes a defensible spec</h3>
+                <p class="session-intro">Plain-language beats sit beside tiny verbatim excerpts, with the full record always reachable.</p>
+                <ol class="beat-list">
+                  <li class="beat">
+                    <div class="beat-rail"><span class="beat-dot"></span></div>
+                    <div><h4>Promises land as proposed</h4><p>The announcement becomes state a human can challenge.</p><div class="beat-excerpt"><span class="prompt">$</span> devague capture --kind audience<br>captured c2 (proposed)</div></div>
+                  </li>
+                  <li class="beat">
+                    <div class="beat-rail"><span class="beat-dot"></span></div>
+                    <div><h4>The human closes the gate</h4><p>Confirmation records the decision without pretending the tool made it.</p></div>
+                  </li>
+                </ol>
+                <details class="disclosure">
+                  <summary>Walk through this session</summary>
+                  <div class="disclosure-body">
+                    <p class="session-intro">The complete walkthrough remains readable without JavaScript and changes state without height animation.</p>
+                    <a class="raw-link" href="#raw-transcript">Read raw capture</a>
+                  </div>
+                </details>
+              </article>
+
+              <figure class="terminal" id="raw-transcript">
+                <figcaption><span class="terminal-dot"></span><span class="terminal-title">SESSION PREVIEW</span></figcaption>
+                <pre tabindex="0" aria-label="Session one terminal preview"><code><span class="prompt">$</span> <span class="strong">devague frame announce</span>
+frame f1 opened
+
+<span class="prompt">$</span> <span class="strong">devague capture --kind audience</span>
+captured c2 (proposed)
+
+<span class="prompt">$</span> <span class="strong">devague confirm c2</span>
+confirmed c2</code></pre>
+              </figure>
+            </div>
+
+            <div class="interaction-row">
+              <button class="primary-button js-only" type="button" data-open-dialog>Open transcript modal</button>
+              <span class="interaction-note">Without JavaScript, the raw transcript above remains the fallback.</span>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="system-section" id="interactions">
+        <div class="section-heading">
+          <span class="eyebrow">09 · interaction contract</span>
+          <h2>State is visible, announced, and recoverable.</h2>
+          <p>
+            Copy targets are at least 44px, disclosure uses a native control, and the transcript
+            modal uses the platform dialog contract with Escape, backdrop close, and focus restoration.
+          </p>
+        </div>
+
+        <div class="component-grid">
+          <article class="component-card">
+            <span class="component-eyebrow">Copy control</span>
+            <h3>Success and failure both speak.</h3>
+            <p>Select this command even if clipboard access is denied: <code class="command-chip">/summarize-delivery</code></p>
+            <div class="interaction-row">
+              <button class="secondary-button js-only" type="button" data-copy="/summarize-delivery">Copy command</button>
+              <span class="copy-status" aria-live="polite"></span>
+            </div>
+          </article>
+          <article class="component-card">
+            <span class="component-eyebrow">Focus state</span>
+            <h3>Keyboard focus stays obvious.</h3>
+            <p>The same semantic accent outlines buttons, links, dialog controls, and scrollable transcript regions.</p>
+            <div class="interaction-row"><button class="secondary-button" type="button">Tab to inspect</button><button class="secondary-button" type="button" disabled>Disabled</button></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="system-section" id="boundaries">
+        <div class="section-heading">
+          <span class="eyebrow">10 · ownership boundaries</span>
+          <h2>Do not mistake a successful page for a universal primitive.</h2>
+          <p>Mixed patterns are split into reusable shell and Devague-owned content before implementation begins.</p>
+        </div>
+
+        <div class="page-only-register">
+          <div class="status-row"><span class="status status-page">Page-only register</span></div>
+          <h3>Devague keeps ownership of:</h3>
+          <ul>
+            <li>the exact nine-stage glyph narrative;</li>
+            <li>seven pipeline transitions;</li>
+            <li>seven method moves and their order;</li>
+            <li>six human gates and commands;</li>
+            <li>seven operator skills;</li>
+            <li>three sessions, 14 beats, and ten transcripts;</li>
+            <li>terminal leg colours and pane order;</li>
+            <li>issue groupings and closing mark.</li>
+          </ul>
+        </div>
+
+        <div class="quarantine">
+          <div class="status-row"><span class="status status-dormant">Dormant · do not adopt</span></div>
+          <h3>Retained for provenance, not rendered as options:</h3>
+          <ul>
+            <li>the hidden original flow variant;</li>
+            <li>the hidden static flow variant;</li>
+            <li>the earlier terminal grid;</li>
+            <li>the capped capture grid and expand control;</li>
+            <li>the unused primer card;</li>
+            <li>the unused session-hero variant.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="system-section" id="acceptance">
+        <div class="section-heading">
+          <span class="eyebrow">11 · system gate</span>
+          <h2>What must pass before Devague migrates.</h2>
+          <p>This visual reference is the review surface. Source implementation is established only after these contracts pass.</p>
+        </div>
+
+        <ul class="acceptance-grid">
+          <li><strong>Widths</strong><span>360, 375, 640, 768, 960, and 1440px; diagram checks at its 639/640/641 and 799/800/801 container boundaries.</span></li>
+          <li><strong>Themes</strong><span>System, dawn, and pre-dawn; pipeline remains light and terminal remains dark.</span></li>
+          <li><strong>Keyboard</strong><span>Logical tab order, visible focus, 44px targets, Escape and focus restoration.</span></li>
+          <li><strong>Motion</strong><span>Finished content at first paint; no reveal, typing, or smooth movement under reduced motion.</span></li>
+          <li><strong>No JavaScript</strong><span>Transcripts and walkthroughs remain readable; enhancement-only controls disappear.</span></li>
+          <li><strong>Integrity</strong><span>No horizontal page overflow, one pipeline DOM, one transcript source, byte-identical evidence.</span></li>
+        </ul>
+
+        <div class="decision-grid" style="margin-top:var(--ac-space-7)">
+          <article class="decision-card">
+            <span class="status status-existing">Approved</span>
+            <h3>System-first order</h3>
+            <ul>
+              <li>Establish the opt-in system.</li>
+              <li>Prove the reference specimen.</li>
+              <li>Migrate Devague first.</li>
+              <li>Migrate other routes separately.</li>
+            </ul>
+          </article>
+          <article class="decision-card">
+            <span class="status status-existing">Approved</span>
+            <h3>Visual direction</h3>
+            <ul>
+              <li>Light pipeline surface.</li>
+              <li>20px semantic card title.</li>
+              <li>One page rail per section.</li>
+              <li>Fixed spacing and explicit type metrics.</li>
+            </ul>
+          </article>
+          <article class="decision-card">
+            <span class="status status-open">Open</span>
+            <h3>Later decisions</h3>
+            <ul>
+              <li>Pipeline copy reductions.</li>
+              <li>Whether the 58rem local rail is accepted.</li>
+              <li>Which route becomes the second consumer.</li>
+              <li>Whether raw spacing becomes a root default.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="system-footer">
+    <div class="page-rail">
+      AgentCulture visual system · Devague reference · review artefact only · 22 July 2026
+    </div>
+  </footer>
+
+  <dialog id="transcript-dialog" aria-labelledby="dialog-title">
+    <div class="dialog-shell">
+      <header class="dialog-header">
+        <div class="dialog-heading">
+          <h2 id="dialog-title">Frame engine</h2>
+          <p id="dialog-subtitle">Session 1 of 3 · idea → spec</p>
+        </div>
+        <button class="dialog-close" type="button" aria-label="Close transcript">×</button>
+      </header>
+      <div class="dialog-body">
+        <p class="dialog-caption" id="dialog-caption">Session 01 · Frame engine</p>
+        <figure class="terminal">
+          <figcaption><span class="terminal-dot"></span><span class="terminal-title" id="dialog-terminal-title">FRAME LEG</span></figcaption>
+          <pre tabindex="0" aria-label="Full transcript" id="dialog-transcript"></pre>
+        </figure>
+      </div>
+      <nav class="dialog-nav" aria-label="Browse transcript examples">
+        <button class="secondary-button" type="button" data-dialog-prev>Previous</button>
+        <span class="dialog-position" id="dialog-position" aria-live="polite">1 of 3</span>
+        <button class="secondary-button" type="button" data-dialog-next>Next</button>
+      </nav>
+    </div>
+  </dialog>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var themeButtons = Array.from(document.querySelectorAll("[data-theme-choice]"));
+      var selectedTheme = root.dataset.theme || "light";
+
+      function setTheme(theme) {
+        selectedTheme = theme;
+        root.dataset.theme = theme;
+        themeButtons.forEach(function (button) {
+          button.setAttribute("aria-pressed", String(button.dataset.themeChoice === theme));
+        });
+        try {
+          window.localStorage.setItem("ac-visual-system-theme", theme);
+        } catch (error) {
+          /* The visual choice still works when storage is unavailable. */
+        }
+      }
+
+      themeButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+          setTheme(button.dataset.themeChoice);
+        });
+      });
+      setTheme(selectedTheme);
+
+      var responsiveCanvas = document.querySelector("[data-responsive-canvas]");
+      var frameButtons = Array.from(document.querySelectorAll("[data-frame-width]"));
+      frameButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+          responsiveCanvas.style.setProperty("--demo-width", button.dataset.frameWidth);
+          frameButtons.forEach(function (candidate) {
+            candidate.setAttribute("aria-pressed", String(candidate === button));
+          });
+        });
+      });
+
+      function fallbackCopy(text) {
+        var textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.setAttribute("readonly", "");
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.select();
+        var copied = false;
+        try {
+          copied = document.execCommand("copy");
+        } catch (error) {
+          copied = false;
+        }
+        textarea.remove();
+        return copied;
+      }
+
+      function reportCopy(button, message, copied) {
+        var scope = button.closest(".component-card, .specimen-canvas") || button.parentElement;
+        var status = scope.querySelector(".copy-status");
+        if (status) {
+          status.textContent = message;
+        }
+        button.classList.toggle("is-copied", copied);
+        window.clearTimeout(button.copyResetTimer);
+        button.copyResetTimer = window.setTimeout(function () {
+          button.classList.remove("is-copied");
+        }, 1800);
+      }
+
+      document.querySelectorAll("[data-copy]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          var text = button.dataset.copy;
+          var promise = navigator.clipboard && window.isSecureContext
+            ? navigator.clipboard.writeText(text).then(function () { return true; }, function () { return false; })
+            : Promise.resolve(fallbackCopy(text));
+
+          promise.then(function (copied) {
+            reportCopy(
+              button,
+              copied ? "Copied “" + text + "”." : "Clipboard unavailable. Select and copy “" + text + "”.",
+              copied
+            );
+          });
+        });
+      });
+
+      var dialog = document.getElementById("transcript-dialog");
+      var openDialogButton = document.querySelector("[data-open-dialog]");
+      var closeDialogButton = dialog.querySelector(".dialog-close");
+      var previousButton = dialog.querySelector("[data-dialog-prev]");
+      var nextButton = dialog.querySelector("[data-dialog-next]");
+      var dialogTitle = document.getElementById("dialog-title");
+      var dialogSubtitle = document.getElementById("dialog-subtitle");
+      var dialogCaption = document.getElementById("dialog-caption");
+      var dialogTerminalTitle = document.getElementById("dialog-terminal-title");
+      var dialogTranscript = document.getElementById("dialog-transcript");
+      var dialogPosition = document.getElementById("dialog-position");
+      var dialogIndex = 0;
+      var dialogTrigger = null;
+      var transcripts = [
+        {
+          title: "Frame engine",
+          subtitle: "Session 1 of 3 · idea → spec",
+          caption: "Session 01 · Frame engine",
+          leg: "FRAME LEG",
+          text: "$ devague frame announce\nframe f1 opened\n\n$ devague capture --kind audience\ncaptured c2 (proposed)\n\n$ devague confirm c2\nconfirmed c2"
+        },
+        {
+          title: "Challenge pass",
+          subtitle: "Session 2 of 3 · spec → challenged spec",
+          caption: "Session 02 · Challenge",
+          leg: "CHALLENGE LEG",
+          text: "$ devague challenge sweep\n3 lenses examined\n1 finding proposed\n\n$ devague challenge adjudicate d1 --confirm\nfinding d1 confirmed"
+        },
+        {
+          title: "Delivery ledger",
+          subtitle: "Session 3 of 3 · plan → accountability",
+          caption: "Session 03 · Delivery",
+          leg: "SUMMARY LEG",
+          text: "$ devague deviate --reason \"API boundary moved\"\ndeparture recorded (confirmed)\n\n$ devague summarize-delivery\nplanned versus actual reconciled"
+        }
+      ];
+
+      function renderTranscript() {
+        var transcript = transcripts[dialogIndex];
+        dialogTitle.textContent = transcript.title;
+        dialogSubtitle.textContent = transcript.subtitle;
+        dialogCaption.textContent = transcript.caption;
+        dialogTerminalTitle.textContent = transcript.leg;
+        dialogTranscript.textContent = transcript.text;
+        dialogPosition.textContent = String(dialogIndex + 1) + " of " + String(transcripts.length);
+        previousButton.disabled = dialogIndex === 0;
+        nextButton.disabled = dialogIndex === transcripts.length - 1;
+
+        if (document.activeElement && document.activeElement.disabled) {
+          (dialogIndex === 0 ? nextButton : previousButton).focus();
+        }
+      }
+
+      function openDialog() {
+        dialogTrigger = document.activeElement;
+        dialogIndex = 0;
+        renderTranscript();
+        document.body.classList.add("dialog-open");
+        dialog.showModal();
+        closeDialogButton.focus();
+      }
+
+      function closeDialog() {
+        dialog.close();
+      }
+
+      openDialogButton.addEventListener("click", openDialog);
+      closeDialogButton.addEventListener("click", closeDialog);
+      previousButton.addEventListener("click", function () {
+        if (dialogIndex > 0) {
+          dialogIndex -= 1;
+          renderTranscript();
+        }
+      });
+      nextButton.addEventListener("click", function () {
+        if (dialogIndex < transcripts.length - 1) {
+          dialogIndex += 1;
+          renderTranscript();
+        }
+      });
+      dialog.addEventListener("click", function (event) {
+        if (event.target === dialog) {
+          closeDialog();
+        }
+      });
+      dialog.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          closeDialog();
+        }
+      });
+      dialog.addEventListener("close", function () {
+        document.body.classList.remove("dialog-open");
+        if (dialogTrigger && document.contains(dialogTrigger)) {
+          dialogTrigger.focus();
+        }
+      });
+    }());
+  </script>
+</body>
+</html>

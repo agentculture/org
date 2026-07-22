@@ -1,6 +1,6 @@
 # UX direction after the Devague mock
 
-> **Status:** Current decision map, 21 July 2026. This file is additive. It
+> **Status:** Current decision map, 22 July 2026. This file is additive. It
 > does not replace the original audit, alter an existing mock, or authorize a
 > change to the live site.
 
@@ -18,16 +18,18 @@ that later work superseded.
 When two documents disagree, use this order:
 
 1. This current-direction map for status and precedence.
-2. The [`design-system.md`](design-system.md) adoption plan for ownership,
+2. The [`design-system.html`](design-system.html) visual review surface for the
+   candidate tokens, layout roles, components, interactions, and system gate.
+3. The [`design-system.md`](design-system.md) adoption plan for ownership,
    containment, promotion, and regression gates.
-3. The [preserved full-page Devague mock](mocks/devague/2026-07-21-review-style/README.md)
+4. The [preserved full-page Devague mock](mocks/devague/2026-07-21-review-style/README.md)
    for the last successfully rendered integrated composition.
-4. The two current Devague handoffs:
+5. The two current Devague handoffs:
    [`captures-story-plan.md`](captures-story-plan.md) and
    [`pipeline-layout-plan.md`](pipeline-layout-plan.md).
-5. The original audit for measured evidence:
+6. The original audit for measured evidence:
    [`findings.md`](findings.md).
-6. Earlier interactive explorations for rationale, not implementation
+7. Earlier interactive explorations for rationale, not implementation
    authority.
 
 The full-page Devague review mock is retained in this worktree. Its HTML and
@@ -42,6 +44,7 @@ evidence and the handoff as the intended implementation direction.
 | Artefact | Status | How to use it now |
 |---|---|---|
 | `current-direction.md` | Current map | Start here for precedence and scope. |
+| [`design-system.html`](design-system.html) | Current visual review surface | Review the proposed system, responsive states, and working interactions. It deliberately labels candidates and does not establish them in Astro. |
 | [`design-system.md`](design-system.md) | Current adoption plan | Use to classify mock patterns, contain changes, assess overwrite risk, and gate promotion into the shared site. |
 | [Devague full-page mock](mocks/devague/2026-07-21-review-style/README.md) | Latest retained mock | Review the complete composition, interactions, and responsive diagram repair. The manifest records the final pipeline requests that did not land in the Claude render. |
 | [`captures-story-plan.md`](captures-story-plan.md) | Current handoff | Governs the Devague real-captures redesign. |
@@ -192,11 +195,12 @@ accessibility, responsive, theme, no-JavaScript, and reduced-motion checks.
 ## Suggested reading order
 
 1. This document.
-2. [`design-system.md`](design-system.md).
-3. The [preserved full-page Devague mock](mocks/devague/2026-07-21-review-style/README.md).
-4. [`captures-story-plan.md`](captures-story-plan.md).
-5. [`pipeline-layout-plan.md`](pipeline-layout-plan.md).
-6. [`findings.md`](findings.md), for the measured baseline and verified
+2. [`design-system.html`](design-system.html).
+3. [`design-system.md`](design-system.md).
+4. The [preserved full-page Devague mock](mocks/devague/2026-07-21-review-style/README.md).
+5. [`captures-story-plan.md`](captures-story-plan.md).
+6. [`pipeline-layout-plan.md`](pipeline-layout-plan.md).
+7. [`findings.md`](findings.md), for the measured baseline and verified
    strengths.
-7. The relevant supporting prototype or architecture note only when its topic
+8. The relevant supporting prototype or architecture note only when its topic
    is being implemented.

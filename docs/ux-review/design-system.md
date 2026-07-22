@@ -4,6 +4,11 @@
 > `ux-review` at `ef392d9`, after merging `origin/main` at `aea608b`. This is a
 > documentation-only plan: no file under `site-astro/` has been changed.
 
+> **Visual review companion:** open [`design-system.html`](design-system.html)
+> to inspect the token roles, layout rails, responsive pipeline, candidate
+> components, interaction contracts, and adoption boundary described here. It
+> is a standalone review specimen, not an Astro source implementation.
+
 The Devague mock is now rich enough to be treated as design-system evidence,
 but it is not a replacement stylesheet for the site. It contains a mixture of
 good shared foundations, promising reusable components, Devague-specific
@@ -35,6 +40,7 @@ site-wide restyle by accident.
 | [`site-astro/src/pages/agents/devague.astro`](../../site-astro/src/pages/agents/devague.astro) | Current production Devague semantics, section order, and component boundaries. |
 | [`site-astro/src/components/DevagueFlow.astro`](../../site-astro/src/components/DevagueFlow.astro) | Current production pipeline component and its progressive-enhancement contract. |
 | [`site-astro/src/components/DevagueTerminal.astro`](../../site-astro/src/components/DevagueTerminal.astro) | Current production terminal semantics, replay behaviour, and capture rendering. |
+| [`design-system.html`](design-system.html) | Current visual review surface for the candidate system, with working interaction and responsive specimens. Appearance here means ready to review, not established in source. |
 | [Retained full-page mock](mocks/devague/2026-07-21-review-style/README.md) | The latest integrated visual direction and interaction specimen. |
 | [`captures-story-plan.md`](captures-story-plan.md) | Intended guided-session content model, verbatim-evidence contract, and source-component handoff. |
 | [`pipeline-layout-plan.md`](pipeline-layout-plan.md) | Intended pipeline hierarchy, responsive behaviour, and animation repairs. |
