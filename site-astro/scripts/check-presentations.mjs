@@ -51,15 +51,35 @@ const expectedEvidenceUrls = [
   `https://github.com/agentculture/arm101-cli/blob/${armCommit}/arm101/explore/reachmap.py`,
 ];
 
-// The deck (post cli-runtime-reframe, org#21): exactly 10 slides, exactly 4
-// photo-bearing slides — 2 per robot, one "robot"-kind (hero photo) and one
-// "commands"-kind (action photo) each. The renderer stamps `data-robot` on
-// both kinds whenever `slide.robot` is set, so the count/slot checks below
-// key off that attribute generically rather than slide kind.
-const expectedDeckSlideCount = 10;
-const robotPhotoSlots = {
-  "reachy-mini": ["reachy-mini-hero", "reachy-mini-action"],
-  so101: ["so101-hero", "so101-action"],
+// The deck (post deck-six-slide-narrative, org#23): exactly 6 slides, one per
+// primary beat, in a pinned id/order — bridge, paths, stack, surfaces,
+// autonomy, close. `data-robot` is no longer only a section-level attribute:
+// it appears exactly twice per robot — once on the robot's dedicated section
+// (surfaces -> reachy-mini, autonomy -> so101) and once on that robot's card
+// inside the close slide (Reachy card, ARM101 card). The four photo-bearing
+// <figure data-photo-slot> elements are likewise split: one action photo
+// inside its robot's dedicated section, both hero photos inside the close
+// slide's two cards. The checks below key off `data-deck-slide` section ids
+// rather than slide kind, since kind is a dataset-only concept not stamped
+// onto the built HTML.
+const expectedDeckSlideCount = 6;
+const expectedDeckSlideIds = [
+  "bridge",
+  "paths",
+  "stack",
+  "surfaces",
+  "autonomy",
+  "close",
+];
+// Section-level data-robot: the one slide (besides "close") each robot
+// anchors, and the one action-photo slot that lives inside it.
+const expectedSectionRobots = { surfaces: "reachy-mini", autonomy: "so101" };
+// Where each of the four photo slots' <figure data-photo-slot> must live.
+const expectedPhotoSlotSections = {
+  "reachy-mini-action": "surfaces",
+  "so101-action": "autonomy",
+  "reachy-mini-hero": "close",
+  "so101-hero": "close",
 };
 const expectedRobotSlideCounts = { "reachy-mini": 2, so101: 2 };
 const deckImagePaths = [
@@ -462,7 +482,7 @@ check("deck is not the article: no article beat-id anchors", () => {
   );
 });
 
-check("deck slide count and two-photo-slides-per-robot structure", () => {
+check("deck slide count and id order (six slides, org#23)", () => {
   // Careful: `data-deck-slide` also appears once as a bare CSS/JS attribute
   // selector (`[data-deck-slide]`); only the attribute-value form below
   // (`data-deck-slide="..."`) counts real slide sections.
@@ -478,40 +498,83 @@ check("deck slide count and two-photo-slides-per-robot structure", () => {
     `expected ${expectedDeckSlideCount} parsed slide sections, found ${slides.length}`,
   );
 
-  for (const [robot, expectedCount] of Object.entries(
-    expectedRobotSlideCounts,
-  )) {
-    const count = countOccurrences(deckHtml, `data-robot="${robot}"`);
-    assert(
-      count === expectedCount,
-      `expected ${expectedCount} data-robot="${robot}" slides, found ${count}`,
-    );
-  }
-
-  const robotSlides = slides.filter((slide) => slide.attrs["data-robot"]);
-  const expectedRobotSlideTotal = Object.values(
-    expectedRobotSlideCounts,
-  ).reduce((sum, n) => sum + n, 0);
+  const actualIds = slides.map((slide) => slide.attrs["data-deck-slide"]);
   assert(
-    robotSlides.length === expectedRobotSlideTotal,
-    `expected ${expectedRobotSlideTotal} robot slides total, found ${robotSlides.length}`,
+    JSON.stringify(actualIds) === JSON.stringify(expectedDeckSlideIds),
+    `deck slide order is ${actualIds.join(" -> ")}, expected ${expectedDeckSlideIds.join(" -> ")}`,
   );
-
-  for (const slide of robotSlides) {
-    const slideId = slide.attrs["data-deck-slide"];
-    const robot = slide.attrs["data-robot"];
-    const allowedSlots = robotPhotoSlots[robot];
-    assert(allowedSlots, `slide ${slideId} has unknown robot "${robot}"`);
-    const photoSlot = openings(slide.inner, "figure")
-      .map((figure) => figure["data-photo-slot"])
-      .find(Boolean);
-    assert(photoSlot, `robot slide ${slideId} is missing a data-photo-slot`);
-    assert(
-      allowedSlots.includes(photoSlot),
-      `slide ${slideId} (${robot}) has photo slot "${photoSlot}", expected one of ${allowedSlots.join(", ")}`,
-    );
-  }
 });
+
+check(
+  "deck robot/photo-slot pairing: surfaces, autonomy, and the close cards",
+  () => {
+    const slides = deckSlideSections(deckHtml);
+    const bySlideId = new Map(
+      slides.map((slide) => [slide.attrs["data-deck-slide"], slide]),
+    );
+
+    // Section-level data-robot: surfaces carries reachy-mini, autonomy
+    // carries so101 (one robot each, stamped on the section itself).
+    for (const [slideId, robot] of Object.entries(expectedSectionRobots)) {
+      const slide = bySlideId.get(slideId);
+      assert(slide, `deck is missing the "${slideId}" slide section`);
+      assert(
+        slide.attrs["data-robot"] === robot,
+        `"${slideId}" section must carry data-robot="${robot}", found "${slide.attrs["data-robot"] ?? ""}"`,
+      );
+    }
+
+    // Card-level data-robot: the close slide carries both robots, one per
+    // card, inside its section rather than on the section's opening tag.
+    const closeSlide = bySlideId.get("close");
+    assert(closeSlide, 'deck is missing the "close" slide section');
+    for (const robot of ["reachy-mini", "so101"]) {
+      const cardCount = countOccurrences(closeSlide.inner, `data-robot="${robot}"`);
+      assert(
+        cardCount === 1,
+        `close slide's ${robot} card must carry data-robot="${robot}" exactly once, found ${cardCount}`,
+      );
+    }
+
+    // Deck-wide: each robot's data-robot attribute appears exactly twice —
+    // once on its section, once on its close-slide card.
+    for (const [robot, expectedCount] of Object.entries(
+      expectedRobotSlideCounts,
+    )) {
+      const totalCount = countOccurrences(deckHtml, `data-robot="${robot}"`);
+      assert(
+        totalCount === expectedCount,
+        `expected ${expectedCount} data-robot="${robot}" occurrences deck-wide, found ${totalCount}`,
+      );
+    }
+
+    // Each of the four photo slots' <figure data-photo-slot> must live
+    // inside exactly the section named in expectedPhotoSlotSections —
+    // reachy-mini-action inside surfaces, so101-action inside autonomy, and
+    // both hero slots inside the close slide's two cards.
+    const foundIn = {};
+    for (const [slideId, slide] of bySlideId) {
+      for (const figure of openings(slide.inner, "figure")) {
+        const slot = figure["data-photo-slot"];
+        if (!slot) continue;
+        (foundIn[slot] ??= []).push(slideId);
+      }
+    }
+    for (const [slot, expectedSection] of Object.entries(
+      expectedPhotoSlotSections,
+    )) {
+      const locations = foundIn[slot] ?? [];
+      assert(
+        locations.length === 1,
+        `expected exactly one <figure data-photo-slot="${slot}">, found ${locations.length} (in: ${locations.join(", ") || "none"})`,
+      );
+      assert(
+        locations[0] === expectedSection,
+        `<figure data-photo-slot="${slot}"> must be inside the "${expectedSection}" section, found in "${locations[0]}"`,
+      );
+    }
+  },
+);
 
 check("deck imagery: four robot photos with alt text", () => {
   const images = openings(deckHtml, "img");
@@ -556,13 +619,20 @@ check("deck architecture diagram is accessible and appears exactly once", () => 
   );
 });
 
-check("deck states the thesis verbatim", () => {
-  // The renderer splits the two-sentence headline across reveal spans
-  // (thesisLines()), so normalize whitespace before matching textContent.
-  const deckText = textContent(deckHtml);
+check("deck states the thesis verbatim, on the close slide", () => {
+  // Six-slide restructure (org#23): the thesis is the close slide's
+  // bottomLine, not a deck-wide headline — scope the match to that section
+  // rather than the whole deck. The renderer may still split the
+  // two-sentence line across reveal spans, so normalize whitespace before
+  // matching textContent.
+  const closeSlide = deckSlideSections(deckHtml).find(
+    (slide) => slide.attrs["data-deck-slide"] === "close",
+  );
+  assert(closeSlide, 'deck is missing the "close" slide section');
+  const closeText = textContent(closeSlide.inner);
   assert(
-    deckText.includes("A CLI for intelligence. A runtime for embodiment."),
-    "deck must state the verbatim thesis “A CLI for intelligence. A runtime for embodiment.”",
+    closeText.includes("A CLI for intelligence. A runtime for embodiment."),
+    "close slide must state the verbatim thesis “A CLI for intelligence. A runtime for embodiment.”",
   );
 });
 
