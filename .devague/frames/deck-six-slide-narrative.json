@@ -4,7 +4,7 @@
   "schema_version": 3,
   "status": "exported",
   "created": "2026-07-22T10:24:13Z",
-  "updated": "2026-07-22T10:55:43Z",
+  "updated": "2026-07-22T11:10:32Z",
   "claims": [
     {
       "id": "c1",
@@ -88,6 +88,18 @@
         {
           "id": "h5",
           "text": "each new slide shape has a dedicated renderer branch with no unstyled fallback, and every animation honors prefers-reduced-motion per the confirmed site design bar",
+          "status": "confirmed",
+          "instruction": ""
+        },
+        {
+          "id": "h17",
+          "text": "the existing presenter affordances survive the restructure: ArrowRight/ArrowDown keyboard advance, prev/next controls, the dot-rail scroll-spy, and reduced-motion instant jumps all work across the six new slides",
+          "status": "confirmed",
+          "instruction": ""
+        },
+        {
+          "id": "h18",
+          "text": "every animation in the new layouts actually runs in the built page - no dead CSS from Astro style scoping failing to reach injected or global markup; use :global() per the established terminal-component pattern where needed",
           "status": "confirmed",
           "instruction": ""
         }
@@ -319,9 +331,48 @@
       "hard_questions": [],
       "links": [],
       "instruction": "keep all three checks wired in CI; before merging, deliberately break one expectation of each check, watch it fail, then restore it"
+    },
+    {
+      "id": "c20",
+      "kind": "requirement",
+      "text": "the deck is Ori's anchor presentation accompanying the live talk - fun yet informative, image- and diagram-led: every slide carries a visual element (photo, diagram, illustration, or glyph), never text alone",
+      "origin": "user",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h16",
+          "text": "a design review of the built deck confirms every slide reads visual-first at presentation distance and the deck feels inviting rather than corporate",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": "during the design pass, view each slide full-viewport: any slide that is text-alone gets its visual element added; hold the confirmed site design bar including reduced-motion support"
+    },
+    {
+      "id": "c21",
+      "kind": "assumption",
+      "text": "slide 2's three intelligence-path columns (coded behavior / learned policy / agent tools) each carry a small glyph or icon in the site palette so the slide reads visual, not as a text table - issue 23 specifies only text columns",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
     }
   ],
-  "open_vagueness": [],
+  "open_vagueness": [
+    {
+      "id": "v1",
+      "text": "whether the talk venue needs an offline fallback - the built dist serves locally via astro preview, but nobody has decided to prepare or rehearse that path",
+      "kind": "unknown_nonblocking",
+      "claim_id": null,
+      "resolved": false,
+      "resolution": "",
+      "resolution_claim_id": null
+    }
+  ],
   "scope_entries": [
     {
       "id": "s1",
@@ -395,6 +446,54 @@
       "seeds": [
         "c10"
       ]
+    },
+    {
+      "id": "s10",
+      "surface": "challenge pass / presenter-lifecycle lens: deck nav script in mind-nervous-system-body.astro",
+      "finding": "keyboard advance (ArrowRight/ArrowDown), prev/next controls, IntersectionObserver dot-rail scroll-spy, and reduced-motion instant jumps already exist, written generically over data-deck-slide sections - the restructure must keep them working",
+      "seeds": [
+        "c5"
+      ]
+    },
+    {
+      "id": "s11",
+      "surface": "challenge pass / hidden-dependency lens: Astro scoped styles vs injected markup",
+      "finding": "the lobes-page lesson: slide animations can ship as dead CSS when Astro's scoped selectors fail to reach runtime-injected markup; the working terminal components use :global() - seeded an animations-actually-run honesty condition on the renderer claim",
+      "seeds": [
+        "c5"
+      ]
+    },
+    {
+      "id": "s12",
+      "surface": "challenge pass / adjacent-systems lens: check-presentations.mjs no-redirects rule",
+      "finding": "old deck deep links (slide anchors) will break when slide ids change; the repo already records this as acceptable - the check asserts public/_redirects must not exist, deep links are allowed to break rather than silently redirect",
+      "seeds": []
+    },
+    {
+      "id": "s13",
+      "surface": "challenge pass / cheap probe: issue 23 slide-6 spoken passages vs the 4-sentence cap",
+      "finding": "with the test's sentence regex, the spoken explanation counts 3 sentences and the verbal close 1 - exactly 4 combined, fitting the relaxed cap with zero headroom",
+      "seeds": [
+        "c14"
+      ]
+    },
+    {
+      "id": "s14",
+      "surface": "challenge pass / cheap probe: repo-wide image inventory",
+      "finding": "find over site-astro/public returns only the four placeholder slates and apple-touch-icon.png - no real robot photograph exists anywhere in the repo; the agents pages' live captures are terminal captures, not photos - seeded the pre-talk photos question q5",
+      "seeds": []
+    },
+    {
+      "id": "s15",
+      "surface": "challenge pass / security, migration, concurrency, reversibility lenses: the deck surfaces",
+      "finding": "clean pass: prebuilt static HTML with no runtime state, no auth surface, no migration, single-PR revertable via git; no c19 escalation signal applies - residual risk not eliminated, only unobserved on these surfaces",
+      "seeds": []
+    },
+    {
+      "id": "s16",
+      "surface": "challenge pass / observability + rollback lens: CI trio + operator deploy",
+      "finding": "the three checks (node test, astro build, check-presentations.mjs) with the deliberate-break verification in h15 are the observability; rollback is git revert plus operator redeploy via cultureflare - no gap found beyond deploy being operator-owned, already a recorded constraint",
+      "seeds": []
     }
   ]
 }

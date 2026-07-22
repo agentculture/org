@@ -34,6 +34,8 @@
 - the deck renderer mind-nervous-system-body.astro gains layouts for the new slide shapes (three columns, labels around an image, three image-led situations, dual-robot close) - it currently branches on kinds opener/thesis/diagram/contrast/robot/commands/rules/close; new layouts meet the confirmed site design bar including reduced-motion support
   - instruction: add layout branches for columns / labeled-image / situation-triptych / dual-robot close in mind-nervous-system-body.astro, reusing the existing reveal system; check both dawn themes and mobile widths
   - honesty: each new slide shape has a dedicated renderer branch with no unstyled fallback, and every animation honors prefers-reduced-motion per the confirmed site design bar
+  - honesty: the existing presenter affordances survive the restructure: ArrowRight/ArrowDown keyboard advance, prev/next controls, the dot-rail scroll-spy, and reduced-motion instant jumps all work across the six new slides
+  - honesty: every animation in the new layouts actually runs in the built page - no dead CSS from Astro style scoping failing to reach injected or global markup; use :global() per the established terminal-component pattern where needed
 - per q2: CliRuntimeStackDiagram's behavior-runtime layer label gains 'ROS 2 or native', with the svg title/desc narration updated to match; no other diagram change
   - instruction: edit CliRuntimeStackDiagram.astro: runtime layer-title gains 'ROS 2 or native', desc narration updated to match; nothing else
   - honesty: the diagram diff touches only the runtime layer label and the svg title/desc narration - every other box, arrow, and label stays byte-identical
@@ -43,6 +45,9 @@
 - per q4: the spokenLine budget relaxes to at most 4 sentences deck-wide so issue 23's slide-6 spoken passage fits the existing field; no separate speaker-notes field
   - instruction: change the sentenceCount cap assertion from 2 to 4; carry issue 23's slide-6 spoken explanation into that slide's spokenLine
   - honesty: the test's sentence budget reads 4 and every slide's spokenLine - including slide 6's passage from issue 23 - fits within it
+- the deck is Ori's anchor presentation accompanying the live talk - fun yet informative, image- and diagram-led: every slide carries a visual element (photo, diagram, illustration, or glyph), never text alone
+  - instruction: during the design pass, view each slide full-viewport: any slide that is text-alone gets its visual element added; hold the confirmed site design bar including reduced-motion support
+  - honesty: a design review of the built deck confirms every slide reads visual-first at presentation distance and the deck feels inviting rather than corporate
 
 ## Honesty conditions
 
@@ -75,6 +80,7 @@
 ## Assumptions
 
 - imagery split per q3: slide 1 gets a new inline SVG illustration (agent -> interface -> robot); slide 4's central image is the Reachy Mini action photo with the three labels around it; slide 5's stuck vignette uses the SO-101 action photo with site-palette SVG vignettes for disconnected and routine; slide 6 uses the two hero photos - all four photo slots stay used exactly once
+- slide 2's three intelligence-path columns (coded behavior / learned policy / agent tools) each carry a small glyph or icon in the site palette so the slide reads visual, not as a text table - issue 23 specifies only text columns
 
 ## Scope exploration
 
@@ -96,3 +102,13 @@
   - seeds: `c8`, `c9`
 - `s9` — `site-astro/src/data/presentations.ts + site-astro/src/pages/presentations/index.astro`: the index card links to the deck route with no slide-count copy; presentations.ts holds the article's commit-pinned evidence and ARM101_COMMIT - neither changes for a deck-only restructure
   - seeds: `c10`
+- `s10` — `challenge pass / presenter-lifecycle lens: deck nav script in mind-nervous-system-body.astro`: keyboard advance (ArrowRight/ArrowDown), prev/next controls, IntersectionObserver dot-rail scroll-spy, and reduced-motion instant jumps already exist, written generically over data-deck-slide sections - the restructure must keep them working
+  - seeds: `c5`
+- `s11` — `challenge pass / hidden-dependency lens: Astro scoped styles vs injected markup`: the lobes-page lesson: slide animations can ship as dead CSS when Astro's scoped selectors fail to reach runtime-injected markup; the working terminal components use :global() - seeded an animations-actually-run honesty condition on the renderer claim
+  - seeds: `c5`
+- `s12` — `challenge pass / adjacent-systems lens: check-presentations.mjs no-redirects rule`: old deck deep links (slide anchors) will break when slide ids change; the repo already records this as acceptable - the check asserts public/_redirects must not exist, deep links are allowed to break rather than silently redirect
+- `s13` — `challenge pass / cheap probe: issue 23 slide-6 spoken passages vs the 4-sentence cap`: with the test's sentence regex, the spoken explanation counts 3 sentences and the verbal close 1 - exactly 4 combined, fitting the relaxed cap with zero headroom
+  - seeds: `c14`
+- `s14` — `challenge pass / cheap probe: repo-wide image inventory`: find over site-astro/public returns only the four placeholder slates and apple-touch-icon.png - no real robot photograph exists anywhere in the repo; the agents pages' live captures are terminal captures, not photos - seeded the pre-talk photos question q5
+- `s15` — `challenge pass / security, migration, concurrency, reversibility lenses: the deck surfaces`: clean pass: prebuilt static HTML with no runtime state, no auth surface, no migration, single-PR revertable via git; no c19 escalation signal applies - residual risk not eliminated, only unobserved on these surfaces
+- `s16` — `challenge pass / observability + rollback lens: CI trio + operator deploy`: the three checks (node test, astro build, check-presentations.mjs) with the deliberate-break verification in h15 are the observability; rollback is git revert plus operator redeploy via cultureflare - no gap found beyond deploy being operator-owned, already a recorded constraint
