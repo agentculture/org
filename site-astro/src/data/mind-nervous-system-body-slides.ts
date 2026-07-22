@@ -11,7 +11,8 @@
 // evidence-pinned beat text stay put in `mind-nervous-system-body.ts`; this
 // module still does not derive from it and carries no per-slide evidence
 // ids. Sources stay subordinate: see `deckSources` below (repo homes + one
-// dated note), rendered once on the close slide, never per-slide.
+// dated note), rendered once in the deck's closing footer on the finale
+// slide, never per-slide.
 //
 // DECK SHAPE — exactly seven slides, one per primary beat (`beat` 1-7, in
 // slide order): org#23's six plus the whats-next-finale-slide trajectory
@@ -328,7 +329,7 @@ export interface DeckSourceProject {
 }
 
 /**
- * The deck's subordinate sources note, rendered once on the close slide (not
+ * The deck's subordinate sources note, rendered once on the finale slide (not
  * per-slide): repo-home links for both projects plus one dated note. This is
  * the deck's evidence surface — the article keeps the strict, commit-pinned
  * ledger in `presentations.ts` / `mind-nervous-system-body.ts`, untouched.

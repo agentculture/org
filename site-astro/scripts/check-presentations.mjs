@@ -673,6 +673,28 @@ check("deck finale: whats-next is last with the triad, separation band, no photo
     finale.attrs["data-robot"] === undefined,
     "finale section must carry no data-robot attribute",
   );
+
+  // The deck's closing footer (article CTA, all-presentations link, the
+  // subordinate Sources disclosure) sits on the LAST slide — it moved off
+  // the close slide when the finale became slide 7.
+  assert(
+    linksTo(finale.inner, articleRoute).length === 1,
+    `the finale must carry the article CTA (${articleRoute}) exactly once`,
+  );
+  assert(
+    linksTo(finale.inner, presentationsRoute).length >= 1,
+    `the finale must carry the all-presentations link (${presentationsRoute})`,
+  );
+  const finaleSources = countOccurrences(finale.inner, ">Sources</summary>"); // scope-attr safe
+  assert(
+    finaleSources === 1,
+    `the Sources disclosure must render exactly once, on the finale; found ${finaleSources} there`,
+  );
+  const deckSourcesTotal = countOccurrences(deckHtml, ">Sources</summary>");
+  assert(
+    deckSourcesTotal === 1,
+    `the deck must render exactly one Sources disclosure, found ${deckSourcesTotal}`,
+  );
 });
 
 check("deck imagery: three robot photos with alt text", () => {
