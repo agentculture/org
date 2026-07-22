@@ -1,0 +1,419 @@
+{
+  "slug": "cli-runtime-reframe",
+  "title": "cli-runtime-reframe",
+  "frame_slug": "cli-runtime-reframe",
+  "schema_version": 3,
+  "status": "exported",
+  "created": "2026-07-21T23:32:42Z",
+  "updated": "2026-07-21T23:49:57Z",
+  "targets": [
+    {
+      "id": "c1",
+      "kind": "announcement",
+      "text": "The mind-nervous-system-body presentation now leads with the operational architecture: a CLI for intelligence, a runtime for embodiment. The agent is optional and replaceable; the deck shows agent harness, robot CLI, behavior runtime, device daemon, and hardware as distinct layers, and never conflates the behavior runtime with the device daemon."
+    },
+    {
+      "id": "h1",
+      "kind": "honesty",
+      "text": "The built deck page shows agent harness, robot CLI, behavior runtime, device daemon, and hardware as visually distinct layers, and the behavior engine is never labeled reachy-mini-daemon"
+    },
+    {
+      "id": "c2",
+      "kind": "requirement",
+      "text": "Reframe the deck per org#21: at most 8 primary beats, primary thesis visible by beat 2, protagonist flipped from an-agent-entering-a-robot to a-robot-architecture-that-accepts-any-intelligence, following the issue's proposed sequence (agent should not own the motors -> CLI+runtime thesis -> CLI as control plane -> runtime as nervous system -> Reachy full stack -> rules example -> ARM101 contrast -> independent-evolution close)"
+    },
+    {
+      "id": "h2",
+      "kind": "honesty",
+      "text": "The shipped deck has at most 8 primary beats and the CLI+runtime thesis is on beat 2"
+    },
+    {
+      "id": "c3",
+      "kind": "requirement",
+      "text": "Rewrite site-astro/src/data/mind-nervous-system-body-slides.ts (currently 10 slides distilled from article beats) to the new sequence, and update the sibling .test.mjs contract in the same change: slide count, the thesis-headline===hero equality test, spoken-line limits, one-robot-per-slide rules"
+    },
+    {
+      "id": "h3",
+      "kind": "honesty",
+      "text": "The slides test passes and every assertion describes the new deck \u2014 no assertion still encodes the old derive-from-article-beats contract"
+    },
+    {
+      "id": "c4",
+      "kind": "requirement",
+      "text": "Update site-astro/scripts/check-presentations.mjs deck expectations in lockstep: expectedDeckSlideCount (pinned exactly 10), expectedRobotSlideCounts (2 per robot), card-text pins ('Mind, nervous system, body', 'Neurosymbolic robotics'), deck-is-not-the-article markers, and the four-photo imagery check"
+    },
+    {
+      "id": "h4",
+      "kind": "honesty",
+      "text": "npm run check:presentations passes against the rebuilt dist with expectations matching the new deck, and the article-side checks are byte-for-byte unchanged in what they assert"
+    },
+    {
+      "id": "c5",
+      "kind": "requirement",
+      "text": "Extend the deck renderer (site-astro/src/pages/presentations/mind-nervous-system-body.astro): new slide shapes for an architecture-diagram slide (accessible SVG with role=img + title + desc, matching the article diagram's a11y bar), a command-sequence slide, and a CLI-vs-runtime contrast \u2014 with visual emphasis on the CLI and runtime layers; preserve the progressive-enhancement nav and prefers-reduced-motion gating already in the page"
+    },
+    {
+      "id": "h5",
+      "kind": "honesty",
+      "text": "The diagram slide is an accessible SVG (role=img with labelled title and desc), the page remains a complete scrolling document with JavaScript disabled, and every animation is gated behind prefers-reduced-motion: no-preference"
+    },
+    {
+      "id": "c7",
+      "kind": "boundary",
+      "text": "The behavior runtime and the lower-level reachy-mini-daemon are never conflated: the deck names four layers consistently per org#21's terminology (agent harness / robot CLI / behavior runtime / device daemon+hardware); 'behavior engine' is the 50 Hz symbolic runtime, 'daemon' is the device service"
+    },
+    {
+      "id": "h10",
+      "kind": "honesty",
+      "text": "Deck copy and diagram labels use 'behavior engine/runtime' for the 50 Hz loop and 'daemon' only for the device service, matching org#21's terminology table"
+    },
+    {
+      "id": "c8",
+      "kind": "boundary",
+      "text": "ARM101 is presented as the CLI-contract contrast only \u2014 JSON output, dry-run vs explicit --apply, torque ownership, overload-aware motion \u2014 never as shipping a persistent daemon/runtime (verified at pinned arm101-cli c05bda2 README: flex/explore are per-process gated motion)"
+    },
+    {
+      "id": "h11",
+      "kind": "honesty",
+      "text": "No deck slide claims ARM101 ships a daemon or persistent runtime; its slides show only the CLI contract (JSON, dry-run/--apply, torque ownership, gentle motion)"
+    },
+    {
+      "id": "c9",
+      "kind": "boundary",
+      "text": "Article surfaces stay content-intact: mind-nervous-system-body.ts beats, the /articles/ page, and MindNervousSystemBodyDiagram.astro \u2014 org#21 keeps the learning ladder, the multi-track retained-artifact diagram, and the repo-separation discussion in the article, and that diagram already lives only there (perceive-to-retain beat)"
+    },
+    {
+      "id": "h12",
+      "kind": "honesty",
+      "text": "git diff shows no content change to mind-nervous-system-body.ts, the articles page, or MindNervousSystemBodyDiagram.astro; the rendered article is unchanged"
+    },
+    {
+      "id": "c15",
+      "kind": "requirement",
+      "text": "The deck's core message (operator's words): use the CLI to connect agents to robots \u2014 without overloading the agent with information, while keeping the agent in control via rules, actions, ad-hoc operational commands, and control of the robot lifetime daemon"
+    },
+    {
+      "id": "h6",
+      "kind": "honesty",
+      "text": "A first-time viewer can restate the message after the deck: agents connect to robots through the CLI, are not overloaded with information, and stay in control via rules, actions, ad-hoc operational commands, and daemon lifecycle"
+    },
+    {
+      "id": "c18",
+      "kind": "requirement",
+      "text": "Deck priority (operator's steer): the message and its visualization for the audience come first \u2014 less strict than pinning information to the repo. Evidence stays subordinate on the deck (a light sources note / repo links); the article remains the strict commit-pinned surface"
+    },
+    {
+      "id": "h7",
+      "kind": "honesty",
+      "text": "No slide's primary content is a commit hash or file path; sources appear only in a subordinate note on the close slide"
+    },
+    {
+      "id": "c19",
+      "kind": "requirement",
+      "text": "The deck carries a light, subordinate sources note \u2014 repository home links plus a reachy-mini-cli v0.42.0 reference \u2014 implemented apart from the article's immutable evidence ledger; presentations.ts's pinned entries and REACHY_MINI_COMMIT stay untouched (they serve the article)"
+    },
+    {
+      "id": "h8",
+      "kind": "honesty",
+      "text": "presentations.ts's pinned evidence entries and REACHY_MINI_COMMIT/ARM101_COMMIT are unchanged by the PR, and the article still passes its closed evidence-URL check"
+    },
+    {
+      "id": "c20",
+      "kind": "requirement",
+      "text": "Wire the presentation contract into CI: tests.yml site-build runs npm run check:presentations and the slides test (node --experimental-strip-types --test) after npm run build, so a contract regression fails the PR"
+    },
+    {
+      "id": "h9",
+      "kind": "honesty",
+      "text": "A deliberately broken deck contract (e.g. wrong slide count) fails the site-build CI job"
+    },
+    {
+      "id": "c22",
+      "kind": "audience",
+      "text": "Talk audiences and /presentations/ visitors: developers and agent operators deciding how to connect an agent (Claude Code, Codex, Colleague, custom, or none) to a robot \u2014 the deck backs a spoken talk, so slides carry symbols, not paragraphs"
+    },
+    {
+      "id": "h13",
+      "kind": "honesty",
+      "text": "Slides carry a few-word headline plus at most one short spoken line \u2014 no paragraph blocks on any slide"
+    },
+    {
+      "id": "c23",
+      "kind": "before_state",
+      "text": "Today's deck tells the mind-first story: 10 slides distilled from the article's beats with the agent as protagonist, all robot code lumped as one 'nervous system', no CLI layer drawn, no runtime/daemon distinction, and substantial repo-separation and learning-ladder content"
+    },
+    {
+      "id": "h14",
+      "kind": "honesty",
+      "text": "Accurately describes the deck at current main (10 slides, beat-derived, no CLI layer) \u2014 verifiable by checking out main"
+    },
+    {
+      "id": "c24",
+      "kind": "why_it_matters",
+      "text": "The reusable contribution \u2014 a stable operational boundary between interchangeable intelligence and persistent embodiment \u2014 is currently hidden behind the metaphor; audiences leave with an analogy instead of an architecture they can apply to their own robots"
+    },
+    {
+      "id": "h15",
+      "kind": "honesty",
+      "text": "The new deck names the intelligence/embodiment operational boundary explicitly rather than leaving it implied by the metaphor"
+    },
+    {
+      "id": "c25",
+      "kind": "after_state",
+      "text": "The deck leads with the architecture: at most 8 primary beats, the CLI-for-intelligence / runtime-for-embodiment thesis visible by beat 2, the four layers drawn as separate visual layers with the agent optional and replaceable, Reachy as the full-stack demo, one small rules example, ARM101 as the CLI-contract contrast, and an independent-evolution close"
+    },
+    {
+      "id": "h16",
+      "kind": "honesty",
+      "text": "Each element is checkable on the built page: beat count <=8, thesis on beat 2, four-layer diagram with the agent optional, Reachy demo, rules example, ARM101 contrast, close"
+    },
+    {
+      "id": "c26",
+      "kind": "success_signal",
+      "text": "npm run build, npm run check:presentations, and the slides test all pass with contracts rewritten for the new deck and newly enforced in CI; org#21's acceptance criteria check off against the built page; the PR goes green (version-check, Sonar) and the deck deploys on merge"
+    },
+    {
+      "id": "h17",
+      "kind": "honesty",
+      "text": "All three commands run green locally and in the PR's site-build job before merge"
+    },
+    {
+      "id": "c27",
+      "kind": "audience",
+      "text": "The talk audience is technical roboticists; the deck backs a 15-20 minute spoken presentation (operator directive at the challenge pass; c22's developer/agent-operator audience remains the secondary web audience)"
+    },
+    {
+      "id": "h21",
+      "kind": "honesty",
+      "text": "A timed run-through of the built deck lands inside 15-20 minutes for a roboticist audience, with beat pacing per c31"
+    },
+    {
+      "id": "c28",
+      "kind": "requirement",
+      "text": "State the tick rate honestly for an expert audience: '50 Hz' is the design rate \u2014 reachy CHANGELOG v0.42.0 (#97) records 23 Hz achieved before a partial absolute-deadline fix with tick-work overrun still open \u2014 so the deck says 'a deterministic fixed-rate loop (50 Hz design rate)' or omits the number; it never presents 50 Hz as measured fact"
+    },
+    {
+      "id": "h18",
+      "kind": "honesty",
+      "text": "No slide or spoken line presents 50 Hz as an achieved/measured rate; if the number appears it is labeled as the design rate"
+    },
+    {
+      "id": "c29",
+      "kind": "requirement",
+      "text": "Calibrate explanation depth to roboticists: control-loop, arbitration, and daemon concepts are assumed knowledge; the agent-harness layer (what Claude Code / Codex / Colleague are, and why the agent is optional) gets the one line of explanation instead"
+    },
+    {
+      "id": "h19",
+      "kind": "honesty",
+      "text": "A roboticist hearing the talk is never lectured on what a control loop or arbitration is, and never left guessing what an agent harness is"
+    },
+    {
+      "id": "c30",
+      "kind": "requirement",
+      "text": "The deck is presentable live: keyboard advance already ships under html.js; type must stay legible at projection distance \u2014 verify the built deck at 1920x1080 as part of acceptance"
+    },
+    {
+      "id": "h20",
+      "kind": "honesty",
+      "text": "The built deck reviewed at 1920x1080 has every headline and code line readable"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "t1",
+      "summary": "Rewrite the deck slide data to the CLI/runtime story (site-astro/src/data/mind-nervous-system-body-slides.ts)",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "The data module defines at most 8 primary beats: motors-problem opener on slide 1, the thesis 'A CLI for intelligence. A runtime for embodiment.' on slide 2, then control plane, runtime, Reachy full stack, rules example, ARM101 contrast, close",
+        "All four photo slots are referenced exactly once; every spokenLine is <=2 sentences; slides carry a headline plus one spoken line, never a paragraph block; no headline or spoken line contains a commit hash or file path",
+        "50 Hz appears only labeled as the design rate; the ROS aside is present; the [[react]]/[[inhibit]] rules example and all four control surfaces (rules, actions, ad-hoc operational commands, daemon lifecycle) each appear as slide content; ARM101 slides claim only the CLI contract, never a shipped runtime; the intelligence/embodiment boundary is named explicitly; agent-harness gets the explanation line, control-loop concepts are assumed known"
+      ],
+      "deps": [],
+      "covers": [
+        "c2",
+        "h2",
+        "c15",
+        "h6",
+        "c18",
+        "h7",
+        "c28",
+        "h18",
+        "c29",
+        "h19",
+        "c8",
+        "h11",
+        "c22",
+        "h13",
+        "c23",
+        "h14",
+        "c24",
+        "h15"
+      ],
+      "instruction": "Follow org#21's proposed sequence and the confirmed frame claims; extend DeckSlide kinds for diagram/command-sequence/contrast slides; source command text verbatim from reachy-mini-cli v0.42.0 README and arm101-cli README; shape the rules example on reachy/behavior/default_rules.toml; keep the existing photo-slot ids"
+    },
+    {
+      "id": "t2",
+      "summary": "Build the accessible five-layer architecture diagram component (new site-astro/src/components/ file)",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "A new Astro component renders an SVG with role=img and labelled title+desc, naming agent harness, robot CLI, behavior runtime, device daemon, and hardware as visually distinct layers",
+        "The CLI and runtime boxes carry the visual emphasis; the agent is drawn optional/replaceable; arrows include direct CLI->daemon intervention plus the runtime event-feed/intent dotted paths; 'reachy-mini-daemon' labels only the device layer and any 50 Hz label says design rate"
+      ],
+      "deps": [],
+      "covers": [
+        "c1",
+        "h1",
+        "c7",
+        "h10"
+      ],
+      "instruction": "Model the SVG on org#21's mermaid diagram (agent + human/script entries, CLI, runtime, device daemon, robot); copy MindNervousSystemBodyDiagram.astro's a11y pattern (role=img, title/desc ids) and theme via the site's existing CSS custom properties so light/dark both work"
+    },
+    {
+      "id": "t3",
+      "summary": "Retitle the presentation card in site-astro/src/data/presentations.ts",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "presentations[0] title/summary/topic tell the CLI-for-intelligence / runtime-for-embodiment story; articles[0] and the evidence ledger (entries, commit constants, types) are byte-identical to main"
+      ],
+      "deps": [],
+      "covers": [
+        "c19",
+        "h8"
+      ],
+      "instruction": "Edit only the presentations[0] card literal; articles[0], evidence entries, commit constants, and all types stay untouched; the route field keeps its current value"
+    },
+    {
+      "id": "t4",
+      "summary": "Wire the presentation contracts into CI (.github/workflows/tests.yml site-build)",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "site-build runs npm run check:presentations and the slides test (node --experimental-strip-types --test) after npm run build",
+        "A deliberately broken expectation (e.g. wrong slide count) makes the command sequence exit non-zero locally, proving a contract regression fails the job"
+      ],
+      "deps": [],
+      "covers": [
+        "c20",
+        "h9"
+      ],
+      "instruction": "Two run steps after npm run build in site-build (working-directory already site-astro): npm run check:presentations, then node --experimental-strip-types --test src/data/mind-nervous-system-body-slides.test.mjs"
+    },
+    {
+      "id": "t5",
+      "summary": "Version bump + changelog entry (pyproject.toml, CHANGELOG.md)",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "pyproject.toml version differs from main and CHANGELOG.md gains a Keep-a-Changelog entry describing the deck reframe"
+      ],
+      "deps": [],
+      "covers": [],
+      "instruction": "Run the version-bump skill: /version-bump minor (site reframe = feature); verify the version-check job's comparison basis is origin/main"
+    },
+    {
+      "id": "t6",
+      "summary": "Render the new slide shapes in the deck page (site-astro/src/pages/presentations/mind-nervous-system-body.astro)",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "The deck page renders diagram, command-sequence, and CLI-vs-runtime contrast slides from the data module, embedding the diagram component; sources appear only as one collapsed block on the close slide (repo home links + a v0.42.0 note)",
+        "With JavaScript disabled the page is a complete scrolling document; every snap/reveal animation is gated behind (prefers-reduced-motion: no-preference); keyboard prev/next still works under html.js"
+      ],
+      "deps": [
+        "t1",
+        "t2"
+      ],
+      "covers": [
+        "c5",
+        "h5",
+        "c1",
+        "h1"
+      ],
+      "instruction": "Preserve the existing dot-rail, nav script, and data-reveal pattern; branch on slide kind; command slides render in a pre block with overflow-x auto inside the slide grid; the sources details block follows the current close-slide pattern"
+    },
+    {
+      "id": "t7",
+      "summary": "Rewrite the slides test contract (site-astro/src/data/mind-nervous-system-body-slides.test.mjs)",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "node --experimental-strip-types --test passes; assertions pin <=8 primary beats, thesis on slide 2, spoken-line limits, exactly-once photo-slot usage, and design-rate phrasing for any 50 Hz mention",
+        "No assertion still encodes the old derive-from-article-beats contract (thesis-headline===hero equality, beat-derivation comments)"
+      ],
+      "deps": [
+        "t1"
+      ],
+      "covers": [
+        "c3",
+        "h3"
+      ],
+      "instruction": "Keep the resolve-hook preamble only if the data module still imports extensionless neighbours; write assertions against the new data shape; verify with node --experimental-strip-types --test"
+    },
+    {
+      "id": "t8",
+      "summary": "Update check-presentations.mjs and run the full local verify",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "npm run build && npm run check:presentations passes with expectations matching the new deck (slide count, retitled card, diagram present, deck-not-article markers); article-side checks assert exactly what they asserted before",
+        "git diff vs main shows no content change to mind-nervous-system-body.ts, the articles page, or MindNervousSystemBodyDiagram.astro; the route is still /presentations/mind-nervous-system-body/ with no public/_redirects; every after-state element (thesis on beat 2, four-layer diagram, Reachy demo, rules example, ARM101 contrast, close) is verified on the built page"
+      ],
+      "deps": [
+        "t6",
+        "t7"
+      ],
+      "covers": [
+        "c4",
+        "h4",
+        "c9",
+        "h12",
+        "c25",
+        "h16",
+        "c26",
+        "h17"
+      ],
+      "instruction": "Update the constants block (deck slide count, card text, thesis handling) and deck checks only; article-side check bodies stay untouched; then npm run build && npm run check:presentations && the slides test, and git diff main over the three article files must be empty"
+    },
+    {
+      "id": "t9",
+      "summary": "Rehearsal and projection acceptance on the built deck",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "The built deck reviewed at 1920x1080 has every headline and code line readable",
+        "A timed run-through by the operator lands inside 15-20 minutes for a roboticist audience"
+      ],
+      "deps": [
+        "t8"
+      ],
+      "covers": [
+        "c27",
+        "h21",
+        "c30",
+        "h20"
+      ],
+      "instruction": "npm run preview against the built dist, review at 1920x1080 (screenshots or browser tooling), read every slide aloud against a timer; record both results in the PR description"
+    }
+  ],
+  "risks": [
+    {
+      "id": "r1",
+      "text": "CI proof for h9/h17 completes only on the PR run \u2014 local verification is the proxy until the PR's site-build job goes green",
+      "kind": "unknown_nonblocking",
+      "task_id": null,
+      "resolved": false,
+      "resolution": ""
+    },
+    {
+      "id": "r2",
+      "text": "Venue behavior (projector color/contrast, offline fallback via npm run preview) stays open past the PR \u2014 parked as v1 on the frame",
+      "kind": "unknown_nonblocking",
+      "task_id": null,
+      "resolved": false,
+      "resolution": ""
+    }
+  ]
+}
