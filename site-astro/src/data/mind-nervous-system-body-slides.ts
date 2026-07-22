@@ -23,7 +23,8 @@
 //      (plan task t3), not a dataset field.
 //   2. paths      · paths    · beat 2 — three ways intelligence reaches a
 //      robot today (coded behavior, learned policy, agent tools) via
-//      `columns`; none of them draws a stable boundary.
+//      `columns`; they can coexist — the architectural question is the
+//      stable boundary between deciding and executing.
 //   3. stack      · stack    · beat 3 — carries `diagram: true` so the
 //      renderer embeds the five-layer architecture component beside the
 //      copy; the agent stays above the CLI line, execution stays below it.
@@ -187,13 +188,13 @@ export const mindNervousSystemBodySlides = [
     eyebrow: "three paths, one gap",
     headline: "Intelligence reaches robots in different ways",
     spokenLine:
-      "Some robots run fixed, hand-coded behavior; others run a learned policy trained end to end; a growing set let an agent call tools directly against the hardware. Each path works, but none of them draws a clean line between what the agent decides and what the robot's software is responsible for executing.",
+      "Some robots run fixed, hand-coded behavior; others run a learned policy trained end to end; a growing set let an agent call tools directly against the hardware. These approaches can coexist. The architectural question is whether the robot exposes a stable boundary between what intelligence decides and what robot software executes.",
     columns: [
       { label: "Coded behavior" },
       { label: "Learned policy" },
       { label: "Agent tools" },
     ],
-    bottomLine: "What's missing is a stable boundary.",
+    bottomLine: "What matters is a stable boundary.",
   },
   {
     id: "stack",
@@ -203,7 +204,7 @@ export const mindNervousSystemBodySlides = [
     eyebrow: "the architecture",
     headline: "Keep execution below the model",
     spokenLine:
-      "The stack has five layers: an optional agent, a stable CLI, a deterministic behavior runtime, a device daemon, and the hardware itself. Reasoning stays above the CLI line; execution stays below it, in the runtime and daemon, so the model can be interchangeable without ever owning the motors.",
+      "The stack has five layers: an optional agent, a stable CLI, a deterministic behavior runtime — on Reachy Mini, a fixed-rate loop at a 50 Hz design rate — a device daemon, and the hardware itself. Reasoning stays above the CLI line; execution stays below it, in the runtime and daemon, so the model can be interchangeable without ever owning the motors.",
     bottomLine: "The agent never owns the motors.",
   },
   {
@@ -249,7 +250,7 @@ export const mindNervousSystemBodySlides = [
         status: "working system",
         traits: "Rules · behavior runtime · device daemon",
         claim: "The complete native-runtime pattern.",
-        command: "reachy-mini-cli behavior engine start",
+        command: "reachy-mini-cli behavior engine run",
       },
       {
         robot: "so101",
@@ -292,7 +293,7 @@ export const deckSources = {
       repositoryUrl: "https://github.com/agentculture/arm101-cli",
     },
   ],
-  note: "reachy-mini-cli v0.42.0 retired the AI-first flow — the robot's presence is the symbolic runtime.",
+  note: "reachy-mini-cli v0.42.0 separates the optional agent from the symbolic runtime.",
 } as const satisfies {
   projects: readonly DeckSourceProject[];
   note: string;

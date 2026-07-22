@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/). This project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.17.1] - 2026-07-22
+
+### Fixed
+
+- Deck technical review fixes: the architecture diagram's runtime layer reads "ROS-backed or native · persistent execution" with "nodes · controllers · rules · intents · arbitration" (ROS 2 is not itself a fixed-rate loop; the 50 Hz design rate moved to the stack slide's Reachy-specific spoken aside); the control-plane box renamed "Robot interface" (CLI · JSON feed · intent spool) so the dotted agent-runtime paths no longer contradict the stable-bridge story; the diagram caption reads "operational command and state paths" instead of "direct, synchronous calls"; slide 2 softened to "These approaches can coexist…" with bottom line "What matters is a stable boundary."; the close Reachy command is `behavior engine run`; the source note reads "separates the optional agent from the symbolic runtime."
+
 ## [0.17.0] - 2026-07-22
 
 ### Changed

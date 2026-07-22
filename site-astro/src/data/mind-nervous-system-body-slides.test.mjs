@@ -87,7 +87,7 @@ test("slide 2 (paths) carries the three intelligence-path columns verbatim", () 
     slide.columns.map((column) => column.label),
     ["Coded behavior", "Learned policy", "Agent tools"],
   );
-  assert.equal(slide.bottomLine, "What's missing is a stable boundary.");
+  assert.equal(slide.bottomLine, "What matters is a stable boundary.");
 });
 
 test("slide 3 (stack) embeds the architecture diagram", () => {
@@ -179,7 +179,7 @@ test("slide 6 (close) is last, carries both robots and the verbatim thesis", () 
     status: "working system",
     traits: "Rules · behavior runtime · device daemon",
     claim: "The complete native-runtime pattern.",
-    command: "reachy-mini-cli behavior engine start",
+    command: "reachy-mini-cli behavior engine run",
   });
   assert.deepEqual(arm, {
     robot: "so101",
