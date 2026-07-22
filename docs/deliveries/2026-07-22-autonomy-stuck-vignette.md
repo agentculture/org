@@ -77,6 +77,14 @@ directly:
   (three vignette figures, one each, zero photo slots) is new enforcement of
   h13, not a re-pin of an existing assertion — added so the built-HTML
   contract pins the trio positively rather than only by absence of photos.
+- **Post-review naming-consistency fix (Qodo, PR #25).** Qodo's review
+  flagged that the close card's heading (now "SO-ARM101" per q3) and its hero
+  photo's alt/subject strings (still "SO-101") named the same robot two ways
+  on one card. Fixed by renaming the photo metadata (`PhotoRobot` union,
+  `subjectRobot`, subject/alt strings) and the shot-brief doc to SO-ARM101 —
+  a deliberate extension of q3's "single robotLabel string" scope, applied
+  only to deck-consumed photo metadata; the article surfaces keep their own
+  hardware naming and stay byte-identical.
 
 ## Drift From Plan
 

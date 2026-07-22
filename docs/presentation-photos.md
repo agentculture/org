@@ -18,10 +18,10 @@ so a real photo is a drop-in replacement (see below).
 | --- | --- | --- | --- | --- | --- |
 | `reachy-mini-hero` | `reachy-mini-hero.webp` | `reachy-mini-hero-thumb.webp` | Reachy Mini on a clean desk, three-quarter view, head toward the lens, antennas up, warm key light | landscape 16:9 | 1920×1080 / 480×270 |
 | `reachy-mini-action` | `reachy-mini-action.webp` | `reachy-mini-action-thumb.webp` | Reachy Mini mid-gesture, head tilted and antennas in motion, a hand near it for scale | landscape 3:2 | 1800×1200 / 480×320 |
-| `so101-hero` | `so101-hero.webp` | `so101-hero-thumb.webp` | SO-101 arm at rest in its home pose, gripper open, clean side profile on a plain backdrop | landscape 16:9 | 1920×1080 / 480×270 |
+| `so101-hero` | `so101-hero.webp` | `so101-hero-thumb.webp` | SO-ARM101 arm at rest in its home pose, gripper open, clean side profile on a plain backdrop | landscape 16:9 | 1920×1080 / 480×270 |
 
 Reachy Mini is a small expressive desk robot with a movable head, two antennas,
-a camera and a speaker. The SO-101 (also called ARM101) is a hobby robot arm
+a camera and a speaker. The SO-ARM101 is a hobby robot arm
 with a two-finger gripper.
 
 ### Alt text
@@ -34,7 +34,7 @@ you do not need to touch it.
 | --- | --- |
 | `reachy-mini-hero` | Reachy Mini, a small expressive desk robot with a rounded movable head, two antennas, a single camera eye and a speaker in its base, seen in three-quarter view on a desk. |
 | `reachy-mini-action` | Reachy Mini mid-gesture, its head tilted and antennas swinging, a person's hand beside it for scale, background softly out of focus. |
-| `so101-hero` | The SO-101 hobby robot arm at rest in a clean side profile, its jointed segments folded into the home pose and its two-finger gripper open, against a plain backdrop. |
+| `so101-hero` | The SO-ARM101 hobby robot arm at rest in a clean side profile, its jointed segments folded into the home pose and its two-finger gripper open, against a plain backdrop. |
 
 ## Replacing a placeholder with a real photo
 

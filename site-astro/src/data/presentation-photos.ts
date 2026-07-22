@@ -10,7 +10,7 @@
 // / `thumbSrc` paths, the pixel targets, and the alt text are the brief for the
 // shoot; see docs/presentation-photos.md for the human-facing guidance.
 //
-// Three slots — a hero + action pair for Reachy Mini, and a hero for SO-101 —
+// Three slots — a hero + action pair for Reachy Mini, and a hero for SO-ARM101 —
 // one robot per slot, so the deck can guarantee "one robot per slide" (plan
 // task t6).
 
@@ -21,7 +21,7 @@ export type PhotoSlotId =
   | "so101-hero";
 
 /** Which robot a slot depicts — kept literal so the deck enforces one per slide. */
-export type PhotoRobot = "Reachy Mini" | "SO-101";
+export type PhotoRobot = "Reachy Mini" | "SO-ARM101";
 
 /** The slot's job in the deck: an establishing hero or an in-motion action shot. */
 export type PhotoRole = "hero" | "action";
@@ -84,13 +84,13 @@ export const presentationPhotos = [
     id: "so101-hero",
     src: "/presentations/so101-hero.webp",
     thumbSrc: "/presentations/so101-hero-thumb.webp",
-    subjectRobot: "SO-101",
+    subjectRobot: "SO-ARM101",
     role: "hero",
     subject:
-      "The SO-101 robot arm at rest in its home pose, gripper open, in a clean side profile against a plain seamless backdrop.",
+      "The SO-ARM101 robot arm at rest in its home pose, gripper open, in a clean side profile against a plain seamless backdrop.",
     orientation: "landscape 16:9",
     targetDimensions: { full: "1920×1080", thumb: "480×270" },
-    alt: "The SO-101 hobby robot arm at rest in a clean side profile, its jointed segments folded into the home pose and its two-finger gripper open, against a plain backdrop.",
+    alt: "The SO-ARM101 hobby robot arm at rest in a clean side profile, its jointed segments folded into the home pose and its two-finger gripper open, against a plain backdrop.",
   },
 ] as const satisfies readonly PresentationPhoto[];
 
