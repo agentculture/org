@@ -5,6 +5,13 @@
 // a single spoken line, never a paragraph block. The deck says less than the
 // article on purpose; the close slide routes depth-seekers to the full text.
 //
+// THE REFRAME (org#21): the deck leads with the operational architecture — a
+// CLI for intelligence, a runtime for embodiment — rather than the mind/
+// nervous-system/body metaphor. Ten slides, eight kinds: opener, thesis,
+// diagram (embeds CliRuntimeStackDiagram), contrast (the CLI-vs-runtime
+// table), robot (photo slides), commands (photo + an ordered command block),
+// rules (a verbatim rules.toml excerpt), and close (actions + deckSources).
+//
 // Navigation is progressive enhancement over natural scroll: the dot rail is
 // plain anchors, the prev/next chrome and keyboard support exist only under
 // html.js, and every snap/reveal runs only behind
@@ -13,11 +20,12 @@
 import Layout from "../../layouts/Layout.astro";
 import {
   mindNervousSystemBodySlides,
+  deckSources,
   type DeckSlide,
 } from "../../data/mind-nervous-system-body-slides";
 import { photoBySlot } from "../../data/presentation-photos";
-import { evidenceFor } from "../../data/mind-nervous-system-body";
-import { presentationProjects, presentations } from "../../data/presentations";
+import { presentations } from "../../data/presentations";
+import CliRuntimeStackDiagram from "../../components/CliRuntimeStackDiagram.astro";
 
 const card = presentations[0];
 const slides: readonly DeckSlide[] = mindNervousSystemBodySlides;
@@ -40,20 +48,11 @@ const slideViews = slides.map((slide, index) => {
   };
 });
 
-// The thesis headline is one verbatim string; the stage splits it into its
-// three sentences so the three layers land as three lines — the middle line,
-// the nervous system, is the deck's through-line.
+// The thesis headline is one verbatim string of two sentences — the stage
+// splits it into two reveal lines so each sentence lands on its own beat.
+// The split is presentational only: joined back together the text is
+// byte-identical to the source string.
 const thesisLines = (headline: string) => headline.split(/(?<=\.)\s+/);
-
-// Evidence stays subordinate: one compact, collapsed sources block on the
-// close slide — deduped across the whole deck, commit-pinned, never crowding
-// a slide's visuals.
-const deckSources = evidenceFor([
-  ...new Set(slides.flatMap((slide) => slide.evidenceIds)),
-]);
-const projectLabels = new Map(
-  presentationProjects.map((project) => [project.id, project.label]),
-);
 ---
 
 <Layout
@@ -90,7 +89,7 @@ const projectLabels = new Map(
         >
           <div class="container slide-grid">
             <div class="slide-copy">
-              {slide.kind === "thesis" && (
+              {slide.kind === "opener" && (
                 <a class="back-link" href="/presentations/">
                   ← Presentations
                 </a>
@@ -98,18 +97,22 @@ const projectLabels = new Map(
               <span class="eyebrow" data-reveal>
                 {slide.eyebrow}
               </span>
-              {slide.kind === "thesis" ? (
-                <h1 id={headingId}>
+              {slide.kind === "opener" ? (
+                <h1 id={headingId} data-reveal style="--reveal-delay: 0.08s">
+                  {slide.headline}
+                </h1>
+              ) : slide.kind === "thesis" ? (
+                <h2 id={headingId} class="thesis-headline">
                   {thesisLines(slide.headline).map((line, lineIndex) => (
                     <span
-                      class:list={["thesis-line", lineIndex === 1 && "is-bridge"]}
+                      class:list={["thesis-line", lineIndex === 0 && "is-lead"]}
                       data-reveal
                       style={`--reveal-delay: ${0.1 + lineIndex * 0.18}s`}
                     >
                       {line}
                     </span>
                   ))}
-                </h1>
+                </h2>
               ) : (
                 <h2 id={headingId} data-reveal style="--reveal-delay: 0.08s">
                   {slide.headline}
@@ -118,7 +121,8 @@ const projectLabels = new Map(
               <p class="spoken" data-reveal style="--reveal-delay: 0.22s">
                 {slide.spokenLine}
               </p>
-              {slide.kind === "thesis" && slides[1] && (
+
+              {slide.kind === "opener" && slides[1] && (
                 <a
                   class="begin"
                   href={`#${slides[1].id}`}
@@ -128,6 +132,42 @@ const projectLabels = new Map(
                   Begin <span aria-hidden="true">↓</span>
                 </a>
               )}
+
+              {slide.kind === "contrast" && slide.contrastRows && (
+                <div class="contrast-table" data-reveal style="--reveal-delay: 0.3s">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th scope="col">Dimension</th>
+                        <th scope="col">CLI</th>
+                        <th scope="col">Runtime</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {slide.contrastRows.map((row) => (
+                        <tr>
+                          <th scope="row">{row.dimension}</th>
+                          <td>{row.cli}</td>
+                          <td>{row.runtime}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {slide.kind === "commands" && slide.commandLines && (
+                <pre class="command-block" data-reveal style="--reveal-delay: 0.3s"><code>{
+                  slide.commandLines.join("\n")
+                }</code></pre>
+              )}
+
+              {slide.kind === "rules" && slide.rulesToml && (
+                <pre class="rules-block" data-reveal style="--reveal-delay: 0.3s"><code>{
+                  slide.rulesToml
+                }</code></pre>
+              )}
+
               {slide.kind === "close" && (
                 <div class="close-actions" data-reveal style="--reveal-delay: 0.3s">
                   <a class="cta" href="/articles/mind-nervous-system-body/">
@@ -140,23 +180,27 @@ const projectLabels = new Map(
               )}
               {slide.kind === "close" && (
                 <details class="sources" data-reveal style="--reveal-delay: 0.4s">
-                  <summary>Sources — commit-pinned</summary>
+                  <summary>Sources</summary>
                   <ul>
-                    {deckSources.map((source) => (
+                    {deckSources.projects.map((project) => (
                       <li>
-                        <a href={source.url} target="_blank" rel="noreferrer">
-                          <span class="source-label">{source.label}</span>
-                          <span class="source-meta">
-                            {projectLabels.get(source.project)} ·{" "}
-                            <code>{source.commit.slice(0, 12)}</code>
-                          </span>
+                        <a href={project.repositoryUrl} target="_blank" rel="noreferrer">
+                          <span class="source-label">{project.label}</span>
+                          <span class="source-meta">{project.repositoryUrl}</span>
                         </a>
                       </li>
                     ))}
                   </ul>
+                  <p class="source-note">{deckSources.note}</p>
                 </details>
               )}
             </div>
+
+            {slide.kind === "diagram" && (
+              <div class="slide-diagram" data-reveal style="--reveal-delay: 0.16s">
+                <CliRuntimeStackDiagram />
+              </div>
+            )}
 
             {photo && size && (
               <figure
@@ -337,33 +381,48 @@ const projectLabels = new Map(
   }
 
   @media (min-width: 60rem) {
-    .slide--robot .slide-grid {
+    .slide--robot .slide-grid,
+    .slide--commands .slide-grid {
       grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
     }
 
-    .slide--robot.is-flipped .slide-grid {
+    .slide--robot.is-flipped .slide-grid,
+    .slide--commands.is-flipped .slide-grid {
       grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
     }
 
-    .slide--robot.is-flipped .slide-copy {
+    .slide--robot.is-flipped .slide-copy,
+    .slide--commands.is-flipped .slide-copy {
       order: 2;
+    }
+
+    .slide--diagram .slide-grid {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
     }
   }
 
   /* ---------- type: the deck is the site at its most cinematic ---------- */
 
-  .slide--thesis h1 {
+  .slide--opener h1 {
     font-size: clamp(2.5rem, 6.4vw, 4.9rem);
     margin-bottom: 0.45em;
+  }
+
+  .thesis-headline {
+    display: grid;
+    gap: 0.15em;
+    font-size: clamp(2.3rem, 5.6vw, 4.3rem);
+    margin-bottom: 0.5em;
   }
 
   .thesis-line {
     display: block;
   }
 
-  /* the middle sentence — the nervous system, the CLI — is the through-line:
-     the accent layer between the two ink layers */
-  .thesis-line.is-bridge {
+  /* the first sentence — the CLI, the mind's interface — is the accent
+     layer; the second — the runtime, embodiment — stays ink so the deck's
+     two halves read as distinct claims. */
+  .thesis-line.is-lead {
     color: var(--accent);
   }
 
@@ -406,6 +465,82 @@ const projectLabels = new Map(
   .begin:hover {
     border-color: var(--accent);
     color: var(--accent);
+  }
+
+  /* ---------- the diagram slide ---------- */
+
+  .slide-diagram {
+    max-height: min(72vh, 46rem);
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .slide-diagram :global(.cli-runtime-diagram) {
+    margin: 0 auto;
+  }
+
+  .slide-diagram :global(.diagram-viewport svg) {
+    min-width: 26rem;
+  }
+
+  /* ---------- the contrast table ---------- */
+
+  .contrast-table {
+    margin-top: 1.6rem;
+    max-width: 42rem;
+    overflow-x: auto;
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius);
+  }
+
+  .contrast-table table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: clamp(0.92rem, 1.3vw, 1.08rem);
+  }
+
+  .contrast-table th,
+  .contrast-table td {
+    padding: 0.65rem 0.9rem;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .contrast-table thead th {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .contrast-table tbody th {
+    font-weight: 560;
+    white-space: nowrap;
+  }
+
+  .contrast-table tbody tr:last-child th,
+  .contrast-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* ---------- command + rules code blocks ---------- */
+
+  .command-block,
+  .rules-block {
+    margin-top: 1.6rem;
+    max-width: 34rem;
+    padding: 1.1rem 1.3rem;
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    font-family: var(--font-mono);
+    font-size: clamp(0.88rem, 1.35vw, 1.08rem);
+    line-height: 1.75;
+    color: var(--ink);
+    overflow-x: auto;
+    white-space: pre;
   }
 
   /* ---------- the photograph ---------- */
@@ -508,6 +643,12 @@ const projectLabels = new Map(
   .source-meta {
     color: var(--ink-soft);
     font-size: 0.8rem;
+    word-break: break-word;
+  }
+
+  .source-note {
+    margin-top: 1.2rem;
+    color: var(--ink-soft);
   }
 
   /* ---------- the rail: slides as nodes on a thread ---------- */
