@@ -567,9 +567,11 @@ check("deck states the thesis verbatim", () => {
 });
 
 check("every deck “50 Hz” mention is labeled design rate", () => {
+  // The spec allows the deck to omit the number entirely; only a mention
+  // that IS present must be qualified. No minimum-mention requirement —
+  // the slides test applies the same conditional rule.
   const deckText = textContent(deckHtml);
   const matches = [...deckText.matchAll(/50\s*Hz/g)];
-  assert(matches.length > 0, "deck must mention 50 Hz at least once");
   for (const match of matches) {
     const window = deckText.slice(match.index, match.index + 40);
     assert(
