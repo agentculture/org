@@ -1,31 +1,49 @@
 ---
 // The symbolic deck: full-viewport slides the speaker talks over. The data
 // layer (mind-nervous-system-body-slides.ts) owns every word on every slide;
-// this template only stages them — big type, one photograph per robot slide,
-// a single spoken line, never a paragraph block. The deck says less than the
-// article on purpose; the close slide routes depth-seekers to the full text.
+// this template only stages them — one hero line per slide, one symbol per
+// slide (illustration, glyphs, the architecture diagram, or a photograph),
+// and a single spoken cue that stays visually subordinate. The deck says
+// less than the article on purpose; the close slide routes depth-seekers to
+// the full text.
 //
-// THE REFRAME (org#21): the deck leads with the operational architecture — a
-// CLI for intelligence, a runtime for embodiment — rather than the mind/
-// nervous-system/body metaphor. Ten slides, eight kinds: opener, thesis,
-// diagram (embeds CliRuntimeStackDiagram), contrast (the CLI-vs-runtime
-// table), robot (photo slides), commands (photo + an ordered command block),
-// rules (a verbatim rules.toml excerpt), and close (actions + deckSources).
+// THE SIX-SLIDE SHAPE (org#23): six visual, declarative slides, each with its
+// own dedicated layout branch — no unstyled fallback:
+//   1. bridge   — the DeckBridgeIllustration hero beside the declarative pair.
+//   2. paths    — three columns, each a DeckPathGlyphs over its label.
+//   3. stack    — CliRuntimeStackDiagram embedded exactly once beside the copy.
+//   4. surfaces — the reachy-mini-action photo with three labels around it.
+//   5. autonomy — a triptych: the so101-action photo + two DeckSituationVignettes.
+//   6. close    — two dual-maturity robot cards, the verbatim thesis, sources.
 //
 // Navigation is progressive enhancement over natural scroll: the dot rail is
 // plain anchors, the prev/next chrome and keyboard support exist only under
-// html.js, and every snap/reveal runs only behind
-// (prefers-reduced-motion: no-preference). With JavaScript disabled the page
-// is a complete, plainly scrolling document.
+// html.js, and every reveal/snap runs only behind
+// (prefers-reduced-motion: no-preference). The global reduced-motion kill
+// switch (global.css) forces animation/transition to none and scroll-behavior
+// to auto, so reduced-motion visitors get the finished, still scene and
+// instant button/keyboard jumps. With JavaScript disabled the page is a
+// complete, plainly scrolling document.
+//
+// ANIMATION SCOPING (the lobes lesson): every animated element on this page is
+// authored inline in this template — the child components (bridge, glyphs,
+// vignettes, diagram) each own and scope their own SVG motion. So Astro's
+// scoped styles reach every selector here directly; no :global() is needed for
+// deck-authored keyframes. :global() is used only where a rule must reach a
+// child component's injected markup (the diagram viewport sizing).
 import Layout from "../../layouts/Layout.astro";
 import {
   mindNervousSystemBodySlides,
+  robotLabel,
   deckSources,
   type DeckSlide,
 } from "../../data/mind-nervous-system-body-slides";
-import { photoBySlot } from "../../data/presentation-photos";
+import { photoBySlot, type PhotoSlotId } from "../../data/presentation-photos";
 import { presentations } from "../../data/presentations";
 import CliRuntimeStackDiagram from "../../components/CliRuntimeStackDiagram.astro";
+import DeckBridgeIllustration from "../../components/deck/DeckBridgeIllustration.astro";
+import DeckPathGlyphs from "../../components/deck/DeckPathGlyphs.astro";
+import DeckSituationVignettes from "../../components/deck/DeckSituationVignettes.astro";
 
 const card = presentations[0];
 const slides: readonly DeckSlide[] = mindNervousSystemBodySlides;
@@ -35,24 +53,34 @@ const dims = (spec: string) => {
   return { width, height };
 };
 
-const slideViews = slides.map((slide, index) => {
-  const photo = slide.photoId ? photoBySlot[slide.photoId] : undefined;
-  const size = photo ? dims(photo.targetDimensions.full) : undefined;
-  return {
-    slide,
-    index,
-    photo,
-    size,
-    flipped: photo?.role === "action",
-    headingId: `${slide.id}-headline`,
-  };
-});
+/** Resolve a photo slot to the photo record plus its intrinsic pixel size. */
+const photoView = (slotId: PhotoSlotId) => {
+  const photo = photoBySlot[slotId];
+  const { width, height } = dims(photo.targetDimensions.full);
+  return { photo, width, height };
+};
 
-// The thesis headline is one verbatim string of two sentences — the stage
-// splits it into two reveal lines so each sentence lands on its own beat.
-// The split is presentational only: joined back together the text is
-// byte-identical to the source string.
-const thesisLines = (headline: string) => headline.split(/(?<=\.)\s+/);
+// Column order fixed by the issue: Coded behavior → coded, Learned policy →
+// learned, Agent tools → agent (plan task t5 / component task t3).
+const PATH_GLYPHS = ["coded", "learned", "agent"] as const;
+
+// A photo-free autonomy situation maps to one of the two vignette scenes.
+const vignetteFor = (label: string): "disconnected" | "routine" =>
+  label.toLowerCase().includes("routine") ? "routine" : "disconnected";
+
+const slideViews = slides.map((slide, index) => {
+  // The section-level data-robot marker sits on exactly the surfaces slide
+  // (its Reachy photo) and the autonomy slide (its SO-101 "Stuck" photo); the
+  // close slide leaves it to the two per-robot cards. bridge/paths/stack carry
+  // no robot.
+  const sectionRobot =
+    slide.kind === "surfaces"
+      ? slide.robot
+      : slide.kind === "autonomy"
+        ? slide.situations?.find((situation) => situation.robot)?.robot
+        : undefined;
+  return { slide, index, sectionRobot, headingId: `${slide.id}-headline` };
+});
 ---
 
 <Layout
@@ -77,97 +105,296 @@ const thesisLines = (headline: string) => headline.split(/(?<=\.)\s+/);
 
   <article class="deck" aria-label={`${card.title} — slides`}>
     {
-      slideViews.map(({ slide, index, photo, size, flipped, headingId }) => (
+      slideViews.map(({ slide, index, sectionRobot, headingId }) => (
         <section
-          class:list={["slide", `slide--${slide.kind}`, flipped && "is-flipped"]}
+          class:list={["slide", `slide--${slide.kind}`]}
           id={slide.id}
           data-deck-slide={slide.id}
           data-slide-index={index + 1}
           data-kind={slide.kind}
-          data-robot={slide.robot}
+          data-robot={sectionRobot}
           aria-labelledby={headingId}
         >
-          <div class="container slide-grid">
-            <div class="slide-copy">
-              {slide.kind === "opener" && (
+          {slide.kind === "bridge" && (
+            <div class="container slide-grid bridge-grid">
+              <div class="slide-copy">
                 <a class="back-link" href="/presentations/">
                   ← Presentations
                 </a>
-              )}
-              <span class="eyebrow" data-reveal>
-                {slide.eyebrow}
-              </span>
-              {slide.kind === "opener" ? (
-                <h1 id={headingId} data-reveal style="--reveal-delay: 0.08s">
+                <span class="eyebrow" data-reveal>
+                  {slide.eyebrow}
+                </span>
+                <h1
+                  id={headingId}
+                  class="hero-headline"
+                  data-reveal
+                  style="--reveal-delay: 0.08s"
+                >
                   {slide.headline}
                 </h1>
-              ) : slide.kind === "thesis" ? (
-                <h2 id={headingId} class="thesis-headline">
-                  {thesisLines(slide.headline).map((line, lineIndex) => (
-                    <span
-                      class:list={["thesis-line", lineIndex === 0 && "is-lead"]}
-                      data-reveal
-                      style={`--reveal-delay: ${0.1 + lineIndex * 0.18}s`}
-                    >
-                      {line}
-                    </span>
-                  ))}
-                </h2>
-              ) : (
-                <h2 id={headingId} data-reveal style="--reveal-delay: 0.08s">
+                <p
+                  class="bottom-line bottom-line--lead"
+                  data-reveal
+                  style="--reveal-delay: 0.2s"
+                >
+                  {slide.bottomLine}
+                </p>
+                <p class="spoken" data-reveal style="--reveal-delay: 0.32s">
+                  {slide.spokenLine}
+                </p>
+              </div>
+              <div class="slide-visual" data-reveal style="--reveal-delay: 0.16s">
+                <DeckBridgeIllustration />
+              </div>
+            </div>
+          )}
+
+          {slide.kind === "paths" && (
+            <div class="container stack-flow">
+              <div class="slide-head">
+                <span class="eyebrow" data-reveal>
+                  {slide.eyebrow}
+                </span>
+                <h2 id={headingId} data-reveal style="--reveal-delay: 0.06s">
                   {slide.headline}
                 </h2>
-              )}
-              <p class="spoken" data-reveal style="--reveal-delay: 0.22s">
+              </div>
+              <ol class="paths-grid">
+                {slide.columns?.map((column, columnIndex) => (
+                  <li
+                    class="path-col"
+                    data-reveal
+                    style={`--reveal-delay: ${0.14 + columnIndex * 0.1}s`}
+                  >
+                    <span class="path-glyph">
+                      <DeckPathGlyphs path={PATH_GLYPHS[columnIndex]} size={92} />
+                    </span>
+                    <span class="path-label">{column.label}</span>
+                  </li>
+                ))}
+              </ol>
+              <p
+                class="bottom-line bottom-line--center"
+                data-reveal
+                style="--reveal-delay: 0.46s"
+              >
+                {slide.bottomLine}
+              </p>
+              <p
+                class="spoken spoken--center"
+                data-reveal
+                style="--reveal-delay: 0.54s"
+              >
                 {slide.spokenLine}
               </p>
+            </div>
+          )}
 
-              {slide.kind === "opener" && slides[1] && (
-                <a
-                  class="begin"
-                  href={`#${slides[1].id}`}
-                  data-reveal
-                  style="--reveal-delay: 0.36s"
-                >
-                  Begin <span aria-hidden="true">↓</span>
-                </a>
-              )}
+          {slide.kind === "stack" && (
+            <div class="container slide-grid stack-grid">
+              <div class="slide-copy">
+                <span class="eyebrow" data-reveal>
+                  {slide.eyebrow}
+                </span>
+                <h2 id={headingId} data-reveal style="--reveal-delay: 0.06s">
+                  {slide.headline}
+                </h2>
+                <p class="bottom-line" data-reveal style="--reveal-delay: 0.18s">
+                  {slide.bottomLine}
+                </p>
+                <p class="spoken" data-reveal style="--reveal-delay: 0.3s">
+                  {slide.spokenLine}
+                </p>
+              </div>
+              <div class="slide-diagram" data-reveal style="--reveal-delay: 0.16s">
+                <CliRuntimeStackDiagram />
+              </div>
+            </div>
+          )}
 
-              {slide.kind === "contrast" && slide.contrastRows && (
-                <div class="contrast-table" data-reveal style="--reveal-delay: 0.3s">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th scope="col">Dimension</th>
-                        <th scope="col">CLI</th>
-                        <th scope="col">Runtime</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {slide.contrastRows.map((row) => (
-                        <tr>
-                          <th scope="row">{row.dimension}</th>
-                          <td>{row.cli}</td>
-                          <td>{row.runtime}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
+          {slide.kind === "surfaces" && slide.photoId && (
+            <div class="container stack-flow">
+              <div class="slide-head">
+                <span class="eyebrow" data-reveal>
+                  {slide.eyebrow}
+                </span>
+                <h2 id={headingId} data-reveal style="--reveal-delay: 0.06s">
+                  {slide.headline}
+                </h2>
+              </div>
+              <div class="surfaces-stage" data-reveal style="--reveal-delay: 0.14s">
+                {(() => {
+                  const pv = photoView(slide.photoId);
+                  return (
+                    <figure class="surfaces-photo" data-photo-slot={pv.photo.id}>
+                      <img
+                        src={pv.photo.src}
+                        alt={pv.photo.alt}
+                        width={pv.width}
+                        height={pv.height}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </figure>
+                  );
+                })()}
+                {slide.labels?.map((label, labelIndex) => (
+                  <div
+                    class:list={["surface-chip", `chip-${labelIndex + 1}`]}
+                    style={`--cd: ${labelIndex * 0.45}s`}
+                  >
+                    <span class="chip-num" aria-hidden="true">
+                      {labelIndex + 1}
+                    </span>
+                    <span class="chip-label">{label}</span>
+                    <span class="chip-node" aria-hidden="true" />
+                  </div>
+                ))}
+              </div>
+              <p
+                class="bottom-line bottom-line--center"
+                data-reveal
+                style="--reveal-delay: 0.42s"
+              >
+                {slide.bottomLine}
+              </p>
+              <p
+                class="spoken spoken--center"
+                data-reveal
+                style="--reveal-delay: 0.5s"
+              >
+                {slide.spokenLine}
+              </p>
+            </div>
+          )}
 
-              {slide.kind === "commands" && slide.commandLines && (
-                <pre class="command-block" data-reveal style="--reveal-delay: 0.3s">{slide.commandLines.map((line) => <code>{line}</code>)}</pre>
-              )}
+          {slide.kind === "autonomy" && (
+            <div class="container stack-flow">
+              <div class="slide-head">
+                <span class="eyebrow" data-reveal>
+                  {slide.eyebrow}
+                </span>
+                <h2 id={headingId} data-reveal style="--reveal-delay: 0.06s">
+                  {slide.headline}
+                </h2>
+              </div>
+              <ul class="autonomy-triptych">
+                {slide.situations?.map((situation, situationIndex) => (
+                  <li
+                    class="autonomy-cell"
+                    data-reveal
+                    style={`--reveal-delay: ${0.16 + situationIndex * 0.1}s`}
+                  >
+                    <div class="autonomy-figure">
+                      {situation.photoId ? (
+                        (() => {
+                          const pv = photoView(situation.photoId);
+                          return (
+                            <figure
+                              class="cell-photo"
+                              data-photo-slot={pv.photo.id}
+                            >
+                              <img
+                                src={pv.photo.src}
+                                alt={pv.photo.alt}
+                                width={pv.width}
+                                height={pv.height}
+                                loading="lazy"
+                                decoding="async"
+                              />
+                            </figure>
+                          );
+                        })()
+                      ) : (
+                        <DeckSituationVignettes
+                          situation={vignetteFor(situation.label)}
+                        />
+                      )}
+                    </div>
+                    <p class="autonomy-caption">
+                      <span class="cap-label">{situation.label}</span>
+                      <span class="cap-arrow" aria-hidden="true">
+                        →
+                      </span>
+                      <span class="cap-outcome">{situation.outcome}</span>
+                    </p>
+                  </li>
+                ))}
+              </ul>
+              <p
+                class="bottom-line bottom-line--center"
+                data-reveal
+                style="--reveal-delay: 0.52s"
+              >
+                {slide.bottomLine}
+              </p>
+              <p
+                class="spoken spoken--center"
+                data-reveal
+                style="--reveal-delay: 0.6s"
+              >
+                {slide.spokenLine}
+              </p>
+            </div>
+          )}
 
-              {slide.kind === "rules" && slide.rulesToml && (
-                <pre class="rules-block" data-reveal style="--reveal-delay: 0.3s"><code>{
-                  slide.rulesToml
-                }</code></pre>
-              )}
-
-              {slide.kind === "close" && (
-                <div class="close-actions" data-reveal style="--reveal-delay: 0.3s">
+          {slide.kind === "close" && (
+            <div class="container stack-flow close-flow">
+              <div class="slide-head">
+                <span class="eyebrow" data-reveal>
+                  {slide.eyebrow}
+                </span>
+                <h2 id={headingId} data-reveal style="--reveal-delay: 0.06s">
+                  {slide.headline}
+                </h2>
+              </div>
+              <div class="close-robots">
+                {slide.robots?.map((robotEntry, robotIndex) => {
+                  const pv = photoView(robotEntry.photoId);
+                  const inProgress = robotEntry.status === "in progress";
+                  return (
+                    <article
+                      class="robot-card"
+                      data-robot={robotEntry.robot}
+                      data-reveal
+                      style={`--reveal-delay: ${0.14 + robotIndex * 0.12}s`}
+                    >
+                      <figure class="card-photo" data-photo-slot={pv.photo.id}>
+                        <img
+                          src={pv.photo.src}
+                          alt={pv.photo.alt}
+                          width={pv.width}
+                          height={pv.height}
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </figure>
+                      <div class="card-body">
+                        <div class="card-head">
+                          <h3 class="card-name">{robotLabel[robotEntry.robot]}</h3>
+                          <span
+                            class:list={[
+                              "status-badge",
+                              inProgress ? "is-progress" : "is-working",
+                            ]}
+                          >
+                            <span class="badge-dot" aria-hidden="true" />
+                            {robotEntry.status}
+                          </span>
+                        </div>
+                        <p class="card-traits">{robotEntry.traits}</p>
+                        <p class="card-claim">{robotEntry.claim}</p>
+                        <code class="card-command">{robotEntry.command}</code>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+              <p class="thesis-final" data-reveal style="--reveal-delay: 0.42s">
+                {slide.bottomLine}
+              </p>
+              <div class="close-foot" data-reveal style="--reveal-delay: 0.52s">
+                <div class="close-actions">
                   <a class="cta" href="/articles/mind-nervous-system-body/">
                     The full argument, in text →
                   </a>
@@ -175,14 +402,16 @@ const thesisLines = (headline: string) => headline.split(/(?<=\.)\s+/);
                     All presentations
                   </a>
                 </div>
-              )}
-              {slide.kind === "close" && (
-                <details class="sources" data-reveal style="--reveal-delay: 0.4s">
+                <details class="sources">
                   <summary>Sources</summary>
                   <ul>
                     {deckSources.projects.map((project) => (
                       <li>
-                        <a href={project.repositoryUrl} target="_blank" rel="noreferrer">
+                        <a
+                          href={project.repositoryUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
                           <span class="source-label">{project.label}</span>
                           <span class="source-meta">{project.repositoryUrl}</span>
                         </a>
@@ -191,34 +420,9 @@ const thesisLines = (headline: string) => headline.split(/(?<=\.)\s+/);
                   </ul>
                   <p class="source-note">{deckSources.note}</p>
                 </details>
-              )}
-            </div>
-
-            {slide.kind === "diagram" && (
-              <div class="slide-diagram" data-reveal style="--reveal-delay: 0.16s">
-                <CliRuntimeStackDiagram />
               </div>
-            )}
-
-            {photo && size && (
-              <figure
-                class="slide-photo"
-                data-photo-slot={photo.id}
-                data-reveal
-                style="--reveal-delay: 0.16s"
-              >
-                <img
-                  src={photo.src}
-                  alt={photo.alt}
-                  width={size.width}
-                  height={size.height}
-                  loading="lazy"
-                  decoding="async"
-                  style={`aspect-ratio: ${size.width} / ${size.height}`}
-                />
-              </figure>
-            )}
-          </div>
+            </div>
+          )}
         </section>
       ))
     }
@@ -372,74 +576,100 @@ const thesisLines = (headline: string) => headline.split(/(?<=\.)\s+/);
     }
   }
 
+  /* two-column layouts (bridge, stack): copy beside a visual */
   .slide-grid {
     display: grid;
     gap: clamp(1.8rem, 4.5vw, 3.6rem);
     align-items: center;
   }
 
+  /* stacked layouts (paths, surfaces, autonomy, close): head, symbol, anchor */
+  .stack-flow {
+    display: grid;
+    gap: clamp(1.4rem, 3.6vw, 2.6rem);
+    width: min(100% - 3rem, 68rem);
+  }
+
   @media (min-width: 60rem) {
-    .slide--robot .slide-grid,
-    .slide--commands .slide-grid {
+    .bridge-grid,
+    .stack-grid {
       grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
     }
+  }
 
-    .slide--robot.is-flipped .slide-grid,
-    .slide--commands.is-flipped .slide-grid {
-      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    }
+  .slide-copy {
+    display: grid;
+    gap: 0;
+    align-content: center;
+  }
 
-    .slide--robot.is-flipped .slide-copy,
-    .slide--commands.is-flipped .slide-copy {
-      order: 2;
-    }
+  .slide-head {
+    display: grid;
+    gap: 0.35rem;
+    justify-items: center;
+    text-align: center;
+    max-width: 44rem;
+    margin-inline: auto;
+  }
 
-    .slide--diagram .slide-grid {
-      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-    }
+  .slide-head .eyebrow,
+  .slide-copy .eyebrow {
+    margin-bottom: 0;
   }
 
   /* ---------- type: the deck is the site at its most cinematic ---------- */
 
-  .slide--opener h1 {
-    font-size: clamp(2.5rem, 6.4vw, 4.9rem);
-    margin-bottom: 0.45em;
-  }
-
-  .thesis-headline {
-    display: grid;
-    gap: 0.15em;
-    font-size: clamp(2.3rem, 5.6vw, 4.3rem);
-    margin-bottom: 0.5em;
-  }
-
-  .thesis-line {
-    display: block;
-  }
-
-  /* the first sentence — the CLI, the mind's interface — is the accent
-     layer; the second — the runtime, embodiment — stays ink so the deck's
-     two halves read as distinct claims. */
-  .thesis-line.is-lead {
-    color: var(--accent);
+  .hero-headline {
+    font-size: clamp(2.4rem, 6vw, 4.7rem);
+    line-height: 1.04;
+    margin: 0.5rem 0 0.35em;
   }
 
   .slide h2 {
-    font-size: clamp(2.1rem, 4.4vw, 3.3rem);
-    margin-bottom: 0.45em;
+    font-size: clamp(1.95rem, 4.2vw, 3.15rem);
+    line-height: 1.08;
+    margin: 0 0 0.1em;
+  }
+
+  /* the declarative anchor line beneath each slide's symbol */
+  .bottom-line {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 3vw, 2.25rem);
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--ink);
+    margin: 0.6rem 0 0;
+    max-width: 34rem;
+  }
+
+  .bottom-line--lead {
+    font-size: clamp(1.6rem, 3.7vw, 2.7rem);
+    color: var(--accent-strong);
+  }
+
+  .bottom-line--center {
+    text-align: center;
+    max-width: 30rem;
+    margin-inline: auto;
   }
 
   .spoken {
-    font-size: clamp(1.12rem, 1.9vw, 1.42rem);
-    line-height: 1.62;
+    font-size: clamp(1.05rem, 1.7vw, 1.3rem);
+    line-height: 1.6;
     font-weight: 420;
     color: var(--ink-soft);
     max-width: 38rem;
+    margin: 1.2rem 0 0;
+  }
+
+  .spoken--center {
+    text-align: center;
+    margin-inline: auto;
   }
 
   .back-link {
     display: inline-block;
-    margin-bottom: 2.4rem;
+    margin-bottom: 2rem;
     color: var(--ink-soft);
     text-decoration: none;
     font-size: 0.92rem;
@@ -449,23 +679,57 @@ const thesisLines = (headline: string) => headline.split(/(?<=\.)\s+/);
     color: var(--accent);
   }
 
-  .begin {
-    display: inline-block;
-    margin-top: 2.4rem;
-    padding: 0.65rem 1.35rem;
-    border: 1px solid var(--line);
-    border-radius: 999px;
+  /* ---------- slide 1: the bridge ---------- */
+
+  .slide-visual {
+    min-width: 0;
+  }
+
+  /* ---------- slide 2: intelligence paths ---------- */
+
+  .paths-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: clamp(1.4rem, 4vw, 2.8rem);
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
+  @media (min-width: 46rem) {
+    .paths-grid {
+      grid-template-columns: repeat(3, 1fr);
+      align-items: start;
+    }
+  }
+
+  .path-col {
+    display: grid;
+    justify-items: center;
+    gap: 1.1rem;
+    text-align: center;
+  }
+
+  .path-glyph {
+    display: grid;
+    place-items: center;
+    width: clamp(6rem, 13vw, 8.5rem);
+    height: clamp(6rem, 13vw, 8.5rem);
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--accent) 7%, var(--surface));
+    border: 1px solid var(--line-soft);
+    box-shadow: var(--shadow);
+  }
+
+  .path-label {
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 2.1vw, 1.55rem);
+    font-weight: 560;
     color: var(--ink);
-    text-decoration: none;
-    font-weight: 550;
   }
 
-  .begin:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-
-  /* ---------- the diagram slide ---------- */
+  /* ---------- slide 3: the architecture diagram ---------- */
 
   .slide-diagram {
     max-height: min(72vh, 46rem);
@@ -481,103 +745,326 @@ const thesisLines = (headline: string) => headline.split(/(?<=\.)\s+/);
     min-width: 26rem;
   }
 
-  /* ---------- the contrast table ---------- */
+  /* ---------- slide 4: runtime surfaces around the photo ---------- */
 
-  .contrast-table {
-    margin-top: 1.6rem;
-    max-width: 42rem;
-    overflow-x: auto;
-    border: 1px solid var(--line-soft);
-    border-radius: var(--radius);
-  }
-
-  .contrast-table table {
+  .surfaces-stage {
+    display: grid;
+    gap: clamp(0.9rem, 2.4vw, 1.6rem);
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "top"
+      "photo"
+      "left"
+      "right";
+    justify-items: center;
+    align-items: center;
+    max-width: 26rem;
+    margin-inline: auto;
     width: 100%;
-    border-collapse: collapse;
-    font-size: clamp(0.92rem, 1.3vw, 1.08rem);
   }
 
-  .contrast-table th,
-  .contrast-table td {
-    padding: 0.65rem 0.9rem;
-    text-align: left;
-    vertical-align: top;
-    border-bottom: 1px solid var(--line-soft);
+  @media (min-width: 54rem) {
+    .surfaces-stage {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.7fr) minmax(0, 1fr);
+      grid-template-rows: auto auto auto;
+      grid-template-areas:
+        ".    top    ."
+        "left photo  right"
+        ".    .      .";
+      column-gap: clamp(1rem, 3vw, 2.4rem);
+      max-width: 58rem;
+    }
   }
 
-  .contrast-table thead th {
-    font-family: var(--font-mono);
-    font-size: 0.76rem;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-  }
-
-  .contrast-table tbody th {
-    font-weight: 560;
-    white-space: nowrap;
-  }
-
-  .contrast-table tbody tr:last-child th,
-  .contrast-table tbody tr:last-child td {
-    border-bottom: none;
-  }
-
-  /* ---------- command + rules code blocks ---------- */
-
-  .command-block,
-  .rules-block {
-    margin-top: 1.6rem;
-    max-width: 34rem;
-    padding: 1.1rem 1.3rem;
-    border: 1px solid var(--line-soft);
-    border-radius: var(--radius);
-    background: color-mix(in srgb, var(--surface) 88%, transparent);
-    font-family: var(--font-mono);
-    font-size: clamp(0.88rem, 1.35vw, 1.08rem);
-    line-height: 1.75;
-    color: var(--ink);
-    overflow-x: auto;
-    /* A projected audience can't scroll: long invocations wrap with a hanging
-       indent instead of clipping past the block's edge. */
-    white-space: pre-wrap;
-  }
-
-  .command-block code {
-    display: block;
-    padding-left: 2ch;
-    text-indent: -2ch;
-  }
-
-  /* ---------- the photograph ---------- */
-
-  .slide-photo {
+  .surfaces-photo {
+    grid-area: photo;
     margin: 0;
+    width: 100%;
     border-radius: var(--radius);
     overflow: hidden;
     border: 1px solid var(--line-soft);
     box-shadow: var(--shadow-lift);
   }
 
-  .slide-photo img {
+  .surfaces-photo img {
     display: block;
     width: 100%;
     height: auto;
   }
 
-  /* ---------- the close ---------- */
+  .chip-1 {
+    grid-area: top;
+  }
+  .chip-2 {
+    grid-area: left;
+  }
+  .chip-3 {
+    grid-area: right;
+  }
+
+  .surface-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 1rem 0.6rem 0.6rem;
+    border: 1px solid var(--line-soft);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--surface) 90%, transparent);
+    box-shadow: var(--shadow);
+  }
+
+  .chip-num {
+    display: grid;
+    place-items: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    flex: none;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+    color: var(--accent-strong);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 640;
+  }
+
+  .chip-label {
+    font-weight: 560;
+    font-size: clamp(0.95rem, 1.4vw, 1.08rem);
+    color: var(--ink);
+  }
+
+  .chip-node {
+    width: 8px;
+    height: 8px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--accent-strong);
+  }
+
+  /* ---------- slide 5: the autonomy triptych ---------- */
+
+  .autonomy-triptych {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: clamp(1.2rem, 3vw, 2.2rem);
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 52rem) {
+    .autonomy-triptych {
+      grid-template-columns: repeat(3, 1fr);
+      align-items: start;
+    }
+  }
+
+  .autonomy-cell {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .cell-photo {
+    margin: 0;
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--line-soft);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .cell-photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .autonomy-caption {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.45rem;
+    text-align: center;
+    margin: 0;
+  }
+
+  .cap-label {
+    font-family: var(--font-display);
+    font-weight: 560;
+    font-size: clamp(1.05rem, 1.7vw, 1.3rem);
+    color: var(--ink);
+  }
+
+  .cap-arrow {
+    color: var(--accent);
+    font-weight: 640;
+  }
+
+  .cap-outcome {
+    color: var(--ink-soft);
+    font-size: clamp(0.98rem, 1.5vw, 1.15rem);
+  }
+
+  /* ---------- slide 6: the dual-maturity close ---------- */
+
+  .close-flow {
+    gap: clamp(1.6rem, 3.8vw, 2.6rem);
+  }
 
   .slide--close {
-    /* room for the fixed chrome under the actions on short viewports */
+    /* room for the fixed chrome beneath the sources on short viewports */
     padding-bottom: 7rem;
+  }
+
+  .close-robots {
+    display: grid;
+    gap: clamp(1.2rem, 3vw, 2rem);
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 48rem) {
+    .close-robots {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .robot-card {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    box-shadow: var(--shadow);
+  }
+
+  .card-photo {
+    margin: 0;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+  }
+
+  .card-photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .card-body {
+    display: grid;
+    gap: 0.7rem;
+    align-content: start;
+    padding: clamp(1.1rem, 2.5vw, 1.6rem);
+  }
+
+  .card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .card-name {
+    font-family: var(--font-display);
+    font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+    font-weight: 560;
+    margin: 0;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid var(--line-soft);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .status-badge.is-working {
+    color: var(--accent-strong);
+    background: color-mix(in srgb, var(--accent) 13%, transparent);
+    border-color: color-mix(in srgb, var(--accent) 30%, var(--line-soft));
+  }
+
+  .status-badge.is-progress {
+    color: var(--ink-soft);
+    background: color-mix(in srgb, var(--surface) 60%, transparent);
+  }
+
+  .badge-dot {
+    width: 8px;
+    height: 8px;
+    flex: none;
+    border-radius: 50%;
+  }
+
+  .is-working .badge-dot {
+    background: var(--accent-strong);
+  }
+
+  .is-progress .badge-dot {
+    background: var(--ink-soft);
+  }
+
+  .card-traits {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  .card-claim {
+    margin: 0;
+    font-size: clamp(0.98rem, 1.5vw, 1.12rem);
+    line-height: 1.5;
+    color: var(--ink);
+  }
+
+  .card-command {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: clamp(0.82rem, 1.3vw, 0.98rem);
+    padding: 0.6rem 0.8rem;
+    border-radius: 0.6rem;
+    background: color-mix(in srgb, var(--surface) 80%, transparent);
+    border: 1px solid var(--line-soft);
+    color: var(--ink);
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  .thesis-final {
+    font-family: var(--font-display);
+    font-size: clamp(1.9rem, 4.6vw, 3.4rem);
+    font-weight: 560;
+    line-height: 1.14;
+    text-align: center;
+    color: var(--ink);
+    max-width: 20ch;
+    margin: 0.4rem auto 0;
+  }
+
+  .close-foot {
+    display: grid;
+    gap: 1.8rem;
+    justify-items: center;
   }
 
   .close-actions {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    justify-content: center;
     gap: 1rem 1.5rem;
-    margin-top: 2.2rem;
   }
 
   .cta {
@@ -603,8 +1090,8 @@ const thesisLines = (headline: string) => headline.split(/(?<=\.)\s+/);
   }
 
   .sources {
-    margin-top: 2.8rem;
     max-width: 44rem;
+    width: 100%;
     font-size: 0.86rem;
   }
 
@@ -615,11 +1102,13 @@ const thesisLines = (headline: string) => headline.split(/(?<=\.)\s+/);
     font-weight: 640;
     letter-spacing: 0.13em;
     text-transform: uppercase;
+    text-align: center;
   }
 
   .sources ul {
     list-style: none;
     margin-top: 1.1rem;
+    padding: 0;
     display: grid;
     gap: 0.75rem;
   }
@@ -655,6 +1144,7 @@ const thesisLines = (headline: string) => headline.split(/(?<=\.)\s+/);
   .source-note {
     margin-top: 1.2rem;
     color: var(--ink-soft);
+    text-align: center;
   }
 
   /* ---------- the rail: slides as nodes on a thread ---------- */
@@ -767,5 +1257,49 @@ const thesisLines = (headline: string) => headline.split(/(?<=\.)\s+/);
     color: var(--ink-soft);
     min-width: 3.4em;
     text-align: center;
+  }
+
+  /* ---------- deck-authored ambient motion ----------
+     Two restrained beats the child components don't carry: the surface-chip
+     nodes ripple label -> photo (staggered by --cd), and the in-progress
+     status dot breathes to signal live, ongoing work. Both are inline-authored
+     here, so Astro's scoped selectors reach them directly (no :global needed).
+     Transform/opacity only, gated behind no-preference; the global
+     reduced-motion kill switch (global.css) also forces them inert, and the
+     resting state (a lit node, a solid dot) is the finished look. */
+  @media (prefers-reduced-motion: no-preference) {
+    .chip-node {
+      animation: deck-surface-pulse 3.4s var(--ease-gentle) infinite;
+      animation-delay: var(--cd, 0s);
+    }
+
+    .status-badge.is-progress .badge-dot {
+      animation: deck-badge-blip 2.6s var(--ease-gentle) infinite;
+    }
+  }
+
+  @keyframes deck-surface-pulse {
+    0%,
+    70%,
+    100% {
+      transform: scale(1);
+      opacity: 0.55;
+    }
+    25% {
+      transform: scale(1.55);
+      opacity: 1;
+    }
+  }
+
+  @keyframes deck-badge-blip {
+    0%,
+    100% {
+      opacity: 0.5;
+      transform: scale(0.9);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.15);
+    }
   }
 </style>
