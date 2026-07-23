@@ -1,41 +1,36 @@
 ---
 import site from "../data/site";
-import {
-  isPrimaryNavCurrent,
-  primaryNavigation,
-} from "../data/navigation";
 import Mark from "./Mark.astro";
+import PrimaryNavigation from "./PrimaryNavigation.astro";
 ---
 
 <header class="site-header">
-  <div class="container bar">
+  <div class="container shell-rail bar">
     <a class="wordmark" href="/">
       <Mark />
       <span>{site.hero.title}</span>
     </a>
-    <nav aria-label="Primary">
-      <ul>
-        {
-          primaryNavigation.map((item) => (
-            <li>
-              <a
-                href={item.href}
-                aria-current={isPrimaryNavCurrent(Astro.url.pathname, item)
-                  ? "page"
-                  : undefined}
-              >
-                {item.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
+
+    <div class="desktop-menu">
+      <PrimaryNavigation variant="desktop" />
+    </div>
+
+    <details class="site-menu">
+      <summary aria-controls="mobile-primary-navigation">
+        <span>Menu</span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </summary>
+      <PrimaryNavigation variant="mobile" />
+    </details>
   </div>
 </header>
 
 <style>
   .site-header {
+    position: relative;
+    z-index: 20;
     padding-block: 1.4rem;
   }
 
@@ -43,80 +38,73 @@ import Mark from "./Mark.astro";
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
     gap: 0.75rem 1.5rem;
   }
 
   .wordmark {
     display: inline-flex;
     align-items: center;
+    flex: 1 1 auto;
+    min-width: 0;
     gap: 0.6rem;
-    text-decoration: none;
     color: var(--ink);
     font-family: var(--font-display);
     font-variation-settings: "SOFT" 75, "WONK" 0;
-    font-weight: 520;
     font-size: 1.22rem;
+    font-weight: 520;
     letter-spacing: -0.01em;
-  }
-
-  nav ul {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: clamp(1.1rem, 3vw, 2.2rem);
-    list-style: none;
-  }
-
-  nav a {
-    position: relative;
-    display: inline-block;
-    padding-block: 0.35rem;
-    color: var(--ink-soft);
     text-decoration: none;
-    font-weight: 500;
-    font-size: 0.95rem;
   }
 
-  nav a:hover {
-    color: var(--ink);
+  .wordmark span {
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 
-  /* the current page carries its own small node on the thread */
-  nav a::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    bottom: -0.2rem;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--accent);
-    transform: translateX(-50%) scale(0);
+  .wordmark :global(.mark) {
+    flex: 0 0 auto;
   }
 
-  nav a[aria-current="page"] {
-    color: var(--ink);
+  .site-menu {
+    display: none;
   }
 
-  nav a[aria-current="page"]::after {
-    transform: translateX(-50%) scale(1);
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    nav a::after {
-      transition: transform 0.35s var(--ease-out);
-    }
-  }
-
-  @media (max-width: 34rem) {
-    nav {
-      width: 100%;
+  @media (max-width: 51.99rem) {
+    .desktop-menu {
+      display: none;
     }
 
-    nav ul {
+    .site-menu {
+      position: relative;
+      display: block;
+      flex: 0 0 auto;
+      margin-left: auto;
+    }
+
+    .site-menu > summary {
+      display: inline-flex;
+      align-items: center;
       justify-content: center;
-      gap: 0.35rem 1rem;
+      gap: 0.45rem;
+      min-height: 2.75rem;
+      padding-inline: 0.85rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--ink);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      font-size: var(--ac-type-ui);
+      font-weight: 600;
+      list-style: none;
+    }
+
+    .site-menu > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .site-menu[open] > summary svg {
+      transform: rotate(180deg);
     }
   }
 </style>

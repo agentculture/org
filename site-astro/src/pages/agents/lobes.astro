@@ -6,6 +6,7 @@
 // ../../data/lobes-captures.ts — nothing on this page dials a machine.
 import Layout from "../../layouts/Layout.astro";
 import PageHero from "../../components/PageHero.astro";
+import ClosingBand from "../../components/ClosingBand.astro";
 import LobesDiagram from "../../components/LobesDiagram.astro";
 import LobesTerminal from "../../components/LobesTerminal.astro";
 import site from "../../data/site";
@@ -19,17 +20,36 @@ import {
   meshThor,
   meshAsk,
 } from "../../data/lobes-captures";
+
+const breadcrumbs = [
+  { label: "Home", href: "/" },
+  { label: "Agents", href: "/agents/" },
+  { label: lobes.hero.title },
+] as const;
+
+const sections = [
+  { id: "lobes", label: "The lobes" },
+  { id: "command", label: "The command" },
+  { id: "profiles", label: "Profiles" },
+  { id: "mesh-brain", label: "Mesh-brain" },
+  { id: "benchmarks", label: "Benchmarks" },
+] as const;
 ---
 
 <Layout
   title={`lobes · Agents · ${site.hero.title}`}
   description={lobes.hero.metaDescription}
 >
-  <PageHero title={lobes.hero.title} intro={lobes.hero.intro} />
+  <PageHero
+    title={lobes.hero.title}
+    intro={lobes.hero.intro}
+    breadcrumbs={breadcrumbs}
+    sections={sections}
+  />
 
   <!-- fast facts -->
   <section class="section facts-section" aria-label="Fast facts">
-    <div class="container">
+    <div class="container wide-rail">
       <ul class="facts">
         {
           lobes.facts.map((fact, i) => (
@@ -50,8 +70,8 @@ import {
   </section>
 
   <!-- what lobes serves -->
-  <section class="section" aria-label="The lobes">
-    <div class="container">
+  <section id="lobes" class="section" aria-label="The lobes">
+    <div class="container wide-rail">
       <span class="eyebrow" data-reveal>the lobes</span>
       <h2 data-reveal>One machine serves a small fleet of minds</h2>
       <div class="prose" data-reveal style="--reveal-delay: 0.1s">
@@ -76,8 +96,8 @@ import {
   </section>
 
   <!-- the command, replayed for real -->
-  <section class="section" aria-label="The command">
-    <div class="container">
+  <section id="command" class="section" aria-label="The command">
+    <div class="container wide-rail">
       <span class="eyebrow" data-reveal>the command</span>
       <h2 data-reveal>Watch it run — these are real captures</h2>
       <div class="prose" data-reveal style="--reveal-delay: 0.1s">
@@ -95,8 +115,8 @@ import {
   </section>
 
   <!-- profiles -->
-  <section class="section" aria-label="Profiles">
-    <div class="container">
+  <section id="profiles" class="section" aria-label="Profiles">
+    <div class="container wide-rail">
       <span class="eyebrow" data-reveal>profiles</span>
       <h2 data-reveal>Tuned by purpose × machine, open to override</h2>
       <div class="prose" data-reveal style="--reveal-delay: 0.1s">
@@ -167,8 +187,8 @@ import {
   </section>
 
   <!-- the mesh-brain -->
-  <section class="section" aria-label="The Mesh-brain">
-    <div class="container">
+  <section id="mesh-brain" class="section" aria-label="The Mesh-brain">
+    <div class="container wide-rail">
       <span class="eyebrow" data-reveal>the mesh-brain</span>
       <h2 data-reveal>The brain shape you choose</h2>
       <div class="prose" data-reveal style="--reveal-delay: 0.1s">
@@ -209,8 +229,8 @@ import {
   </section>
 
   <!-- benchmarks -->
-  <section class="section" aria-label="Benchmarks">
-    <div class="container">
+  <section id="benchmarks" class="section" aria-label="Benchmarks">
+    <div class="container wide-rail">
       <span class="eyebrow" data-reveal>benchmarks</span>
       <h2 data-reveal>Measured, and reproducible from the repo</h2>
       <div class="prose" data-reveal style="--reveal-delay: 0.1s">
@@ -234,17 +254,16 @@ import {
     </div>
   </section>
 
-  <!-- closing -->
-  <section class="section closing" aria-label="Closing">
-    <div class="container">
-      <div class="prose" data-reveal>
-        {lobes.closing.paragraphs.map((p) => <p class="lede">{p}</p>)}
-        <p data-reveal style="--reveal-delay: 0.15s">
-          <a class="cta" href={lobes.closing.repoUrl}>{lobes.closing.repoCta} →</a>
-        </p>
-      </div>
-    </div>
-  </section>
+  <ClosingBand
+    name={lobes.hero.title}
+    paragraphs={lobes.closing.paragraphs}
+    actions={[
+      {
+        href: lobes.closing.repoUrl,
+        label: lobes.closing.repoCta,
+      },
+    ]}
+  />
 </Layout>
 
 <style>
@@ -273,20 +292,21 @@ import {
     border: 1px solid var(--line-soft);
     border-radius: 999px;
     box-shadow: var(--shadow);
-    font-size: 0.85rem;
+    font-size: var(--ac-type-ui);
   }
 
   .fact-label {
-    font-size: 0.72rem;
+    font-size: var(--ac-type-meta);
     font-weight: 640;
-    letter-spacing: 0.12em;
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-caps);
     text-transform: uppercase;
     white-space: nowrap;
   }
 
   .fact-value {
     font-family: var(--font-mono);
-    font-size: 0.82rem;
+    font-size: var(--ac-type-ui);
     white-space: nowrap;
   }
 
@@ -318,20 +338,21 @@ import {
   .role-name {
     margin: 0;
     font-family: var(--font-mono);
-    font-size: 1.02rem;
+    font-size: var(--ac-type-card-title);
+    line-height: var(--ac-leading-ui);
     font-weight: 600;
-    letter-spacing: 0.01em;
+    letter-spacing: var(--ac-tracking-flat);
     color: var(--accent);
   }
 
   .role-duty {
-    font-size: 0.92rem;
-    line-height: 1.55;
+    font-size: 1rem;
+    line-height: var(--ac-leading-card);
     flex-grow: 1;
   }
 
   .role-card .repo {
-    font-size: 0.74rem;
+    font-size: var(--ac-type-meta);
   }
 
   /* terminals */
@@ -362,11 +383,12 @@ import {
   }
 
   .table-wrap h3 {
-    font-size: 0.92rem;
+    font-size: var(--ac-type-meta);
     font-family: var(--font-body);
     font-variation-settings: normal;
     font-weight: 620;
-    letter-spacing: 0.08em;
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-caps);
     text-transform: uppercase;
     color: var(--ink-soft);
     margin-bottom: 1rem;
@@ -380,15 +402,16 @@ import {
   table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.88rem;
-    line-height: 1.5;
+    font-size: var(--ac-type-ui);
+    line-height: var(--ac-leading-card);
   }
 
   th {
     text-align: left;
     font-weight: 620;
-    font-size: 0.74rem;
-    letter-spacing: 0.1em;
+    font-size: var(--ac-type-meta);
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-caps);
     text-transform: uppercase;
     color: var(--ink-soft);
     padding: 0.35rem 0.9rem 0.55rem 0;
@@ -409,9 +432,10 @@ import {
     display: inline-block;
     padding: 0.1rem 0.6rem;
     border-radius: 999px;
-    font-size: 0.72rem;
+    font-size: var(--ac-type-meta);
     font-weight: 620;
-    letter-spacing: 0.06em;
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-caps);
   }
 
   .status-validated {
@@ -432,8 +456,8 @@ import {
 
   .table-note {
     margin-top: 1.4rem;
-    font-size: 0.92rem;
-    max-width: 42rem;
+    font-size: 1rem;
+    max-width: var(--ac-measure-prose);
   }
 
   /* diagram */
@@ -450,9 +474,9 @@ import {
 
   .next-step {
     margin-top: 1.4rem;
-    max-width: 42rem;
-    font-size: 0.95rem;
-    line-height: 1.6;
+    max-width: var(--ac-measure-prose);
+    font-size: 1rem;
+    line-height: var(--ac-leading-lede);
     padding-left: 1rem;
     border-left: 2px solid var(--accent);
   }
@@ -477,21 +501,15 @@ import {
   .bench-card h3 {
     margin: 0;
     font-family: var(--font-mono);
-    font-size: 0.98rem;
+    font-size: var(--ac-type-card-title);
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-heading);
     font-weight: 600;
   }
 
   .bench-card p {
-    font-size: 0.9rem;
-    line-height: 1.55;
+    font-size: 1rem;
+    line-height: var(--ac-leading-card);
   }
 
-  /* closing */
-  .closing {
-    padding-bottom: clamp(4rem, 9vh, 6.5rem);
-  }
-
-  .cta {
-    font-weight: 560;
-  }
 </style>

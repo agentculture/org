@@ -42,6 +42,7 @@
 //                  sayTtsRefusal, sayHarmonic
 import Layout from "../../layouts/Layout.astro";
 import PageHero from "../../components/PageHero.astro";
+import ClosingBand from "../../components/ClosingBand.astro";
 import ReachyDiagram from "../../components/ReachyDiagram.astro";
 import ReachyTerminal from "../../components/ReachyTerminal.astro";
 import site from "../../data/site";
@@ -69,17 +70,38 @@ import {
 // the two composition escapes the diagram traces.
 const sdkOwnerCaption =
   "Two single resources, one owner each: the in-process SDK client (fed by the mic array) and the serial motion queue (driving the head). The five sdk-sense nouns fan out of one for sense and converge into the other for motion — which is why only one can own the robot at a time, and why the two composition escapes exist.";
+
+const breadcrumbs = [
+  { label: "Home", href: "/" },
+  { label: "Agents", href: "/agents/" },
+  { label: reachy.hero.title },
+] as const;
+
+const sections = [
+  { id: "body", label: "The body" },
+  { id: "noun-map", label: "Noun map" },
+  { id: "sdk-owner", label: "SDK ownership" },
+  { id: "live-senses", label: "Live senses" },
+  { id: "thinking", label: "Thinking" },
+  { id: "agent-first", label: "Agent-first" },
+  { id: "whats-next", label: "What's next" },
+] as const;
 ---
 
 <Layout
   title={`reachy-mini-cli · Agents · ${site.hero.title}`}
   description={reachy.hero.metaDescription}
 >
-  <PageHero title={reachy.hero.title} intro={reachy.hero.intro} />
+  <PageHero
+    title={reachy.hero.title}
+    intro={reachy.hero.intro}
+    breadcrumbs={breadcrumbs}
+    sections={sections}
+  />
 
   <!-- fast facts -->
   <section class="section facts-section" aria-label="Fast facts">
-    <div class="container">
+    <div class="container wide-rail">
       <ul class="facts">
         {
           reachy.facts.map((fact, i) => (
@@ -100,8 +122,8 @@ const sdkOwnerCaption =
   </section>
 
   <!-- the body: every capability is a verb you can type -->
-  <section class="section" aria-label="The body">
-    <div class="container">
+  <section id="body" class="section" aria-label="The body">
+    <div class="container wide-rail">
       <span class="eyebrow" data-reveal>{reachy.capabilities.eyebrow}</span>
       <h2 data-reveal>{reachy.capabilities.headline}</h2>
       <div class="prose" data-reveal style="--reveal-delay: 0.1s">
@@ -142,8 +164,8 @@ const sdkOwnerCaption =
   </section>
 
   <!-- the noun map: the whole robot surface, faithfully -->
-  <section class="section" aria-label="The noun map">
-    <div class="container">
+  <section id="noun-map" class="section" aria-label="The noun map">
+    <div class="container wide-rail">
       <span class="eyebrow" data-reveal>{reachy.nounMap.eyebrow}</span>
       <h2 data-reveal>{reachy.nounMap.headline}</h2>
       <div class="prose" data-reveal style="--reveal-delay: 0.1s">
@@ -194,8 +216,8 @@ const sdkOwnerCaption =
   </section>
 
   <!-- the single-SDK-owner model: the one thing to learn -->
-  <section class="section" aria-label="The single-SDK-owner model">
-    <div class="container">
+  <section id="sdk-owner" class="section" aria-label="The single-SDK-owner model">
+    <div class="container wide-rail">
       <span class="eyebrow" data-reveal>{reachy.sdkOwner.eyebrow}</span>
       <h2 data-reveal>{reachy.sdkOwner.headline}</h2>
       <div class="prose" data-reveal style="--reveal-delay: 0.1s">
@@ -233,8 +255,8 @@ const sdkOwnerCaption =
   </section>
 
   <!-- the senses, live: one process, every sense -->
-  <section class="section" aria-label="The senses, live">
-    <div class="container">
+  <section id="live-senses" class="section" aria-label="The senses, live">
+    <div class="container wide-rail">
       <span class="eyebrow" data-reveal>{reachy.senses.eyebrow}</span>
       <h2 data-reveal>{reachy.senses.headline}</h2>
       <div class="prose" data-reveal style="--reveal-delay: 0.1s">
@@ -265,8 +287,8 @@ const sdkOwnerCaption =
   </section>
 
   <!-- thinking out loud: the cognition loop, the fallback voice, the feed -->
-  <section class="section" aria-label="Thinking out loud">
-    <div class="container">
+  <section id="thinking" class="section" aria-label="Thinking out loud">
+    <div class="container wide-rail">
       <span class="eyebrow" data-reveal>{reachy.think.eyebrow}</span>
       <h2 data-reveal>{reachy.think.headline}</h2>
       <div class="prose" data-reveal style="--reveal-delay: 0.1s">
@@ -309,8 +331,8 @@ const sdkOwnerCaption =
   </section>
 
   <!-- agent-first, all the way down -->
-  <section class="section" aria-label="Agent-first">
-    <div class="container">
+  <section id="agent-first" class="section" aria-label="Agent-first">
+    <div class="container wide-rail">
       <span class="eyebrow" data-reveal>{reachy.agentFirst.eyebrow}</span>
       <h2 data-reveal>{reachy.agentFirst.headline}</h2>
       <div class="prose" data-reveal style="--reveal-delay: 0.1s">
@@ -334,8 +356,8 @@ const sdkOwnerCaption =
   </section>
 
   <!-- what's next, from the open tracker -->
-  <section class="section" aria-label="What's next">
-    <div class="container">
+  <section id="whats-next" class="section" aria-label="What's next">
+    <div class="container wide-rail">
       <span class="eyebrow" data-reveal>{reachy.whatsNext.eyebrow}</span>
       <h2 data-reveal>{reachy.whatsNext.headline}</h2>
       <div class="prose" data-reveal style="--reveal-delay: 0.1s">
@@ -368,22 +390,21 @@ const sdkOwnerCaption =
     </div>
   </section>
 
-  <!-- closing -->
-  <section class="section closing" aria-label="Closing">
-    <div class="container">
-      <div class="prose" data-reveal>
-        {reachy.closing.paragraphs.map((p) => <p class="lede">{p}</p>)}
-        <p class="cta-row" data-reveal style="--reveal-delay: 0.15s">
-          <a class="cta" href={reachy.closing.repoUrl}
-            >{reachy.closing.repoCta} →</a
-          >
-          <a class="cta" href={reachy.closing.pypiUrl}
-            ><code>{reachy.closing.pypiCta}</code></a
-          >
-        </p>
-      </div>
-    </div>
-  </section>
+  <ClosingBand
+    name={reachy.hero.title}
+    paragraphs={reachy.closing.paragraphs}
+    actions={[
+      {
+        href: reachy.closing.repoUrl,
+        label: reachy.closing.repoCta,
+      },
+      {
+        href: reachy.closing.pypiUrl,
+        label: reachy.closing.pypiCta,
+        treatment: "code",
+      },
+    ]}
+  />
 </Layout>
 
 <style>
@@ -412,20 +433,21 @@ const sdkOwnerCaption =
     border: 1px solid var(--line-soft);
     border-radius: 999px;
     box-shadow: var(--shadow);
-    font-size: 0.85rem;
+    font-size: var(--ac-type-ui);
   }
 
   .fact-label {
-    font-size: 0.72rem;
+    font-size: var(--ac-type-meta);
     font-weight: 640;
-    letter-spacing: 0.12em;
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-caps);
     text-transform: uppercase;
     white-space: nowrap;
   }
 
   .fact-value {
     font-family: var(--font-mono);
-    font-size: 0.82rem;
+    font-size: var(--ac-type-ui);
     white-space: nowrap;
   }
 
@@ -465,9 +487,10 @@ const sdkOwnerCaption =
   .surface-name {
     margin: 0;
     font-family: var(--font-mono);
-    font-size: 1.02rem;
+    font-size: var(--ac-type-card-title);
+    line-height: var(--ac-leading-ui);
     font-weight: 600;
-    letter-spacing: 0.01em;
+    letter-spacing: var(--ac-tracking-flat);
     color: var(--accent);
   }
 
@@ -475,8 +498,8 @@ const sdkOwnerCaption =
   .model-detail,
   .sense-detail,
   .surface-detail {
-    font-size: 0.92rem;
-    line-height: 1.55;
+    font-size: 1rem;
+    line-height: var(--ac-leading-card);
     margin-top: 0.1rem;
   }
 
@@ -506,15 +529,16 @@ const sdkOwnerCaption =
   table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.86rem;
-    line-height: 1.5;
+    font-size: var(--ac-type-ui);
+    line-height: var(--ac-leading-card);
   }
 
   th {
     text-align: left;
     font-weight: 620;
-    font-size: 0.72rem;
-    letter-spacing: 0.1em;
+    font-size: var(--ac-type-meta);
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-caps);
     text-transform: uppercase;
     color: var(--ink-soft);
     padding: 0.35rem 1rem 0.55rem 0;
@@ -534,18 +558,18 @@ const sdkOwnerCaption =
 
   td code {
     font-family: var(--font-mono);
-    font-size: 0.78rem;
+    font-size: var(--ac-type-meta);
     overflow-wrap: anywhere;
   }
 
   .does-cell {
-    font-size: 0.84rem;
+    font-size: var(--ac-type-ui);
     min-width: 18rem;
   }
 
   .transport-cell {
     font-family: var(--font-mono);
-    font-size: 0.78rem;
+    font-size: var(--ac-type-meta);
     white-space: nowrap;
   }
 
@@ -566,9 +590,9 @@ const sdkOwnerCaption =
   }
 
   .theme-direction {
-    font-size: 0.95rem;
-    line-height: 1.6;
-    max-width: 46rem;
+    font-size: 1rem;
+    line-height: var(--ac-leading-card);
+    max-width: var(--ac-measure-prose);
   }
 
   .theme-issues {
@@ -579,13 +603,13 @@ const sdkOwnerCaption =
   }
 
   .theme-issues li {
-    font-size: 0.88rem;
-    line-height: 1.5;
+    font-size: 1rem;
+    line-height: var(--ac-leading-card);
   }
 
   .issue-num {
     font-family: var(--font-mono);
-    font-size: 0.82rem;
+    font-size: var(--ac-type-meta);
     font-weight: 600;
   }
 
@@ -596,6 +620,10 @@ const sdkOwnerCaption =
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
     gap: 1.3rem;
     align-items: start;
+  }
+
+  .term-grid > * {
+    min-width: 0;
   }
 
   .term-grid + .term-grid {
@@ -615,20 +643,4 @@ const sdkOwnerCaption =
     }
   }
 
-  /* closing */
-  .closing {
-    padding-bottom: clamp(4rem, 9vh, 6.5rem);
-  }
-
-  .cta-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem 1.8rem;
-    align-items: baseline;
-  }
-
-  .cta {
-    font-weight: 560;
-    white-space: nowrap;
-  }
 </style>

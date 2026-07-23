@@ -192,8 +192,9 @@ const rendered = pane.lines
     padding: 0.7rem 1.15rem;
     border-bottom: 1px solid var(--line);
     font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.03em;
+    font-size: var(--ac-type-meta);
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-flat);
     color: var(--ink-soft);
     flex-wrap: wrap;
     row-gap: 0.35rem;
@@ -223,9 +224,10 @@ const rendered = pane.lines
     border-radius: 999px;
     border: 1px solid currentColor;
     font-weight: 650;
-    letter-spacing: 0.06em;
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-caps);
     text-transform: uppercase;
-    font-size: 0.62rem;
+    font-size: var(--ac-type-micro);
   }
 
   .prov-fresh .rprov-tag {
@@ -260,8 +262,8 @@ const rendered = pane.lines
      fade that could push it under AA at this size. */
   .rsource {
     flex-basis: 100%;
-    font-size: 0.9em;
-    letter-spacing: 0.01em;
+    font-size: var(--ac-type-micro);
+    letter-spacing: var(--ac-tracking-flat);
     color: var(--ink-soft);
   }
 
@@ -270,10 +272,17 @@ const rendered = pane.lines
     padding: 1.05rem 1.15rem 1.2rem;
     overflow-x: auto;
     font-family: var(--font-mono);
-    font-size: 0.78rem;
-    line-height: 1.7;
+    font-size: var(--ac-type-terminal);
+    line-height: var(--ac-leading-card);
+    letter-spacing: var(--ac-tracking-flat);
     /* Output lines: a calm foreground, a touch softer than a heading. */
     color: color-mix(in srgb, var(--ink) 88%, var(--ink-soft));
+  }
+
+  pre > code {
+    font-size: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
   }
 
   /* NOTE on :global() below — the reason this component works where a naive
@@ -324,7 +333,8 @@ const rendered = pane.lines
     gap: 0.55rem;
     color: var(--ink-soft);
     font-style: italic;
-    font-size: 0.86em;
+    font-size: var(--ac-type-meta);
+    line-height: var(--ac-leading-card);
   }
 
   .rterm :global(.rcut-rule) {

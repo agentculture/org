@@ -13,7 +13,7 @@ const { framework, hero } = site;
   <PageHero title="Framework" intro={framework.intro} />
 
   <section class="section" aria-label="Pillars">
-    <div class="container">
+    <div class="container page-rail">
       <ul class="pillars">
         {
           framework.pillars.map((pillar, i) => (
@@ -111,7 +111,8 @@ const { framework, hero } = site;
   }
 
   .pillar-tagline {
-    font-size: 1.08rem;
+    font-size: var(--ac-type-component-title);
+    line-height: var(--ac-leading-card);
     color: var(--ink-soft);
     margin-bottom: 0.9em;
   }
@@ -125,7 +126,8 @@ const { framework, hero } = site;
   .points li {
     position: relative;
     padding-left: 1.35rem;
-    font-size: 0.98rem;
+    font-size: 1rem;
+    line-height: var(--ac-leading-card);
   }
 
   /* each point hangs off the pillar like a leaf-node */

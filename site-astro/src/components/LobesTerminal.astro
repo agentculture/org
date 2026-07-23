@@ -95,8 +95,9 @@ const rendered = session.lines
     padding: 0.7rem 1.15rem;
     border-bottom: 1px solid rgba(233, 236, 248, 0.1);
     font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.04em;
+    font-size: var(--ac-type-meta);
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-flat);
     color: #a9b0cf;
     flex-wrap: wrap;
   }
@@ -125,9 +126,16 @@ const rendered = session.lines
     padding: 1.05rem 1.15rem 1.2rem;
     overflow-x: auto;
     font-family: var(--font-mono);
-    font-size: 0.78rem;
-    line-height: 1.7;
+    font-size: var(--ac-type-terminal);
+    line-height: var(--ac-leading-card);
+    letter-spacing: var(--ac-tracking-flat);
     color: #c7cde8;
+  }
+
+  pre > code {
+    font-size: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
   }
 
   .tl {

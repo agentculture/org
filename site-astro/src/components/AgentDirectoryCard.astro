@@ -1,0 +1,105 @@
+---
+import type { AgentEntry } from "../data/types";
+import { learnNavigation } from "../data/navigation";
+import ExternalLinkIcon from "./ExternalLinkIcon.astro";
+
+interface Props {
+  agent: AgentEntry;
+}
+
+const { agent } = Astro.props;
+const isAgentPage = agent.url?.startsWith("/agents/") ?? false;
+const isLearn = agent.url === learnNavigation.href;
+const destination = isAgentPage
+  ? "Agent page"
+  : isLearn
+    ? "Open Learn"
+    : "Repository";
+---
+
+{
+  agent.url ? (
+    <a
+      class:list={["card", "entry", isAgentPage && "is-agent-page", isLearn && "is-product"]}
+      href={agent.url}
+      target={isLearn ? "_blank" : undefined}
+      rel={isLearn ? "noopener noreferrer" : undefined}
+    >
+      <span class="entry-heading">
+        <h3>{agent.name}</h3>
+        {!isAgentPage && <ExternalLinkIcon size={14} />}
+      </span>
+      <span class="role muted">{agent.role}</span>
+      <span class="entry-footer">
+        <span class="repo muted">{agent.repo}</span>
+        <span class="destination">
+          {destination}
+          {isLearn && <span class="sr-only"> (opens in a new tab)</span>}
+          {isAgentPage && <span aria-hidden="true"> →</span>}
+        </span>
+      </span>
+    </a>
+  ) : (
+    <div class="card entry">
+      <span class="entry-heading"><h3>{agent.name}</h3></span>
+      <span class="role muted">{agent.role}</span>
+      <span class="entry-footer"><span class="repo muted">{agent.repo}</span></span>
+    </div>
+  )
+}
+
+<style>
+  .entry {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    height: 100%;
+    padding: 1.5rem 1.6rem;
+  }
+
+  .entry-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    color: var(--ink);
+  }
+
+  h3 {
+    margin: 0;
+    font-size: var(--ac-type-card-title);
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-heading);
+  }
+
+  .role {
+    flex-grow: 1;
+    font-size: 1rem;
+    line-height: var(--ac-leading-card);
+  }
+
+  .entry-footer {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 0.8rem;
+    margin-top: 0.25rem;
+  }
+
+  .repo {
+    overflow-wrap: anywhere;
+    font-size: var(--ac-type-meta);
+  }
+
+  .destination {
+    flex-shrink: 0;
+    color: var(--accent);
+    font-size: var(--ac-type-meta);
+    line-height: var(--ac-leading-ui);
+    font-weight: 650;
+  }
+
+  .is-product {
+    border-color: color-mix(in srgb, var(--accent) 42%, var(--line-soft));
+  }
+</style>

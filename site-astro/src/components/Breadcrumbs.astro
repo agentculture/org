@@ -1,0 +1,85 @@
+---
+export interface BreadcrumbItem {
+  label: string;
+  href?: `/${string}`;
+}
+
+interface Props {
+  items: readonly BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+const itemListElement = items.map((item, index) => ({
+  "@type": "ListItem",
+  position: index + 1,
+  name: item.label,
+  item: item.href
+    ? new URL(item.href, Astro.site).href
+    : new URL(Astro.url.pathname, Astro.site).href,
+}));
+const structuredData = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement,
+});
+---
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <ol>
+    {
+      items.map((item, index) => (
+        <li>
+          {index > 0 && <span class="separator" aria-hidden="true">›</span>}
+          {item.href ? (
+            <a href={item.href}>{item.label}</a>
+          ) : (
+            <span aria-current="page">{item.label}</span>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+<script type="application/ld+json" set:html={structuredData} />
+
+<style>
+  .breadcrumbs {
+    margin-bottom: clamp(1.2rem, 3vw, 1.8rem);
+    color: var(--ink-soft);
+    font-size: var(--ac-type-ui);
+    line-height: var(--ac-leading-ui);
+  }
+
+  ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.45rem;
+    list-style: none;
+  }
+
+  li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-width: 0;
+  }
+
+  a {
+    color: var(--ink-soft);
+  }
+
+  a:hover {
+    color: var(--ink);
+  }
+
+  [aria-current="page"] {
+    color: var(--ink);
+    font-weight: 580;
+  }
+
+  .separator {
+    color: var(--line);
+    font-size: 1rem;
+  }
+</style>

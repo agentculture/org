@@ -1,48 +1,44 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import HeroMesh from "../components/HeroMesh.astro";
+import { sectionNavigation } from "../data/navigation";
 import site from "../data/site";
 
 const { hero } = site;
 
 // Wayfinding only — the pages themselves carry the real content.
-const teasers = [
-  {
-    href: "/framework/",
-    label: "Framework",
+const teaserDetails = {
+  "/framework/": {
     copy: "The ideas the organization grows by, and the pillars that carry them.",
     glyph: "framework",
   },
-  {
-    href: "/agents/",
-    label: "Agents",
+  "/agents/": {
     copy: "Who tends the mesh — a directory of the organization's agents.",
     glyph: "agents",
   },
-  {
-    href: "/articles/",
-    label: "Articles",
+  "/articles/": {
     copy: "Talks in full text — sourced, evidence-grounded reads.",
     glyph: "articles",
   },
-  {
-    href: "/presentations/",
-    label: "Presentations",
+  "/presentations/": {
     copy: "Symbolic decks — the slides behind the talks.",
     glyph: "presentations",
   },
-  {
-    href: "/engage/",
-    label: "Engage",
+  "/engage/": {
     copy: "Where to follow along, ask questions, or take part.",
     glyph: "engage",
   },
-] as const;
+} as const;
+
+const teasers = sectionNavigation.map((item) => ({
+  ...item,
+  ...teaserDetails[item.href],
+}));
 ---
 
 <Layout title={hero.title} description={hero.tagline}>
   <section class="hero" aria-labelledby="hero-title">
-    <div class="container hero-copy">
+    <div class="container page-rail hero-copy">
       <h1 id="hero-title" data-reveal>{hero.title}</h1>
       <p class="tagline" data-reveal style="--reveal-delay: 0.14s">
         {hero.tagline}
@@ -59,7 +55,7 @@ const teasers = [
   </section>
 
   <section class="section" aria-label="About">
-    <div class="container prose">
+    <div class="container page-rail prose">
       {
         hero.intro.map((paragraph, i) => (
           <p class={i === 0 ? "lede" : undefined} data-reveal>
@@ -71,7 +67,7 @@ const teasers = [
   </section>
 
   <section class="section explore" aria-label="Explore">
-    <div class="container">
+    <div class="container wide-rail">
       <ul class="teasers">
         {
           teasers.map(({ href, label, copy, glyph }, i) => (
@@ -331,13 +327,15 @@ const teasers = [
   }
 
   .teaser h2 {
-    font-size: 1.45rem;
+    font-size: var(--ac-type-card-title);
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-heading);
     margin-bottom: 0.4em;
   }
 
   .teaser p {
-    font-size: 0.97rem;
-    line-height: 1.6;
+    font-size: 1rem;
+    line-height: var(--ac-leading-card);
   }
 
   .teaser .go {

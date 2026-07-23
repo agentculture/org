@@ -1,18 +1,32 @@
 # UX review — agentculture.org
 
-An outside UX review of the built site, contributed for the maintainers and their
-agents to work with. Nothing here changes any site file; every artefact is a
-proposal, and each states its method so it can be checked rather than taken on
-trust.
+This folder began as an outside UX review of the built site. It now contains a
+mixture of historical proposals, retained visual evidence, and the current
+review record for work implemented in the uncommitted `ux-review` working tree.
+Each artefact states its date and method so it can be checked rather than taken
+on trust.
 
-Reviewed against a local production build at commit `d71a719`
+> **Current working-tree implementation record:**
+> [`global-type-and-section-width-system.md`](global-type-and-section-width-system.md)
+> audits the present 12-route `ux-review` worktree and the retained Devague
+> mock, records the adopted global typography and rail decisions, and reports
+> their current verification status. The eight-route baseline and earlier
+> adoption-status statements below remain historical.
+
+The original review baseline was a local production build at commit `d71a719`
 (`site-astro@0.0.1`, Astro static output, 8 routes).
 
 ## Start here
 
-**[`current-direction.md`](current-direction.md)** is the current decision map.
-It reconciles the measured audit with the later Devague work and labels each
-artefact as current, supporting, or superseded.
+For the new site-wide typography and section-width initiative, start with
+**[`global-type-and-section-width-system.md`](global-type-and-section-width-system.md)**.
+It audits the current source and explicitly identifies which older documents
+are dated.
+
+**[`current-direction.md`](current-direction.md)** remains the decision map for
+the earlier Devague-composition work. It reconciles the measured audit with
+that later mock and labels each artefact as current, supporting, or superseded
+at the time it was written.
 
 **[`design-system.html`](design-system.html)** is the visual review surface. It
 renders the proposed foundations, layout roles, responsive pipeline,
@@ -33,6 +47,7 @@ original site-wide audit, and the earlier section-level explorations.
 
 | File | Kind | Covers |
 |------|------|--------|
+| [`global-type-and-section-width-system.md`](global-type-and-section-width-system.md) | Markdown | Current 12-route typography/rail evidence, stale-document reconciliation, adopted roles, migration status, and verification record |
 | [`current-direction.md`](current-direction.md) | Markdown | Status, precedence, current decisions, and open calls |
 | [`design-system.html`](design-system.html) | Interactive visual reference | Established foundations, Devague-derived candidates, page-only content, working interactions, and the system gate |
 | [`design-system.md`](design-system.md) | Markdown | Design-system layers, mock-to-site collision map, component catalogue, staged adoption plan, and regression gates |
@@ -87,16 +102,18 @@ pipeline pairing are explicitly page-owned rather than implied global tokens.
 
 For a maintainer or an agent picking this up cold:
 
-1. `current-direction.md` — the precedence and status map.
-2. `design-system.html` — the visual system and interactive review surface.
-3. `design-system.md` — the safe ownership, containment, and adoption method.
-4. The preserved full-page Devague mock — the source visual evidence.
-5. `captures-story-plan.md` and `pipeline-layout-plan.md` — the implementation
+1. `global-type-and-section-width-system.md` — the current implementation and
+   verification record.
+2. `current-direction.md` — the earlier Devague precedence and status map.
+3. `design-system.html` — the historical visual-system review surface.
+4. `design-system.md` — the earlier ownership, containment, and adoption method.
+5. The preserved full-page Devague mock — the source visual evidence.
+6. `captures-story-plan.md` and `pipeline-layout-plan.md` — the implementation
    handoffs, including the pipeline work requested after the final mock render.
-6. `findings.md` — the measured baseline and verified strengths.
-7. `agents-directory.html` and `agent-page-scaling.md` — independent site-wide
+7. `findings.md` — the measured baseline and verified strengths.
+8. `agents-directory.html` and `agent-page-scaling.md` — independent site-wide
    proposals not superseded by the Devague work.
-8. The spacing/type and captures explorations when their rationale is needed.
+9. The spacing/type and captures explorations when their rationale is needed.
 
 The site-wide audit finds the pattern library drifting because it is copied per
 page (`agent-page-scaling.md`); the section-level work finds spacing drifting
@@ -112,10 +129,11 @@ The `agents-directory.html` demo re-derives its central measurement live in the
 browser from the rendered DOM rather than asserting it, and independently arrives
 at the same 4% figure quoted in the audit.
 
-**Not implemented in Astro** — none of the proposals has been applied to the
-real site. The standalone visual system makes candidate interactions operable
-for review, but it is not the source component implementation and does not move
-any candidate to “Established”.
+**Current Astro status** — the global typography/rail system and related IA
+work are implemented only in the uncommitted `ux-review` working tree. The
+standalone HTML artefacts remain historical review surfaces rather than source
+components. Older statements that no proposal has touched Astro describe their
+own earlier baselines, not the current working tree.
 
 The review documents pass Markdown lint and local-link checks. A future Astro
 implementation must still pass `npm run build`, `org site link-check`, the
@@ -131,16 +149,17 @@ prompted it came from a stuck renderer in the review tooling, not from the site.
 The reveal system is sound. It is flagged here because a reader skimming for
 problems should not carry away a defect that does not exist.
 
-## Constraints respected
+## Current constraints
 
-- **No site files touched.** This folder is additive; nothing under `site-astro/`
-  is modified.
-- **Markdown lints clean** against the repo's `.markdownlint-cli2.yaml`.
+- **Site files are changed locally for review.** Nothing has been committed,
+  pushed, deployed, or submitted as a PR.
+- **Learn is untouched.** The separate Learn source and deployment are outside
+  this migration.
 - **Version bump.** The repo's `version-check` CI job fails any PR whose
   `pyproject.toml` version matches `main`'s, including docs-only changes. That
-  bump has not been made here — use the `version-bump` skill before opening a PR.
-- **`main` is protected**, so this arrives as a branch for review rather than a
-  direct push.
+  bump has not been made because no PR is being prepared yet.
+- **`main` is protected.** The current work remains on `ux-review` for local
+  review.
 
 ## Scope
 

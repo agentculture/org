@@ -271,8 +271,8 @@ check("site-wide Articles + Presentations wayfinding", () => {
     const footer = requireRegion(html, "footer", "site-footer", path);
     for (const route of [articlesRoute, presentationsRoute]) {
       assert(
-        linksTo(header.outer, route).length === 1,
-        `${path} header must contain exactly one ${route} link`,
+        linksTo(header.outer, route).length === 2,
+        `${path} header must contain desktop and mobile ${route} links`,
       );
       assert(
         linksTo(footer.outer, route).length === 1,
@@ -728,11 +728,14 @@ check("current nav state per surface", () => {
         (anchor) => anchor.attrs["aria-current"] === "page",
       );
       assert(
-        current.length === 1,
-        `${label} ${regionLabel} needs exactly one current link, found ${current.length}`,
+        current.length === (regionLabel === "Header" ? 2 : 1),
+        `${label} ${regionLabel} has the wrong number of responsive current links: ${current.length}`,
       );
       assert(
-        current[0].attrs.href === activeHref && current[0].text === activeLabel,
+        current.every(
+          (anchor) =>
+            anchor.attrs.href === activeHref && anchor.text === activeLabel,
+        ),
         `${label} ${regionLabel} current link must be ${activeLabel}`,
       );
     }
@@ -740,8 +743,8 @@ check("current nav state per surface", () => {
       (anchor) => anchor.attrs["aria-current"] === "page",
     );
     assert(
-      pageCurrent.length === 2,
-      `${label} must have current state in Header and Footer only; found ${pageCurrent.length}`,
+      pageCurrent.length === 3,
+      `${label} must have current state in responsive Header navs and Footer only; found ${pageCurrent.length}`,
     );
   }
 });

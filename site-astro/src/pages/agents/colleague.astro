@@ -33,6 +33,7 @@
 // placeholder for it — no invented transcript ever stood in for it.
 import Layout from "../../layouts/Layout.astro";
 import PageHero from "../../components/PageHero.astro";
+import ClosingBand from "../../components/ClosingBand.astro";
 import ColleagueDiagram from "../../components/ColleagueDiagram.astro";
 import ColleagueTerminal from "../../components/ColleagueTerminal.astro";
 import site from "../../data/site";
@@ -64,17 +65,40 @@ const dogfood = {
     "The other three are this very page. While it was being specced, colleague explored its own repo as ask-colleague's second, independent mind, and that run was graded through the same ROI loop described above. Then, before this page's pull request opened, colleague reviewed the diff itself — its one real catch shipped, recorded as a first-class deviation on the plan's ledger.",
   ],
 };
+
+const breadcrumbs = [
+  { label: "Home", href: "/" },
+  { label: "Agents", href: "/agents/" },
+  { label: colleague.hero.title },
+] as const;
+
+const sections = [
+  { id: "paradigm", label: "Paradigm" },
+  { id: "tiers", label: "Three tiers" },
+  { id: "work-loop", label: "Work loop" },
+  { id: "workforce", label: "Workforce" },
+  { id: "cortex-senses", label: "Cortex & senses" },
+  { id: "memory", label: "Memory" },
+  { id: "more-surfaces", label: "More surfaces" },
+  { id: "dogfood", label: "Dogfood" },
+  { id: "whats-next", label: "What's next" },
+] as const;
 ---
 
 <Layout
   title={`colleague · Agents · ${site.hero.title}`}
   description={colleague.hero.metaDescription}
 >
-  <PageHero title={colleague.hero.title} intro={colleague.hero.intro} />
+  <PageHero
+    title={colleague.hero.title}
+    intro={colleague.hero.intro}
+    breadcrumbs={breadcrumbs}
+    sections={sections}
+  />
 
   <!-- fast facts -->
   <section class="section facts-section" aria-label="Fast facts">
-    <div class="container">
+    <div class="container wide-rail">
       <ul class="facts">
         {
           colleague.facts.map((fact, i) => (
@@ -95,8 +119,8 @@ const dogfood = {
   </section>
 
   <!-- the paradigm -->
-  <section class="section" aria-label="The paradigm">
-    <div class="container">
+  <section id="paradigm" class="section" aria-label="The paradigm">
+    <div class="container wide-rail">
       <span class="eyebrow" data-reveal>{colleague.paradigm.eyebrow}</span>
       <h2 data-reveal>{colleague.paradigm.headline}</h2>
       <div class="prose" data-reveal style="--reveal-delay: 0.1s">
@@ -126,8 +150,8 @@ const dogfood = {
   </section>
 
   <!-- three tiers -->
-  <section class="section" aria-label="Three tiers">
-    <div class="container">
+  <section id="tiers" class="section" aria-label="Three tiers">
+    <div class="container wide-rail">
       <span class="eyebrow" data-reveal>{colleague.tiers.eyebrow}</span>
       <h2 data-reveal>{colleague.tiers.headline}</h2>
       <div class="prose" data-reveal style="--reveal-delay: 0.1s">
@@ -158,8 +182,8 @@ const dogfood = {
   </section>
 
   <!-- the work loop -->
-  <section class="section" aria-label="The work loop">
-    <div class="container">
+  <section id="work-loop" class="section" aria-label="The work loop">
+    <div class="container wide-rail">
       <span class="eyebrow" data-reveal>{colleague.work.eyebrow}</span>
       <h2 data-reveal>{colleague.work.headline}</h2>
       <div class="prose" data-reveal style="--reveal-delay: 0.1s">
@@ -195,8 +219,8 @@ const dogfood = {
   </section>
 
   <!-- the workforce -->
-  <section class="section" aria-label="The workforce">
-    <div class="container">
+  <section id="workforce" class="section" aria-label="The workforce">
+    <div class="container wide-rail">
       <span class="eyebrow" data-reveal>{colleague.subagents.eyebrow}</span>
       <h2 data-reveal>{colleague.subagents.headline}</h2>
       <div class="prose" data-reveal style="--reveal-delay: 0.1s">
@@ -250,8 +274,8 @@ const dogfood = {
   </section>
 
   <!-- cortex & senses -->
-  <section class="section" aria-label="Cortex and senses">
-    <div class="container">
+  <section id="cortex-senses" class="section" aria-label="Cortex and senses">
+    <div class="container wide-rail">
       <span class="eyebrow" data-reveal>{colleague.cortexSenses.eyebrow}</span>
       <h2 data-reveal>{colleague.cortexSenses.headline}</h2>
       <div class="prose" data-reveal style="--reveal-delay: 0.1s">
@@ -286,8 +310,8 @@ const dogfood = {
   </section>
 
   <!-- eidetic memory -->
-  <section class="section" aria-label="Eidetic memory">
-    <div class="container">
+  <section id="memory" class="section" aria-label="Eidetic memory">
+    <div class="container wide-rail">
       <span class="eyebrow" data-reveal>{colleague.memory.eyebrow}</span>
       <h2 data-reveal>{colleague.memory.headline}</h2>
       <div class="prose" data-reveal style="--reveal-delay: 0.1s">
@@ -332,8 +356,8 @@ const dogfood = {
   </section>
 
   <!-- more surfaces -->
-  <section class="section" aria-label="More surfaces">
-    <div class="container">
+  <section id="more-surfaces" class="section" aria-label="More surfaces">
+    <div class="container wide-rail">
       <span class="eyebrow" data-reveal>{colleague.moreSurfaces.eyebrow}</span>
       <h2 data-reveal>{colleague.moreSurfaces.headline}</h2>
       <div class="prose" data-reveal style="--reveal-delay: 0.1s">
@@ -357,8 +381,8 @@ const dogfood = {
   </section>
 
   <!-- dogfood: real captures proving the whole page on colleague's own work -->
-  <section class="section" aria-label="Dogfood — real work, including its own">
-    <div class="container">
+  <section id="dogfood" class="section" aria-label="Dogfood — real work, including its own">
+    <div class="container wide-rail">
       <span class="eyebrow" data-reveal>{dogfood.eyebrow}</span>
       <h2 data-reveal>{dogfood.headline}</h2>
       <div class="prose" data-reveal style="--reveal-delay: 0.1s">
@@ -393,8 +417,8 @@ const dogfood = {
   </section>
 
   <!-- what's next, from the open tracker -->
-  <section class="section" aria-label="What's next">
-    <div class="container">
+  <section id="whats-next" class="section" aria-label="What's next">
+    <div class="container wide-rail">
       <span class="eyebrow" data-reveal>{colleague.whatsNext.eyebrow}</span>
       <h2 data-reveal>{colleague.whatsNext.headline}</h2>
       <div class="prose" data-reveal style="--reveal-delay: 0.1s">
@@ -427,22 +451,21 @@ const dogfood = {
     </div>
   </section>
 
-  <!-- closing -->
-  <section class="section closing" aria-label="Closing">
-    <div class="container">
-      <div class="prose" data-reveal>
-        {colleague.closing.paragraphs.map((p) => <p class="lede">{p}</p>)}
-        <p class="cta-row" data-reveal style="--reveal-delay: 0.15s">
-          <a class="cta" href={colleague.closing.repoUrl}
-            >{colleague.closing.repoCta} →</a
-          >
-          <a class="cta" href={colleague.closing.pypiUrl}
-            ><code>{colleague.closing.pypiCta}</code></a
-          >
-        </p>
-      </div>
-    </div>
-  </section>
+  <ClosingBand
+    name={colleague.hero.title}
+    paragraphs={colleague.closing.paragraphs}
+    actions={[
+      {
+        href: colleague.closing.repoUrl,
+        label: colleague.closing.repoCta,
+      },
+      {
+        href: colleague.closing.pypiUrl,
+        label: colleague.closing.pypiCta,
+        treatment: "code",
+      },
+    ]}
+  />
 </Layout>
 
 <style>
@@ -471,20 +494,21 @@ const dogfood = {
     border: 1px solid var(--line-soft);
     border-radius: 999px;
     box-shadow: var(--shadow);
-    font-size: 0.85rem;
+    font-size: var(--ac-type-ui);
   }
 
   .fact-label {
-    font-size: 0.72rem;
+    font-size: var(--ac-type-meta);
     font-weight: 640;
-    letter-spacing: 0.12em;
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-caps);
     text-transform: uppercase;
     white-space: nowrap;
   }
 
   .fact-value {
     font-family: var(--font-mono);
-    font-size: 0.82rem;
+    font-size: var(--ac-type-ui);
     white-space: nowrap;
   }
 
@@ -535,16 +559,17 @@ const dogfood = {
   .surface-name {
     margin: 0;
     font-family: var(--font-mono);
-    font-size: 1.02rem;
+    font-size: var(--ac-type-card-title);
+    line-height: var(--ac-leading-ui);
     font-weight: 600;
-    letter-spacing: 0.01em;
+    letter-spacing: var(--ac-tracking-flat);
     color: var(--accent);
   }
 
   .paradigm-detail,
   .surface-detail {
-    font-size: 0.92rem;
-    line-height: 1.55;
+    font-size: 1rem;
+    line-height: var(--ac-leading-card);
     margin-top: 0.1rem;
   }
 
@@ -563,23 +588,24 @@ const dogfood = {
   }
 
   .tier-surface {
-    font-size: 0.7rem;
+    font-size: var(--ac-type-meta);
     font-weight: 640;
-    letter-spacing: 0.1em;
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-caps);
     text-transform: uppercase;
   }
 
   .tier-detail {
-    font-size: 0.92rem;
-    line-height: 1.55;
+    font-size: 1rem;
+    line-height: var(--ac-leading-card);
     flex-grow: 1;
     margin-top: 0.15rem;
   }
 
   .tier-commands {
     font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.01em;
+    font-size: var(--ac-type-meta);
+    letter-spacing: var(--ac-tracking-flat);
     overflow-wrap: anywhere;
   }
 
@@ -590,14 +616,14 @@ const dogfood = {
 
   .work-verbs {
     font-family: var(--font-mono);
-    font-size: 0.76rem;
-    letter-spacing: 0.01em;
+    font-size: var(--ac-type-meta);
+    letter-spacing: var(--ac-tracking-flat);
     overflow-wrap: anywhere;
   }
 
   .work-detail {
-    font-size: 0.92rem;
-    line-height: 1.55;
+    font-size: 1rem;
+    line-height: var(--ac-leading-card);
     margin-top: 0.15rem;
   }
 
@@ -611,15 +637,16 @@ const dogfood = {
   table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.86rem;
-    line-height: 1.5;
+    font-size: var(--ac-type-ui);
+    line-height: var(--ac-leading-card);
   }
 
   th {
     text-align: left;
     font-weight: 620;
-    font-size: 0.72rem;
-    letter-spacing: 0.1em;
+    font-size: var(--ac-type-meta);
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-caps);
     text-transform: uppercase;
     color: var(--ink-soft);
     padding: 0.35rem 1rem 0.55rem 0;
@@ -639,12 +666,12 @@ const dogfood = {
 
   .tools-cell,
   .use-cell {
-    font-size: 0.84rem;
+    font-size: var(--ac-type-ui);
   }
 
   .tools-cell {
     font-family: var(--font-mono);
-    font-size: 0.78rem;
+    font-size: var(--ac-type-meta);
     min-width: 20rem;
   }
 
@@ -653,9 +680,10 @@ const dogfood = {
     white-space: nowrap;
     padding: 0.1rem 0.6rem;
     border-radius: 999px;
-    font-size: 0.72rem;
+    font-size: var(--ac-type-meta);
     font-weight: 620;
-    letter-spacing: 0.06em;
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-caps);
   }
 
   .access-readonly {
@@ -675,15 +703,16 @@ const dogfood = {
   }
 
   .mind-role {
-    font-size: 0.72rem;
+    font-size: var(--ac-type-meta);
     font-weight: 640;
-    letter-spacing: 0.1em;
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-caps);
     text-transform: uppercase;
   }
 
   .mind-detail {
-    font-size: 0.92rem;
-    line-height: 1.55;
+    font-size: 1rem;
+    line-height: var(--ac-leading-card);
     margin-top: 0.15rem;
   }
 
@@ -704,16 +733,17 @@ const dogfood = {
 
   .measured-leg {
     font-family: var(--font-mono);
-    font-size: 1.05rem;
+    font-size: var(--ac-type-component-title);
+    line-height: var(--ac-leading-ui);
     font-weight: 600;
-    letter-spacing: 0.02em;
+    letter-spacing: var(--ac-tracking-flat);
     text-transform: uppercase;
     color: var(--accent);
   }
 
   .measured-workitem {
     font-family: var(--font-mono);
-    font-size: 0.76rem;
+    font-size: var(--ac-type-meta);
   }
 
   .measured-stats {
@@ -730,9 +760,10 @@ const dogfood = {
   }
 
   .measured-stats dt {
-    font-size: 0.68rem;
+    font-size: var(--ac-type-micro);
     font-weight: 640;
-    letter-spacing: 0.1em;
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-caps);
     text-transform: uppercase;
     color: var(--ink-soft);
   }
@@ -740,15 +771,15 @@ const dogfood = {
   .measured-stats dd {
     margin: 0;
     font-family: var(--font-mono);
-    font-size: 0.95rem;
+    font-size: 1rem;
     font-weight: 600;
   }
 
   .measured-note {
     margin-top: 1.6rem;
-    max-width: 42rem;
-    font-size: 0.95rem;
-    line-height: 1.6;
+    max-width: var(--ac-measure-prose);
+    font-size: 1rem;
+    line-height: var(--ac-leading-lede);
     padding-left: 1rem;
     border-left: 2px solid var(--accent);
   }
@@ -765,6 +796,10 @@ const dogfood = {
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
     gap: 1.3rem;
     align-items: start;
+  }
+
+  .term-grid > * {
+    min-width: 0;
   }
 
   .term-grid + .term-grid {
@@ -802,9 +837,9 @@ const dogfood = {
   }
 
   .theme-direction {
-    font-size: 0.95rem;
-    line-height: 1.6;
-    max-width: 46rem;
+    font-size: 1rem;
+    line-height: var(--ac-leading-card);
+    max-width: var(--ac-measure-prose);
   }
 
   .theme-issues {
@@ -815,30 +850,14 @@ const dogfood = {
   }
 
   .theme-issues li {
-    font-size: 0.88rem;
-    line-height: 1.5;
+    font-size: 1rem;
+    line-height: var(--ac-leading-card);
   }
 
   .issue-num {
     font-family: var(--font-mono);
-    font-size: 0.82rem;
+    font-size: var(--ac-type-meta);
     font-weight: 600;
   }
 
-  /* closing */
-  .closing {
-    padding-bottom: clamp(4rem, 9vh, 6.5rem);
-  }
-
-  .cta-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem 1.8rem;
-    align-items: baseline;
-  }
-
-  .cta {
-    font-weight: 560;
-    white-space: nowrap;
-  }
 </style>

@@ -36,7 +36,7 @@ const thumbDims = (photo: PresentationPhoto) => {
   <PageHero title="Presentations" intro={intro} />
 
   <section class="section library" aria-label="Presentation library">
-    <div class="container">
+    <div class="container wide-rail">
       <ul class="presentation-grid">
         {
           presentations.map((presentation, i) => {
@@ -121,9 +121,10 @@ const thumbDims = (photo: PresentationPhoto) => {
 
   .topic,
   .source-heading {
-    font-size: 0.75rem;
+    font-size: var(--ac-type-meta);
     font-weight: 640;
-    letter-spacing: 0.13em;
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-caps);
     text-transform: uppercase;
   }
 
@@ -133,13 +134,16 @@ const thumbDims = (photo: PresentationPhoto) => {
 
   .presentation-card h2 {
     margin: 0;
-    font-size: clamp(1.45rem, 2vw, 1.8rem);
+    font-size: var(--ac-type-card-title);
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-heading);
   }
 
   .summary {
     flex-grow: 1;
     max-width: 48rem;
-    line-height: 1.62;
+    font-size: var(--ac-type-body);
+    line-height: var(--ac-leading-card);
   }
 
   .source-group {
@@ -163,7 +167,7 @@ const thumbDims = (photo: PresentationPhoto) => {
     border: 1px solid var(--line-soft);
     border-radius: 999px;
     color: var(--ink-soft);
-    font-size: 0.82rem;
+    font-size: var(--ac-type-ui);
   }
 
   .go {

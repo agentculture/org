@@ -5,6 +5,10 @@
 // Every thesis, explanation, caveat, status, source label, and closing claim
 // comes from the talk data module or the typed presentation evidence ledger.
 import MindNervousSystemBodyDiagram from "../../components/MindNervousSystemBodyDiagram.astro";
+import Breadcrumbs, {
+  type BreadcrumbItem,
+} from "../../components/Breadcrumbs.astro";
+import SectionNav from "../../components/SectionNav.astro";
 import Layout from "../../layouts/Layout.astro";
 import {
   mindNervousSystemBodyTalk,
@@ -27,6 +31,17 @@ function sourceFor(id: PresentationEvidenceId): PresentationEvidenceSource {
 const projectLabels = new Map(
   presentationProjects.map((project) => [project.id, project.label]),
 );
+
+const breadcrumbs = [
+  { label: "Home", href: "/" },
+  { label: "Articles", href: "/articles/" },
+  { label: talk.card.title },
+] satisfies readonly BreadcrumbItem[];
+
+const articleSections = talk.beats.map(({ id, headline }) => ({
+  id,
+  label: headline,
+}));
 ---
 
 <Layout
@@ -34,8 +49,8 @@ const projectLabels = new Map(
   description={talk.card.summary}
 >
   <header class="talk-hero" aria-labelledby="talk-title">
-    <div class="container hero-shell">
-      <a class="back-link" href="/articles/">← Articles</a>
+    <div class="container page-rail hero-shell">
+      <Breadcrumbs items={breadcrumbs} />
       <span class="topic">{talk.card.topic}</span>
       <h1 id="talk-title" data-reveal>{talk.hero}</h1>
       <p class="hero-summary" data-reveal style="--reveal-delay: 0.1s">
@@ -60,6 +75,8 @@ const projectLabels = new Map(
           }
         </ul>
       </div>
+
+      <SectionNav items={articleSections} />
     </div>
   </header>
 
@@ -73,7 +90,7 @@ const projectLabels = new Map(
           data-beat-index={beatIndex + 1}
           aria-labelledby={`${beat.id}-title`}
         >
-          <div class="container beat-grid">
+          <div class="container wide-rail beat-grid">
             <div class="spoken-copy">
               <span class="eyebrow" data-reveal>{beat.eyebrow}</span>
               <h2 id={`${beat.id}-title`} data-reveal>{beat.headline}</h2>
@@ -182,19 +199,13 @@ const projectLabels = new Map(
     justify-items: start;
   }
 
-  .back-link {
-    margin-bottom: clamp(2.5rem, 7vh, 5rem);
-    font-size: 0.9rem;
-    font-weight: 620;
-    text-decoration: none;
-  }
-
   .topic,
   .structural-label {
     color: var(--accent);
-    font-size: 0.72rem;
+    font-size: var(--ac-type-meta);
     font-weight: 680;
-    letter-spacing: 0.15em;
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-caps);
     text-transform: uppercase;
   }
 
@@ -210,14 +221,14 @@ const projectLabels = new Map(
   }
 
   .hero-summary {
-    max-width: 47rem;
+    max-width: var(--ac-measure-prose);
     color: var(--ink-soft);
-    font-size: clamp(1.08rem, 2vw, 1.35rem);
-    line-height: 1.62;
+    font-size: var(--ac-type-lede);
+    line-height: var(--ac-leading-lede);
   }
 
   .baseline {
-    width: min(100%, 47rem);
+    width: min(100%, var(--ac-measure-heading));
     margin-top: clamp(2rem, 5vh, 3.5rem);
     padding-top: 1rem;
     border-top: 1px solid var(--line);
@@ -242,13 +253,13 @@ const projectLabels = new Map(
     flex-wrap: wrap;
     gap: 0.4rem;
     align-items: baseline;
-    font-size: 0.9rem;
+    font-size: var(--ac-type-ui);
   }
 
   .baseline code,
   .source-meta code {
     color: var(--ink-soft);
-    font-size: 0.76rem;
+    font-size: var(--ac-type-meta);
   }
 
   .talk-beat {
@@ -272,13 +283,16 @@ const projectLabels = new Map(
   }
 
   .spoken-copy > h2 {
-    max-width: 21ch;
+    max-width: var(--ac-measure-heading);
     margin-bottom: 1em;
-    font-size: clamp(2rem, 4.4vw, 3.5rem);
+    font-size: var(--ac-type-section-title);
+    line-height: var(--ac-leading-heading);
+    letter-spacing: var(--ac-tracking-heading);
+    text-wrap: wrap;
   }
 
   .beat-prose {
-    max-width: 46rem;
+    max-width: var(--ac-measure-prose);
   }
 
   .beat-prose .lede {
@@ -312,8 +326,8 @@ const projectLabels = new Map(
   .definitions dd {
     margin: 0.25rem 0 0;
     color: var(--ink-soft);
-    font-size: 0.92rem;
-    line-height: 1.55;
+    font-size: 1rem;
+    line-height: var(--ac-leading-card);
   }
 
   .point-grid {
@@ -348,22 +362,25 @@ const projectLabels = new Map(
   .point-heading h3 {
     margin: 0;
     font-family: var(--font-body);
-    font-size: 1rem;
+    font-size: var(--ac-type-component-title);
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-heading);
     font-weight: 680;
   }
 
   .status {
     color: var(--accent);
     font-family: var(--font-mono);
-    font-size: 0.65rem;
+    font-size: var(--ac-type-micro);
     font-weight: 650;
-    letter-spacing: 0.08em;
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-caps);
     text-transform: uppercase;
   }
 
   .point-card p {
-    font-size: 0.9rem;
-    line-height: 1.55;
+    font-size: 1rem;
+    line-height: var(--ac-leading-card);
   }
 
   .source-notes {
@@ -386,8 +403,8 @@ const projectLabels = new Map(
     display: grid;
     gap: 0.18rem;
     color: var(--ink-soft);
-    font-size: 0.78rem;
-    line-height: 1.4;
+    font-size: var(--ac-type-ui);
+    line-height: var(--ac-leading-card);
     text-decoration-color: color-mix(in srgb, var(--ink-soft) 28%, transparent);
   }
 
@@ -396,7 +413,7 @@ const projectLabels = new Map(
   }
 
   .source-meta {
-    font-size: 0.68rem;
+    font-size: var(--ac-type-micro);
   }
 
   .architecture,
@@ -424,10 +441,10 @@ const projectLabels = new Map(
   }
 
   .talk-close p {
-    max-width: 44rem;
-    font-size: clamp(1.05rem, 2vw, 1.25rem);
+    max-width: var(--ac-measure-heading);
+    font-size: var(--ac-type-lede);
     font-weight: 520;
-    line-height: 1.55;
+    line-height: var(--ac-leading-lede);
   }
 
   .talk-close ul {

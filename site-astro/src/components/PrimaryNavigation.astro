@@ -1,0 +1,146 @@
+---
+import {
+  isPrimaryNavCurrent,
+  primaryNavigation,
+} from "../data/navigation";
+import ExternalLinkIcon from "./ExternalLinkIcon.astro";
+
+interface Props {
+  variant: "desktop" | "mobile";
+}
+
+const { variant } = Astro.props;
+---
+
+<nav
+  id={variant === "mobile" ? "mobile-primary-navigation" : undefined}
+  class:list={["primary-navigation", variant]}
+  aria-label="Primary"
+>
+  <ul>
+    {
+      primaryNavigation.map((item) => (
+        <li class:list={[item.kind === "cta" && "nav-action"]}>
+          <a
+            class:list={[item.kind === "cta" && "primary-cta"]}
+            href={item.href}
+            target={item.kind === "cta" && item.newTab ? "_blank" : undefined}
+            rel={item.kind === "cta" && item.newTab
+              ? "noopener noreferrer"
+              : undefined}
+            aria-current={isPrimaryNavCurrent(Astro.url.pathname, item)
+              ? "page"
+              : undefined}
+          >
+            <span>{item.label}</span>
+            {item.kind === "cta" && <ExternalLinkIcon size={13} />}
+            {item.kind === "cta" && (
+              <span class="sr-only"> (opens in a new tab)</span>
+            )}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  ul {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, 2vw, 1.6rem);
+    list-style: none;
+  }
+
+  a:not(.primary-cta) {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding-inline: 0.1rem;
+    color: var(--ink-soft);
+    font-size: var(--ac-type-ui);
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  a:not(.primary-cta):hover,
+  a[aria-current="page"] {
+    color: var(--ink);
+  }
+
+  /* The current section carries its own small node on the thread. */
+  a:not(.primary-cta)::after {
+    content: "";
+    position: absolute;
+    bottom: 0.05rem;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    transform: translateX(-50%) scale(0);
+  }
+
+  a[aria-current="page"]::after {
+    transform: translateX(-50%) scale(1);
+  }
+
+  .nav-action {
+    margin-left: 0.15rem;
+  }
+
+  .mobile {
+    position: absolute;
+    top: calc(100% + 0.65rem);
+    right: 0;
+    width: min(20rem, calc(100vw - 3rem));
+    padding: 0.8rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow-lift);
+  }
+
+  :global(.site-menu:not([open])) .mobile {
+    display: none;
+  }
+
+  .mobile ul {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .mobile a:not(.primary-cta) {
+    width: 100%;
+    padding-inline: 0.75rem;
+  }
+
+  .mobile a:not(.primary-cta)::after {
+    right: 0.75rem;
+    bottom: 50%;
+    left: auto;
+    transform: translateY(50%) scale(0);
+  }
+
+  .mobile a[aria-current="page"]::after {
+    transform: translateY(50%) scale(1);
+  }
+
+  .mobile .nav-action {
+    margin: 0.55rem 0 0;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .mobile .primary-cta {
+    width: 100%;
+    justify-content: center;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    a:not(.primary-cta)::after {
+      transition: transform 0.25s var(--ease-out);
+    }
+  }
+</style>

@@ -32,6 +32,9 @@
 // deck-authored keyframes. :global() is used only where a rule must reach a
 // child component's injected markup (the diagram viewport sizing).
 import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs, {
+  type BreadcrumbItem,
+} from "../../components/Breadcrumbs.astro";
 import {
   mindNervousSystemBodySlides,
   robotLabel,
@@ -81,6 +84,12 @@ const slideViews = slides.map((slide, index) => {
         : undefined;
   return { slide, index, sectionRobot, headingId: `${slide.id}-headline` };
 });
+
+const breadcrumbs = [
+  { label: "Home", href: "/" },
+  { label: "Presentations", href: "/presentations/" },
+  { label: card.title },
+] satisfies readonly BreadcrumbItem[];
 ---
 
 <Layout
@@ -116,11 +125,9 @@ const slideViews = slides.map((slide, index) => {
           aria-labelledby={headingId}
         >
           {slide.kind === "bridge" && (
-            <div class="container slide-grid bridge-grid">
+            <div class="container deck-content-rail slide-grid bridge-grid">
               <div class="slide-copy">
-                <a class="back-link" href="/presentations/">
-                  ← Presentations
-                </a>
+                <Breadcrumbs items={breadcrumbs} />
                 <span class="eyebrow" data-reveal>
                   {slide.eyebrow}
                 </span>
@@ -150,7 +157,7 @@ const slideViews = slides.map((slide, index) => {
           )}
 
           {slide.kind === "paths" && (
-            <div class="container stack-flow">
+            <div class="container deck-content-rail stack-flow">
               <div class="slide-head">
                 <span class="eyebrow" data-reveal>
                   {slide.eyebrow}
@@ -191,7 +198,7 @@ const slideViews = slides.map((slide, index) => {
           )}
 
           {slide.kind === "stack" && (
-            <div class="container slide-grid stack-grid">
+            <div class="container deck-content-rail slide-grid stack-grid">
               <div class="slide-copy">
                 <span class="eyebrow" data-reveal>
                   {slide.eyebrow}
@@ -213,7 +220,7 @@ const slideViews = slides.map((slide, index) => {
           )}
 
           {slide.kind === "surfaces" && slide.photoId && (
-            <div class="container stack-flow">
+            <div class="container deck-content-rail stack-flow">
               <div class="slide-head">
                 <span class="eyebrow" data-reveal>
                   {slide.eyebrow}
@@ -269,7 +276,7 @@ const slideViews = slides.map((slide, index) => {
           )}
 
           {slide.kind === "autonomy" && (
-            <div class="container stack-flow">
+            <div class="container deck-content-rail stack-flow">
               <div class="slide-head">
                 <span class="eyebrow" data-reveal>
                   {slide.eyebrow}
@@ -339,7 +346,7 @@ const slideViews = slides.map((slide, index) => {
           )}
 
           {slide.kind === "close" && (
-            <div class="container stack-flow close-flow">
+            <div class="container deck-content-rail stack-flow close-flow">
               <div class="slide-head">
                 <span class="eyebrow" data-reveal>
                   {slide.eyebrow}
@@ -395,7 +402,7 @@ const slideViews = slides.map((slide, index) => {
               </p>
               <div class="close-foot" data-reveal style="--reveal-delay: 0.52s">
                 <div class="close-actions">
-                  <a class="cta" href="/articles/mind-nervous-system-body/">
+                  <a class="primary-cta" href="/articles/mind-nervous-system-body/">
                     The full argument, in text →
                   </a>
                   <a class="cta-quiet" href="/presentations/">
@@ -665,18 +672,6 @@ const slideViews = slides.map((slide, index) => {
   .spoken--center {
     text-align: center;
     margin-inline: auto;
-  }
-
-  .back-link {
-    display: inline-block;
-    margin-bottom: 2rem;
-    color: var(--ink-soft);
-    text-decoration: none;
-    font-size: 0.92rem;
-  }
-
-  .back-link:hover {
-    color: var(--accent);
   }
 
   /* ---------- slide 1: the bridge ---------- */
@@ -1065,20 +1060,6 @@ const slideViews = slides.map((slide, index) => {
     align-items: center;
     justify-content: center;
     gap: 1rem 1.5rem;
-  }
-
-  .cta {
-    display: inline-block;
-    padding: 0.78rem 1.5rem;
-    border-radius: 999px;
-    background: var(--accent-strong);
-    color: var(--on-accent);
-    text-decoration: none;
-    font-weight: 600;
-  }
-
-  .cta:hover {
-    box-shadow: var(--shadow-lift);
   }
 
   .cta-quiet {
