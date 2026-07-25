@@ -46,6 +46,8 @@ const expectedTokens = new Map([
   ["--ac-rail-deck", "68rem"],
   ["--ac-measure-heading", "44rem"],
   ["--ac-measure-prose", "42rem"],
+  ["--ac-space-diagram-before", "clamp(4.5rem, 6vw, 5.5rem)"],
+  ["--ac-space-diagram-after", "clamp(5.5rem, 7vw, 6.5rem)"],
 ]);
 
 let checks = 0;
@@ -116,6 +118,26 @@ for (const path of [
   checks += 5;
 }
 
+for (const [path, wrapper] of [
+  ["pages/agents/devague.astro", "flow-wrap"],
+  ["pages/agents/colleague.astro", "diagram-wrap"],
+  ["pages/agents/lobes.astro", "diagram-wrap"],
+  ["pages/agents/reachy-mini-cli.astro", "diagram-wrap"],
+]) {
+  const source = await readSource(path);
+  assert.match(
+    source,
+    new RegExp(
+      `\\.${wrapper}\\s*\\{[^}]*margin-block:\\s*`
+      + "var\\(--ac-space-diagram-before\\)\\s*"
+      + "var\\(--ac-space-diagram-after\\)",
+      "s",
+    ),
+    `${path} must use the shared breathing room around its diagram and note`,
+  );
+  checks += 1;
+}
+
 const devague = await readSource("pages/agents/devague.astro");
 assert.match(
   devague,
@@ -140,4 +162,4 @@ assert.doesNotMatch(
 );
 checks += 5;
 
-console.log(`Design-system contract passed: ${checks} checks across tokens, assigned rails, the responsive shell, the seven-slide deck, four terminal components, and the read-only Devague gate previews.`);
+console.log(`Design-system contract passed: ${checks} checks across tokens, assigned rails, the responsive shell, the seven-slide deck, four terminal components, shared diagram spacing, and the read-only Devague gate previews.`);
