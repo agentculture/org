@@ -160,6 +160,13 @@ test("Library exposes a capped, explicitly featured content selection", () => {
     libraryNavigation.groups[1].items[1].description,
     presentations[0].navigationSummary,
   );
+  const expectedBadges = ["Featured article", "Featured presentation"];
+  libraryNavigation.groups.forEach((group, index) => {
+    assert.equal(group.items[0].badge, undefined);
+    for (const featuredDestination of group.items.slice(1)) {
+      assert.equal(featuredDestination.badge, expectedBadges[index]);
+    }
+  });
 });
 
 test("every required header destination appears exactly once", () => {
@@ -350,11 +357,19 @@ test("the header implements accessible responsive panels without dependencies", 
   assert.match(header, /<script is:inline>/);
   assert.match(header, /pointerenter/);
   assert.match(header, /window\.setTimeout\([\s\S]*180/);
+  assert.match(header, /restartDesktopPanelAnimation/);
+  assert.match(header, /void grid\.offsetWidth/);
+  assert.match(header, /is-entering-forward/);
+  assert.match(header, /is-entering-backward/);
+  assert.match(header, /animationend/);
   assert.match(header, /event\.key !== "Escape"/);
   assert.match(header, /restoringDesktopFocus/);
   assert.match(header, /classList\.add\("nav-open"\)/);
   assert.match(header, /\.inert =/);
   assert.match(header, /mobileRootScroll/);
+  assert.match(header, /mobilePanelMotion/);
+  assert.match(header, /mobilePanelCloseTimer/);
+  assert.match(header, /setTimeout\(finishClose, 240\)/);
   assert.doesNotMatch(header, /pushState|replaceState|popstate/);
 
   assert.match(primaryNav, /primaryNavigation\.map/);
@@ -364,6 +379,20 @@ test("the header implements accessible responsive panels without dependencies", 
   assert.match(primaryNav, /data-nav-close/);
   assert.match(primaryNav, /data-nav-group=/);
   assert.match(primaryNav, /data-nav-destination=/);
+  assert.match(primaryNav, /destination-badge/);
+  assert.match(primaryNav, /desktop-panel-forward/);
+  assert.match(primaryNav, /desktop-panel-backward/);
+  assert.match(primaryNav, /\.menu-grid\.is-entering-forward/);
+  assert.match(primaryNav, /\.menu-grid\.is-entering-backward/);
+  assert.match(
+    primaryNav,
+    /\.destination-badge\s*\{[\s\S]*border-bottom:\s*1px solid var\(--line-soft\)[\s\S]*font-family:\s*var\(--font-mono\)[\s\S]*text-transform:\s*uppercase/,
+  );
+  assert.doesNotMatch(primaryNav, /\.destination-badge::before/);
+  assert.match(primaryNav, /desktop-panel-forward 0\.48s/);
+  assert.match(primaryNav, /desktop-panel-backward 0\.48s/);
+  assert.match(primaryNav, /translateX\(100%\)/);
+  assert.match(primaryNav, /transition: transform 0\.24s/);
   assert.match(primaryNav, /target=[\s\S]*"_blank"/);
   assert.match(primaryNav, /noopener noreferrer/);
   assert.match(primaryNav, /ExternalLinkIcon/);

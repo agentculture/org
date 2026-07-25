@@ -18,6 +18,7 @@ export interface NavigationDestination {
   href: `/${string}`;
   label: string;
   description: string;
+  badge?: "Featured article" | "Featured presentation";
 }
 
 export interface NavigationMenuGroup {
@@ -155,6 +156,7 @@ export const libraryNavigation = {
           href: article.route,
           label: article.title,
           description: article.navigationSummary,
+          badge: "Featured article" as const,
         })),
       ],
     },
@@ -173,6 +175,7 @@ export const libraryNavigation = {
           href: presentation.route,
           label: presentation.title,
           description: presentation.navigationSummary,
+          badge: "Featured presentation" as const,
         })),
       ],
     },

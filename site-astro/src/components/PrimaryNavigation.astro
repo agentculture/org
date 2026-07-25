@@ -131,30 +131,52 @@ const pathname = Astro.url.pathname;
                           {group.label}
                         </p>
                         <ul class="destination-list">
-                          {group.items.map((destination) => (
-                            <li>
-                              <a
-                                class="destination"
-                                href={destination.href}
-                                aria-current={
-                                  isNavigationDestinationCurrent(
-                                    pathname,
-                                    destination,
-                                  )
-                                    ? "page"
-                                    : undefined
-                                }
-                                data-nav-destination={destination.href}
+                          {group.items.map((destination, index) => {
+                            const startsBadge =
+                              "badge" in destination &&
+                              destination.badge &&
+                              group.items.findIndex(
+                                (item) =>
+                                  "badge" in item &&
+                                  item.badge === destination.badge,
+                              ) === index;
+
+                            return (
+                              <li
+                                class:list={[
+                                  {
+                                    "featured-destination": startsBadge,
+                                  },
+                                ]}
                               >
-                                <span class="destination-name">
-                                  {destination.label}
-                                </span>
-                                <span class="destination-description">
-                                  {destination.description}
-                                </span>
-                              </a>
-                            </li>
-                          ))}
+                                {startsBadge && (
+                                  <p class="destination-badge">
+                                    {destination.badge}
+                                  </p>
+                                )}
+                                <a
+                                  class="destination"
+                                  href={destination.href}
+                                  aria-current={
+                                    isNavigationDestinationCurrent(
+                                      pathname,
+                                      destination,
+                                    )
+                                      ? "page"
+                                      : undefined
+                                  }
+                                  data-nav-destination={destination.href}
+                                >
+                                  <span class="destination-name">
+                                    {destination.label}
+                                  </span>
+                                  <span class="destination-description">
+                                    {destination.description}
+                                  </span>
+                                </a>
+                              </li>
+                            );
+                          })}
                         </ul>
                       </div>
                     ))}
@@ -367,6 +389,24 @@ const pathname = Astro.url.pathname;
     line-height: 1.35;
   }
 
+  .destination-badge {
+    display: block;
+    margin: 0 0 0.35rem;
+    padding: 0 0.65rem 0.5rem;
+    border-bottom: 1px solid var(--line-soft);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 650;
+    letter-spacing: 0.07em;
+    line-height: 1.35;
+    text-transform: uppercase;
+  }
+
+  .featured-destination {
+    margin-top: 0.35rem;
+  }
+
   .destination-description {
     color: var(--ink-soft);
     font-size: 0.79rem;
@@ -451,6 +491,10 @@ const pathname = Astro.url.pathname;
     overflow: hidden;
   }
 
+  .mobile.is-enhanced {
+    overflow-x: hidden;
+  }
+
   .mobile.is-enhanced .menu-panel {
     position: absolute;
     inset: 0;
@@ -460,13 +504,13 @@ const pathname = Astro.url.pathname;
     overflow: auto;
     border: 0;
     border-radius: inherit;
-    opacity: 0;
-    transform: translateX(1rem);
+    transform: translateX(100%);
     pointer-events: none;
   }
 
-  .mobile.is-enhanced .nav-details[open] > .menu-panel {
-    opacity: 1;
+  .mobile.is-enhanced[data-active-menu]
+    .nav-details[open]
+    > .menu-panel {
     transform: translateX(0);
     pointer-events: auto;
   }
@@ -515,13 +559,47 @@ const pathname = Astro.url.pathname;
   }
 
   @media (prefers-reduced-motion: no-preference) {
+    @keyframes desktop-panel-forward {
+      from {
+        opacity: 0;
+        transform: translateX(6rem);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes desktop-panel-backward {
+      from {
+        opacity: 0;
+        transform: translateX(-6rem);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
     .direct-link::after,
-    .chevron,
-    .desktop .menu-panel,
-    .mobile.is-enhanced .menu-panel {
+    .chevron {
       transition:
         opacity 0.2s var(--ease-out),
         transform 0.2s var(--ease-out);
+    }
+
+    .desktop .menu-grid.is-entering-forward {
+      animation: desktop-panel-forward 0.48s var(--ease-out);
+    }
+
+    .desktop .menu-grid.is-entering-backward {
+      animation: desktop-panel-backward 0.48s var(--ease-out);
+    }
+
+    .mobile.is-enhanced .menu-panel {
+      transition: transform 0.24s var(--ease-out);
     }
   }
 

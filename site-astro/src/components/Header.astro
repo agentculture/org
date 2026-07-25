@@ -72,8 +72,12 @@ import PrimaryNavigation from "./PrimaryNavigation.astro";
       "(hover: hover) and (pointer: fine)",
     );
     const mobileViewport = window.matchMedia("(max-width: 51.99rem)");
+    const mobilePanelMotion = window.matchMedia(
+      "(prefers-reduced-motion: no-preference)",
+    );
     let lastPointerDown = -Infinity;
     let mobileRootScroll = 0;
+    let mobilePanelCloseTimer = 0;
     let suppressMobileToggle = false;
     let restoringDesktopFocus = false;
     const closeTimers = new WeakMap();
@@ -92,6 +96,19 @@ import PrimaryNavigation from "./PrimaryNavigation.astro";
       desktopMenus.forEach((details) => {
         if (details !== except && details.open) details.open = false;
       });
+    };
+
+    const restartDesktopPanelAnimation = (details) => {
+      const grid = details.querySelector(":scope > .menu-panel > .menu-grid");
+      if (!grid) return;
+
+      grid.classList.remove("is-entering-forward", "is-entering-backward");
+      void grid.offsetWidth;
+      grid.classList.add(
+        details.dataset.navDetails === "library"
+          ? "is-entering-forward"
+          : "is-entering-backward",
+      );
     };
 
     const openDesktopMenu = (details) => {
@@ -117,11 +134,22 @@ import PrimaryNavigation from "./PrimaryNavigation.astro";
 
     desktopMenus.forEach((details) => {
       const summary = summaryFor(details);
+      const grid = details.querySelector(
+        ":scope > .menu-panel > .menu-grid",
+      );
       syncExpanded(details);
 
       details.addEventListener("toggle", () => {
         syncExpanded(details);
-        if (details.open) closeDesktopMenus(details);
+        if (details.open) {
+          closeDesktopMenus(details);
+          restartDesktopPanelAnimation(details);
+        }
+      });
+
+      grid?.addEventListener("animationend", (event) => {
+        if (event.target !== grid) return;
+        grid.classList.remove("is-entering-forward", "is-entering-backward");
       });
 
       details.addEventListener("pointerenter", () => {
@@ -180,19 +208,38 @@ import PrimaryNavigation from "./PrimaryNavigation.astro";
       });
     };
 
+    const cancelMobilePanelClose = () => {
+      if (!mobilePanelCloseTimer) return;
+      window.clearTimeout(mobilePanelCloseTimer);
+      mobilePanelCloseTimer = 0;
+    };
+
     const closeMobilePanel = (details, restoreFocus = true) => {
+      cancelMobilePanelClose();
       const summary = summaryFor(details);
-      suppressMobileToggle = true;
-      details.open = false;
-      clearMobilePanelState();
-      if (mobileNavigation) mobileNavigation.scrollTop = mobileRootScroll;
-      if (restoreFocus) summary?.focus();
-      queueMicrotask(() => {
-        suppressMobileToggle = false;
-      });
+      mobileNavigation?.removeAttribute("data-active-menu");
+
+      const finishClose = () => {
+        mobilePanelCloseTimer = 0;
+        suppressMobileToggle = true;
+        details.open = false;
+        clearMobilePanelState();
+        if (mobileNavigation) mobileNavigation.scrollTop = mobileRootScroll;
+        if (restoreFocus) summary?.focus();
+        queueMicrotask(() => {
+          suppressMobileToggle = false;
+        });
+      };
+
+      if (mobilePanelMotion.matches) {
+        mobilePanelCloseTimer = window.setTimeout(finishClose, 240);
+      } else {
+        finishClose();
+      }
     };
 
     const enterMobilePanel = (details) => {
+      cancelMobilePanelClose();
       mobileRootScroll = mobileNavigation?.scrollTop ?? 0;
 
       mobileMenus.forEach((candidate) => {
@@ -240,6 +287,7 @@ import PrimaryNavigation from "./PrimaryNavigation.astro";
       details
         .querySelector("[data-nav-close]")
         ?.addEventListener("click", () => {
+          cancelMobilePanelClose();
           suppressMobileToggle = true;
           details.open = false;
           clearMobilePanelState();
@@ -252,6 +300,7 @@ import PrimaryNavigation from "./PrimaryNavigation.astro";
     });
 
     const resetMobileNavigation = () => {
+      cancelMobilePanelClose();
       suppressMobileToggle = true;
       mobileMenus.forEach((details) => {
         details.open = false;
