@@ -13,8 +13,15 @@
 //   2. paths    — three columns, each a DeckPathGlyphs over its label.
 //   3. stack    — CliRuntimeStackDiagram embedded exactly once beside the copy.
 //   4. surfaces — the reachy-mini-action photo with three labels around it.
-//   5. autonomy — a triptych: the so101-action photo + two DeckSituationVignettes.
-//   6. close    — two dual-maturity robot cards, the verbatim thesis, sources.
+//   5. autonomy — a triptych of three DeckSituationVignettes (stuck,
+//      disconnected, routine); no photo.
+//   6. close    — two dual-maturity robot cards and the verbatim thesis.
+//   7. whats-next — the trajectory finale: See/Remember/Act glyph triad, two
+//                 next-step cards (no photos, no data-robot), the shared
+//                 separation band, the six-sentence spoken close, and the
+//                 deck's closing footer (article CTA, all-presentations link,
+//                 the subordinate Sources disclosure) — it sits on the last
+//                 slide, so it moved off "close" when the finale landed.
 //
 // Navigation is progressive enhancement over natural scroll: the dot rail is
 // plain anchors, the prev/next chrome and keyboard support exist only under
@@ -47,6 +54,7 @@ import CliRuntimeStackDiagram from "../../components/CliRuntimeStackDiagram.astr
 import DeckBridgeIllustration from "../../components/deck/DeckBridgeIllustration.astro";
 import DeckPathGlyphs from "../../components/deck/DeckPathGlyphs.astro";
 import DeckSituationVignettes from "../../components/deck/DeckSituationVignettes.astro";
+import DeckNextGlyphs from "../../components/deck/DeckNextGlyphs.astro";
 
 const card = presentations[0];
 const slides: readonly DeckSlide[] = mindNervousSystemBodySlides;
@@ -67,21 +75,31 @@ const photoView = (slotId: PhotoSlotId) => {
 // learned, Agent tools → agent (plan task t5 / component task t3).
 const PATH_GLYPHS = ["coded", "learned", "agent"] as const;
 
-// A photo-free autonomy situation maps to one of the two vignette scenes.
-const vignetteFor = (label: string): "disconnected" | "routine" =>
-  label.toLowerCase().includes("routine") ? "routine" : "disconnected";
+// The finale triad: one glyph + word per step of "See. Remember. Act."
+const NEXT_STEPS = [
+  { step: "see", word: "See" },
+  { step: "remember", word: "Remember" },
+  { step: "act", word: "Act" },
+] as const;
+
+// Every autonomy situation is photo-free now — each maps by label to one of
+// the three vignette scenes.
+const vignetteFor = (
+  label: string
+): "disconnected" | "routine" | "stuck" => {
+  const lower = label.toLowerCase();
+  if (lower.includes("stuck")) return "stuck";
+  if (lower.includes("routine")) return "routine";
+  return "disconnected";
+};
 
 const slideViews = slides.map((slide, index) => {
   // The section-level data-robot marker sits on exactly the surfaces slide
-  // (its Reachy photo) and the autonomy slide (its SO-101 "Stuck" photo); the
-  // close slide leaves it to the two per-robot cards. bridge/paths/stack carry
-  // no robot.
-  const sectionRobot =
-    slide.kind === "surfaces"
-      ? slide.robot
-      : slide.kind === "autonomy"
-        ? slide.situations?.find((situation) => situation.robot)?.robot
-        : undefined;
+  // (its Reachy photo); the close slide leaves it to its two per-robot cards.
+  // bridge/paths/stack/autonomy carry no section robot. Deck-wide the stamp
+  // totals reachy-mini ×2 (surfaces section + close card) and so101 ×1 (close
+  // card), over three photo figures (surfaces + close ×2).
+  const sectionRobot = slide.kind === "surfaces" ? slide.robot : undefined;
   return { slide, index, sectionRobot, headingId: `${slide.id}-headline` };
 });
 
@@ -139,6 +157,11 @@ const breadcrumbs = [
                 >
                   {slide.headline}
                 </h1>
+                {slide.byline && (
+                  <p class="byline" data-reveal style="--reveal-delay: 0.14s">
+                    {slide.byline}
+                  </p>
+                )}
                 <p
                   class="bottom-line bottom-line--lead"
                   data-reveal
@@ -293,30 +316,7 @@ const breadcrumbs = [
                     style={`--reveal-delay: ${0.16 + situationIndex * 0.1}s`}
                   >
                     <div class="autonomy-figure">
-                      {situation.photoId ? (
-                        (() => {
-                          const pv = photoView(situation.photoId);
-                          return (
-                            <figure
-                              class="cell-photo"
-                              data-photo-slot={pv.photo.id}
-                            >
-                              <img
-                                src={pv.photo.src}
-                                alt={pv.photo.alt}
-                                width={pv.width}
-                                height={pv.height}
-                                loading="lazy"
-                                decoding="async"
-                              />
-                            </figure>
-                          );
-                        })()
-                      ) : (
-                        <DeckSituationVignettes
-                          situation={vignetteFor(situation.label)}
-                        />
-                      )}
+                      <DeckSituationVignettes situation={vignetteFor(situation.label)} />
                     </div>
                     <p class="autonomy-caption">
                       <span class="cap-label">{situation.label}</span>
@@ -400,7 +400,67 @@ const breadcrumbs = [
               <p class="thesis-final" data-reveal style="--reveal-delay: 0.42s">
                 {slide.bottomLine}
               </p>
-              <div class="close-foot" data-reveal style="--reveal-delay: 0.52s">
+            </div>
+          )}
+
+          {slide.kind === "next" && (
+            <div class="container stack-flow next-flow">
+              <div class="slide-head">
+                <span class="eyebrow" data-reveal>
+                  {slide.eyebrow}
+                </span>
+                <h2 id={headingId} data-reveal style="--reveal-delay: 0.06s">
+                  {slide.headline}
+                </h2>
+              </div>
+              <ul class="next-triad" data-reveal style="--reveal-delay: 0.14s">
+                {NEXT_STEPS.map((stepEntry) => (
+                  <li class="triad-item">
+                    <DeckNextGlyphs step={stepEntry.step} size={56} />
+                    <span class="triad-word">{stepEntry.word}</span>
+                  </li>
+                ))}
+              </ul>
+              <div class="next-grid">
+                {slide.nextEntries?.map((entry, entryIndex) => (
+                  <article
+                    class="next-card"
+                    data-reveal
+                    style={`--reveal-delay: ${0.24 + entryIndex * 0.12}s`}
+                  >
+                    <h3 class="card-name">{robotLabel[entry.robot]}</h3>
+                    <p class="next-claim">{entry.claim}</p>
+                    <p class="card-traits">{entry.traits}</p>
+                  </article>
+                ))}
+              </div>
+              <p class="separation-band" data-reveal style="--reveal-delay: 0.48s">
+                {slide.separation?.map((separationLine, lineIndex) => (
+                  <>
+                    {lineIndex > 0 && (
+                      <span class="sep-divider" aria-hidden="true">
+                        ·
+                      </span>
+                    )}
+                    <span class="sep-line">{separationLine}</span>
+                  </>
+                ))}
+              </p>
+              <p
+                class="bottom-line bottom-line--center"
+                data-reveal
+                style="--reveal-delay: 0.58s"
+              >
+                {slide.bottomLine}
+              </p>
+              <p
+                class="spoken spoken--center"
+                data-reveal
+                style="--reveal-delay: 0.66s"
+              >
+                {slide.spokenLine}
+              </p>
+              <div class="close-foot" data-reveal style="--reveal-delay: 0.74s">
                 <div class="close-actions">
                   <a class="primary-cta" href="/articles/mind-nervous-system-body/">
                     The full argument, in text →
@@ -859,22 +919,6 @@ const breadcrumbs = [
     gap: 0.9rem;
   }
 
-  .cell-photo {
-    margin: 0;
-    aspect-ratio: 4 / 5;
-    border-radius: var(--radius);
-    overflow: hidden;
-    border: 1px solid var(--line-soft);
-    box-shadow: var(--shadow-lift);
-  }
-
-  .cell-photo img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
   .autonomy-caption {
     display: flex;
     flex-wrap: wrap;
@@ -908,8 +952,96 @@ const breadcrumbs = [
     gap: clamp(1.6rem, 3.8vw, 2.6rem);
   }
 
-  .slide--close {
-    /* room for the fixed chrome beneath the sources on short viewports */
+  /* ---------- slide 7: the whats-next finale ---------- */
+
+  .next-flow {
+    gap: clamp(1.4rem, 3.4vw, 2.2rem);
+  }
+
+  .byline {
+    margin: 0;
+    color: var(--ink-soft);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .next-triad {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: clamp(1.6rem, 5vw, 3.4rem);
+    flex-wrap: wrap;
+  }
+
+  .triad-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .triad-word {
+    font-family: var(--font-display);
+    font-size: clamp(1.05rem, 1.8vw, 1.3rem);
+    font-weight: 560;
+  }
+
+  .next-grid {
+    display: grid;
+    gap: clamp(1.2rem, 3vw, 2rem);
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 48rem) {
+    .next-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .next-card {
+    display: grid;
+    gap: 0.7rem;
+    align-content: start;
+    padding: clamp(1.1rem, 2.5vw, 1.6rem);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    box-shadow: var(--shadow);
+  }
+
+  .next-claim {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 2vw, 1.45rem);
+    font-weight: 560;
+    line-height: 1.35;
+  }
+
+  .separation-band {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: clamp(0.82rem, 1.4vw, 0.95rem);
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+  }
+
+  .sep-divider {
+    color: var(--accent-strong);
+  }
+
+  .slide--next {
+    /* room for the fixed chrome beneath the sources on short viewports —
+       the closing footer moved here when the finale became the last slide */
     padding-bottom: 7rem;
   }
 

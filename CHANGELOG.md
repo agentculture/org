@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/). This project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.2] - 2026-07-22
+
+### Changed
+
+- Real photographs replace all three placeholder slates in the presentation deck: a Reachy Mini table portrait (hero), a Reachy Mini close-up mid-gesture (action), and the SO-ARM101 arm reaching in side profile (hero). Converted to WebP at the manifest's existing pixel targets, so the drop-in contract held with no path or dimension change. Alt text and `subject` descriptions rewritten to describe the photographs that actually ship — the previous text described intended shots that differ from these frames.
+
+## [0.18.1] - 2026-07-22
+
+### Changed
+
+- The deck's closing footer — the "full argument, in text" CTA, the all-presentations link, and the subordinate Sources disclosure — moved from slide 6 (close) to slide 7 (the whats-next finale), so it sits on the deck's actual last slide; the fixed-chrome padding follows it, and check-presentations pins the new location.
+
+## [0.18.0] - 2026-07-22
+
+### Added
+
+- Seventh deck slide — the trajectory finale "What's next: See. Remember. Act.": a See/Remember/Act glyph triad (new DeckNextGlyphs component), two next-step cards (Reachy Mini gains semantic vision and embodied memory; SO-ARM101 inherits the same autonomy pattern for manipulation), the shared separation band, and a six-sentence spoken close (deck-wide cap relaxed to 6, slides 1-6 still capped at 4); plus a small Ori Nachum byline on the bridge slide.
+
+## [0.17.1] - 2026-07-22
+
+### Fixed
+
+- Deck technical review fixes: the architecture diagram's runtime layer reads "ROS-backed or native · persistent execution" with "nodes · controllers · rules · intents · arbitration" (ROS 2 is not itself a fixed-rate loop; the 50 Hz design rate moved to the stack slide's Reachy-specific spoken aside); the control-plane box renamed "Robot interface" (CLI · JSON feed · intent spool) so the dotted agent-runtime paths no longer contradict the stable-bridge story; the diagram caption reads "operational command and state paths" instead of "direct, synchronous calls"; slide 2 softened to "These approaches can coexist…" with bottom line "What matters is a stable boundary."; the close Reachy command is `behavior engine run`; the source note reads "separates the optional agent from the symbolic runtime."
+
+## [0.17.0] - 2026-07-22
+
+### Changed
+
+- The mind–nervous-system–body deck slide 5 reshaped to a uniform trio of animated autonomy situation vignettes (Stuck, Disconnected, Routine) with the photo cell removed; the so101-action photo slot deleted end-to-end (slot, shot-brief, placeholders); slide 5 spoken track made robot-generic; close card retitled to SO-ARM101
+
 ## [0.16.0] - 2026-07-22
 
 ### Added

@@ -1,0 +1,268 @@
+---
+// DeckNextGlyphs — three small marks for the "What's next: See. Remember.
+// Act." finale of the anchor talk. Each reads at ~48–80px beside its word:
+//   • "see"      — an eye with a recognition tick above it: semantic vision —
+//                  understanding what is seen, not just detecting motion.
+//   • "remember" — three stacked history layers with a live top dot: embodied
+//                  memory of people, objects, events, and environment.
+//   • "act"      — a two-finger gripper closing toward a small object:
+//                  manipulation under the same autonomy pattern.
+//
+// PROPS API (mirrors DeckPathGlyphs)
+//   step:        "see" | "remember" | "act"   (required) — which glyph.
+//   size?:       number   — rendered px width/height. Default 64. viewBox is
+//                           always 0 0 64 64, so it stays crisp at any size.
+//   decorative?: boolean  — default true. When true the mark is aria-hidden
+//                           (the word beside it carries the meaning). Pass
+//                           decorative={false} for a standalone-informative
+//                           mark with role="img" + <title>/<desc>.
+//   title?:      string   — overrides the default accessible name used when
+//                           decorative={false}. Ignored when decorative.
+//   id?:         string   — base for the <title>/<desc> ids used when
+//                           decorative={false}. Defaults to "next-glyph-<step>".
+//
+// One component switched on `step` so the finale's triad loop can render
+// <DeckNextGlyphs step={step} /> directly.
+//
+// CONSUMER: the deck renderer's "next" branch places one glyph per triad
+// word, beside the visible word — hence decorative by default.
+//
+// THEMING: site palette custom properties from src/styles/global.css, so both
+// dawn themes stay legible. MOTION: one restrained ambient beat per glyph
+// (the iris drifts, the top memory layer breathes, the gripper closes) —
+// transform/opacity only, gated behind (prefers-reduced-motion:
+// no-preference); the resting state is the complete mark. The SVG is authored
+// inline (not set:html), so this component's scoped styles reach every child.
+
+type NextStep = "see" | "remember" | "act";
+
+interface Props {
+  step: NextStep;
+  size?: number;
+  decorative?: boolean;
+  title?: string;
+  id?: string;
+}
+
+const { step, size = 64, decorative = true, title, id } = Astro.props;
+
+const DEFAULTS: Record<NextStep, { name: string; desc: string }> = {
+  see: {
+    name: "See — semantic vision",
+    desc: "An open eye with a recognition tick above it — understanding what is seen, not just detecting motion or light.",
+  },
+  remember: {
+    name: "Remember — embodied memory",
+    desc: "Three stacked history layers with a live dot on the newest — retained memory of people, objects, events, and environment.",
+  },
+  act: {
+    name: "Act — manipulation",
+    desc: "A two-finger gripper closing toward a small object — manipulation under the same autonomy pattern.",
+  },
+};
+
+// Deterministic id: random ids at build time make every `astro build` emit a
+// different dist (PR #24 review). One step renders informatively at most once
+// per page here; the `id` prop is the escape hatch if that ever changes.
+const uid = id ?? `next-glyph-${step}`;
+const titleId = `${uid}-title`;
+const descId = `${uid}-desc`;
+const accName = title ?? DEFAULTS[step].name;
+const accDesc = DEFAULTS[step].desc;
+
+const a11y = decorative
+  ? { "aria-hidden": "true" }
+  : { role: "img", "aria-labelledby": `${titleId} ${descId}` };
+---
+
+<svg
+  class:list={["glyph", `glyph-${step}`]}
+  width={size}
+  height={size}
+  viewBox="0 0 64 64"
+  fill="none"
+  {...a11y}
+>
+  {
+    !decorative && (
+      <>
+        <title id={titleId}>{accName}</title>
+        <desc id={descId}>{accDesc}</desc>
+      </>
+    )
+  }
+
+  {
+    step === "see" && (
+      <g class="mark">
+        <path class="lid" d="M8 36 Q 32 16, 56 36" />
+        <path class="lid" d="M8 36 Q 32 56, 56 36" />
+        <circle class="iris" cx="32" cy="36" r="7" />
+        <path class="tick" d="M25 14 L30 19 L40 8" />
+      </g>
+    )
+  }
+
+  {
+    step === "remember" && (
+      <g class="mark">
+        <rect class="layer layer-old" x="14" y="40" width="36" height="10" rx="3" />
+        <rect class="layer layer-mid" x="11" y="27" width="42" height="10" rx="3" />
+        <rect class="layer layer-new" x="8" y="14" width="48" height="10" rx="3" />
+        <circle class="live" cx="49" cy="19" r="3.4" />
+      </g>
+    )
+  }
+
+  {
+    step === "act" && (
+      <g class="mark">
+        <line class="stem" x1="32" y1="6" x2="32" y2="20" />
+        <path class="finger finger-left" d="M32 20 C 20 22, 16 32, 20 44" />
+        <path class="finger finger-right" d="M32 20 C 44 22, 48 32, 44 44" />
+        <circle class="object" cx="32" cy="46" r="6" />
+      </g>
+    )
+  }
+</svg>
+
+<style>
+  .glyph {
+    display: inline-block;
+    vertical-align: middle;
+    flex: none;
+  }
+
+  /* ---------- see ---------- */
+
+  .lid {
+    stroke: var(--ink-soft);
+    stroke-width: 3;
+    stroke-linecap: round;
+    fill: none;
+  }
+
+  .iris {
+    fill: var(--accent-strong);
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .tick {
+    stroke: var(--accent-strong);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+  }
+
+  /* ---------- remember ---------- */
+
+  .layer {
+    stroke: var(--accent-strong);
+    stroke-width: 2.4;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .layer-old {
+    fill: color-mix(in srgb, var(--accent) 8%, var(--surface));
+    opacity: 0.55;
+  }
+
+  .layer-mid {
+    fill: color-mix(in srgb, var(--accent) 12%, var(--surface));
+    opacity: 0.75;
+  }
+
+  .layer-new {
+    fill: color-mix(in srgb, var(--accent) 16%, var(--surface));
+  }
+
+  .live {
+    fill: var(--accent-strong);
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  /* ---------- act ---------- */
+
+  .stem {
+    stroke: var(--ink-soft);
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+
+  .finger {
+    stroke: var(--accent-strong);
+    stroke-width: 3;
+    stroke-linecap: round;
+    fill: none;
+    transform-box: fill-box;
+    transform-origin: 32px 20px;
+  }
+
+  .object {
+    fill: color-mix(in srgb, var(--accent) 16%, var(--surface));
+    stroke: var(--accent-strong);
+    stroke-width: 2.4;
+  }
+
+  /* ---------- motion: one restrained beat each ---------- */
+
+  @media (prefers-reduced-motion: no-preference) {
+    .glyph-see .iris {
+      animation: next-iris-drift 4.2s var(--ease-gentle, ease-in-out) infinite alternate;
+    }
+
+    .glyph-remember .live {
+      animation: next-live-breathe 3.4s var(--ease-gentle, ease-in-out) infinite alternate;
+    }
+
+    .glyph-act .finger-left {
+      animation: next-grip-left 3.8s var(--ease-gentle, ease-in-out) infinite alternate;
+    }
+
+    .glyph-act .finger-right {
+      animation: next-grip-right 3.8s var(--ease-gentle, ease-in-out) infinite alternate;
+    }
+  }
+
+  @keyframes next-iris-drift {
+    from {
+      transform: translateX(-2.5px);
+    }
+    to {
+      transform: translateX(2.5px);
+    }
+  }
+
+  @keyframes next-live-breathe {
+    from {
+      transform: scale(0.85);
+      opacity: 0.7;
+    }
+    to {
+      transform: scale(1.15);
+      opacity: 1;
+    }
+  }
+
+  @keyframes next-grip-left {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(5deg);
+    }
+  }
+
+  @keyframes next-grip-right {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(-5deg);
+    }
+  }
+</style>

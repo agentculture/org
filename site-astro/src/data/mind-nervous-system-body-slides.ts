@@ -11,10 +11,12 @@
 // evidence-pinned beat text stay put in `mind-nervous-system-body.ts`; this
 // module still does not derive from it and carries no per-slide evidence
 // ids. Sources stay subordinate: see `deckSources` below (repo homes + one
-// dated note), rendered once on the close slide, never per-slide.
+// dated note), rendered once in the deck's closing footer on the finale
+// slide, never per-slide.
 //
-// DECK SHAPE — exactly six slides, one per primary beat (`beat` 1-6, in
-// slide order). `slides.length` is always 6.
+// DECK SHAPE — exactly seven slides, one per primary beat (`beat` 1-7, in
+// slide order): org#23's six plus the whats-next-finale-slide trajectory
+// finale. `slides.length` is always 7.
 //
 // Slide sequence (id · kind · beat):
 //   1. bridge     · bridge   · beat 1 — the CLI as the bridge between an
@@ -23,7 +25,8 @@
 //      (plan task t3), not a dataset field.
 //   2. paths      · paths    · beat 2 — three ways intelligence reaches a
 //      robot today (coded behavior, learned policy, agent tools) via
-//      `columns`; none of them draws a stable boundary.
+//      `columns`; they can coexist — the architectural question is the
+//      stable boundary between deciding and executing.
 //   3. stack      · stack    · beat 3 — carries `diagram: true` so the
 //      renderer embeds the five-layer architecture component beside the
 //      copy; the agent stays above the CLI line, execution stays below it.
@@ -31,18 +34,20 @@
 //      coder agents across three `labels` (configure, command ad hoc,
 //      observe/repair); carries the reachy-mini-action photo.
 //   5. autonomy   · autonomy · beat 5 — three `situations` the robot faces
-//      without the agent (stuck, disconnected, routine operation); only
-//      "Stuck" carries a photo (so101-action) — the other two are
-//      photo-free.
+//      without the agent (stuck, disconnected, routine operation); all
+//      three are photo-free vignettes.
 //   6. close      · close    · beat 6 — the verbatim thesis as `bottomLine`;
 //      a `robots` field carries both maturity levels side by side (Reachy
 //      Mini's complete native-runtime pattern, ARM101's in-progress
 //      contract), one command each, both hero photos.
+//   7. whats-next · next     · beat 7 — the trajectory finale: each robot's
+//      next step (`nextEntries`, no photos, no commands) plus the shared
+//      `separation` band; the six-sentence spoken close ends the talk.
 //
-// Photo slots: each of the four `PhotoSlotId`s (reachy-mini-hero,
-// reachy-mini-action, so101-hero, so101-action) is referenced EXACTLY once —
-// reachy-mini-action on "surfaces", so101-action on "autonomy"'s "Stuck"
-// situation, and both hero slots on "close" (one per robot entry).
+// Photo slots: each of the THREE `PhotoSlotId`s this module references
+// (reachy-mini-hero, reachy-mini-action, so101-hero) is referenced EXACTLY
+// once — reachy-mini-action on "surfaces", and both hero slots on "close"
+// (one per robot entry). "autonomy" carries no photo slot at all.
 //
 // Terminology discipline (never conflate): "behavior engine" / "behavior
 // runtime" / "runtime" name the fixed-rate symbolic loop; "daemon" names only
@@ -56,7 +61,8 @@
 //   - id/kind/beat/eyebrow/headline/spokenLine/bottomLine — present on every
 //     slide. `headline` is the on-slide hero line; `bottomLine` is the
 //     closing declarative line rendered beneath it (verbatim thesis on
-//     "close"); `spokenLine` is the speaker's cue, at most 4 sentences.
+//     "close"); `spokenLine` is the speaker's cue — at most 4 sentences,
+//     except the finale which may run to 6.
 //   - columns? — present only on "paths": the three intelligence-path
 //     columns (`DeckPathColumn[]`).
 //   - diagram? — present only on "stack": tells the renderer to embed the
@@ -64,10 +70,13 @@
 //   - labels?/robot?/photoId? — present only on "surfaces": the three
 //     runtime-surface labels plus the one robot photo this slide anchors.
 //   - situations? — present only on "autonomy": three `DeckAutonomySituation`
-//     entries, in order; only one carries `robot`/`photoId`.
+//     entries, in order, all photo-free.
 //   - robots? — present only on "close": two `DeckCloseRobot` entries, one
 //     per robot, each with its own photo, maturity status, traits, claim,
 //     and exactly one CLI command.
+//   - byline? — present only on "bridge": the speaker byline, rendered small.
+//   - nextEntries?/separation? — present only on "whats-next": each robot's
+//     next step, and the shared separation band's three lines.
 //
 // Runtime note: this module imports ONLY types from its neighbours, so type
 // stripping erases every import and the module loads under plain
@@ -88,7 +97,8 @@ export type DeckSlideKind =
   | "stack"
   | "surfaces"
   | "autonomy"
-  | "close";
+  | "close"
+  | "next";
 
 /** The two physical bodies; a robot-anchored slide or entry names exactly one. */
 export type DeckRobot = "reachy-mini" | "so101";
@@ -105,10 +115,15 @@ export interface DeckAutonomySituation {
   label: string;
   /** What happens in that situation. */
   outcome: string;
-  /** Present only on the situation carrying a photo (today: "Stuck"). */
-  robot?: DeckRobot;
-  /** Present only on the situation carrying a photo (today: "Stuck"). */
-  photoId?: PhotoSlotId;
+}
+
+/** One robot's entry on the "next" finale — its next step, no photo, no command. */
+export interface DeckNextEntry {
+  robot: DeckRobot;
+  /** One-line next-step claim, e.g. "Give presence understanding and history." */
+  claim: string;
+  /** Short trait summary of what that step is made of. */
+  traits: string;
 }
 
 /** One robot's entry on the "close" slide — its maturity, claim, and one command. */
@@ -150,6 +165,8 @@ export interface DeckSlide {
   spokenLine: string;
   /** The on-slide closing declarative line; verbatim thesis on "close". */
   bottomLine: string;
+  /** Present iff `kind === "bridge"` — the speaker byline, rendered small. */
+  byline?: string;
   /** Present iff `kind === "paths"` — the three intelligence-path columns. */
   columns?: readonly DeckPathColumn[];
   /** Present iff `kind === "stack"` — embed the five-layer architecture component. */
@@ -160,18 +177,22 @@ export interface DeckSlide {
   situations?: readonly DeckAutonomySituation[];
   /** Present iff `kind === "close"` — one entry per robot, in order. */
   robots?: readonly DeckCloseRobot[];
+  /** Present iff `kind === "next"` — the two robots' next steps, in order. */
+  nextEntries?: readonly DeckNextEntry[];
+  /** Present iff `kind === "next"` — the shared separation band's three lines. */
+  separation?: readonly string[];
 }
 
 /** Display label per robot, for the renderer. */
 export const robotLabel = {
   "reachy-mini": "Reachy Mini",
-  so101: "SO-101",
+  so101: "SO-ARM101",
 } as const satisfies Record<DeckRobot, string>;
 
 /** Photo slots each robot owns — a robot-anchored slide may only use its own slot. */
 export const photoSlotsByRobot = {
   "reachy-mini": ["reachy-mini-hero", "reachy-mini-action"],
-  so101: ["so101-hero", "so101-action"],
+  so101: ["so101-hero"],
 } as const satisfies Record<DeckRobot, readonly PhotoSlotId[]>;
 
 export const mindNervousSystemBodySlides = [
@@ -180,6 +201,7 @@ export const mindNervousSystemBodySlides = [
     kind: "bridge",
     beat: 1,
     eyebrow: "the bridge",
+    byline: "Ori Nachum",
     headline: "CLI — The Bridge Between Agents and Robots",
     spokenLine:
       "The agent authors behavior; the robot owns how that behavior actually runs. This talk walks the bridge between those two worlds — a CLI that lets intelligence reach a robot without ever touching the motors directly.",
@@ -192,13 +214,13 @@ export const mindNervousSystemBodySlides = [
     eyebrow: "three paths, one gap",
     headline: "Intelligence reaches robots in different ways",
     spokenLine:
-      "Some robots run fixed, hand-coded behavior; others run a learned policy trained end to end; a growing set let an agent call tools directly against the hardware. Each path works, but none of them draws a clean line between what the agent decides and what the robot's software is responsible for executing.",
+      "Some robots run fixed, hand-coded behavior; others run a learned policy trained end to end; a growing set let an agent call tools directly against the hardware. These approaches can coexist. The architectural question is whether the robot exposes a stable boundary between what intelligence decides and what robot software executes.",
     columns: [
       { label: "Coded behavior" },
       { label: "Learned policy" },
       { label: "Agent tools" },
     ],
-    bottomLine: "What's missing is a stable boundary.",
+    bottomLine: "What matters is a stable boundary.",
   },
   {
     id: "stack",
@@ -208,7 +230,7 @@ export const mindNervousSystemBodySlides = [
     eyebrow: "the architecture",
     headline: "Keep execution below the model",
     spokenLine:
-      "The stack has five layers: an optional agent, a stable CLI, a deterministic behavior runtime, a device daemon, and the hardware itself. Reasoning stays above the CLI line; execution stays below it, in the runtime and daemon, so the model can be interchangeable without ever owning the motors.",
+      "The stack has five layers: an optional agent, a stable CLI, a deterministic behavior runtime — on Reachy Mini, a fixed-rate loop at a 50 Hz design rate — a device daemon, and the hardware itself. Reasoning stays above the CLI line; execution stays below it, in the runtime and daemon, so the model can be interchangeable without ever owning the motors.",
     bottomLine: "The agent never owns the motors.",
   },
   {
@@ -231,14 +253,9 @@ export const mindNervousSystemBodySlides = [
     eyebrow: "beyond the agent",
     headline: "The robot continues without the agent",
     spokenLine:
-      "When SO-101 gets stuck, an agent can inspect the state and adapt the plan — that's exactly where intelligence earns its keep. When the agent disconnects, the behavior runtime keeps running unattended; during routine operation, no model is in the loop at all.",
+      "When the robot gets stuck, an agent can inspect the state and adapt the plan — that's exactly where intelligence earns its keep. When the agent disconnects, the behavior runtime keeps running unattended; during routine operation, no model is in the loop at all.",
     situations: [
-      {
-        label: "Stuck",
-        outcome: "inspect and adapt",
-        robot: "so101",
-        photoId: "so101-action",
-      },
+      { label: "Stuck", outcome: "inspect and adapt" },
       { label: "Disconnected", outcome: "behavior continues" },
       { label: "Routine operation", outcome: "no model required" },
     ],
@@ -259,7 +276,7 @@ export const mindNervousSystemBodySlides = [
         status: "working system",
         traits: "Rules · behavior runtime · device daemon",
         claim: "The complete native-runtime pattern.",
-        command: "reachy-mini-cli behavior engine start",
+        command: "reachy-mini-cli behavior engine run",
       },
       {
         robot: "so101",
@@ -273,6 +290,34 @@ export const mindNervousSystemBodySlides = [
     ],
     bottomLine: "A CLI for intelligence. A runtime for embodiment.",
   },
+  {
+    id: "whats-next",
+    kind: "next",
+    beat: 7,
+    eyebrow: "the trajectory",
+    headline: "What's next: See. Remember. Act.",
+    spokenLine:
+      "Reachy already has an autonomous presence. Next, it should understand more of what it sees and retain useful memory of people, objects, events, and its environment. ARM101 already has the beginning of a safe operational language: observable state, guarded motion, overload sensing, and reachability exploration. Next, it gets the same persistent sense–rule–intent runtime—adapted for manipulation rather than expression. First, we gave an expressive robot an agent-maintainable presence. Next, we give that presence memory—and give a robotic arm the same autonomy.",
+    nextEntries: [
+      {
+        robot: "reachy-mini",
+        claim: "Give presence understanding and history.",
+        traits: "Semantic vision · embodied memory · behavior informed by experience",
+      },
+      {
+        robot: "so101",
+        claim: "Apply the same autonomy pattern to manipulation.",
+        traits:
+          "Persistent runtime · reachability memory · load-aware rules · supervised recovery",
+      },
+    ],
+    separation: [
+      "agent authors and supervises",
+      "runtime persists and arbitrates",
+      "body retains control",
+    ],
+    bottomLine: "The same architecture, expressed through a different body.",
+  },
 ] as const satisfies readonly DeckSlide[];
 
 /** One source project entry in `deckSources` — repo-home link, not a pinned blob. */
@@ -284,7 +329,7 @@ export interface DeckSourceProject {
 }
 
 /**
- * The deck's subordinate sources note, rendered once on the close slide (not
+ * The deck's subordinate sources note, rendered once on the finale slide (not
  * per-slide): repo-home links for both projects plus one dated note. This is
  * the deck's evidence surface — the article keeps the strict, commit-pinned
  * ledger in `presentations.ts` / `mind-nervous-system-body.ts`, untouched.
@@ -302,7 +347,7 @@ export const deckSources = {
       repositoryUrl: "https://github.com/agentculture/arm101-cli",
     },
   ],
-  note: "reachy-mini-cli v0.42.0 retired the AI-first flow — the robot's presence is the symbolic runtime.",
+  note: "reachy-mini-cli v0.42.0 separates the optional agent from the symbolic runtime.",
 } as const satisfies {
   projects: readonly DeckSourceProject[];
   note: string;

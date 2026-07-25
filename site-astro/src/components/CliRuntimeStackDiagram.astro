@@ -3,7 +3,8 @@
 // cli-runtime-reframe deck (org#21). Five layers, top to bottom:
 //
 //   Agent harness (optional) ─┐
-//   Human · shell script · CI ─┴─> Robot CLI — control plane
+//   Human · shell script · CI ─┴─> Robot interface — control plane
+//                                  (CLI · JSON feed · intent spool)
 //                                        │  (direct, one-shot ops)
 //                                        ▼           ╲
 //                              Behavior runtime        ╲
@@ -14,8 +15,13 @@
 //                                        ↕
 //                                Physical robot
 //
-// Every box and arrow label is taken verbatim from org#21's proposed
-// mermaid diagram and terminology table:
+// Box and arrow labels originate from org#21's proposed mermaid diagram and
+// terminology table, amended by the deck-technical-fixes review: the
+// control-plane box is "Robot interface" (the CLI is one executable surface
+// of the stable contract beside the JSON feed and intent spool, so the
+// dotted agent<->runtime paths no longer contradict "the CLI is the stable
+// bridge"), and the runtime layer reads "ROS-backed or native · persistent
+// execution" (ROS 2 is not itself a fixed-rate behavior loop):
 //
 //   AGENT --> CLI ; HUMAN --> CLI
 //   CLI -->|"lifecycle · configuration · direct operations"| RUNTIME
@@ -31,8 +37,10 @@
 // visual emphasis: they are the stable center of the story. "reachy-mini-
 // daemon" is named only on the device layer, never on the runtime — the
 // behavior runtime and the lower-level device daemon are never conflated.
-// Any tick-rate label reads "50 Hz design rate", never a measured claim
-// (reachy-mini-cli CHANGELOG v0.42.0 records 23 Hz achieved so far).
+// The diagram carries no tick-rate label — the 50 Hz figure lives in the
+// stack slide's spoken track as a Reachy-specific aside, qualified as a
+// design rate, never a measured claim (reachy-mini-cli CHANGELOG v0.42.0
+// records 23 Hz achieved so far).
 //
 // Pure inline SVG, no script, no external asset. Theming rides the same
 // CSS custom properties as MindNervousSystemBodyDiagram.astro / ReachyDiagram
@@ -59,20 +67,21 @@
         Five layers, drawn top to bottom. At the top, two replaceable entry points feed the
         same control plane: an optional agent harness — Claude Code, Codex, Colleague, a
         custom agent, or none, drawn with a dashed border — and a human, shell script, or CI
-        system. Both connect straight down into the robot CLI, the control plane, which
-        inspects, configures, intervenes, and reports start, stop, and status through JSON
-        contracts; the CLI and the layer below it, the behavior runtime, carry the strongest
-        visual weight in this diagram. The CLI sends lifecycle, configuration, and direct
-        operations down into the behavior runtime, implemented in ROS 2 or a native runtime — a continuous fixed-rate loop — 50 Hz is a
-        design rate, not a measured one — that runs senses, rules, intents, and arbitration.
-        The CLI also has a direct, required path straight down to the device layer, for
-        one-shot device operations that bypass the runtime entirely. The behavior runtime
-        sends validated, arbitrated actions down to the device daemon or hardware adapter,
-        which exchanges state and actuation with the physical robot at the bottom — Reachy
-        Mini, SO-ARM101, or a future body, drawn replaceable like the agent above it. Two
-        dotted paths connect the agent and the runtime directly, bypassing the CLI: the
-        runtime emits a runtime event feed up to the agent, and the agent submits named
-        intents back down to the runtime through attach and spool.
+        system. Both connect straight down into the robot interface, the control plane, whose
+        surfaces are the CLI, the JSON feed, and the intent spool; the CLI inspects,
+        configures, intervenes, and reports through JSON contracts. The interface and the
+        layer below it, the behavior runtime, carry the strongest visual weight in this
+        diagram. The CLI sends lifecycle, configuration, and direct operations down into the
+        behavior runtime — ROS-backed or native, persistent execution that runs nodes,
+        controllers, rules, intents, and arbitration. The CLI also has a direct, required
+        path straight down to the device layer, for one-shot device operations that bypass
+        the runtime entirely. The behavior runtime sends validated, arbitrated actions down
+        to the device daemon or hardware adapter, which exchanges state and actuation with
+        the physical robot at the bottom — Reachy Mini, SO-ARM101, or a future body, drawn
+        replaceable like the agent above it. Two dotted paths connect the agent and the
+        runtime directly — the interface's non-CLI surfaces: the runtime emits its event
+        feed up to the agent, and the agent submits named intents back down to the runtime
+        through attach and spool.
       </desc>
 
       <defs>
@@ -125,12 +134,12 @@
       <g aria-hidden="true">
         <rect x="120" y="220" width="960" height="160" rx="24" class="layer-box emphasis"></rect>
         <text x="600" y="254" text-anchor="middle" class="kicker kicker-strong">CONTROL PLANE</text>
-        <text x="600" y="296" text-anchor="middle" class="layer-title layer-title-lg">Robot CLI</text>
+        <text x="600" y="296" text-anchor="middle" class="layer-title layer-title-lg">Robot interface</text>
         <text x="600" y="326" text-anchor="middle" class="layer-sub layer-sub-lg">
-          inspect · configure · intervene
+          CLI · JSON feed · intent spool
         </text>
         <text x="600" y="350" text-anchor="middle" class="layer-sub layer-sub-lg">
-          start / stop / status · JSON contracts
+          inspect · configure · intervene · JSON contracts
         </text>
       </g>
 
@@ -163,10 +172,10 @@
         <text x="600" y="506" text-anchor="middle" class="kicker kicker-strong">PERSISTENT EMBODIMENT</text>
         <text x="600" y="550" text-anchor="middle" class="layer-title layer-title-lg">Behavior runtime</text>
         <text x="600" y="582" text-anchor="middle" class="layer-sub layer-sub-lg">
-          ROS 2 or native · continuous fixed-rate loop — 50 Hz design rate
+          ROS-backed or native · persistent execution
         </text>
         <text x="600" y="604" text-anchor="middle" class="layer-sub layer-sub-lg">
-          senses · rules · intents · arbitration
+          nodes · controllers · rules · intents · arbitration
         </text>
         <text x="600" y="626" text-anchor="middle" class="layer-note">
           stays alive with no agent attached
@@ -247,9 +256,9 @@
   </div>
 
   <figcaption class="diagram-caption">
-    Solid lines are direct, synchronous calls; the CLI's direct line to the device layer is a
-    required one-shot path that bypasses the runtime. Dotted lines are the optional runtime
-    event feed and named-intent path an attached agent can use instead.
+    Solid lines show operational command and state paths; the CLI's direct line to the device
+    layer is a required one-shot path that bypasses the runtime. Dotted lines are the optional
+    runtime event feed and named-intent path an attached agent can use instead.
   </figcaption>
 </figure>
 

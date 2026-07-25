@@ -1,8 +1,8 @@
 ---
-// DeckSituationVignettes — two framed "situation" cards for the autonomy
-// slide of the anchor talk. They sit in a triptych whose third cell is a real
-// robot photo, so each is a full, captioned, photo-weight panel (not a small
-// glyph): a framed scene above a caption strip.
+// DeckSituationVignettes — framed "situation" cards for the autonomy slide of
+// the anchor talk. Each is a full, captioned, photo-weight panel (not a small
+// glyph): a framed scene above a caption strip, sized to hold its own cell in
+// the autonomy triptych. Three situations are supported, one per invocation:
 //
 //   • "disconnected" — the link to the agent is severed (a broken, sparking
 //                      dashed line with a clear gap) yet the robot stays lit
@@ -11,18 +11,27 @@
 //   • "routine"      — no model is attached (an empty, dashed agent slot),
 //                      and the robot runs a steady cycle above an even
 //                      heartbeat line: steady operation, no model required.
+//   • "stuck"        — the robot is blocked at a solid obstacle while the
+//                      agent link is fully active (a bright, solid line with a
+//                      pulse of attention travelling down it) and probe arcs
+//                      scan the barrier: the deliberate complement of the other
+//                      two — where they show the link severed and no model
+//                      attached, stuck keeps the link lit and working, because
+//                      a block is exactly where the agent earns its keep,
+//                      inspecting the state and adapting the plan.
 //
 // PROPS API
-//   situation: "disconnected" | "routine"   (required) — which vignette.
+//   situation: "disconnected" | "routine" | "stuck"  (required) — vignette.
 //   title?:    string  — overrides the SVG's accessible name (role="img"
 //                        <title>). Default: a one-line description of the
 //                        situation.
 //   desc?:     string  — overrides the long screen-reader <desc>. Default:
 //                        narrates the full scene for the chosen situation.
 //
-// CONSUMER: the deck renderer (wave-2 task t5) places the two vignettes as
-// cells 1 and 2 of the autonomy triptych, matching the third (photo) cell's
-// weight. Self-contained inline SVG — no external asset, no script.
+// CONSUMER: the deck renderer places these vignettes as the cells of the
+// autonomy triptych; task t5 wires "stuck" into that renderer (before it, no
+// caller passes situation="stuck"). Self-contained inline SVG — no external
+// asset, no script.
 //
 // THEMING: site palette custom properties from src/styles/global.css
 // (--surface, --line, --ink, --ink-soft, --accent, --accent-strong,
@@ -30,12 +39,14 @@
 // both dawn themes stay legible. MOTION: the robot stays alive (glow breathes,
 // antennas sway) while the situation-specific motif animates — the runtime
 // loop pulses (disconnected), the cycle arrow turns and the heartbeat blips
-// (routine); the break sparks. All transform/opacity, each gated behind
-// (prefers-reduced-motion: no-preference). The resting scene (motion off) is
-// the complete, legible image. SVG is authored inline here (not set:html), so
-// this component's scoped styles reach every child directly.
+// (routine), the break sparks (disconnected); for stuck a pulse of attention
+// flows down the active link and the probe arcs ripple across the obstacle.
+// All transform/opacity, each gated behind (prefers-reduced-motion:
+// no-preference). The resting scene (motion off) is the complete, legible
+// image. SVG is authored inline here (not set:html), so this component's
+// scoped styles reach every child directly.
 
-type Situation = "disconnected" | "routine";
+type Situation = "disconnected" | "routine" | "stuck";
 
 interface Props {
   situation: Situation;
@@ -64,6 +75,14 @@ const COPY: Record<
     title:
       "Routine: the robot runs steady, cyclic operation with no model attached",
     desc: "An empty, dashed agent slot marks that no model is attached. The robot runs a steady cycle, wrapped in a slowly turning loop arrow, above a regular, even heartbeat line — steady, routine operation that needs no model.",
+  },
+  stuck: {
+    kicker: "AUTONOMY",
+    heading: "Stuck",
+    line: "Blocked — the agent inspects and adapts.",
+    title:
+      "Stuck: the robot is blocked at an obstacle, and the agent link is active — the mind inspecting and adapting",
+    desc: "On the left, a lit agent chip is fully attached — the connection to it is drawn as a bright, solid line with a pulse of attention travelling down it toward the robot. On the right, the robot has come up against a solid barrier and stopped, while probing scan arcs sweep across the obstacle: this is where the agent earns its keep — the mind inspects the blocked state and adapts the plan.",
   },
 };
 
@@ -172,6 +191,37 @@ const descId = `${uid}-desc`;
             d="M60 500 H150 l10 -30 l10 30 H300 l10 -30 l10 30 H450 l10 -30 l10 30 H580"
           />
           <circle class="blip" cx="310" cy="470" r="6"></circle>
+        </g>
+      )
+    }
+
+    {
+      situation === "stuck" && (
+        <g class="scene" aria-hidden="true">
+          {/* lit, attached agent chip — the model is live and adapting */}
+          <g class="agent-live">
+            <rect x="48" y="118" width="196" height="120" rx="18" class="agent-chip-live" />
+            <circle class="live-dot" cx="216" cy="142" r="5" />
+            <text x="146" y="166" class="chip-title">AGENT</text>
+            <text x="146" y="192" class="chip-note">model live</text>
+            <text x="146" y="214" class="chip-note">adapting</text>
+          </g>
+
+          {/* the active link: a bright, solid line, attention flowing down to the robot */}
+          <line class="link-active" x1="248" y1="200" x2="390" y2="300" />
+          <circle class="link-pulse" cx="319" cy="250" r="6" />
+
+          {/* probe arcs: the mind scanning the blocked state (clipped by the barrier) */}
+          <path class="scan-arc scan-1" d="M526.1 299.7 A30 30 0 0 1 526.1 344.3" />
+          <path class="scan-arc scan-2" d="M536.8 287.8 A46 46 0 0 1 536.8 356.2" />
+          <path class="scan-arc scan-3" d="M547.5 275.9 A62 62 0 0 1 547.5 368.1" />
+
+          {/* the obstacle: a solid barrier the robot has come up against */}
+          <g class="obstacle">
+            <rect x="560" y="256" width="46" height="180" rx="7" class="barrier" />
+            <line class="barrier-seam" x1="560" y1="316" x2="606" y2="316" />
+            <line class="barrier-seam" x1="560" y1="376" x2="606" y2="376" />
+          </g>
         </g>
       )
     }
@@ -347,6 +397,60 @@ const descId = `${uid}-desc`;
     transform-origin: center;
   }
 
+  /* ---------- active link + pulse (stuck) ---------- */
+
+  .agent-chip-live {
+    fill: color-mix(in srgb, var(--accent) 12%, var(--surface));
+    stroke: var(--accent-strong);
+    stroke-width: 2;
+  }
+
+  .live-dot {
+    fill: var(--accent-strong);
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .link-active {
+    fill: none;
+    stroke: var(--accent-strong);
+    stroke-width: 3.4;
+    stroke-linecap: round;
+  }
+
+  .link-pulse {
+    fill: var(--accent-strong);
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  /* ---------- obstacle (stuck) ---------- */
+
+  .barrier {
+    fill: color-mix(in srgb, var(--ink-soft) 22%, var(--surface));
+    stroke: var(--ink-soft);
+    stroke-width: 2;
+    stroke-linejoin: round;
+  }
+
+  .barrier-seam {
+    stroke: var(--line);
+    stroke-width: 1.4;
+    stroke-linecap: round;
+  }
+
+  /* ---------- probe scan (stuck) ---------- */
+
+  .scan-arc {
+    fill: none;
+    stroke: var(--accent-strong);
+    stroke-width: 2.6;
+    stroke-linecap: round;
+    opacity: 0.8;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
   /* ---------- robot ---------- */
 
   .robot-glow {
@@ -444,6 +548,31 @@ const descId = `${uid}-desc`;
     .blip {
       animation: vignette-blip 2.2s var(--ease-gentle, ease-in-out) infinite;
     }
+
+    .link-active {
+      animation: vignette-link-glow 5.2s var(--ease-gentle, ease-in-out) infinite
+        alternate;
+    }
+
+    .link-pulse {
+      animation: vignette-flow 4.8s var(--ease-gentle, ease-in-out) infinite;
+    }
+
+    .live-dot {
+      animation: vignette-live 2.8s var(--ease-gentle, ease-in-out) infinite;
+    }
+
+    .scan-arc {
+      animation: vignette-scan 3.6s var(--ease-gentle, ease-in-out) infinite;
+    }
+
+    .scan-2 {
+      animation-delay: 0.6s;
+    }
+
+    .scan-3 {
+      animation-delay: 1.2s;
+    }
   }
 
   @keyframes vignette-glow {
@@ -517,6 +646,60 @@ const descId = `${uid}-desc`;
     18% {
       transform: scale(1.6);
       opacity: 1;
+    }
+  }
+
+  /* the active link breathes bright — attention held on the link */
+  @keyframes vignette-link-glow {
+    from {
+      opacity: 0.82;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* a pulse of attention travels down the link, from the agent to the robot */
+  @keyframes vignette-flow {
+    0% {
+      transform: translate(-71px, -50px);
+      opacity: 0;
+    }
+    15% {
+      opacity: 1;
+    }
+    85% {
+      opacity: 1;
+    }
+    100% {
+      transform: translate(71px, 50px);
+      opacity: 0;
+    }
+  }
+
+  /* the chip's live indicator, steady and awake */
+  @keyframes vignette-live {
+    0%,
+    100% {
+      opacity: 0.45;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  /* probe arcs ripple outward toward the obstacle, staggered like sonar */
+  @keyframes vignette-scan {
+    0% {
+      transform: translateX(-4px);
+      opacity: 0;
+    }
+    35% {
+      opacity: 0.9;
+    }
+    100% {
+      transform: translateX(7px);
+      opacity: 0;
     }
   }
 </style>

@@ -1,0 +1,324 @@
+{
+  "slug": "autonomy-stuck-vignette",
+  "title": "autonomy stuck vignette",
+  "frame_slug": "autonomy-stuck-vignette",
+  "schema_version": 3,
+  "status": "exported",
+  "created": "2026-07-22T14:15:08Z",
+  "updated": "2026-07-22T14:17:28Z",
+  "targets": [
+    {
+      "id": "c1",
+      "kind": "announcement",
+      "text": "The deck's autonomy slide reads as three matching vignettes: Stuck joins Disconnected and Routine as an animated site-palette SVG, and the photo cell is gone"
+    },
+    {
+      "id": "h9",
+      "kind": "honesty",
+      "text": "the shipped PR is one change carrying dataset, vignette component, renderer, node test, and check-presentations.mjs together, and all three checks pass green on it"
+    },
+    {
+      "id": "c2",
+      "kind": "requirement",
+      "text": "DeckSituationVignettes.astro gains a third situation 'stuck' \u2014 extend the Situation union, COPY map, and add a stuck motif branch, keeping the shared robot base, deterministic vignette-stuck ids (PR #24 review), role=img + aria-labelledby, and transform/opacity animation gated behind prefers-reduced-motion: no-preference"
+    },
+    {
+      "id": "h1",
+      "kind": "honesty",
+      "text": "the built page's stuck vignette actually animates in the dist HTML (scoped-style hashes reach the animated elements \u2014 the lobes lesson), renders exactly once, and carries a full-scene desc narration matching the depth of disconnected's and routine's"
+    },
+    {
+      "id": "c3",
+      "kind": "requirement",
+      "text": "mind-nervous-system-body-slides.ts: the autonomy slide's Stuck situation drops photoId so all three situations render photo-free; the file-header photo-slot map (four slots exactly once, so101-action on Stuck) is rewritten to match"
+    },
+    {
+      "id": "h2",
+      "kind": "honesty",
+      "text": "no autonomy situation carries robot or photoId, the now-consumer-less robot?/photoId? fields are gone from DeckAutonomySituation, photoSlotsByRobot.so101 equals ['so101-hero'], and the file-header photo-slot map tells the three-slot story"
+    },
+    {
+      "id": "c4",
+      "kind": "requirement",
+      "text": "mind-nervous-system-body-slides.test.mjs re-pins: the slide-5 test asserts all three situations photo-free (today it pins stuck.photoId === so101-action), and the photo-discipline test's exactly-once-over-all-slots contract changes with the slot decision"
+    },
+    {
+      "id": "h3",
+      "kind": "honesty",
+      "text": "the re-pinned test file fails against main's dataset and passes against the new one, while still pinning slide count and order, kind/shape agreement, the verbatim thesis on the close slide, the 4-sentence spokenLine cap, and the ARM101 honesty phrasing"
+    },
+    {
+      "id": "c5",
+      "kind": "requirement",
+      "text": "check-presentations.mjs re-pins its built-HTML deck checks: expectedPhotoSlotSections drops so101-action\u2192autonomy, 'four robot photos with alt text' and the '4 captioned photos' summary become three, and the data-robot=so101 twice-deck-wide count follows the section-anchor decision"
+    },
+    {
+      "id": "h4",
+      "kind": "honesty",
+      "text": "check-presentations.mjs passes against the built dist with the re-pinned expectations (three photos with alt text, data-robot so101 exactly once deck-wide, no so101-action anywhere) and still fails on a deliberately broken build"
+    },
+    {
+      "id": "c6",
+      "kind": "requirement",
+      "text": "mind-nervous-system-body.astro's autonomy branch renders three DeckSituationVignettes cells \u2014 vignetteFor() extends to map Stuck, the per-cell photo conditional goes (or goes dead), and the sectionRobot derivation from situations.find(s => s.robot) follows the anchor decision"
+    },
+    {
+      "id": "h5",
+      "kind": "honesty",
+      "text": "the built autonomy section stamps no data-robot, contains three vignette svgs and zero <figure data-photo-slot>, and the presenter affordances \u2014 ArrowRight/ArrowDown advance, prev/next controls, dot-rail scroll-spy, reduced-motion instant jumps \u2014 still work across all six slides"
+    },
+    {
+      "id": "c8",
+      "kind": "boundary",
+      "text": "the other five slides, CliRuntimeStackDiagram, the surfaces slide's reachy-mini-action photo, both close-slide hero photos, and every article surface stay byte-identical \u2014 this is an autonomy-slide-only change per the deck-is-not-the-article check"
+    },
+    {
+      "id": "h10",
+      "kind": "honesty",
+      "text": "the PR's git diff touches no article surface, and outside the autonomy change set the only deck-slide diff is the single robotLabel string per q3"
+    },
+    {
+      "id": "c11",
+      "kind": "audience",
+      "text": "same as the parent deck: live-talk audiences and self-guided /presentations/ visitors \u2014 slide 5 must now read as one visual family of three situation cards, declarative at presentation distance"
+    },
+    {
+      "id": "h11",
+      "kind": "honesty",
+      "text": "read without the spoken track, each of slide 5's three cards communicates label \u2192 outcome alone at presentation distance"
+    },
+    {
+      "id": "c12",
+      "kind": "before_state",
+      "text": "Before: the Stuck cell renders the so101-action placeholder slate (no real photograph exists in the repo) beside two animated SVG vignettes; the node test pins stuck.photoId === 'so101-action' and check-presentations.mjs pins that figure inside the autonomy section and four photos deck-wide"
+    },
+    {
+      "id": "h12",
+      "kind": "honesty",
+      "text": "verified on main before rewriting: the stuck.photoId pin and the four-photo built-HTML check hold, and the Stuck cell renders the placeholder slate"
+    },
+    {
+      "id": "c13",
+      "kind": "after_state",
+      "text": "After: slide 5 is a uniform animated trio \u2014 Stuck, Disconnected, Routine operation \u2014 three site-palette DeckSituationVignettes with label \u2192 outcome captions; no photo figure, no data-robot on the section, and no so101-action slot anywhere in the repo"
+    },
+    {
+      "id": "h13",
+      "kind": "honesty",
+      "text": "the built autonomy section contains exactly three vignette svgs, zero photo figures, and no data-robot attribute, and a repo-wide grep for so101-action is empty"
+    },
+    {
+      "id": "c14",
+      "kind": "why_it_matters",
+      "text": "the slide's message is the three situations, not a photograph \u2014 a matching trio reads as one symbol; it also removes the risk of a gray placeholder slate on the wall if pre-talk captures slip, and cancels one of the operator's four owed photographs"
+    },
+    {
+      "id": "h14",
+      "kind": "honesty",
+      "text": "the built trio reads as one visual family in both dawn themes, and no gray placeholder slate remains anywhere in the published deck"
+    },
+    {
+      "id": "c15",
+      "kind": "success_signal",
+      "text": "node --test, astro build, and check-presentations.mjs all pass with the re-pinned three-vignette expectations, and the published autonomy slide renders the matching trio"
+    },
+    {
+      "id": "h15",
+      "kind": "honesty",
+      "text": "each of the three checks was deliberately broken once and observed failing before merge, then restored green"
+    },
+    {
+      "id": "c16",
+      "kind": "requirement",
+      "text": "the so101-action photo slot is deleted end-to-end: the PhotoSlotId union member, its photo record and photoBySlot entry in presentation-photos.ts, photoSlotsByRobot.so101 shrinking to ['so101-hero'], the shot-brief row and narration in docs/presentation-photos.md, both placeholder files (so101-action.webp, so101-action-thumb.webp) in public/presentations/, and the check's deckImagePaths entries"
+    },
+    {
+      "id": "h6",
+      "kind": "honesty",
+      "text": "grep -rn 'so101-action' across the repo returns zero hits, the three surviving slots keep the drop-in contract byte-identical, and docs/presentation-photos.md reads as three owed captures"
+    },
+    {
+      "id": "c17",
+      "kind": "requirement",
+      "text": "slide 5 goes fully robot-generic in speech as well as visuals: the autonomy spokenLine's first clause becomes 'When the robot gets stuck, \u2026' (dropping the SO-101 name), so the trio shows one generic robot in three situations and the deck's only specific-robot naming lives on the close slide"
+    },
+    {
+      "id": "h7",
+      "kind": "honesty",
+      "text": "the shipped slide 5 \u2014 on-slide text, captions, spokenLine, and the stuck vignette's aria narration \u2014 names no specific robot, and grep for 'SO-101' in the dataset hits only the robotLabel map (still used by the close card)"
+    },
+    {
+      "id": "c18",
+      "kind": "requirement",
+      "text": "per q3: robotLabel.so101 becomes 'SO-ARM101', rendering only in the close card's on-screen title \u2014 a one-string dataset edit; every other close-slide byte stays untouched"
+    },
+    {
+      "id": "h8",
+      "kind": "honesty",
+      "text": "the built close card title reads 'SO-ARM101' and the display string 'SO-101' no longer appears anywhere in the deck's rendered text \u2014 the lowercase so101 identifier (robot id, data-robot, photo slot) rightly remains"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "t1",
+      "summary": "Rewrite the autonomy slide's dataset + co-located node test (TDD-first): Stuck drops robot/photoId, spokenLine goes robot-generic, DeckAutonomySituation loses its photo fields, photoSlotsByRobot.so101 shrinks, robotLabel.so101 becomes 'SO-ARM101', header comment rewritten",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "the re-pinned test fails against main's dataset (before-state verified), then passes against the rewritten one",
+        "no autonomy situation carries robot or photoId; photoSlotsByRobot.so101 === ['so101-hero']; robotLabel.so101 === 'SO-ARM101'",
+        "the autonomy spokenLine starts 'When the robot gets stuck' and stays within the 4-sentence cap"
+      ],
+      "deps": [],
+      "covers": [
+        "c3",
+        "c17",
+        "c18",
+        "c12",
+        "h2",
+        "h3",
+        "h7",
+        "h8",
+        "h12",
+        "c4"
+      ],
+      "instruction": "rewrite the test first: re-pin slide-5 assertions (three photo-free situations, robot-generic spokenLine first clause, photoSlotsByRobot.so101 one entry, robotLabel.so101 'SO-ARM101'), watch it fail against main's dataset, then rewrite the dataset until green; keep the design-rate and no-commit-hash checks untouched; node --experimental-strip-types --test"
+    },
+    {
+      "id": "t2",
+      "summary": "Extend DeckSituationVignettes with the 'stuck' situation: union, COPY entry with full-scene desc, and an agent-link-active motif branch on the shared robot base",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "situation='stuck' renders with deterministic id vignette-stuck, role=img + aria-labelledby, and a desc narrating the full scene",
+        "the stuck motif animates transform/opacity only, gated behind prefers-reduced-motion: no-preference, in both dawn themes",
+        "the trio renders the same shared robot character in all three cards"
+      ],
+      "deps": [],
+      "covers": [
+        "c2",
+        "h1"
+      ],
+      "instruction": "author the stuck motif on the shared robot base: robot blocked at an obstacle with the agent link brightly lit (inspect-and-adapt) \u2014 the complement of disconnected's severed link and routine's empty slot; follow the component's existing COPY/motif/uid structure verbatim; inline SVG only, no set:html"
+    },
+    {
+      "id": "t3",
+      "summary": "Delete the so101-action photo slot end-to-end: PhotoSlotId union member, photo record and photoBySlot entry, shot-brief row + narration in docs/presentation-photos.md, both placeholder webp files",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "grep -rn 'so101-action' across the repo returns zero hits and astro build stays green",
+        "docs/presentation-photos.md reads as three owed captures; the three surviving slots' contract is byte-identical"
+      ],
+      "deps": [
+        "t1"
+      ],
+      "covers": [
+        "c16",
+        "h6"
+      ],
+      "instruction": "delete in one sweep after t1 lands (t1 removes the dataset references first): the union member and record in presentation-photos.ts, the photoBySlot entry, the shot-brief row and narration paragraph in docs/presentation-photos.md, and git rm both webp files; verify with the grep acceptance"
+    },
+    {
+      "id": "t4",
+      "summary": "Version bump (minor) + changelog entry for the autonomy-slide trio per the version-check CI gate",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "pyproject.toml version differs from main and CHANGELOG.md gains a Keep-a-Changelog entry describing the trio, the slot deletion, and the SO-ARM101 retitle"
+      ],
+      "deps": [],
+      "covers": [],
+      "instruction": "use the version-bump skill (/version-bump minor): pyproject.toml + Keep-a-Changelog entry; no other file"
+    },
+    {
+      "id": "t5",
+      "summary": "Rebuild the renderer's autonomy branch: three uniform DeckSituationVignettes cells, vignetteFor maps Stuck, photo conditional and orphaned .cell-photo CSS removed, autonomy arm of sectionRobot derivation dropped, header comment updated",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "the built autonomy section contains three vignette svgs, zero <figure data-photo-slot>, and no data-robot attribute",
+        "reveal cadence and label \u2192 outcome captions survive; presenter affordances (keyboard advance, prev/next, dot-rail, reduced-motion jumps) work across all six slides",
+        "no .cell-photo rule remains in the page's styles"
+      ],
+      "deps": [
+        "t1",
+        "t2"
+      ],
+      "covers": [
+        "c6",
+        "h5",
+        "c13"
+      ],
+      "instruction": "render situations unconditionally as DeckSituationVignettes (delete the photoView photo branch inside the autonomy cell), extend vignetteFor with the stuck mapping, drop the autonomy arm of sectionRobot, remove the .cell-photo rules, update the file-header slide-5 line; keep reveal delays and caption markup byte-identical otherwise"
+    },
+    {
+      "id": "t6",
+      "summary": "Re-pin check-presentations.mjs to the trio contract: three photos, data-robot so101 once deck-wide, no so101-action in expectations, summary line updated",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "expectedSectionRobots is surfaces-only, expectedRobotSlideCounts.so101 === 1, deckImagePaths has three entries, and the 'four robot photos' check reads three",
+        "the re-pinned checks fail against a pre-change build for the expected reasons and pass against the post-t5 build"
+      ],
+      "deps": [
+        "t1"
+      ],
+      "covers": [
+        "c5",
+        "h4",
+        "c4"
+      ],
+      "instruction": "edit only the expectation constants and the two photo checks: expectedSectionRobots, expectedRobotSlideCounts, expectedPhotoSlotSections, deckImagePaths, the 'four robot photos' check title/loop, and the summary line; leave every article check untouched"
+    },
+    {
+      "id": "t7",
+      "summary": "Full validation + design review: CI trio green, deliberate-break drill, diff audit against the boundary, animation-liveness in dist, both-theme presentation-distance review",
+      "origin": "llm",
+      "status": "confirmed",
+      "acceptance_criteria": [
+        "node --test, astro build, and check-presentations.mjs all green; each check deliberately broken once, observed failing, restored",
+        "git diff audit: no article surface touched; outside the autonomy change set the only slide diff is the robotLabel string",
+        "the stuck vignette's animation selectors match elements in the built dist HTML (no dead CSS), and the trio reads as one visual family in both dawn themes at presentation distance"
+      ],
+      "deps": [
+        "t3",
+        "t5",
+        "t6"
+      ],
+      "covers": [
+        "c1",
+        "h9",
+        "c8",
+        "h10",
+        "c11",
+        "h11",
+        "h13",
+        "c14",
+        "h14",
+        "c15",
+        "h15",
+        "h1"
+      ],
+      "instruction": "run the three checks; then the deliberate-break drill (wrong vignette count in the dataset test, resurrect a photo figure expectation in the check, wrong data-robot count) watching each fail; audit git diff --stat against the boundary; grep the built dist for the stuck vignette's animation scope hashes; view both dawn themes full-viewport at presentation distance"
+    }
+  ],
+  "risks": [
+    {
+      "id": "r1",
+      "text": "the generic vignette robot may still read as specifically Reachy to the live audience \u2014 only observable at the talk itself (frame park v1); no build-time mitigation beyond the design-review pass",
+      "kind": "unknown_nonblocking",
+      "task_id": null,
+      "resolved": false,
+      "resolution": ""
+    },
+    {
+      "id": "r2",
+      "text": "the three surviving placeholder slates still await operator captures before the talk \u2014 an unchanged, operator-owned obligation this change reduces by one but cannot close",
+      "kind": "follow_up",
+      "task_id": null,
+      "resolved": false,
+      "resolution": ""
+    }
+  ]
+}

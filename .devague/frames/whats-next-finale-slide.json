@@ -1,0 +1,297 @@
+{
+  "slug": "whats-next-finale-slide",
+  "title": "whats next finale slide",
+  "schema_version": 3,
+  "status": "exported",
+  "created": "2026-07-22T15:30:48Z",
+  "updated": "2026-07-22T15:35:58Z",
+  "claims": [
+    {
+      "id": "c1",
+      "kind": "announcement",
+      "text": "The deck gains a seventh finale slide \u2014 What's next: See. Remember. Act. \u2014 turning ARM101 from unfinished second example into evidence the architecture expands from social presence to manipulation",
+      "origin": "user",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h1",
+          "text": "the shipped PR is one change and all three checks pass green on the seven-slide deck",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": "ship dataset, glyph component, renderer branch, test re-pins, and check re-pins together as one change; verify with node --experimental-strip-types --test, astro build, and check-presentations.mjs all green before opening the PR"
+    },
+    {
+      "id": "c2",
+      "kind": "requirement",
+      "text": "slide 7 content verbatim per the user's review: headline \"What's next: See. Remember. Act.\"; Reachy Mini entry \u2014 claim \"Give presence understanding and history.\", traits \"Semantic vision \u00b7 embodied memory \u00b7 behavior informed by experience\"; SO-ARM101 entry \u2014 claim \"Apply the same autonomy pattern to manipulation.\", traits \"Persistent runtime \u00b7 reachability memory \u00b7 load-aware rules \u00b7 supervised recovery\"; bottomLine \"The same architecture, expressed through a different body.\"",
+      "origin": "user",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h2",
+          "text": "the built slide 7 carries the headline, both robot claims, both trait lines, and the bottomLine verbatim, and the node test pins each string",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": "transcribe the user's review text verbatim into the dataset \u2014 headline, both card claims and trait lines, bottomLine; no paraphrase, punctuation preserved"
+    },
+    {
+      "id": "c3",
+      "kind": "requirement",
+      "text": "slide 7 spokenLine, exactly the user's 4-sentence spoken version: Reachy already has an autonomous presence / understand more of what it sees and retain useful memory of people, objects, events, and its environment / ARM101 already has the beginning of a safe operational language: observable state, guarded motion, overload sensing, and reachability exploration / it gets the same persistent sense\u2013rule\u2013intent runtime\u2014adapted for manipulation rather than expression",
+      "origin": "user",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h3",
+          "text": "the finale's spokenLine is the user's four sentences plus the two-sentence trajectory close, six sentences by the test's sentence regex, all verbatim",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": "append the two trajectory sentences (per q2) after the four spoken sentences, preserving the user's punctuation (sense\u2013rule\u2013intent runtime\u2014adapted; memory\u2014and)"
+    },
+    {
+      "id": "c4",
+      "kind": "decision",
+      "text": "naming discipline per the review: never \"proper vision\" (Reachy already has functioning motion/light vision and optional face perception) \u2014 the next step is \"semantic vision\"; on-slide wording is \"the same autonomy pattern\" (spoken may say \"the same autonomy\"); ARM101 inherits the separation, not Reachy's behavior",
+      "origin": "user",
+      "status": "confirmed",
+      "honesty_conditions": [],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c5",
+      "kind": "requirement",
+      "text": "the separation triple renders on the slide: \"agent authors and supervises / runtime persists and arbitrates / body retains control\"",
+      "origin": "user",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h4",
+          "text": "the built slide renders 'agent authors and supervises', 'runtime persists and arbitrates', 'body retains control' in one shared band, verbatim",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": "render the triple as the shared center band per q3 \u2014 three short lines between/below the two cards, one visual band, not per-card"
+    },
+    {
+      "id": "c6",
+      "kind": "decision",
+      "text": "slide position per the user: a seventh slide AFTER the close \u2014 the deck becomes 7 slides with \"What's next: See. Remember. Act.\" as the finale; the verbatim thesis stays on slide 6 (close), and the talk's last spoken word becomes the trajectory sentence",
+      "origin": "user",
+      "status": "confirmed",
+      "honesty_conditions": [],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c7",
+      "kind": "requirement",
+      "text": "every six-slide pin re-pins to seven: expectedDeckSlideCount and expectedDeckSlideIds in check-presentations.mjs, the test's exactly-six/beat-order assertions and 'deck's six slides' prose, the dataset header's 'always 6' and beat 1-6 \u2014 plus a new beat-7 'next' slide kind with its own renderer branch (no unstyled fallback)",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h5",
+          "text": "every former six-slide pin now reads seven, and the new 'next' kind has a dedicated renderer branch with no unstyled fallback",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": "re-pin: dataset header ('always 7', beats 1-7, slide list), test (count, id order, kinds, per-kind shape), check (expectedDeckSlideCount=7, expectedDeckSlideIds + the new section's checks); the dot rail and pager derive from slides.length automatically \u2014 verify, don't edit them"
+    },
+    {
+      "id": "c8",
+      "kind": "boundary",
+      "text": "slides 1-6 stay content-identical: the close keeps the verbatim thesis as its bottomLine, both hero photos, its two maturity cards, and deckSources rendering exactly once on it \u2014 the finale adds, never edits",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h6",
+          "text": "the dataset diff touches slides 1-6 only in the file-header prose; the close keeps thesis, sources, photos, and cards byte-identical; no article surface appears in the PR diff",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": "audit the PR diff: no article route/data/check, no close-slide content change beyond the dataset header prose; run the article checks and confirm byte-identical results"
+    },
+    {
+      "id": "c9",
+      "kind": "non_goal",
+      "text": "no new photo obligation: slide 7 carries no photo slot \u2014 the three existing slots keep their exactly-once discipline; the slide's visual element is a new inline-SVG component in the house pattern",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [],
+      "hard_questions": [],
+      "links": [],
+      "instruction": ""
+    },
+    {
+      "id": "c10",
+      "kind": "audience",
+      "text": "the same deck audiences as the parent frames \u2014 live-talk listeners and self-guided visitors; the finale must read as trajectory (working system \u2192 next step) with ARM101 as evidence of expansion, never as an unfinished example",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h7",
+          "text": "read without the spoken track, the built finale communicates both robots' next steps and the shared separation alone at presentation distance",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": "read slide 7 in the built deck without its spokenLine: two robot next-steps and the shared separation band must communicate the expansion alone"
+    },
+    {
+      "id": "c11",
+      "kind": "before_state",
+      "text": "Before: the deck is exactly six slides (dataset header 'always 6', test 'exactly six slides, ids in beat order', check expectedDeckSlideCount=6 with a pinned id list); the close is last with the verbatim thesis; the spokenLine cap is 4; no 'next' slide kind or glyph-triad component exists",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h8",
+          "text": "verified on main before building: expectedDeckSlideCount=6, the test's exactly-six assertion, and the absence of any 'next' renderer branch all hold",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": "verify on main before building: the six-slide pins hold and grep finds no 'next'-kind branch in the renderer"
+    },
+    {
+      "id": "c12",
+      "kind": "after_state",
+      "text": "After: seven slides ending on 'whats-next' (kind 'next', beat 7) \u2014 headline 'What's next: See. Remember. Act.', the glyph triad, two robot next-step entries, the shared separation band, bottomLine 'The same architecture, expressed through a different body.', a six-sentence spoken close \u2014 with every count/id/cap pin re-pinned to the new shape",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h9",
+          "text": "the built deck renders 7 data-deck-slide sections with 'whats-next' last, the dot rail counts 7, and the pager reads n / 7",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": "check the built HTML: 7 data-deck-slide sections, the new slide last, dot rail shows 7, pager reads n / 7"
+    },
+    {
+      "id": "c13",
+      "kind": "why_it_matters",
+      "text": "the slide gives the presentation a real trajectory: it turns ARM101 from 'unfinished second example' into evidence that the architecture is expanding from social presence to manipulation (the user's review, verbatim), and hands the talk its natural final sentence",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h10",
+          "text": "a both-theme design review at presentation distance confirms the finale reads as trajectory \u2014 forward-looking, visual-first, ARM101 as expanding evidence",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": "design-review the finale at presentation distance in both dawn themes: trajectory reads forward-looking, not roadmap-vague"
+    },
+    {
+      "id": "c14",
+      "kind": "success_signal",
+      "text": "node --test, astro build, and check-presentations.mjs all pass with the seven-slide re-pins, and the published deck renders the finale last",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h11",
+          "text": "each of the three checks was deliberately broken once against the seven-slide expectations, observed failing, and restored green",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": "before opening the PR, deliberately break one re-pinned expectation per check (slide count, missing finale section, cap regression), watch each fail, restore"
+    },
+    {
+      "id": "c15",
+      "kind": "requirement",
+      "text": "the deck-wide spokenLine sentence cap relaxes 4 \u2192 6 (test assertion + dataset header prose) so the finale's six-sentence spoken close fits; every slide 1-6 stays within four",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h12",
+          "text": "the test asserts the deck-wide cap of 6, a companion assertion pins slides 1-6 at \u2264 4 sentences each, and the finale counts exactly 6",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": "change the cap assertion to 6 and add a companion assertion that slides 1-6 each stay \u2264 4, so the relaxation cannot silently loosen the rest of the deck"
+    },
+    {
+      "id": "c16",
+      "kind": "requirement",
+      "text": "a new DeckNextGlyphs-style inline-SVG component supplies the See/Remember/Act triad in the house pattern: site-palette custom properties, role=img + aria per idiom, deterministic ids, transform/opacity-only animation behind prefers-reduced-motion: no-preference, authored inline (no set:html)",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h13",
+          "text": "the triad renders once on the finale with role=img + aria labels, and its animation selectors match elements in the built dist HTML (scope hashes verified)",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": "model the component on DeckPathGlyphs.astro (single prop selecting the glyph, decorative by default); verify the triad's animation selectors reach the built HTML (scope-hash check, the lobes lesson)"
+    },
+    {
+      "id": "c17",
+      "kind": "requirement",
+      "text": "slide 1 (bridge) carries a small speaker byline \u2014 'Ori Nachum' \u2014 quiet and seamless beside the title block",
+      "origin": "user",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h14",
+          "text": "the built bridge slide renders 'Ori Nachum' exactly once, visually subordinate to the headline, and the node test pins the byline string",
+          "status": "confirmed",
+          "instruction": ""
+        }
+      ],
+      "hard_questions": [],
+      "links": [],
+      "instruction": "add an optional byline field to the bridge slide's dataset entry and render it in the bridge branch as a small, ink-soft line near the headline block \u2014 eyebrow-weight, unobtrusive, legible in both dawn themes; pin the string in the node test"
+    }
+  ],
+  "open_vagueness": [],
+  "scope_entries": []
+}
