@@ -13,9 +13,9 @@ const routes = [
   {
     source: "pages/agents/devague.astro",
     built: "agents/devague/index.html",
-    calls: 3,
-    grids: 3,
-    cards: 21,
+    calls: 2,
+    grids: 2,
+    cards: 14,
   },
   {
     source: "pages/agents/colleague.astro",
@@ -142,6 +142,21 @@ assert.match(
   /\.structured-card-grid\.method-moves\s*\{[\s\S]*?repeat\(auto-fit,\s*minmax\(min\(100%,\s*18rem\),\s*1fr\)\)[\s\S]*?grid-auto-rows:\s*auto[\s\S]*?gap:\s*1\.1rem/,
   "Devague's method grid must retain the mock's natural rows and responsive columns",
 );
+assert.match(
+  devagueSource,
+  /<ol[\s\S]*class="card pipeline-stage-list"[\s\S]*?<p class="pipeline-stage-engine">\{stage\.engine\}<\/p>[\s\S]*?<h3 class="pipeline-stage-name">\{stage\.name\}<\/h3>/,
+  "Devague's pipeline must use the ruled reference list with engine metadata before the stage name",
+);
+assert.match(
+  devagueSource,
+  /\.pipeline-stage-row\s*\{[\s\S]*?grid-template-columns:\s*minmax\(11rem,\s*12\.5rem\)\s*minmax\(0,\s*1fr\)[\s\S]*?border-bottom:\s*1px solid var\(--line-soft\)/,
+  "Devague's pipeline reference rows must retain their two-column ruled layout",
+);
+assert.equal(
+  count(devague, /class="pipeline-stage-row"/g),
+  7,
+  "Devague must render all seven pipeline stages as reference rows",
+);
 assert.equal(
   count(devague, /class="card structured-card is-featured"/g),
   1,
@@ -160,7 +175,7 @@ assert.match(
 assert.equal(
   count(devague, /data-code-chip-footer/g),
   7,
-  "Only Devague's seven pipeline cards should use chip footers",
+  "Only Devague's seven pipeline rows should use chip footers",
 );
 assert.equal(
   count(devague, /data-code-chip(?:>| )/g),
@@ -192,8 +207,8 @@ for (const builtPath of excludedBuiltRoutes) {
   );
 }
 
-assert.equal(authoredCalls, 13);
-assert.equal(renderedCards, 77);
+assert.equal(authoredCalls, 12);
+assert.equal(renderedCards, 70);
 
 console.log(
   `Structured-card contract passed: ${authoredCalls} authored calls render ` +
