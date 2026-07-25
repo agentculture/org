@@ -38,10 +38,14 @@ export interface MethodMove {
   detail: string;
 }
 
+export type ReviewEffectPart = string | { code: string };
+
 /** One command of the human review loop and what it guarantees. */
 export interface ReviewStep {
+  kind: string;
+  title: string;
   cmd: string;
-  effect: string;
+  effect: ReviewEffectPart[];
 }
 
 /** One operator skill and the pipeline leg it drives. */
@@ -219,33 +223,56 @@ const devague = {
     ],
     steps: [
       {
+        kind: "review",
+        title: "Review what's proposed",
         cmd: "devague review",
-        effect:
-          "writes .devague/reviews/<slug>.md — a durable artifact of every proposal awaiting a human decision",
+        effect: [
+          "writes ",
+          { code: ".devague/reviews/<slug>.md" },
+          " — a durable artifact of every proposal awaiting a human decision",
+        ],
       },
       {
+        kind: "confirm",
+        title: "Confirm a batch of claims",
         cmd: "devague confirm c2 h1 h3",
-        effect:
+        effect: [
           "transactional — one bad id in the batch and nothing changes at all",
+        ],
       },
       {
+        kind: "confirm",
+        title: "Confirm from an edited file",
         cmd: "devague confirm --from-review <file>",
-        effect: "applies the confirm/reject decisions from an edited review file",
+        effect: [
+          "applies the confirm/reject decisions from an edited review file",
+        ],
       },
       {
+        kind: "reject",
+        title: "Reject a claim",
         cmd: "devague reject c3",
-        effect:
+        effect: [
           "the other half of the gate — a rejected claim stays on the record as rejected, not deleted",
+        ],
       },
       {
+        kind: "deviate",
+        title: "Flag a deviation from plan",
         cmd: 'devague deviate "…" --task t3 --origin llm',
-        effect:
+        effect: [
           "mid-build, the same rule — an agent-raised deviation lands as proposed, with a reason and a classification, never as approved",
+        ],
       },
       {
+        kind: "deviate",
+        title: "Confirm a deviation",
         cmd: "devague deviate --confirm d1",
-        effect:
-          "user-only, like every confirm — you approve that specific departure, or --reject it; either way it stays on the ledger",
+        effect: [
+          "user-only, like every confirm — you approve that specific departure, or ",
+          { code: "--reject" },
+          " it; either way it stays on the ledger",
+        ],
       },
     ] satisfies ReviewStep[],
   },

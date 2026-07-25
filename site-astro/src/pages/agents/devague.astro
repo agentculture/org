@@ -151,8 +151,32 @@ import {
               data-reveal
               style={`--reveal-delay: ${Math.min(i * 0.07, 0.28)}s`}
             >
-              <code class="gate-cmd">{step.cmd}</code>
-              <p class="gate-effect muted">{step.effect}</p>
+              <div class="gate-step-body">
+                <p class="gate-eyebrow">
+                  <span aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                  {" · "}
+                  <span>{step.kind}</span>
+                </p>
+                <h3 class="gate-title">{step.title}</h3>
+                <p class="gate-effect muted">
+                  {
+                    step.effect.map((part) =>
+                      typeof part === "string" ? part : <code>{part.code}</code>
+                    )
+                  }
+                </p>
+              </div>
+
+              <figure class="gate-mock">
+                <figcaption class="gate-mock-head">
+                  <span class="gate-mock-dot" aria-hidden="true"></span>
+                  <span class="gate-mock-label">human gate</span>
+                </figcaption>
+                <code class="gate-mock-cmd">
+                  <span class="gate-mock-prompt" aria-hidden="true">$</span>
+                  {step.cmd}
+                </code>
+              </figure>
             </li>
           ))
         }
@@ -403,28 +427,109 @@ import {
 
   .gate-step {
     padding: 1.15rem 1.5rem;
-    display: grid;
-    grid-template-columns: minmax(12rem, 19rem) 1fr;
-    gap: 0.4rem 1.6rem;
-    align-items: baseline;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 3rem;
   }
 
-  .gate-cmd {
-    font-size: var(--ac-type-ui);
-    font-weight: 600;
+  .gate-step-body {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .gate-eyebrow {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--ac-type-meta);
+    font-weight: 400;
+    line-height: var(--ac-leading-card);
+    letter-spacing: var(--ac-tracking-caps);
+    text-transform: uppercase;
     color: var(--accent);
-    overflow-wrap: anywhere;
+  }
+
+  .gate-title {
+    margin: 0.75rem 0;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: var(--ac-tracking-heading);
+    color: var(--ink);
   }
 
   .gate-effect {
-    font-size: 1rem;
-    line-height: var(--ac-leading-card);
     margin: 0;
+    max-width: var(--ac-measure-prose);
+    font-size: var(--ac-type-ui);
+    line-height: var(--ac-leading-card);
+  }
+
+  .gate-effect code {
+    font-size: 0.92em;
+  }
+
+  .gate-mock {
+    width: 12rem;
+    height: 12rem;
+    margin: 0;
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #10142b;
+    border: 1px solid rgba(233, 236, 248, 0.12);
+    border-radius: 0.6rem;
+  }
+
+  .gate-mock-head {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.55rem 0.7rem;
+    border-bottom: 1px solid rgba(233, 236, 248, 0.1);
+  }
+
+  .gate-mock-dot {
+    width: 0.45rem;
+    height: 0.45rem;
+    flex: none;
+    border-radius: 50%;
+    background: #7fdcc9;
+  }
+
+  .gate-mock-label {
+    color: #c7cde8;
+    font-family: var(--font-mono);
+    font-size: var(--ac-type-meta);
+    line-height: var(--ac-leading-ui);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .gate-mock-cmd {
+    padding: 0.6rem 0.65rem;
+    overflow: hidden;
+    color: #e9ecf8;
+    font-family: var(--font-mono);
+    font-size: var(--ac-type-terminal);
+    line-height: var(--ac-leading-card);
+    letter-spacing: var(--ac-tracking-flat);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .gate-mock-prompt {
+    margin-right: 0.35em;
+    color: #7fdcc9;
   }
 
   @media (max-width: 40rem) {
     .gate-step {
-      grid-template-columns: 1fr;
+      flex-direction: column;
+      gap: 1.15rem;
     }
   }
 

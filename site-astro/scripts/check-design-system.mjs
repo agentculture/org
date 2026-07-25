@@ -116,4 +116,28 @@ for (const path of [
   checks += 5;
 }
 
-console.log(`Design-system contract passed: ${checks} checks across tokens, assigned rails, the responsive shell, the seven-slide deck, and four terminal components.`);
+const devague = await readSource("pages/agents/devague.astro");
+assert.match(
+  devague,
+  /<figure class="gate-mock">[\s\S]*?<figcaption class="gate-mock-head">/,
+);
+assert.match(
+  devague,
+  /\.gate-mock\s*\{[^}]*width:\s*12rem[^}]*height:\s*12rem/s,
+);
+assert.match(
+  devague,
+  /\.gate-mock-cmd\s*\{[^}]*font-size:\s*var\(--ac-type-terminal\)/s,
+);
+assert.match(
+  devague,
+  /@media \(max-width:\s*40rem\)\s*\{[\s\S]*?\.gate-step\s*\{[^}]*flex-direction:\s*column/s,
+);
+assert.doesNotMatch(
+  devague,
+  /data-copy|class="copy-btn"|class="copy-icon"|navigator\.clipboard|execCommand/,
+  "Devague's human-gate previews must remain read-only and omit copy controls",
+);
+checks += 5;
+
+console.log(`Design-system contract passed: ${checks} checks across tokens, assigned rails, the responsive shell, the seven-slide deck, four terminal components, and the read-only Devague gate previews.`);
