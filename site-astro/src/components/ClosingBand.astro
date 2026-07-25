@@ -1,0 +1,109 @@
+---
+// The agent-page closing treatment approved in the Devague mock: agent name,
+// thread flourish, existing closing copy, then the existing actions. This
+// stays inside <main>; Footer.astro remains the page's only real footer.
+interface ClosingAction {
+  href: string;
+  label: string;
+  treatment?: "link" | "code";
+}
+
+interface Props {
+  name: string;
+  paragraphs: readonly string[];
+  actions: readonly ClosingAction[];
+}
+
+const { name, paragraphs, actions } = Astro.props;
+---
+
+<section class="closing-band" aria-label="Closing" data-closing-band>
+  <div class="container">
+    <header class="closing-mark" data-reveal>
+      <span class="closing-word">{name}</span>
+      <svg
+        class="closing-flourish"
+        width="110"
+        height="15"
+        viewBox="0 0 190 26"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path
+          d="M8 16 Q 60 4 108 13 T 182 12"
+          stroke="var(--mesh-thread)"
+          stroke-width="1.5"
+          stroke-linecap="round"></path>
+        <circle cx="8" cy="16" r="3.5" fill="var(--mesh-node)"></circle>
+        <circle cx="108" cy="13" r="2.5" fill="var(--mesh-node)"></circle>
+        <circle cx="182" cy="12" r="3" fill="var(--mesh-node)"></circle>
+      </svg>
+    </header>
+
+    <div class="prose" data-reveal>
+      {
+        paragraphs.map((paragraph) => <p class="lede">{paragraph}</p>)
+      }
+      <p class="cta-row" data-reveal style="--reveal-delay: 0.15s">
+        {
+          actions.map((action) => (
+            <a
+              class:list={["cta", action.treatment === "code" && "cta-code"]}
+              href={action.href}
+            >
+              {
+                action.treatment === "code" ? (
+                  <code>{action.label}</code>
+                ) : (
+                  <>{action.label} →</>
+                )
+              }
+            </a>
+          ))
+        }
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .closing-band {
+    border-top: 1px solid var(--line-soft);
+    padding-top: clamp(1.5rem, 3vh, 2.25rem);
+    padding-bottom: clamp(2rem, 4vh, 3rem);
+  }
+
+  .closing-mark {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .closing-word {
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 500;
+  }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.6rem 1.8rem;
+  }
+
+  .cta {
+    font-weight: 560;
+    white-space: nowrap;
+  }
+
+  .cta-code {
+    display: inline-block;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+</style>

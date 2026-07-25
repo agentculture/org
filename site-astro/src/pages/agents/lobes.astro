@@ -6,6 +6,7 @@
 // ../../data/lobes-captures.ts — nothing on this page dials a machine.
 import Layout from "../../layouts/Layout.astro";
 import PageHero from "../../components/PageHero.astro";
+import ClosingBand from "../../components/ClosingBand.astro";
 import LobesDiagram from "../../components/LobesDiagram.astro";
 import LobesTerminal from "../../components/LobesTerminal.astro";
 import site from "../../data/site";
@@ -234,17 +235,16 @@ import {
     </div>
   </section>
 
-  <!-- closing -->
-  <section class="section closing" aria-label="Closing">
-    <div class="container">
-      <div class="prose" data-reveal>
-        {lobes.closing.paragraphs.map((p) => <p class="lede">{p}</p>)}
-        <p data-reveal style="--reveal-delay: 0.15s">
-          <a class="cta" href={lobes.closing.repoUrl}>{lobes.closing.repoCta} →</a>
-        </p>
-      </div>
-    </div>
-  </section>
+  <ClosingBand
+    name={lobes.hero.title}
+    paragraphs={lobes.closing.paragraphs}
+    actions={[
+      {
+        href: lobes.closing.repoUrl,
+        label: lobes.closing.repoCta,
+      },
+    ]}
+  />
 </Layout>
 
 <style>
@@ -486,12 +486,4 @@ import {
     line-height: 1.55;
   }
 
-  /* closing */
-  .closing {
-    padding-bottom: clamp(4rem, 9vh, 6.5rem);
-  }
-
-  .cta {
-    font-weight: 560;
-  }
 </style>

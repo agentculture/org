@@ -19,6 +19,7 @@
 // — nothing on this page runs devague in the browser.
 import Layout from "../../layouts/Layout.astro";
 import PageHero from "../../components/PageHero.astro";
+import ClosingBand from "../../components/ClosingBand.astro";
 import DevagueFlow from "../../components/DevagueFlow.astro";
 import DevagueTerminal from "../../components/DevagueTerminal.astro";
 import site from "../../data/site";
@@ -276,22 +277,21 @@ import {
     </div>
   </section>
 
-  <!-- closing -->
-  <section class="section closing" aria-label="Closing">
-    <div class="container">
-      <div class="prose" data-reveal>
-        {devague.closing.paragraphs.map((p) => <p class="lede">{p}</p>)}
-        <p class="cta-row" data-reveal style="--reveal-delay: 0.15s">
-          <a class="cta" href={devague.closing.repoUrl}
-            >{devague.closing.repoCta} →</a
-          >
-          <a class="cta" href={devague.closing.pypiUrl}
-            ><code>{devague.closing.pypiCta}</code></a
-          >
-        </p>
-      </div>
-    </div>
-  </section>
+  <ClosingBand
+    name={devague.hero.title}
+    paragraphs={devague.closing.paragraphs}
+    actions={[
+      {
+        href: devague.closing.repoUrl,
+        label: devague.closing.repoCta,
+      },
+      {
+        href: devague.closing.pypiUrl,
+        label: devague.closing.pypiCta,
+        treatment: "code",
+      },
+    ]}
+  />
 </Layout>
 
 <style>
@@ -593,20 +593,4 @@ import {
     font-weight: 600;
   }
 
-  /* closing */
-  .closing {
-    padding-bottom: clamp(4rem, 9vh, 6.5rem);
-  }
-
-  .cta-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem 1.8rem;
-    align-items: baseline;
-  }
-
-  .cta {
-    font-weight: 560;
-    white-space: nowrap;
-  }
 </style>

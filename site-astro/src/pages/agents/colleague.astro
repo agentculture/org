@@ -33,6 +33,7 @@
 // placeholder for it — no invented transcript ever stood in for it.
 import Layout from "../../layouts/Layout.astro";
 import PageHero from "../../components/PageHero.astro";
+import ClosingBand from "../../components/ClosingBand.astro";
 import ColleagueDiagram from "../../components/ColleagueDiagram.astro";
 import ColleagueTerminal from "../../components/ColleagueTerminal.astro";
 import site from "../../data/site";
@@ -427,22 +428,21 @@ const dogfood = {
     </div>
   </section>
 
-  <!-- closing -->
-  <section class="section closing" aria-label="Closing">
-    <div class="container">
-      <div class="prose" data-reveal>
-        {colleague.closing.paragraphs.map((p) => <p class="lede">{p}</p>)}
-        <p class="cta-row" data-reveal style="--reveal-delay: 0.15s">
-          <a class="cta" href={colleague.closing.repoUrl}
-            >{colleague.closing.repoCta} →</a
-          >
-          <a class="cta" href={colleague.closing.pypiUrl}
-            ><code>{colleague.closing.pypiCta}</code></a
-          >
-        </p>
-      </div>
-    </div>
-  </section>
+  <ClosingBand
+    name={colleague.hero.title}
+    paragraphs={colleague.closing.paragraphs}
+    actions={[
+      {
+        href: colleague.closing.repoUrl,
+        label: colleague.closing.repoCta,
+      },
+      {
+        href: colleague.closing.pypiUrl,
+        label: colleague.closing.pypiCta,
+        treatment: "code",
+      },
+    ]}
+  />
 </Layout>
 
 <style>
@@ -825,20 +825,4 @@ const dogfood = {
     font-weight: 600;
   }
 
-  /* closing */
-  .closing {
-    padding-bottom: clamp(4rem, 9vh, 6.5rem);
-  }
-
-  .cta-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem 1.8rem;
-    align-items: baseline;
-  }
-
-  .cta {
-    font-weight: 560;
-    white-space: nowrap;
-  }
 </style>

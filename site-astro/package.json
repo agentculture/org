@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "check:closing-bands": "node scripts/check-closing-bands.mjs",
     "check:presentations": "node scripts/check-presentations.mjs",
     "preview": "astro preview",
     "astro": "astro"

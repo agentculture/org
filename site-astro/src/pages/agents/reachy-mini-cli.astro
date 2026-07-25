@@ -42,6 +42,7 @@
 //                  sayTtsRefusal, sayHarmonic
 import Layout from "../../layouts/Layout.astro";
 import PageHero from "../../components/PageHero.astro";
+import ClosingBand from "../../components/ClosingBand.astro";
 import ReachyDiagram from "../../components/ReachyDiagram.astro";
 import ReachyTerminal from "../../components/ReachyTerminal.astro";
 import site from "../../data/site";
@@ -368,22 +369,21 @@ const sdkOwnerCaption =
     </div>
   </section>
 
-  <!-- closing -->
-  <section class="section closing" aria-label="Closing">
-    <div class="container">
-      <div class="prose" data-reveal>
-        {reachy.closing.paragraphs.map((p) => <p class="lede">{p}</p>)}
-        <p class="cta-row" data-reveal style="--reveal-delay: 0.15s">
-          <a class="cta" href={reachy.closing.repoUrl}
-            >{reachy.closing.repoCta} →</a
-          >
-          <a class="cta" href={reachy.closing.pypiUrl}
-            ><code>{reachy.closing.pypiCta}</code></a
-          >
-        </p>
-      </div>
-    </div>
-  </section>
+  <ClosingBand
+    name={reachy.hero.title}
+    paragraphs={reachy.closing.paragraphs}
+    actions={[
+      {
+        href: reachy.closing.repoUrl,
+        label: reachy.closing.repoCta,
+      },
+      {
+        href: reachy.closing.pypiUrl,
+        label: reachy.closing.pypiCta,
+        treatment: "code",
+      },
+    ]}
+  />
 </Layout>
 
 <style>
@@ -615,20 +615,4 @@ const sdkOwnerCaption =
     }
   }
 
-  /* closing */
-  .closing {
-    padding-bottom: clamp(4rem, 9vh, 6.5rem);
-  }
-
-  .cta-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem 1.8rem;
-    align-items: baseline;
-  }
-
-  .cta {
-    font-weight: 560;
-    white-space: nowrap;
-  }
 </style>
