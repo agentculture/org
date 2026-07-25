@@ -836,8 +836,8 @@ check("current nav state per surface", () => {
       label: "article",
       html: articleHtml,
       exactHref: articleRoute,
-      footerLabel: "Articles",
-      footerHref: articlesRoute,
+      footerLabel: undefined,
+      footerHref: undefined,
     },
     {
       label: "presentations index",
@@ -850,8 +850,8 @@ check("current nav state per surface", () => {
       label: "deck",
       html: deckHtml,
       exactHref: deckRoute,
-      footerLabel: "Presentations",
-      footerHref: presentationsRoute,
+      footerLabel: undefined,
+      footerHref: undefined,
     },
   ];
   for (const {
@@ -890,18 +890,21 @@ check("current nav state per surface", () => {
       (anchor) => anchor.attrs["aria-current"] === "page",
     );
     assert(
-      currentFooterLinks.length === 1 &&
-        currentFooterLinks[0].attrs.href === footerHref &&
-        currentFooterLinks[0].text === footerLabel,
-      `${label} Footer current link must be ${footerLabel}`,
+      currentFooterLinks.length === (footerHref ? 1 : 0) &&
+        (!footerHref ||
+          (currentFooterLinks[0].attrs.href === footerHref &&
+            currentFooterLinks[0].text === footerLabel)),
+      footerHref
+        ? `${label} Footer current link must be ${footerLabel}`
+        : `${label} Footer must not fall back to its Library index`,
     );
 
     const pageCurrent = anchors(html).filter(
       (anchor) => anchor.attrs["aria-current"] === "page",
     );
     assert(
-      pageCurrent.length === 3,
-      `${label} must have current state in responsive Header navs and Footer only; found ${pageCurrent.length}`,
+      pageCurrent.length === (footerHref ? 3 : 2),
+      `${label} must have exact current state only where its destination is rendered; found ${pageCurrent.length}`,
     );
   }
 });

@@ -250,7 +250,11 @@ const pathname = Astro.url.pathname;
     color: var(--ink);
   }
 
-  .root-control::after {
+  .root-item[data-nav-current="true"] .menu-trigger {
+    font-weight: 650;
+  }
+
+  .direct-link::after {
     content: "";
     position: absolute;
     bottom: 0.05rem;
@@ -262,8 +266,7 @@ const pathname = Astro.url.pathname;
     transform: translateX(-50%) scale(0);
   }
 
-  .root-item[data-nav-current="true"] > .direct-link::after,
-  .root-item[data-nav-current="true"] .menu-trigger::after {
+  .root-item[data-nav-current="true"] > .direct-link::after {
     transform: translateX(-50%) scale(1);
   }
 
@@ -414,24 +417,23 @@ const pathname = Astro.url.pathname;
     transform: rotate(0);
   }
 
-  .mobile .root-control::after {
+  .mobile .menu-trigger {
+    padding-right: 0.75rem;
+  }
+
+  .mobile .direct-link::after {
     right: 0.75rem;
     bottom: 50%;
     left: auto;
     transform: translateY(50%) scale(0);
   }
 
-  .mobile .root-item[data-nav-current="true"] > .direct-link::after,
-  .mobile .root-item[data-nav-current="true"] .menu-trigger::after {
-    transform: translateY(50%) scale(1);
-  }
-
-  .mobile .menu-trigger {
-    padding-right: 0.75rem;
-  }
-
-  .mobile .root-item[data-nav-current="true"] .menu-trigger {
+  .mobile .root-item[data-nav-current="true"] > .direct-link {
     padding-right: 2rem;
+  }
+
+  .mobile .root-item[data-nav-current="true"] > .direct-link::after {
+    transform: translateY(50%) scale(1);
   }
 
   .mobile .menu-panel {
@@ -513,7 +515,7 @@ const pathname = Astro.url.pathname;
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .root-control::after,
+    .direct-link::after,
     .chevron,
     .desktop .menu-panel,
     .mobile.is-enhanced .menu-panel {

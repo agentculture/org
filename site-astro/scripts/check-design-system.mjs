@@ -96,7 +96,7 @@ const [header, footer, pageHero, deck] = await Promise.all([
 
 assert.match(header, /container shell-rail bar/);
 assert.match(header, /max-width:\s*51\.99rem/);
-assert.match(footer, /container shell-rail/);
+assert.match(footer, /container wide-rail/);
 assert.match(pageHero, /container page-rail/);
 assert.equal((deck.match(/container deck-content-rail/g) ?? []).length, 7);
 checks += 5;

@@ -92,6 +92,16 @@ const libraryRoutes = ownedHeaderRoutes.filter(
   (href) =>
     href.startsWith("/articles/") || href.startsWith("/presentations/"),
 );
+const footerOwnedRoutes = ownedHeaderRoutes.filter(
+  (href) =>
+    href !== "/articles/mind-nervous-system-body/" &&
+    href !== "/presentations/mind-nervous-system-body/",
+);
+const footerRoutesWithoutCurrentState = new Set([
+  "/",
+  "/articles/mind-nervous-system-body/",
+  "/presentations/mind-nervous-system-body/",
+]);
 const agentGroupHrefs = site.agents.groups.map(
   ({ id }) => `/agents/#${id}`,
 );
@@ -244,15 +254,52 @@ for (const [route, html] of pages) {
     );
   });
 
-  check(`${route} grouped footer contract`, () => {
+  check(`${route} selected sitemap footer contract`, () => {
     const footer = region(html, "footer", "site-footer");
-    for (const heading of ["Explore", "Participate", "Products &amp; docs"]) {
+    for (const heading of ["Explore", "Agents", "Library", "Ecosystem"]) {
       assert(footer.includes(`>${heading}</h2>`), `missing ${heading} footer group`);
     }
     assert(footer.includes(site.hero.tagline), "footer tagline is missing");
     assert(footer.includes("built and operated by the organization's agents"), "operated-by note is missing");
 
-    const learn = openings(footer, "a").find(
+    const footerAnchors = openings(footer, "a");
+    for (const ownedRoute of footerOwnedRoutes) {
+      const matches = footerAnchors.filter(({ href }) => href === ownedRoute);
+      assert(
+        matches.length === 1,
+        `${ownedRoute} must appear exactly once in the footer`,
+      );
+    }
+    for (const detailRoute of [
+      "/articles/mind-nervous-system-body/",
+      "/presentations/mind-nervous-system-body/",
+    ]) {
+      assert(
+        !footerAnchors.some(({ href }) => href === detailRoute),
+        `${detailRoute} must stay in the header Library panel only`,
+      );
+    }
+    assert(
+      !footerAnchors.some(({ href = "" }) => href.startsWith("/agents/#")),
+      "agent directory anchors must remain header-only",
+    );
+
+    const currentFooterLinks = footerAnchors.filter(
+      (anchor) => anchor["aria-current"] === "page",
+    );
+    assert(
+      currentFooterLinks.length ===
+        (footerRoutesWithoutCurrentState.has(route) ? 0 : 1),
+      "wrong number of exact current footer destinations",
+    );
+    if (!footerRoutesWithoutCurrentState.has(route)) {
+      assert(
+        currentFooterLinks[0].href === route,
+        `${route} must mark only its exact footer destination current`,
+      );
+    }
+
+    const learn = footerAnchors.find(
       ({ href }) => href === "https://agentculture.org/learn/",
     );
     assert(learn, "footer Learn link is missing");
@@ -311,6 +358,6 @@ if (failures.length) {
   process.exitCode = 1;
 } else {
   console.log(
-    `Wayfinding contract passed: ${checksPassed} checks across ${pages.size} pages; consolidated descriptive desktop/mobile navigation, complete owned-route coverage, grouped footer, deferred breadcrumbs/local contents navigation, the retained deck rail, and 6 stable agent groups.`,
+    `Wayfinding contract passed: ${checksPassed} checks across ${pages.size} pages; consolidated descriptive desktop/mobile navigation, complete header route coverage, exact sitemap footer states, section-only Library footer links, deferred breadcrumbs/local contents navigation, the retained deck rail, and 6 stable agent groups.`,
   );
 }

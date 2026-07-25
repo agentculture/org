@@ -5,6 +5,7 @@ import test from "node:test";
 import {
   agentsNavigation,
   footerNavigation,
+  isFooterNavCurrent,
   isNavigationDestinationCurrent,
   isPrimaryNavCurrent,
   learnNavigation,
@@ -209,7 +210,7 @@ test("Learn never participates in current-section matching", () => {
   }
 });
 
-test("the footer retains its exact grouped information architecture", () => {
+test("the footer exposes the selected sitemap links exactly once", () => {
   assert.deepEqual(
     footerNavigation.map(({ label, items }) => ({
       label,
@@ -218,15 +219,43 @@ test("the footer retains its exact grouped information architecture", () => {
     [
       {
         label: "Explore",
-        items: ["Framework", "Agents", "Articles", "Presentations"],
+        items: ["Framework", "Engage"],
       },
-      { label: "Participate", items: ["Engage", "GitHub"] },
       {
-        label: "Products & docs",
-        items: ["Learn", "culture.dev", "tools.culture.dev"],
+        label: "Agents",
+        items: [
+          "Browse all agents",
+          "colleague",
+          "lobes-cli",
+          "devague",
+          "reachy-mini-cli",
+        ],
+      },
+      {
+        label: "Library",
+        items: ["Articles", "Presentations"],
+      },
+      {
+        label: "Ecosystem",
+        items: ["Learn", "GitHub", "culture.dev", "tools.culture.dev"],
       },
     ],
   );
+
+  const internalHrefs = footerNavigation
+    .flatMap(({ items }) => items)
+    .filter(({ kind }) => kind === "internal")
+    .map(({ href }) => href);
+
+  const expectedFooterRoutes = ownedRoutes.filter(
+    (href) =>
+      href !== "/articles/mind-nervous-system-body/" &&
+      href !== "/presentations/mind-nervous-system-body/",
+  );
+
+  assert.equal(internalHrefs.length, 9);
+  assert.equal(new Set(internalHrefs).size, internalHrefs.length);
+  assert.deepEqual(internalHrefs.toSorted(), expectedFooterRoutes.toSorted());
 
   const footerLearn = footerNavigation
     .flatMap(({ items }) => items)
@@ -237,6 +266,29 @@ test("the footer retains its exact grouped information architecture", () => {
     kind: "product",
     newTab: true,
   });
+});
+
+test("footer current states use exact owned-route matching", () => {
+  const items = footerNavigation.flatMap(({ items }) => items);
+
+  for (const route of ownedRoutes) {
+    const expected = items.some(({ href }) => href === route) ? [route] : [];
+    assert.deepEqual(
+      items
+        .filter((item) => isFooterNavCurrent(route, item))
+        .map(({ href }) => href),
+      expected,
+      `${route} should only be current when its exact footer destination exists`,
+    );
+  }
+
+  for (const item of items) {
+    assert.equal(isFooterNavCurrent("/", item), false);
+    assert.equal(isFooterNavCurrent("/agents-old/", item), false);
+    if (item.kind !== "internal") {
+      assert.equal(isFooterNavCurrent(item.href, item), false);
+    }
+  }
 });
 
 test("the header implements accessible responsive panels without dependencies", async () => {
@@ -275,6 +327,23 @@ test("the header implements accessible responsive panels without dependencies", 
   assert.doesNotMatch(primaryNav, /primary-cta|nav-action/);
   assert.match(primaryNav, /min-height:\s*2\.75rem/);
   assert.match(primaryNav, /prefers-reduced-motion:\s*no-preference/);
+  assert.match(
+    primaryNav,
+    /\.root-item\[data-nav-current="true"\]\s+\.menu-trigger\s*\{[\s\S]*font-weight:\s*650/,
+  );
+  assert.doesNotMatch(
+    primaryNav,
+    /data-nav-current="true"\]\s*>\s*\.direct-link[\s\S]{0,80}font-weight/,
+  );
+  assert.match(
+    primaryNav,
+    /\.root-item\[data-nav-current="true"\]\s*>\s*\.direct-link::after/,
+  );
+  assert.doesNotMatch(
+    primaryNav,
+    /data-nav-current="true"[^\n]*\.menu-trigger::after/,
+  );
+  assert.doesNotMatch(primaryNav, /\.root-control::after/);
   assert.doesNotMatch(primaryNav, /https?:\/\/[^'"]+\.(?:js|css)/);
 });
 
@@ -283,10 +352,19 @@ test("the footer renders grouped navigation with external destination cues", asy
 
   assert.match(footer, /footerNavigation\.map/);
   assert.match(footer, /aria-labelledby=/);
+  assert.match(footer, /isFooterNavCurrent/);
   assert.match(footer, /ExternalLinkIcon/);
   assert.match(footer, /opens in a new tab/);
   assert.match(footer, /site\.hero\.tagline/);
   assert.match(footer, /built and operated by the organization's agents/);
+  assert.match(footer, /container wide-rail/);
+  assert.match(footer, /min-height:\s*2\.75rem/);
+  assert.match(footer, /<Mark size=\{26\} \/>/);
+  assert.match(footer, /font-size:\s*1\.15rem/);
+  assert.match(footer, /a\[aria-current="page"\]\s*\{[\s\S]*font-weight:\s*650/);
+  assert.match(footer, /max-width:\s*63\.99rem/);
+  assert.match(footer, /max-width:\s*49\.99rem/);
+  assert.match(footer, /max-width:\s*33\.99rem/);
 });
 
 test("the home Explore cards remain derived from the five owned sections", async () => {

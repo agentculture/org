@@ -2,7 +2,7 @@
 import site from "../data/site";
 import {
   footerNavigation,
-  isPrimaryNavCurrent,
+  isFooterNavCurrent,
 } from "../data/navigation";
 import ExternalLinkIcon from "./ExternalLinkIcon.astro";
 import Mark from "./Mark.astro";
@@ -11,11 +11,11 @@ const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer">
-  <div class="container shell-rail">
+  <div class="container wide-rail">
     <div class="footer-grid">
       <div class="brand-column">
         <a class="wordmark" href="/">
-          <Mark size={22} />
+          <Mark size={26} />
           <span>{site.hero.title}</span>
         </a>
         <p>{site.hero.tagline}</p>
@@ -33,7 +33,7 @@ const year = new Date().getFullYear();
                       href={item.href}
                       target={item.newTab ? "_blank" : undefined}
                       rel={item.newTab ? "noopener noreferrer" : undefined}
-                      aria-current={isPrimaryNavCurrent(Astro.url.pathname, item)
+                      aria-current={isFooterNavCurrent(Astro.url.pathname, item)
                         ? "page"
                         : undefined}
                     >
@@ -68,9 +68,13 @@ const year = new Date().getFullYear();
 
   .footer-grid {
     display: grid;
-    grid-template-columns: minmax(14rem, 1.25fr) minmax(25rem, 2fr);
-    gap: clamp(2.5rem, 7vw, 6rem);
+    grid-template-columns: minmax(14rem, 1.15fr) minmax(0, 4fr);
+    gap: clamp(2.5rem, 5vw, 4rem);
     margin-bottom: 2.5rem;
+  }
+
+  .brand-column {
+    max-width: 27rem;
   }
 
   .brand-column p {
@@ -83,20 +87,21 @@ const year = new Date().getFullYear();
 
   .wordmark {
     display: inline-flex;
+    min-height: 2.75rem;
     align-items: center;
     gap: 0.55rem;
     color: var(--ink);
     font-family: var(--font-display);
     font-variation-settings: "SOFT" 75, "WONK" 0;
-    font-size: 1.05rem;
+    font-size: 1.15rem;
     font-weight: 520;
     text-decoration: none;
   }
 
   .link-groups {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(1.5rem, 3vw, 2.5rem);
   }
 
   nav h2 {
@@ -122,6 +127,7 @@ const year = new Date().getFullYear();
     align-items: center;
     gap: 0.3rem;
     min-height: 2.75rem;
+    overflow-wrap: anywhere;
     color: var(--ink-soft);
     font-size: var(--ac-type-ui);
     font-weight: 500;
@@ -134,18 +140,7 @@ const year = new Date().getFullYear();
   }
 
   nav a[aria-current="page"] {
-    text-decoration: none;
-  }
-
-  /* Match the header's current-section cue, but keep the node inline with
-     the footer label instead of positioning it underneath. */
-  nav a[aria-current="page"]::after {
-    content: "";
-    width: 5px;
-    height: 5px;
-    flex: 0 0 5px;
-    border-radius: 50%;
-    background: var(--accent);
+    font-weight: 650;
   }
 
   .note {
@@ -159,20 +154,28 @@ const year = new Date().getFullYear();
     margin-inline: 0.5rem;
   }
 
-  @media (max-width: 50rem) {
+  @media (max-width: 63.99rem) {
     .footer-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
       gap: 2.5rem;
+    }
+
+    .link-groups {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
   }
 
-  @media (max-width: 34rem) {
+  @media (max-width: 49.99rem) {
     .link-groups {
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 2.5rem 2rem;
     }
+  }
 
-    .link-groups nav:last-child {
-      grid-column: 1 / -1;
+  @media (max-width: 33.99rem) {
+    .link-groups {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2rem;
     }
 
     .note .sep {

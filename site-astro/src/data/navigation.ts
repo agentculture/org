@@ -184,37 +184,50 @@ export const primaryNavigation = [
   learnNavigation,
 ] as const satisfies readonly HeaderNavigationItem[];
 
+const toFooterInternalItem = ({
+  href,
+  label,
+}: Pick<NavigationDestination, "href" | "label">): FooterNavigationItem => ({
+  href,
+  label,
+  kind: "internal",
+});
+
 export const footerNavigation = [
   {
     id: "explore",
     label: "Explore",
-    items: siteSections.slice(0, 4).map(({ href, label }) => ({
-      href,
+    items: siteSections
+      .filter(({ href }) => href === "/framework/" || href === "/engage/")
+      .map(toFooterInternalItem),
+  },
+  {
+    id: "agents",
+    label: "Agents",
+    items: agentsNavigation.groups[0].items.map(toFooterInternalItem),
+  },
+  {
+    id: "library",
+    label: "Library",
+    items: libraryNavigation.groups.map(({ label, items }) => ({
+      ...toFooterInternalItem(items[0]),
       label,
-      kind: "internal" as const,
     })),
   },
   {
-    id: "participate",
-    label: "Participate",
-    items: [
-      { href: "/engage/", label: "Engage", kind: "internal" },
-      {
-        href: "https://github.com/agentculture",
-        label: "GitHub",
-        kind: "external",
-      },
-    ],
-  },
-  {
-    id: "products-docs",
-    label: "Products & docs",
+    id: "ecosystem",
+    label: "Ecosystem",
     items: [
       {
         href: learnNavigation.href,
         label: learnNavigation.label,
         kind: "product",
         newTab: true,
+      },
+      {
+        href: "https://github.com/agentculture",
+        label: "GitHub",
+        kind: "external",
       },
       {
         href: "https://culture.dev",
@@ -238,10 +251,7 @@ const matchesPrefix = (pathname: string, prefix: `/${string}/`) =>
 
 export function isPrimaryNavCurrent(
   pathname: string,
-  item:
-    | HeaderNavigationItem
-    | FooterNavigationItem
-    | SiteSectionNavigationItem,
+  item: HeaderNavigationItem | SiteSectionNavigationItem,
 ): boolean {
   if (item.kind === "menu") {
     return item.match.some((prefix) => matchesPrefix(pathname, prefix));
@@ -254,6 +264,21 @@ export function isPrimaryNavCurrent(
   if (!isOwnedLink || !item.href.startsWith("/")) return false;
 
   return matchesPrefix(pathname, item.href as `/${string}/`);
+}
+
+export function isFooterNavCurrent(
+  pathname: string,
+  item: FooterNavigationItem,
+): boolean {
+  if (
+    item.kind !== "internal" ||
+    !item.href.startsWith("/") ||
+    item.href.includes("#")
+  ) {
+    return false;
+  }
+
+  return withTrailingSlash(pathname) === withTrailingSlash(item.href);
 }
 
 export function isNavigationDestinationCurrent(
