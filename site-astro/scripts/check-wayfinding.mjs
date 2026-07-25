@@ -394,6 +394,10 @@ check("the agents directory has stable groups and whole-card links", () => {
   );
   assert(cards.length === site.agents.entries.length, "every directory card must be one link");
   assert(
+    cards.every((card) => "data-destination-card" in card),
+    "every linked directory card must use the shared destination-card component",
+  );
+  assert(
     !html.includes('class="repo muted"'),
     "agent cards must not repeat repository slugs",
   );
@@ -402,12 +406,55 @@ check("the agents directory has stable groups and whole-card links", () => {
   }
 });
 
+check("Lobes benchmarks use five shared destination cards", () => {
+  const html = pages.get("/agents/lobes/");
+  const section = html.match(
+    /<section\b[^>]*\bid="benchmarks"[^>]*>[\s\S]*?<\/section>/i,
+  )?.[0];
+  assert(section, "Lobes benchmark section is missing");
+
+  const cards = openings(section, "a").filter(
+    (anchor) => "data-destination-card" in anchor,
+  );
+  assert(cards.length === 5, `expected 5 destination cards, found ${cards.length}`);
+
+  for (const card of cards) {
+    const relTokens = new Set((card.rel ?? "").split(/\s+/).filter(Boolean));
+    assert(
+      card["data-destination-kind"] === "external",
+      "benchmark card must identify as external",
+    );
+    assert(card.target === "_blank", "benchmark card must open in a new tab");
+    assert(
+      relTokens.has("noopener") && relTokens.has("noreferrer"),
+      "benchmark card must retain a safe rel",
+    );
+  }
+
+  for (const cue of [
+    "GitHub · document",
+    "GitHub · docs directory",
+    "GitHub · templates directory",
+    "NVIDIA Developer Forums",
+  ]) {
+    assert(section.includes(cue), `${cue} destination cue is missing`);
+  }
+  assert(
+    section.includes("external-link-icon"),
+    "benchmark cards need visible external-link icons",
+  );
+  assert(
+    section.includes("opens in a new tab"),
+    "benchmark cards need assistive new-tab text",
+  );
+});
+
 if (failures.length) {
   console.error(`Wayfinding contract failed (${failures.length}):`);
   for (const failure of failures) console.error(`- ${failure}`);
   process.exitCode = 1;
 } else {
   console.log(
-    `Wayfinding contract passed: ${checksPassed} checks across ${pages.size} pages; consolidated descriptive desktop/mobile navigation, capped featured Library coverage, exact sitemap footer states, section-only Library footer links, safe new-tab external links, deferred breadcrumbs/local contents navigation, the retained deck rail, and 6 stable agent groups.`,
+    `Wayfinding contract passed: ${checksPassed} checks across ${pages.size} pages; consolidated descriptive desktop/mobile navigation, capped featured Library coverage, exact sitemap footer states, section-only Library footer links, safe new-tab external links, shared destination cards, deferred breadcrumbs/local contents navigation, the retained deck rail, and 6 stable agent groups.`,
   );
 }

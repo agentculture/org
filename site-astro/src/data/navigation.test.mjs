@@ -19,6 +19,7 @@ import site from "./site.ts";
 
 const componentUrl = (name) => new URL(`../components/${name}`, import.meta.url);
 const homeUrl = new URL("../pages/index.astro", import.meta.url);
+const lobesPageUrl = new URL("../pages/agents/lobes.astro", import.meta.url);
 
 const expectedSections = [
   { kind: "section", href: "/framework/", label: "Framework" },
@@ -487,6 +488,27 @@ test("agent directory cards use one border treatment", async () => {
     card,
     /border-color:\s*color-mix\(in srgb,\s*var\(--accent\)/,
   );
+});
+
+test("destination cards share explicit internal and external cues", async () => {
+  const [component, agentCard, lobesPage] = await Promise.all([
+    readFile(componentUrl("DestinationCard.astro"), "utf8"),
+    readFile(componentUrl("AgentDirectoryCard.astro"), "utf8"),
+    readFile(lobesPageUrl, "utf8"),
+  ]);
+
+  assert.match(component, /data-destination-card/);
+  assert.match(component, /data-destination-kind=/);
+  assert.match(component, /ExternalLinkIcon/);
+  assert.match(component, /target=\{opensInNewTab \? "_blank"/);
+  assert.match(component, /rel=\{opensInNewTab \? "noopener noreferrer"/);
+  assert.match(component, /opens in a new tab/);
+  assert.match(component, /destinationLabel/);
+  assert.match(component, /aria-hidden="true"> →/);
+  assert.match(agentCard, /import DestinationCard/);
+  assert.match(agentCard, /destinationLabel=\{destination\}/);
+  assert.match(lobesPage, /import DestinationCard/);
+  assert.match(lobesPage, /destinationLabel=\{link\.destination\}/);
 });
 
 test("the footer renders grouped navigation with external destination cues", async () => {

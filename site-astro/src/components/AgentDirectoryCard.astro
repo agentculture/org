@@ -1,14 +1,12 @@
 ---
 import type { AgentEntry } from "../data/types";
-import ExternalLinkIcon from "./ExternalLinkIcon.astro";
+import DestinationCard from "./DestinationCard.astro";
 
 interface Props {
   agent: AgentEntry;
 }
 
 const { agent } = Astro.props;
-const isAgentPage = agent.destinationKind === "agent-page";
-const opensInNewTab = !isAgentPage;
 const destinationLabels = {
   "agent-page": "Agent page",
   site: "Visit site",
@@ -19,27 +17,17 @@ const destination = destinationLabels[agent.destinationKind];
 
 {
   agent.url ? (
-    <a
-      class:list={["card", "entry", isAgentPage && "is-agent-page"]}
+    <DestinationCard
       href={agent.url}
-      target={opensInNewTab ? "_blank" : undefined}
-      rel={opensInNewTab ? "noopener noreferrer" : undefined}
-    >
-      <span class="entry-heading">
-        <h3>{agent.name}</h3>
-      </span>
-      <span class="role muted">{agent.role}</span>
-      <span class="destination">
-        {destination}
-        {opensInNewTab && <ExternalLinkIcon size={13} />}
-        {opensInNewTab && <span class="sr-only"> (opens in a new tab)</span>}
-        {isAgentPage && <span aria-hidden="true"> →</span>}
-      </span>
-    </a>
+      title={agent.name}
+      description={agent.role}
+      destinationLabel={destination}
+      className="entry"
+    />
   ) : (
     <div class="card entry">
-      <span class="entry-heading"><h3>{agent.name}</h3></span>
-      <span class="role muted">{agent.role}</span>
+      <h3>{agent.name}</h3>
+      <p class="muted">{agent.role}</p>
     </div>
   )
 }
@@ -53,13 +41,6 @@ const destination = destinationLabels[agent.destinationKind];
     padding: 1.5rem 1.6rem;
   }
 
-  .entry-heading {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    color: var(--ink);
-  }
-
   h3 {
     margin: 0;
     font-size: var(--ac-type-card-title);
@@ -67,22 +48,10 @@ const destination = destinationLabels[agent.destinationKind];
     letter-spacing: var(--ac-tracking-heading);
   }
 
-  .role {
+  p {
     flex-grow: 1;
+    margin: 0;
     font-size: 1rem;
     line-height: var(--ac-leading-card);
-  }
-
-  .destination {
-    display: inline-flex;
-    align-self: flex-start;
-    align-items: center;
-    gap: 0.3rem;
-    flex-shrink: 0;
-    margin-top: 0.25rem;
-    color: var(--accent);
-    font-size: var(--ac-type-ui);
-    line-height: var(--ac-leading-ui);
-    font-weight: 650;
   }
 </style>

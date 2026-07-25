@@ -7,6 +7,7 @@
 import Layout from "../../layouts/Layout.astro";
 import PageHero from "../../components/PageHero.astro";
 import ClosingBand from "../../components/ClosingBand.astro";
+import DestinationCard from "../../components/DestinationCard.astro";
 import SectionIntro from "../../components/SectionIntro.astro";
 import StructuredCard from "../../components/StructuredCard.astro";
 import LobesDiagram from "../../components/LobesDiagram.astro";
@@ -247,15 +248,13 @@ import {
               data-reveal
               style={`--reveal-delay: ${Math.min(i * 0.08, 0.32)}s`}
             >
-              <a
-                class="card bench-card"
+              <DestinationCard
                 href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <h3>{link.title}</h3>
-                <p class="muted">{link.description}</p>
-              </a>
+                title={link.title}
+                description={link.description}
+                destinationLabel={link.destination}
+                titleStyle="mono"
+              />
             </li>
           ))
         }
@@ -463,28 +462,6 @@ import {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
     gap: 1.1rem;
-  }
-
-  .bench-card {
-    height: 100%;
-    padding: 1.5rem 1.6rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-
-  .bench-card h3 {
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: var(--ac-type-card-title);
-    line-height: var(--ac-leading-ui);
-    letter-spacing: var(--ac-tracking-heading);
-    font-weight: 600;
-  }
-
-  .bench-card p {
-    font-size: 1rem;
-    line-height: var(--ac-leading-card);
   }
 
 </style>
