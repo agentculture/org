@@ -1,0 +1,64 @@
+---
+import {
+  resolveStoryBeat,
+  type StoryBeat,
+} from "../data/devague-story";
+
+interface Props {
+  beat: StoryBeat;
+}
+
+const { beat } = Astro.props;
+const { pane, lines } = resolveStoryBeat(beat);
+const leg = pane.id.split("-")[0];
+const promptColour: Record<string, string> = {
+  frame: "#7fdcc9",
+  plan: "#f2b774",
+  scope: "#7fb3f2",
+  challenge: "#e6cd7a",
+  deviate: "#f2789a",
+  summary: "#b49cf2",
+};
+---
+
+<li class="beat">
+  <span class="beat-rail" aria-hidden="true">
+    <span class="beat-dot"></span>
+    <span class="beat-rail-line"></span>
+  </span>
+  <div class="beat-body">
+    <h4 class="beat-headline">{beat.headline}</h4>
+    <p class="beat-narration">{beat.narration}</p>
+    <div
+      class="beat-excerpt"
+      role="region"
+      aria-label={`Excerpt from ${pane.title}`}
+    >
+      {
+        lines.map((line) => (
+          <p
+            class:list={[
+              "beat-line",
+              `beat-line-${line.kind}`,
+            ]}
+          >
+            {line.kind === "cmd" && (
+              <span
+                class="beat-prompt"
+                style={`color:${promptColour[leg] ?? "#7fdcc9"}`}
+                aria-hidden="true"
+              >
+                $
+              </span>
+            )}
+            {line.kind === "ellipsis" && (
+              <span class="beat-cut" aria-hidden="true">⋮</span>
+            )}
+            {line.text}
+          </p>
+        ))
+      }
+      {beat.note && <p class="beat-note">{beat.note}</p>}
+    </div>
+  </div>
+</li>

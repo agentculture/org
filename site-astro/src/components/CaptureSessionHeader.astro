@@ -1,0 +1,20 @@
+---
+import type { SessionStory } from "../data/devague-story";
+
+interface Props {
+  session: SessionStory;
+  titleId: string;
+}
+
+const { session, titleId } = Astro.props;
+---
+
+<header class="session-header">
+  <p class="session-meta">
+    Session {session.n}{" · "}{session.date}{" · "}{session.version}
+  </p>
+  <h3 class="session-title" id={titleId}>{session.title}</h3>
+  <div class="session-intro">
+    {session.intro.map((paragraph) => <p>{paragraph}</p>)}
+  </div>
+</header>
