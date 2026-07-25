@@ -22,24 +22,6 @@ const groups = agents.groups
 >
   <PageHero title="Agents" intro={agents.intro} />
 
-  <nav class="group-nav container page-rail" aria-label="Browse agents by area">
-    <span class="group-nav-label">Browse by area</span>
-    <ul>
-      {
-        groups.map((group) => (
-          <li>
-            <a href={`#${group.id}`}>
-              <span>{group.label}</span>
-              <span class="count" aria-label={`${group.entries.length} agents`}>
-                {group.entries.length}
-              </span>
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-  </nav>
-
   {
     groups.map((group) => (
       <section id={group.id} class="group" aria-labelledby={`${group.id}-title`}>
@@ -61,62 +43,6 @@ const groups = agents.groups
 </Layout>
 
 <style>
-  .group-nav {
-    margin-bottom: clamp(2rem, 5vw, 3.5rem);
-    padding-block: 1rem;
-    border-block: 1px solid var(--line-soft);
-  }
-
-  .group-nav-label {
-    display: block;
-    margin-bottom: 0.7rem;
-    color: var(--ink-soft);
-    font-size: var(--ac-type-meta);
-    font-weight: 650;
-    line-height: var(--ac-leading-ui);
-    letter-spacing: var(--ac-tracking-caps);
-    text-transform: uppercase;
-  }
-
-  .group-nav ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-    list-style: none;
-  }
-
-  .group-nav a {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    min-height: 2.75rem;
-    padding: 0.4rem 0.8rem;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    color: var(--ink-soft);
-    font-size: var(--ac-type-ui);
-    font-weight: 560;
-    text-decoration: none;
-  }
-
-  .group-nav a:hover {
-    border-color: var(--accent);
-    color: var(--ink);
-  }
-
-  .count {
-    display: inline-grid;
-    place-items: center;
-    min-width: 1.45rem;
-    min-height: 1.45rem;
-    padding-inline: 0.3rem;
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--accent) 12%, transparent);
-    color: var(--accent);
-    font-family: var(--font-mono);
-    font-size: var(--ac-type-micro);
-  }
-
   .group {
     padding-block: 1.2rem 2.6rem;
   }

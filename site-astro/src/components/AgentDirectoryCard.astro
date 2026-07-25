@@ -14,7 +14,7 @@ const opensInNewTab = !isAgentPage;
 const destination = isAgentPage
   ? "Agent page"
   : isLearn
-    ? "Open Learn"
+    ? "Visit site"
     : "Repository";
 ---
 
@@ -28,23 +28,19 @@ const destination = isAgentPage
     >
       <span class="entry-heading">
         <h3>{agent.name}</h3>
-        {!isAgentPage && <ExternalLinkIcon size={14} />}
       </span>
       <span class="role muted">{agent.role}</span>
-      <span class="entry-footer">
-        <span class="repo muted">{agent.repo}</span>
-        <span class="destination">
-          {destination}
-          {opensInNewTab && <span class="sr-only"> (opens in a new tab)</span>}
-          {isAgentPage && <span aria-hidden="true"> →</span>}
-        </span>
+      <span class="destination">
+        {destination}
+        {opensInNewTab && <ExternalLinkIcon size={13} />}
+        {opensInNewTab && <span class="sr-only"> (opens in a new tab)</span>}
+        {isAgentPage && <span aria-hidden="true"> →</span>}
       </span>
     </a>
   ) : (
     <div class="card entry">
       <span class="entry-heading"><h3>{agent.name}</h3></span>
       <span class="role muted">{agent.role}</span>
-      <span class="entry-footer"><span class="repo muted">{agent.repo}</span></span>
     </div>
   )
 }
@@ -61,7 +57,6 @@ const destination = isAgentPage
   .entry-heading {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 0.8rem;
     color: var(--ink);
   }
@@ -79,23 +74,15 @@ const destination = isAgentPage
     line-height: var(--ac-leading-card);
   }
 
-  .entry-footer {
-    display: flex;
-    align-items: end;
-    justify-content: space-between;
-    gap: 0.8rem;
-    margin-top: 0.25rem;
-  }
-
-  .repo {
-    overflow-wrap: anywhere;
-    font-size: var(--ac-type-meta);
-  }
-
   .destination {
+    display: inline-flex;
+    align-self: flex-start;
+    align-items: center;
+    gap: 0.3rem;
     flex-shrink: 0;
+    margin-top: 0.25rem;
     color: var(--accent);
-    font-size: var(--ac-type-meta);
+    font-size: var(--ac-type-ui);
     line-height: var(--ac-leading-ui);
     font-weight: 650;
   }

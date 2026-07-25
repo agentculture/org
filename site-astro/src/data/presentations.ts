@@ -39,6 +39,8 @@ export type PresentationEvidenceSource =
 export interface PresentationCard {
   title: string;
   summary: string;
+  navigationSummary: string;
+  featuredInNavigation: boolean;
   route: `/presentations/${string}/`;
   topic: string;
   sourceProjects: readonly PresentationProjectLabel[];
@@ -47,6 +49,8 @@ export interface PresentationCard {
 export interface ArticleCard {
   title: string;
   summary: string;
+  navigationSummary: string;
+  featuredInNavigation: boolean;
   route: `/articles/${string}/`;
   topic: string;
   sourceProjects: readonly PresentationProjectLabel[];
@@ -169,6 +173,9 @@ export const presentations = [
     title: "A CLI for intelligence, a runtime for embodiment",
     summary:
       "Every robot should expose two interfaces: a deterministic CLI that lets humans and agents operate it, and a persistent runtime that keeps it alive, reactive, and bounded — shown end-to-end on Reachy Mini CLI and supported by ARM101 CLI's operating contract.",
+    navigationSummary:
+      "A two-interface operating model for intelligent robots.",
+    featuredInNavigation: true,
     route: "/presentations/mind-nervous-system-body/",
     topic: "Robot operational architecture",
     sourceProjects: ["Reachy Mini CLI", "ARM101 CLI"],
@@ -180,6 +187,9 @@ export const articles = [
     title: "Mind, nervous system, body",
     summary:
       "How an agent's harness and model become the mind, robot-specific code becomes a symbolic nervous system, and physical robots become the body — grounded in Reachy Mini CLI and ARM101 CLI.",
+    navigationSummary:
+      "How agents, software, and robots form one embodied system.",
+    featuredInNavigation: true,
     route: "/articles/mind-nervous-system-body/",
     topic: "Neurosymbolic robotics",
     sourceProjects: ["Reachy Mini CLI", "ARM101 CLI"],

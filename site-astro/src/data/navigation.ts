@@ -124,6 +124,16 @@ export const agentsNavigation = {
   ],
 } as const satisfies MenuNavigationItem;
 
+export const LIBRARY_FEATURED_LIMIT = 2;
+
+const featuredArticles = articles
+  .filter(({ featuredInNavigation }) => featuredInNavigation)
+  .slice(0, LIBRARY_FEATURED_LIMIT);
+
+const featuredPresentations = presentations
+  .filter(({ featuredInNavigation }) => featuredInNavigation)
+  .slice(0, LIBRARY_FEATURED_LIMIT);
+
 export const libraryNavigation = {
   kind: "menu",
   id: "library",
@@ -140,11 +150,11 @@ export const libraryNavigation = {
           label: "Browse all articles",
           description: "Full-text, sourced talks from the mesh.",
         },
-        ...articles.map((article) => ({
+        ...featuredArticles.map((article) => ({
           kind: "internal" as const,
           href: article.route,
           label: article.title,
-          description: article.summary,
+          description: article.navigationSummary,
         })),
       ],
     },
@@ -158,11 +168,11 @@ export const libraryNavigation = {
           label: "Browse all presentations",
           description: "Symbolic decks — the slides behind the talks.",
         },
-        ...presentations.map((presentation) => ({
+        ...featuredPresentations.map((presentation) => ({
           kind: "internal" as const,
           href: presentation.route,
           label: presentation.title,
-          description: presentation.summary,
+          description: presentation.navigationSummary,
         })),
       ],
     },

@@ -9,6 +9,7 @@ import {
   isNavigationDestinationCurrent,
   isPrimaryNavCurrent,
   learnNavigation,
+  LIBRARY_FEATURED_LIMIT,
   libraryNavigation,
   primaryNavigation,
   siteSections,
@@ -42,6 +43,26 @@ const ownedRoutes = [
   "/articles/mind-nervous-system-body/",
   "/presentations/",
   "/presentations/mind-nervous-system-body/",
+  "/engage/",
+];
+
+const expectedHeaderRoutes = [
+  "/framework/",
+  "/agents/",
+  "/agents/colleague/",
+  "/agents/lobes/",
+  "/agents/devague/",
+  "/agents/reachy-mini-cli/",
+  "/articles/",
+  ...articles
+    .filter(({ featuredInNavigation }) => featuredInNavigation)
+    .slice(0, LIBRARY_FEATURED_LIMIT)
+    .map(({ route }) => route),
+  "/presentations/",
+  ...presentations
+    .filter(({ featuredInNavigation }) => featuredInNavigation)
+    .slice(0, LIBRARY_FEATURED_LIMIT)
+    .map(({ route }) => route),
   "/engage/",
 ];
 
@@ -99,7 +120,7 @@ test("Agents exposes hosted pages and stable directory groups", () => {
   }
 });
 
-test("Library descriptions stay derived from the content models", () => {
+test("Library exposes a capped, explicitly featured content selection", () => {
   assert.deepEqual(
     libraryNavigation.groups.map(({ label }) => label),
     ["Articles", "Presentations"],
@@ -107,24 +128,41 @@ test("Library descriptions stay derived from the content models", () => {
 
   assert.deepEqual(
     libraryNavigation.groups[0].items.map(({ href }) => href),
-    ["/articles/", ...articles.map(({ route }) => route)],
+    [
+      "/articles/",
+      ...articles
+        .filter(({ featuredInNavigation }) => featuredInNavigation)
+        .slice(0, LIBRARY_FEATURED_LIMIT)
+        .map(({ route }) => route),
+    ],
   );
   assert.deepEqual(
     libraryNavigation.groups[1].items.map(({ href }) => href),
-    ["/presentations/", ...presentations.map(({ route }) => route)],
+    [
+      "/presentations/",
+      ...presentations
+        .filter(({ featuredInNavigation }) => featuredInNavigation)
+        .slice(0, LIBRARY_FEATURED_LIMIT)
+        .map(({ route }) => route),
+    ],
   );
+
+  assert.equal(LIBRARY_FEATURED_LIMIT, 2);
+  for (const group of libraryNavigation.groups) {
+    assert(group.items.length <= LIBRARY_FEATURED_LIMIT + 1);
+  }
 
   assert.equal(
     libraryNavigation.groups[0].items[1].description,
-    articles[0].summary,
+    articles[0].navigationSummary,
   );
   assert.equal(
     libraryNavigation.groups[1].items[1].description,
-    presentations[0].summary,
+    presentations[0].navigationSummary,
   );
 });
 
-test("every non-home owned route appears exactly once in the header model", () => {
+test("every required header destination appears exactly once", () => {
   const destinations = primaryNavigation.flatMap((item) => {
     if (item.kind === "link") return [item.href];
     if (item.kind === "menu") {
@@ -135,7 +173,7 @@ test("every non-home owned route appears exactly once in the header model", () =
     return [];
   });
 
-  assert.deepEqual(destinations.toSorted(), ownedRoutes.toSorted());
+  assert.deepEqual(destinations.toSorted(), expectedHeaderRoutes.toSorted());
   assert.equal(new Set(destinations).size, destinations.length);
 });
 

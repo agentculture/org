@@ -2,6 +2,11 @@ import { readFileSync, readdirSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import {
+  articles,
+  presentations,
+} from "../src/data/presentations.ts";
+import { LIBRARY_FEATURED_LIMIT } from "../src/data/navigation.ts";
 import site from "../src/data/site.ts";
 
 const siteRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -72,7 +77,7 @@ const primaryLabels = [
   "Engage",
   "Learn",
 ];
-const ownedHeaderRoutes = [
+const ownedRoutes = [
   "/framework/",
   "/agents/",
   "/agents/colleague/",
@@ -85,14 +90,32 @@ const ownedHeaderRoutes = [
   "/presentations/mind-nervous-system-body/",
   "/engage/",
 ];
-const agentRoutes = ownedHeaderRoutes.filter((href) =>
+const featuredLibraryRoutes = [
+  ...articles
+    .filter(({ featuredInNavigation }) => featuredInNavigation)
+    .slice(0, LIBRARY_FEATURED_LIMIT),
+  ...presentations
+    .filter(({ featuredInNavigation }) => featuredInNavigation)
+    .slice(0, LIBRARY_FEATURED_LIMIT),
+].map(({ route }) => route);
+const headerDestinationRoutes = [
+  ...ownedRoutes.filter(
+    (href) =>
+      !(
+        (href.startsWith("/articles/") && href !== "/articles/") ||
+        (href.startsWith("/presentations/") && href !== "/presentations/")
+      ),
+  ),
+  ...featuredLibraryRoutes,
+];
+const agentRoutes = headerDestinationRoutes.filter((href) =>
   href.startsWith("/agents/"),
 );
-const libraryRoutes = ownedHeaderRoutes.filter(
+const libraryRoutes = headerDestinationRoutes.filter(
   (href) =>
     href.startsWith("/articles/") || href.startsWith("/presentations/"),
 );
-const footerOwnedRoutes = ownedHeaderRoutes.filter(
+const footerOwnedRoutes = ownedRoutes.filter(
   (href) =>
     href !== "/articles/mind-nervous-system-body/" &&
     href !== "/presentations/mind-nervous-system-body/",
@@ -143,7 +166,7 @@ for (const [route, html] of pages) {
       );
 
       const navAnchors = openings(nav, "a");
-      for (const ownedRoute of ownedHeaderRoutes) {
+      for (const ownedRoute of headerDestinationRoutes) {
         const matches = navAnchors.filter(({ href }) => href === ownedRoute);
         assert(
           matches.length === 1,
@@ -181,11 +204,12 @@ for (const [route, html] of pages) {
       const currentDestinations = navAnchors.filter(
         (anchor) => anchor["aria-current"] === "page",
       );
+      const expectsExactDestination = headerDestinationRoutes.includes(route);
       assert(
-        currentDestinations.length === (route === "/" ? 0 : 1),
+        currentDestinations.length === (expectsExactDestination ? 1 : 0),
         "wrong number of exact current destinations",
       );
-      if (route !== "/") {
+      if (expectsExactDestination) {
         assert(
           currentDestinations[0].href === route,
           `${route} must mark its exact destination current`,
@@ -350,22 +374,30 @@ check("the deck retains its dedicated slide rail", () => {
   assert(html.includes('class="deck-rail"'), "slide rail is missing");
 });
 
-check("the agents directory has stable groups, counts, and whole-card links", () => {
+check("the agents directory has stable groups and whole-card links", () => {
   const html = pages.get("/agents/");
-  assert(html.includes('aria-label="Browse agents by area"'), "Browse by area navigation is missing");
+  assert(
+    !html.includes('aria-label="Browse agents by area"'),
+    "the removed on-page Browse by area navigation is still rendered",
+  );
 
   for (const group of site.agents.groups) {
-    const count = site.agents.entries.filter((entry) => entry.groupId === group.id).length;
-    assert(html.includes(`href="#${group.id}"`), `jump link for ${group.id} is missing`);
+    assert(
+      !html.includes(`href="#${group.id}"`),
+      `local jump link for ${group.id} is still rendered`,
+    );
     assert(html.includes(`id="${group.id}"`), `stable group id ${group.id} is missing`);
-    assert(html.includes(`aria-label="${count} agents"`), `${group.id} count is incorrect`);
   }
 
   const cards = openings(html, "a").filter(({ class: classes = "" }) =>
     classes.split(/\s+/).includes("entry"),
   );
   assert(cards.length === site.agents.entries.length, "every directory card must be one link");
-  for (const cue of ["Agent page", "Repository", "Open Learn"]) {
+  assert(
+    !html.includes('class="repo muted"'),
+    "agent cards must not repeat repository slugs",
+  );
+  for (const cue of ["Agent page", "Repository", "Visit site"]) {
     assert(html.includes(`>${cue}`), `${cue} destination cue is missing`);
   }
 });
@@ -376,6 +408,6 @@ if (failures.length) {
   process.exitCode = 1;
 } else {
   console.log(
-    `Wayfinding contract passed: ${checksPassed} checks across ${pages.size} pages; consolidated descriptive desktop/mobile navigation, complete header route coverage, exact sitemap footer states, section-only Library footer links, safe new-tab external links, deferred breadcrumbs/local contents navigation, the retained deck rail, and 6 stable agent groups.`,
+    `Wayfinding contract passed: ${checksPassed} checks across ${pages.size} pages; consolidated descriptive desktop/mobile navigation, capped featured Library coverage, exact sitemap footer states, section-only Library footer links, safe new-tab external links, deferred breadcrumbs/local contents navigation, the retained deck rail, and 6 stable agent groups.`,
   );
 }
