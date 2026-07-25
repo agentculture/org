@@ -29,13 +29,14 @@
 //      A spec opens the build; a summary closes it.
 //
 // Motion is compositor-only (transform + opacity, nothing else), on the
-// site's calm easings. It plays ONCE the first time it scrolls into view
-// (the LobesTerminal pattern: an IntersectionObserver toggles `.is-playing`;
-// the class is the only thing JS touches — no network, no layout writes),
-// then holds the assembled frame. Under prefers-reduced-motion, or with no
-// JS, nothing is hidden and nothing moves: the authored DOM already IS the
-// finished pipeline — every stage present, every claim confirmed, the gate
-// open — so the method stays fully legible as a still.
+// site's calm easings. It plays ONCE the first time each part scrolls into
+// view (the LobesTerminal pattern: an IntersectionObserver toggles
+// `.is-playing` on each stage and connector; the class is the only thing JS
+// touches — no network, no layout writes), then holds the assembled frame.
+// Under prefers-reduced-motion, or with no JS, nothing is hidden and nothing
+// moves: the authored DOM already IS the finished pipeline — every stage
+// present, every claim confirmed, the gate open — so the method stays fully
+// legible as a still.
 //
 // Labels default to real devague vocabulary (verified against `devague
 // learn` on 0.19.0). The page may override any stage label via `labels`.
@@ -96,7 +97,7 @@ const CLAIMS = ["audience", "after_state", "boundary"];
 >
   <ol class="flow-track" role="list">
     <!-- 1 · idea — the vague seed -->
-    <li class="stage stage-idea">
+    <li class="stage stage-idea" style="--d: 0s">
       <span class="glyph" aria-hidden="true">
         <svg viewBox="0 0 60 60" fill="none">
           <ellipse class="idea-cloud" cx="30" cy="30" rx="22" ry="18"></ellipse>
@@ -110,7 +111,7 @@ const CLAIMS = ["audience", "after_state", "boundary"];
     <li class="link" aria-hidden="true" style="--d: 0.55s"><i class="link-line"></i></li>
 
     <!-- 2 · frame — claims flip proposed → confirmed (the human gate) -->
-    <li class="stage stage-frame">
+    <li class="stage stage-frame" style="--d: 1s">
       <span class="glyph frame-glyph" aria-hidden="true">
         <span class="frame-claims" style="--d: 1s">
           {
@@ -142,9 +143,9 @@ const CLAIMS = ["audience", "after_state", "boundary"];
     <li class="link" aria-hidden="true" style="--d: 3.9s"><i class="link-line"></i></li>
 
     <!-- 3 · converge — the gate refuses, then opens -->
-    <li class="stage stage-converge">
+    <li class="stage stage-converge" style="--d: 4.1s">
       <span class="glyph" aria-hidden="true">
-        <svg viewBox="0 0 60 60" fill="none">
+        <svg class="gate-glyph" viewBox="0 0 60 60" fill="none" style="--d: 4.1s">
           <rect class="gate-frame" x="12" y="10" width="36" height="40" rx="4"></rect>
           <g class="gate-leaves">
             <rect class="gate-leaf gate-leaf-l" x="15" y="13" width="13.5" height="34" rx="2"></rect>
@@ -158,12 +159,12 @@ const CLAIMS = ["audience", "after_state", "boundary"];
       <span class="stage-kind muted">gate</span>
     </li>
 
-    <li class="link" aria-hidden="true" style="--d: 4.8s"><i class="link-line"></i></li>
+    <li class="link" aria-hidden="true" style="--d: 6.3s"><i class="link-line"></i></li>
 
     <!-- 4 · spec — exports through the open gate -->
-    <li class="stage stage-spec">
+    <li class="stage stage-spec" style="--d: 6.5s">
       <span class="glyph" aria-hidden="true">
-        <svg class="spec-doc" viewBox="0 0 60 60" fill="none" style="--d: 5s">
+        <svg class="spec-doc" viewBox="0 0 60 60" fill="none" style="--d: 6.5s">
           <path class="spec-page" d="M17 8 H37 L47 18 V52 H17 Z"></path>
           <path class="spec-fold" d="M37 8 V18 H47"></path>
           <line class="spec-rule" x1="23" y1="27" x2="41" y2="27"></line>
@@ -175,12 +176,12 @@ const CLAIMS = ["audience", "after_state", "boundary"];
       <span class="stage-kind muted">export</span>
     </li>
 
-    <li class="link" aria-hidden="true" style="--d: 5.7s"><i class="link-line"></i></li>
+    <li class="link" aria-hidden="true" style="--d: 7.2s"><i class="link-line"></i></li>
 
     <!-- 5 · challenge — a blind-spot pass examines the exported spec -->
-    <li class="stage stage-challenge">
+    <li class="stage stage-challenge" style="--d: 7.4s">
       <span class="glyph" aria-hidden="true">
-        <svg class="challenge-glyph" viewBox="0 0 60 60" fill="none" style="--d: 5.9s">
+        <svg class="challenge-glyph" viewBox="0 0 60 60" fill="none" style="--d: 7.4s">
           <path class="spec-page" d="M15 8 H35 L45 18 V52 H15 Z"></path>
           <path class="spec-fold" d="M35 8 V18 H45"></path>
           <line class="spec-rule" x1="21" y1="25" x2="39" y2="25"></line>
@@ -188,12 +189,12 @@ const CLAIMS = ["audience", "after_state", "boundary"];
           <!-- the finding: two stacked faces — proposed (dashed) and
                confirmed — the claims' and the ledger's anti-fabrication
                flip, replayed on the spec's own page. -->
-          <g class="challenge-finding" style="--d: 6.6s">
-            <g class="finding-open" style="--d: 7.2s">
+          <g class="challenge-finding" style="--d: 8.1s">
+            <g class="finding-open" style="--d: 8.7s">
               <rect class="finding-outline" x="17.5" y="39.5" width="25" height="9" rx="4.5"></rect>
               <line class="finding-draft" x1="21" y1="44" x2="38.5" y2="44"></line>
             </g>
-            <g class="finding-solid" style="--d: 7.2s">
+            <g class="finding-solid" style="--d: 8.7s">
               <rect class="finding-pill" x="17.5" y="39.5" width="25" height="9" rx="4.5"></rect>
               <line class="finding-line" x1="21" y1="44" x2="30" y2="44"></line>
               <path class="finding-tick" d="M32.5 44.5 34.8 46.6 39 41.8"></path>
@@ -201,7 +202,7 @@ const CLAIMS = ["audience", "after_state", "boundary"];
           </g>
           <!-- the lens: sweeps down the examined rules to rest over the
                finding it surfaced. -->
-          <g class="challenge-lens" style="--d: 6.1s">
+          <g class="challenge-lens" style="--d: 7.6s">
             <circle class="lens-glass" cx="37" cy="43" r="9"></circle>
             <line class="lens-handle" x1="43.4" y1="49.4" x2="49.5" y2="55.5"></line>
           </g>
@@ -211,24 +212,24 @@ const CLAIMS = ["audience", "after_state", "boundary"];
       <span class="stage-kind muted">blind spots</span>
     </li>
 
-    <li class="link" aria-hidden="true" style="--d: 7.5s"><i class="link-line"></i></li>
+    <li class="link" aria-hidden="true" style="--d: 9s"><i class="link-line"></i></li>
 
     <!-- 6 · waves — the plan fans out into dependency waves -->
-    <li class="stage stage-waves">
+    <li class="stage stage-waves" style="--d: 9s">
       <span class="glyph" aria-hidden="true">
         <svg viewBox="0 0 60 60" fill="none">
-          <circle class="wave-root" cx="9" cy="30" r="4"></circle>
-          <g class="wave-lane" style="--d: 7.8s">
+          <circle class="wave-root" cx="9" cy="30" r="4" style="--d: 9s"></circle>
+          <g class="wave-lane" style="--d: 9.3s">
             <path class="wave-thread" d="M13 30 Q30 18 40 15"></path>
             <circle class="wave-dot" cx="40" cy="15" r="3.6"></circle>
             <circle class="wave-dot" cx="52" cy="15" r="3.6"></circle>
           </g>
-          <g class="wave-lane" style="--d: 8.1s">
+          <g class="wave-lane" style="--d: 9.6s">
             <path class="wave-thread" d="M13 30 H40"></path>
             <circle class="wave-dot" cx="40" cy="30" r="3.6"></circle>
             <circle class="wave-dot" cx="52" cy="30" r="3.6"></circle>
           </g>
-          <g class="wave-lane" style="--d: 8.4s">
+          <g class="wave-lane" style="--d: 9.9s">
             <path class="wave-thread" d="M13 30 Q30 42 40 45"></path>
             <circle class="wave-dot" cx="40" cy="45" r="3.6"></circle>
             <circle class="wave-dot" cx="52" cy="45" r="3.6"></circle>
@@ -239,12 +240,12 @@ const CLAIMS = ["audience", "after_state", "boundary"];
       <span class="stage-kind muted">plan</span>
     </li>
 
-    <li class="link" aria-hidden="true" style="--d: 8.9s"><i class="link-line"></i></li>
+    <li class="link" aria-hidden="true" style="--d: 10.4s"><i class="link-line"></i></li>
 
     <!-- 7 · build — the workforce ships it -->
-    <li class="stage stage-build">
+    <li class="stage stage-build" style="--d: 10.8s">
       <span class="glyph" aria-hidden="true">
-        <svg class="build-glyph" viewBox="0 0 60 60" fill="none" style="--d: 9.3s">
+        <svg class="build-glyph" viewBox="0 0 60 60" fill="none" style="--d: 10.8s">
           <rect class="build-box" x="14" y="14" width="32" height="32" rx="8"></rect>
           <path class="build-check" d="M22 31 28 37 40 24"></path>
         </svg>
@@ -253,18 +254,18 @@ const CLAIMS = ["audience", "after_state", "boundary"];
       <span class="stage-kind muted">workforce</span>
     </li>
 
-    <li class="link" aria-hidden="true" style="--d: 9.8s"><i class="link-line"></i></li>
+    <li class="link" aria-hidden="true" style="--d: 11.3s"><i class="link-line"></i></li>
 
     <!-- 8 · deviate — reality diverges; the approved amendment lands in the ledger -->
-    <li class="stage stage-deviate">
+    <li class="stage stage-deviate" style="--d: 11.5s">
       <span class="glyph" aria-hidden="true">
-        <svg class="ledger-glyph" viewBox="0 0 60 60" fill="none" style="--d: 10s">
+        <svg class="ledger-glyph" viewBox="0 0 60 60" fill="none" style="--d: 11.5s">
           <rect class="ledger-page" x="14" y="9" width="32" height="42" rx="4"></rect>
           <line class="ledger-row" x1="20" y1="17" x2="40" y2="17"></line>
           <line class="ledger-row" x1="20" y1="24" x2="33" y2="24"></line>
           <!-- the amendment row: two stacked faces — proposed (dashed) and
                approved — flipping exactly like the frame's claims. -->
-          <g class="ledger-entry" style="--d: 10.6s">
+          <g class="ledger-entry" style="--d: 12.1s">
             <g class="entry-open">
               <rect class="entry-outline" x="16.5" y="33.5" width="27" height="9" rx="4.5"></rect>
               <line class="entry-draft" x1="20.5" y1="38" x2="39.5" y2="38"></line>
@@ -281,20 +282,20 @@ const CLAIMS = ["audience", "after_state", "boundary"];
       <span class="stage-kind muted">ledger</span>
     </li>
 
-    <li class="link" aria-hidden="true" style="--d: 11.1s"><i class="link-line"></i></li>
+    <li class="link" aria-hidden="true" style="--d: 12.6s"><i class="link-line"></i></li>
 
     <!-- 9 · summary — the accountability artifact closes the loop -->
-    <li class="stage stage-summary">
+    <li class="stage stage-summary" style="--d: 12.8s">
       <span class="glyph" aria-hidden="true">
-        <svg class="summary-doc" viewBox="0 0 60 60" fill="none" style="--d: 11.3s">
+        <svg class="summary-doc" viewBox="0 0 60 60" fill="none" style="--d: 12.8s">
           <path class="spec-page" d="M17 8 H37 L47 18 V52 H17 Z"></path>
           <path class="spec-fold" d="M37 8 V18 H47"></path>
           <line class="spec-rule" x1="23" y1="27" x2="33" y2="27"></line>
-          <path class="summary-tick" d="M36.5 27.8 38.8 30 43 25" style="--d: 11.85s"></path>
+          <path class="summary-tick" d="M36.5 27.8 38.8 30 43 25" style="--d: 13.35s"></path>
           <line class="spec-rule" x1="23" y1="34" x2="33" y2="34"></line>
-          <path class="summary-tick" d="M36.5 34.8 38.8 37 43 32" style="--d: 12.1s"></path>
+          <path class="summary-tick" d="M36.5 34.8 38.8 37 43 32" style="--d: 13.6s"></path>
           <line class="spec-rule spec-rule-short" x1="23" y1="41" x2="30" y2="41"></line>
-          <path class="summary-tick" d="M33.5 41.8 35.8 44 40 39" style="--d: 12.35s"></path>
+          <path class="summary-tick" d="M36.5 41.8 38.8 44 43 39" style="--d: 13.85s"></path>
         </svg>
       </span>
       <span class="stage-label">{L.summary}</span>
@@ -775,14 +776,103 @@ const CLAIMS = ["audience", "after_state", "boundary"];
     }
   }
 
+  /* When the diagram stacks, each item gets its own short local clock.
+     This preserves the same stage order as the desktop sequence instead of
+     letting later stages finish off-screen before the user reaches them. */
+  @media (max-width: 66rem) and (prefers-reduced-motion: no-preference) {
+    .link-line,
+    .frame-claims,
+    .gate-glyph,
+    .spec-doc,
+    .challenge-glyph,
+    .wave-root,
+    .build-glyph,
+    .ledger-glyph,
+    .summary-doc {
+      --d: 0.15s !important;
+    }
+
+    .claim:nth-child(1) {
+      --d: 1.25s !important;
+    }
+
+    .claim:nth-child(2) {
+      --d: 1.85s !important;
+    }
+
+    .claim:nth-child(3) {
+      --d: 2.45s !important;
+    }
+
+    :global(html.js) .flow .gate-block {
+      transition-delay: 1.75s !important;
+    }
+
+    :global(html.js) .flow .gate-check {
+      transition-delay: 2.25s !important;
+    }
+
+    :global(html.js) .stage.is-playing .gate-leaf-l,
+    :global(html.js) .stage.is-playing .gate-leaf-r {
+      animation-delay: 0.65s !important;
+    }
+
+    .challenge-finding {
+      --d: 0.85s !important;
+    }
+
+    .finding-open,
+    .finding-solid {
+      --d: 1.45s !important;
+    }
+
+    .challenge-lens {
+      --d: 0.35s !important;
+    }
+
+    .wave-lane:nth-child(2) {
+      --d: 0.45s !important;
+    }
+
+    .wave-lane:nth-child(3) {
+      --d: 0.75s !important;
+    }
+
+    .wave-lane:nth-child(4) {
+      --d: 1.05s !important;
+    }
+
+    .ledger-entry {
+      --d: 0.75s !important;
+    }
+
+    .summary-tick:nth-child(4) {
+      --d: 0.7s !important;
+    }
+
+    .summary-tick:nth-child(6) {
+      --d: 0.95s !important;
+    }
+
+    .summary-tick:nth-child(8) {
+      --d: 1.2s !important;
+    }
+
+    .stage-label,
+    .stage-kind {
+      --d: 0.5s !important;
+    }
+  }
+
   /* ---------- motion ----------
      Every animated property below is transform or opacity only. Hidden /
      pre-play states apply ONLY under html.js + no-preference (mirroring the
      site's reveal system and LobesTerminal); the base rules above already
      render the finished, composed pipeline. The `.is-playing` class — set
-     once by the observer when the figure scrolls into view — drives each
-     element from its pre-play pose to the composed pose, staggered by a
-     per-element `--d` delay, then holds. No loop, no reset flicker. */
+     once by the observer when each stage or connector scrolls into view —
+     drives its elements from their pre-play poses to the composed poses,
+     staggered by the per-element `--d` delay, then holds. No loop, no reset
+     flicker. */
   @media (prefers-reduced-motion: no-preference) {
     /* idle breathing on the seed and finished nodes — calm, infinite */
     .idea-seed {
@@ -827,6 +917,24 @@ const CLAIMS = ["audience", "after_state", "boundary"];
       transition:
         opacity 0.7s var(--ease-out),
         transform 0.7s var(--ease-out);
+      transition-delay: var(--d, 0s);
+    }
+
+    :global(html.js) .flow .gate-glyph {
+      opacity: 0;
+      transform: translateY(0.6rem) scale(0.9);
+      transition:
+        opacity 0.7s var(--ease-out),
+        transform 0.7s var(--ease-out);
+      transition-delay: var(--d, 0s);
+    }
+
+    :global(html.js) .flow .wave-root {
+      opacity: 0;
+      transform: scale(0.5);
+      transition:
+        opacity 0.5s var(--ease-out),
+        transform 0.5s var(--ease-gentle);
       transition-delay: var(--d, 0s);
     }
 
@@ -917,7 +1025,7 @@ const CLAIMS = ["audience", "after_state", "boundary"];
     :global(html.js) .flow .gate-block {
       opacity: 1;
       transition: opacity 0.4s var(--ease-out);
-      transition-delay: 3.7s;
+      transition-delay: 5.7s;
     }
 
     :global(html.js) .flow .gate-check {
@@ -928,87 +1036,105 @@ const CLAIMS = ["audience", "after_state", "boundary"];
       transition:
         opacity 0.5s var(--ease-out),
         transform 0.5s var(--ease-gentle);
-      transition-delay: 4.2s;
+      transition-delay: 6.2s;
     }
 
     /* --- played poses (composed) --- */
-    :global(html.js) .flow.is-playing .link-line {
+    :global(html.js) .link.is-playing .link-line {
       transform: none;
     }
 
-    :global(html.js) .flow.is-playing .frame-claims {
+    :global(html.js) .stage.is-playing .frame-claims {
       opacity: 1;
       transform: none;
     }
 
-    :global(html.js) .flow.is-playing .claim-open {
+    :global(html.js) .stage.is-playing .claim-open {
       opacity: 0;
     }
 
-    :global(html.js) .flow.is-playing .claim-solid {
+    :global(html.js) .stage.is-playing .claim-solid {
       opacity: 1;
       transform: scale(1);
     }
 
-    :global(html.js) .flow.is-playing .spec-doc,
-    :global(html.js) .flow.is-playing .build-glyph {
+    :global(html.js) .stage.is-playing .spec-doc,
+    :global(html.js) .stage.is-playing .build-glyph,
+    :global(html.js) .stage.is-playing .gate-glyph {
       opacity: 1;
       transform: none;
     }
 
-    :global(html.js) .flow.is-playing .wave-lane {
+    :global(html.js) .stage.is-playing .wave-lane {
       opacity: 1;
       transform: scaleX(1);
     }
 
-    :global(html.js) .flow.is-playing .gate-block {
-      opacity: 0;
-    }
-
-    :global(html.js) .flow.is-playing .gate-check {
+    :global(html.js) .stage.is-playing .wave-root {
       opacity: 1;
       transform: scale(1);
     }
 
-    :global(html.js) .flow.is-playing .challenge-glyph,
-    :global(html.js) .flow.is-playing .ledger-glyph,
-    :global(html.js) .flow.is-playing .summary-doc {
+    :global(html.js) .stage.is-playing .gate-block {
+      opacity: 0;
+    }
+
+    :global(html.js) .stage.is-playing .gate-check {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    :global(html.js) .stage.is-playing .challenge-glyph,
+    :global(html.js) .stage.is-playing .ledger-glyph,
+    :global(html.js) .stage.is-playing .summary-doc {
       opacity: 1;
       transform: none;
     }
 
-    :global(html.js) .flow.is-playing .challenge-lens {
+    :global(html.js) .stage.is-playing .challenge-lens {
       transform: none;
     }
 
-    :global(html.js) .flow.is-playing .challenge-finding {
+    :global(html.js) .stage.is-playing .challenge-finding {
       opacity: 1;
     }
 
-    :global(html.js) .flow.is-playing .finding-open,
-    :global(html.js) .flow.is-playing .entry-open {
+    :global(html.js) .stage.is-playing .finding-open,
+    :global(html.js) .stage.is-playing .entry-open {
       opacity: 0;
     }
 
-    :global(html.js) .flow.is-playing .finding-solid,
-    :global(html.js) .flow.is-playing .entry-solid {
+    :global(html.js) .stage.is-playing .finding-solid,
+    :global(html.js) .stage.is-playing .entry-solid {
       opacity: 1;
       transform: scale(1);
     }
 
-    :global(html.js) .flow.is-playing .summary-tick {
+    :global(html.js) .stage.is-playing .summary-tick {
       opacity: 1;
       transform: scale(1);
+    }
+
+    :global(html.js) .flow .stage-label,
+    :global(html.js) .flow .stage-kind {
+      opacity: 0;
+      transition: opacity 0.5s var(--ease-out);
+      transition-delay: calc(var(--d, 0s) + 0.35s);
+    }
+
+    :global(html.js) .stage.is-playing .stage-label,
+    :global(html.js) .stage.is-playing .stage-kind {
+      opacity: 1;
     }
 
     /* the gate's refuse-then-open beat is inherently multi-step, so it runs
        as a keyframe (compositor-only). `both` holds the open pose after. */
-    :global(html.js) .flow.is-playing .gate-leaf-l {
-      animation: gate-open-l 3.6s var(--ease-gentle) 1s both;
+    :global(html.js) .stage.is-playing .gate-leaf-l {
+      animation: gate-open-l 1.8s var(--ease-gentle) 4.6s both;
     }
 
-    :global(html.js) .flow.is-playing .gate-leaf-r {
-      animation: gate-open-r 3.6s var(--ease-gentle) 1s both;
+    :global(html.js) .stage.is-playing .gate-leaf-r {
+      animation: gate-open-r 1.8s var(--ease-gentle) 4.6s both;
     }
   }
 
@@ -1065,10 +1191,10 @@ const CLAIMS = ["audience", "after_state", "boundary"];
 </style>
 
 <script>
-  // Play the arc the first time it scrolls into view — class toggle only.
-  // No network, no layout writes. If IntersectionObserver is unavailable,
-  // Layout.astro strips `html.js`, so the pre-play poses above never apply
-  // and the composed still shows. Mirrors LobesTerminal exactly.
+  // Play each stage and connector the first time it scrolls into view —
+  // class toggle only. No network, no layout writes. If
+  // IntersectionObserver is unavailable, Layout.astro strips `html.js`, so
+  // the pre-play poses above never apply and the composed still shows.
   if (
     matchMedia("(prefers-reduced-motion: no-preference)").matches &&
     "IntersectionObserver" in window
@@ -1084,6 +1210,8 @@ const CLAIMS = ["audience", "after_state", "boundary"];
       },
       { threshold: 0.35, rootMargin: "0px 0px -40px 0px" },
     );
-    document.querySelectorAll("[data-flow]").forEach((el) => io.observe(el));
+    document
+      .querySelectorAll("[data-flow] .flow-track > li")
+      .forEach((el) => io.observe(el));
   }
 </script>
