@@ -169,7 +169,7 @@ const dogfood = {
 
   <!-- the work loop -->
   <section id="work-loop" class="section" aria-labelledby="work-loop-title">
-    <div class="container wide-rail">
+    <div class="container page-rail">
       <SectionIntro
         eyebrow={colleague.work.eyebrow}
         title={colleague.work.headline}
@@ -182,16 +182,16 @@ const dogfood = {
             <StructuredCard
               title={card.name}
               body={card.detail}
-              footer={card.verbs}
+              footerItems={card.verbs.split(" · ")}
               revealDelay={Math.min(i * 0.07, 0.35)}
             />
           ))
         }
       </ul>
-      <!-- the dirty-tree refusal is four lines on purpose — it takes the
-           narrow column beside the full flight-piloted run, same seam idiom
-           as devague.astro's execution-seam row -->
-      <div class="term-grid seam">
+      <!-- The short refusal and full flight run share the same reading rail.
+           Stacking keeps both captures legible without breaking the section
+           edge established by the heading above. -->
+      <div class="term-grid">
         <div data-reveal>
           <ColleagueTerminal pane={workDirtyRefusal} />
         </div>
@@ -204,7 +204,7 @@ const dogfood = {
 
   <!-- the workforce -->
   <section id="workforce" class="section" aria-labelledby="workforce-title">
-    <div class="container wide-rail">
+    <div class="container page-rail">
       <SectionIntro
         eyebrow={colleague.subagents.eyebrow}
         title={colleague.subagents.headline}
@@ -264,7 +264,7 @@ const dogfood = {
     class="section"
     aria-labelledby="cortex-senses-title"
   >
-    <div class="container wide-rail">
+    <div class="container page-rail">
       <SectionIntro
         eyebrow={colleague.cortexSenses.eyebrow}
         title={colleague.cortexSenses.headline}
@@ -283,8 +283,8 @@ const dogfood = {
           ))
         }
       </ul>
-      <!-- the mesh pair: one brain split across two machines — spark
-           carries cortex, Thor carries senses -->
+      <!-- The mesh pair stays sequential on the reading rail: spark carries
+           cortex, then Thor carries senses. -->
       <div class="term-grid">
         <div data-reveal>
           <ColleagueTerminal pane={lobesSparkCortex} />
@@ -372,7 +372,7 @@ const dogfood = {
 
   <!-- dogfood: real captures proving the whole page on colleague's own work -->
   <section id="dogfood" class="section" aria-labelledby="dogfood-title">
-    <div class="container wide-rail">
+    <div class="container page-rail">
       <SectionIntro
         eyebrow={dogfood.eyebrow}
         title={dogfood.headline}
@@ -524,13 +524,12 @@ const dogfood = {
     margin-inline: auto;
   }
 
-  /* a single narrow terminal, centered — the same idiom as .diagram-wrap
-     above, sized for a short, six-line identity probe rather than a full
-     term-grid column */
+  /* The identity probe uses the full reading rail, matching the terminal
+     captures in the sections below. */
   .term-narrow {
+    width: 100%;
+    max-width: none;
     margin-top: 2.2rem;
-    max-width: 28rem;
-    margin-inline: auto;
   }
 
   /* the workforce: roles table + the live capture beneath it */
@@ -680,7 +679,7 @@ const dogfood = {
   .term-grid {
     margin-top: 2.2rem;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+    grid-template-columns: minmax(0, 1fr);
     gap: 1.3rem;
     align-items: start;
   }
@@ -691,20 +690,6 @@ const dogfood = {
 
   .term-grid + .term-grid {
     margin-top: 1.3rem;
-  }
-
-  /* the seam row: the deliberately short dirty-tree refusal takes the
-     narrow column, the full flight-piloted run the wide one; below the
-     sibling grids' natural two-column width it stacks like every other
-     row — same idiom as devague.astro's .seam */
-  .term-grid.seam {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
-  }
-
-  @media (max-width: 52rem) {
-    .term-grid.seam {
-      grid-template-columns: 1fr;
-    }
   }
 
   /* what's next */

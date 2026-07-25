@@ -118,6 +118,27 @@ for (const path of [
   checks += 5;
 }
 
+const [colleaguePage, lobesTerminal] = await Promise.all([
+  readSource("pages/agents/colleague.astro"),
+  readSource("components/LobesTerminal.astro"),
+]);
+assert.match(
+  colleaguePage,
+  /\.term-narrow\s*\{[^}]*width:\s*100%[^}]*max-width:\s*none/s,
+  "The Colleague identity terminal must fill the shared page rail",
+);
+assert.match(
+  lobesTerminal,
+  /const\s*\{\s*session,\s*start\s*=\s*0\.3,\s*wrap\s*=\s*true\s*\}/,
+  "Lobes terminal wrapping must default on",
+);
+assert.match(
+  lobesTerminal,
+  /\.term\.wrap pre\s*\{[^}]*overflow-x:\s*hidden[^}]*white-space:\s*pre-wrap[^}]*overflow-wrap:\s*anywhere/s,
+  "Wrapped Lobes terminals must not require horizontal scrolling",
+);
+checks += 3;
+
 for (const [path, wrapper] of [
   ["pages/agents/devague.astro", "flow-wrap"],
   ["pages/agents/colleague.astro", "diagram-wrap"],
@@ -136,6 +157,30 @@ for (const [path, wrapper] of [
     `${path} must use the shared breathing room around its diagram and note`,
   );
   checks += 1;
+}
+
+for (const path of [
+  "pages/agents/colleague.astro",
+  "pages/agents/lobes.astro",
+  "pages/agents/reachy-mini-cli.astro",
+]) {
+  const source = await readSource(path);
+  assert.doesNotMatch(
+    source,
+    /container wide-rail/,
+    `${path} must keep agent sections on the shared page rail`,
+  );
+  assert.match(
+    source,
+    /\.term-grid\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s,
+    `${path} must stack terminal captures on the reading rail`,
+  );
+  assert.doesNotMatch(
+    source,
+    /term-grid seam|\.term-grid\.seam/,
+    `${path} must not restore side-by-side terminal seams`,
+  );
+  checks += 3;
 }
 
 const devague = await readSource("pages/agents/devague.astro");
@@ -162,4 +207,4 @@ assert.doesNotMatch(
 );
 checks += 5;
 
-console.log(`Design-system contract passed: ${checks} checks across tokens, assigned rails, the responsive shell, the seven-slide deck, four terminal components, shared diagram spacing, and the read-only Devague gate previews.`);
+console.log(`Design-system contract passed: ${checks} checks across tokens, assigned rails, narrow agent capture stacks, the responsive shell, the seven-slide deck, four terminal components, shared diagram spacing, and the read-only Devague gate previews.`);

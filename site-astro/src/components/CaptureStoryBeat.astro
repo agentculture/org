@@ -1,4 +1,5 @@
 ---
+import InlineCodeText from "./InlineCodeText.astro";
 import {
   resolveStoryBeat,
   type StoryBeat,
@@ -54,11 +55,15 @@ const promptColour: Record<string, string> = {
             {line.kind === "ellipsis" && (
               <span class="beat-cut" aria-hidden="true">⋮</span>
             )}
-            {line.text}
+            <InlineCodeText text={line.text} />
           </p>
         ))
       }
-      {beat.note && <p class="beat-note">{beat.note}</p>}
+      {beat.note && (
+        <p class="beat-note">
+          <InlineCodeText text={beat.note} />
+        </p>
+      )}
     </div>
   </div>
 </li>

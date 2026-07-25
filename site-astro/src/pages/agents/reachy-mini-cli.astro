@@ -43,6 +43,7 @@
 import Layout from "../../layouts/Layout.astro";
 import PageHero from "../../components/PageHero.astro";
 import ClosingBand from "../../components/ClosingBand.astro";
+import InlineCodeText from "../../components/InlineCodeText.astro";
 import SectionIntro from "../../components/SectionIntro.astro";
 import StructuredCard from "../../components/StructuredCard.astro";
 import ReachyDiagram from "../../components/ReachyDiagram.astro";
@@ -115,7 +116,7 @@ const sdkOwnerCaption =
 
   <!-- the body: every capability is a verb you can type -->
   <section id="body" class="section" aria-labelledby="body-title">
-    <div class="container wide-rail">
+    <div class="container page-rail">
       <SectionIntro
         eyebrow={reachy.capabilities.eyebrow}
         title={reachy.capabilities.headline}
@@ -139,10 +140,9 @@ const sdkOwnerCaption =
       <div class="term-narrow" data-reveal>
         <ReachyTerminal pane={identityWhoami} />
       </div>
-      <!-- the deliberately short doctor report takes the narrow column beside
-           the long real-mode quickstart, the same seam idiom as
-           colleague.astro's work-loop row -->
-      <div class="term-grid seam">
+      <!-- The short doctor report and long real-mode quickstart stack on the
+           same reading rail, preserving their sequence and legibility. -->
+      <div class="term-grid">
         <div data-reveal>
           <ReachyTerminal pane={doctor} />
         </div>
@@ -155,7 +155,7 @@ const sdkOwnerCaption =
 
   <!-- the noun map: the whole robot surface, faithfully -->
   <section id="noun-map" class="section" aria-labelledby="noun-map-title">
-    <div class="container wide-rail">
+    <div class="container page-rail">
       <SectionIntro
         eyebrow={reachy.nounMap.eyebrow}
         title={reachy.nounMap.headline}
@@ -185,7 +185,9 @@ const sdkOwnerCaption =
                   <td>
                     <code>{row.noun}</code>
                   </td>
-                  <td class="does-cell muted">{row.does}</td>
+                  <td class="does-cell muted">
+                    <InlineCodeText text={row.does} />
+                  </td>
                   <td class="transport-cell muted">{row.transport}</td>
                 </tr>
               ))
@@ -208,7 +210,7 @@ const sdkOwnerCaption =
 
   <!-- the single-SDK-owner model: the one thing to learn -->
   <section id="sdk-owner" class="section" aria-labelledby="sdk-owner-title">
-    <div class="container wide-rail">
+    <div class="container page-rail">
       <SectionIntro
         eyebrow={reachy.sdkOwner.eyebrow}
         title={reachy.sdkOwner.headline}
@@ -229,10 +231,8 @@ const sdkOwnerCaption =
           ))
         }
       </ul>
-      <!-- the seam: the two-line move wake takes the narrow column beside the
-           long two-tier listen run — one queued motion next to the full
-           orient-to-sound loop -->
-      <div class="term-grid seam">
+      <!-- One queued motion, followed by the full orient-to-sound loop. -->
+      <div class="term-grid">
         <div data-reveal>
           <ReachyTerminal pane={moveWake} />
         </div>
@@ -275,7 +275,7 @@ const sdkOwnerCaption =
 
   <!-- thinking out loud: the cognition loop, the fallback voice, the feed -->
   <section id="thinking" class="section" aria-labelledby="thinking-title">
-    <div class="container wide-rail">
+    <div class="container page-rail">
       <SectionIntro
         eyebrow={reachy.think.eyebrow}
         title={reachy.think.headline}
@@ -292,11 +292,9 @@ const sdkOwnerCaption =
           <ReachyTerminal pane={thinkExpressions} start={1.4} />
         </div>
       </div>
-      <!-- the honest story of live cognition: today's bounded run was a clean
-           zero-turn no-op (narrow, left) beside the ported worked example of
-           what the loop actually says when it has something to say (wide,
-           right) — the ported pane's archival chrome is distinct on purpose -->
-      <div class="term-grid seam">
+      <!-- Today's bounded zero-turn no-op precedes the ported worked example;
+           the ported pane's archival chrome remains distinct on purpose. -->
+      <div class="term-grid">
         <div data-reveal>
           <ReachyTerminal pane={thinkRunNoop} />
         </div>
@@ -304,10 +302,9 @@ const sdkOwnerCaption =
           <ReachyTerminal pane={thinkPorted} start={1.4} />
         </div>
       </div>
-      <!-- the voice seam: the TTS refusal (the error:/hint: contract, narrow
-           left) beside the harmonic voice actually answering (wide right) —
-           the second voice for when the first is unreachable -->
-      <div class="term-grid seam">
+      <!-- The TTS refusal precedes the harmonic fallback voice that answers
+           when the first voice is unreachable. -->
+      <div class="term-grid">
         <div data-reveal>
           <ReachyTerminal pane={sayTtsRefusal} />
         </div>
@@ -359,7 +356,9 @@ const sdkOwnerCaption =
               style={`--reveal-delay: ${Math.min(i * 0.08, 0.24)}s`}
             >
               <h3 class="theme-name">{theme.name}</h3>
-              <p class="theme-direction muted">{theme.direction}</p>
+              <p class="theme-direction muted">
+                <InlineCodeText text={theme.direction} />
+              </p>
               <ul class="theme-issues">
                 {theme.issues.map((issue) => (
                   <li>
@@ -369,7 +368,7 @@ const sdkOwnerCaption =
                       rel="noopener noreferrer"
                     >
                       <span class="issue-num">#{issue.number}</span>{" "}
-                      {issue.title}
+                      <InlineCodeText text={issue.title} />
                     </a>
                   </li>
                 ))}
@@ -565,7 +564,7 @@ const sdkOwnerCaption =
   .term-grid {
     margin-top: 2.2rem;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+    grid-template-columns: minmax(0, 1fr);
     gap: 1.3rem;
     align-items: start;
   }
@@ -576,19 +575,6 @@ const sdkOwnerCaption =
 
   .term-grid + .term-grid {
     margin-top: 1.3rem;
-  }
-
-  /* the seam row: a deliberately short pane takes the narrow column, the long
-     one the wide column; below the two-column threshold it stacks like every
-     other row — the same idiom as colleague.astro's / devague.astro's .seam */
-  .term-grid.seam {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
-  }
-
-  @media (max-width: 52rem) {
-    .term-grid.seam {
-      grid-template-columns: 1fr;
-    }
   }
 
 </style>

@@ -28,6 +28,7 @@
 // var(--accent), var(--line), var(--font-mono), var(--radius), var(--shadow),
 // var(--ease-out)) so the pane is legible and correct in BOTH dawn themes —
 // no hardcoded colour that would break light or dark.
+import InlineCodeText from "./InlineCodeText.astro";
 import type { CapturePane } from "../data/reachy-mini-cli-captures";
 
 interface Props {
@@ -144,10 +145,10 @@ const rendered = pane.lines
   <figcaption class="rterm-head">
     <span class="rdot" aria-hidden="true"></span>
     <span class="rprov-tag">{provLabel[provenance]}</span>
-    <span class="rtitle">{pane.title}</span>
-    <span class="rcontext">{pane.context}</span>
+    <span class="rtitle"><InlineCodeText text={pane.title} /></span>
+    <span class="rcontext"><InlineCodeText text={pane.context} /></span>
     <span class="rstamp">reachy-mini-cli {pane.cliVersion} &middot; captured {pane.capturedDate}</span>
-    <span class="rsource">{pane.source}</span>
+    <span class="rsource"><InlineCodeText text={pane.source} /></span>
   </figcaption>
   <pre
     tabindex="0"

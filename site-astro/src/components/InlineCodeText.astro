@@ -1,0 +1,47 @@
+---
+interface Props {
+  text: string;
+}
+
+const { text } = Astro.props;
+
+type Part =
+  | { kind: "text"; value: string }
+  | { kind: "code"; value: string };
+
+// Explicit backtick spans remain whole commands. Bare long-form flags,
+// Devague operator skills, and colleague's branch-name templates are
+// promoted individually, so content authors do not have to smuggle markup
+// into the data layer just to preserve code semantics.
+const parts: Part[] = [];
+const tokenPattern =
+  /(`[^`\n]+`|--[a-z0-9][a-z0-9-]*|\/(?:scope|think|challenge|spec-to-plan|assign-to-workforce|deviate|summarize-delivery)\b|(?:colleague|sub)\/<id>)/gi;
+let cursor = 0;
+
+for (const match of text.matchAll(tokenPattern)) {
+  const index = match.index ?? 0;
+  if (index > cursor) {
+    parts.push({ kind: "text", value: text.slice(cursor, index) });
+  }
+
+  const token = match[0];
+  const explicitCode = token.startsWith("`") && token.endsWith("`");
+  parts.push({
+    kind: "code",
+    value: explicitCode ? token.slice(1, -1) : token,
+  });
+  cursor = index + token.length;
+}
+
+if (cursor < text.length) {
+  parts.push({ kind: "text", value: text.slice(cursor) });
+}
+---
+
+{
+  parts.map((part) =>
+    part.kind === "code"
+      ? <code class="inline-code-chip" data-inline-code>{part.value}</code>
+      : part.value
+  )
+}

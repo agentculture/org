@@ -184,13 +184,13 @@ assert.equal(
 );
 assert.equal(
   count(colleague, /data-code-chip-footer/g),
-  3,
-  "Only Colleague's three tier cards should use chip footers",
+  9,
+  "Colleague's tier and work-loop cards should use chip footers",
 );
 assert.equal(
   count(colleague, /data-code-chip(?:>| )/g),
-  8,
-  "Colleague's tier commands must retain their meaningful grouping",
+  26,
+  "Colleague's tier and work-loop commands must retain their meaningful grouping",
 );
 assert.doesNotMatch(
   lobes,

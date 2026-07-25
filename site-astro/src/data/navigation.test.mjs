@@ -476,6 +476,14 @@ test("the header implements accessible responsive panels without dependencies", 
     primaryNav,
     /data-nav-current="true"[^\n]*\.menu-trigger::after/,
   );
+  assert.match(
+    primaryNav,
+    /\.destination\[aria-current="page"\]\s+\.destination-name::after/,
+  );
+  assert.doesNotMatch(
+    primaryNav,
+    /\.destination\[aria-current="page"\]::after/,
+  );
   assert.doesNotMatch(primaryNav, /\.root-control::after/);
   assert.doesNotMatch(primaryNav, /https?:\/\/[^'"]+\.(?:js|css)/);
 });

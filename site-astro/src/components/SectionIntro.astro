@@ -1,4 +1,6 @@
 ---
+import InlineCodeText from "./InlineCodeText.astro";
+
 interface Props {
   eyebrow: string;
   title: string;
@@ -43,7 +45,7 @@ const revealParagraphs = revealMode === "paragraphs";
             data-reveal
             style={`--reveal-delay: ${Math.min(0.08 + index * 0.06, 0.2)}s`}
           >
-            {paragraph}
+            <InlineCodeText text={paragraph} />
           </p>
         ))}
       </div>
@@ -54,7 +56,9 @@ const revealParagraphs = revealMode === "paragraphs";
         style="--reveal-delay: 0.1s"
       >
         {intro.map((paragraph, index) => (
-          <p class={index === 0 ? firstParagraph : "muted"}>{paragraph}</p>
+          <p class={index === 0 ? firstParagraph : "muted"}>
+            <InlineCodeText text={paragraph} />
+          </p>
         ))}
       </div>
     )

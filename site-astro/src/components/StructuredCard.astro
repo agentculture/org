@@ -1,4 +1,6 @@
 ---
+import InlineCodeText from "./InlineCodeText.astro";
+
 interface Props {
   title: string;
   body: string;
@@ -34,11 +36,13 @@ const {
     {
       titleKind === "code"
         ? <code class="structured-card__title-code">{title}</code>
-        : title
+        : <InlineCodeText text={title} />
     }
   </h3>
 
-  <p class="structured-card__body muted">{body}</p>
+  <p class="structured-card__body muted">
+    <InlineCodeText text={body} />
+  </p>
 
   {
     footerItems && footerItems.length > 0 ? (

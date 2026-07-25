@@ -357,11 +357,10 @@ const pathname = Astro.url.pathname;
   }
 
   .destination {
-    position: relative;
     display: grid;
     gap: 0.14rem;
     min-height: 2.75rem;
-    padding: 0.55rem 1.25rem 0.55rem 0.65rem;
+    padding: 0.55rem 0.65rem;
     border-radius: 0.75rem;
     color: var(--ink);
     text-decoration: none;
@@ -372,15 +371,15 @@ const pathname = Astro.url.pathname;
     background: color-mix(in srgb, var(--accent) 8%, transparent);
   }
 
-  .destination[aria-current="page"]::after {
+  .destination[aria-current="page"] .destination-name::after {
     content: "";
-    position: absolute;
-    top: 1rem;
-    right: 0.55rem;
+    display: inline-block;
     width: 6px;
     height: 6px;
+    margin-left: 0.4rem;
     border-radius: 50%;
     background: var(--accent);
+    vertical-align: 0.1em;
   }
 
   .destination-name {

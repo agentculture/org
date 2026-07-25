@@ -102,6 +102,8 @@ jobs:
 
       - run: npm run check:design-system
 
+      - run: npm run check:inline-code-flags
+
       - run: npm run check:section-intros
 
       - run: npm run check:structured-cards
