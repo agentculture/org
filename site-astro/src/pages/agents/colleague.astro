@@ -517,7 +517,9 @@ const dogfood = {
 
   /* the paradigm */
   .diagram-wrap {
-    margin-block: 2.6rem 2.8rem;
+    margin-block:
+      var(--ac-space-diagram-before)
+      var(--ac-space-diagram-after);
     max-width: 46rem;
     margin-inline: auto;
   }
