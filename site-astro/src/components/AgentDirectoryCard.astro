@@ -1,6 +1,5 @@
 ---
 import type { AgentEntry } from "../data/types";
-import { learnNavigation } from "../data/navigation";
 import ExternalLinkIcon from "./ExternalLinkIcon.astro";
 
 interface Props {
@@ -8,20 +7,20 @@ interface Props {
 }
 
 const { agent } = Astro.props;
-const isAgentPage = agent.url?.startsWith("/agents/") ?? false;
-const isLearn = agent.url === learnNavigation.href;
+const isAgentPage = agent.destinationKind === "agent-page";
 const opensInNewTab = !isAgentPage;
-const destination = isAgentPage
-  ? "Agent page"
-  : isLearn
-    ? "Visit site"
-    : "Repository";
+const destinationLabels = {
+  "agent-page": "Agent page",
+  site: "Visit site",
+  repository: "Repository",
+} as const;
+const destination = destinationLabels[agent.destinationKind];
 ---
 
 {
   agent.url ? (
     <a
-      class:list={["card", "entry", isAgentPage && "is-agent-page", isLearn && "is-product"]}
+      class:list={["card", "entry", isAgentPage && "is-agent-page"]}
       href={agent.url}
       target={opensInNewTab ? "_blank" : undefined}
       rel={opensInNewTab ? "noopener noreferrer" : undefined}
@@ -85,9 +84,5 @@ const destination = isAgentPage
     font-size: var(--ac-type-ui);
     line-height: var(--ac-leading-ui);
     font-weight: 650;
-  }
-
-  .is-product {
-    border-color: color-mix(in srgb, var(--accent) 42%, var(--line-soft));
   }
 </style>

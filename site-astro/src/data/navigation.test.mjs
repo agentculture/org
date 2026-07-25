@@ -120,6 +120,65 @@ test("Agents exposes hosted pages and stable directory groups", () => {
   }
 });
 
+test("agent directory destinations are explicit and League is one product", () => {
+  const allowedKinds = new Set(["agent-page", "site", "repository"]);
+
+  for (const entry of site.agents.entries) {
+    assert(
+      allowedKinds.has(entry.destinationKind),
+      `${entry.name} must declare a supported destination kind`,
+    );
+
+    if (entry.destinationKind === "agent-page") {
+      assert.match(entry.url, /^\/agents\/[^/]+\/$/);
+    }
+
+    if (entry.destinationKind === "repository") {
+      assert.equal(entry.url, `https://github.com/${entry.repo}`);
+    }
+  }
+
+  assert.deepEqual(
+    site.agents.entries
+      .filter(
+        ({ name, repo }) =>
+          name.toLowerCase().includes("league-of-agents") ||
+          name === "League of Agents" ||
+          repo.includes("league-of-agents"),
+      )
+      .map(({ name, repo, url, destinationKind }) => ({
+        name,
+        repo,
+        url,
+        destinationKind,
+      })),
+    [
+      {
+        name: "League of Agents",
+        repo: "agentculture/league-of-agents",
+        url: "https://league-of-agents.ai",
+        destinationKind: "site",
+      },
+    ],
+  );
+
+  assert.deepEqual(
+    site.agents.entries
+      .filter(({ destinationKind }) => destinationKind === "site")
+      .map(({ name, url }) => ({ name, url })),
+    [
+      {
+        name: "League of Agents",
+        url: "https://league-of-agents.ai",
+      },
+      {
+        name: "learn-cli",
+        url: "https://agentculture.org/learn/",
+      },
+    ],
+  );
+});
+
 test("Library exposes a capped, explicitly featured content selection", () => {
   assert.deepEqual(
     libraryNavigation.groups.map(({ label }) => label),
@@ -418,6 +477,16 @@ test("the header implements accessible responsive panels without dependencies", 
   );
   assert.doesNotMatch(primaryNav, /\.root-control::after/);
   assert.doesNotMatch(primaryNav, /https?:\/\/[^'"]+\.(?:js|css)/);
+});
+
+test("agent directory cards use one border treatment", async () => {
+  const card = await readFile(componentUrl("AgentDirectoryCard.astro"), "utf8");
+
+  assert.doesNotMatch(card, /is-product/);
+  assert.doesNotMatch(
+    card,
+    /border-color:\s*color-mix\(in srgb,\s*var\(--accent\)/,
+  );
 });
 
 test("the footer renders grouped navigation with external destination cues", async () => {

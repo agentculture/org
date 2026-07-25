@@ -71,7 +71,11 @@ export const siteSections = [
 ] as const satisfies readonly SiteSectionNavigationItem[];
 
 const ownedAgentPages = site.agents.entries.flatMap((entry) => {
-  if (typeof entry.url !== "string" || !entry.url.startsWith("/agents/")) {
+  if (
+    entry.destinationKind !== "agent-page" ||
+    typeof entry.url !== "string" ||
+    !entry.url.startsWith("/agents/")
+  ) {
     return [];
   }
 

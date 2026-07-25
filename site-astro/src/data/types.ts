@@ -36,8 +36,10 @@ export interface AgentEntry {
   name: string;
   /** owner/repo. */
   repo: string;
-  /** Public URL, or null when the repo is private. */
+  /** Primary public destination, or null when it is private. */
   url: string | null;
+  /** What the directory card links to and how its CTA is labelled. */
+  destinationKind: "agent-page" | "site" | "repository";
   /** One-line role description. */
   role: string;
   /** Stable grouping key — must match one agents.groups id. */
