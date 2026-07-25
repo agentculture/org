@@ -89,7 +89,17 @@ const dogfood = {
             >
               <span class="fact-label muted">{fact.label}</span>
               <span class="fact-value">
-                {fact.href ? <a href={fact.href}>{fact.value}</a> : fact.value}
+                {fact.href ? (
+                  <a
+                    href={fact.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {fact.value}
+                  </a>
+                ) : (
+                  fact.value
+                )}
               </span>
             </li>
           ))
@@ -419,7 +429,11 @@ const dogfood = {
               <ul class="theme-issues">
                 {theme.issues.map((issue) => (
                   <li>
-                    <a href={issue.url}>
+                    <a
+                      href={issue.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <span class="issue-num">#{issue.number}</span>{" "}
                       {issue.title}
                     </a>

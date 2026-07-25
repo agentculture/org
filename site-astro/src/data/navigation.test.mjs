@@ -266,6 +266,12 @@ test("the footer exposes the selected sitemap links exactly once", () => {
     kind: "product",
     newTab: true,
   });
+
+  for (const item of footerNavigation.flatMap(({ items }) => items)) {
+    if (item.kind !== "internal") {
+      assert.equal(item.newTab, true);
+    }
+  }
 });
 
 test("footer current states use exact owned-route matching", () => {

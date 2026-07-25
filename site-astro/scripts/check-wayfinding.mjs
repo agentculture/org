@@ -307,6 +307,24 @@ for (const [route, html] of pages) {
     assert(learn.rel === "noopener noreferrer", "footer Learn is missing its safe rel");
     assert(!learn.class?.split(/\s+/).includes("primary-cta"), "footer Learn must remain a normal link");
   });
+
+  check(`${route} external links open safely in a new tab`, () => {
+    const externalAnchors = openings(html, "a").filter(({ href = "" }) =>
+      /^https?:\/\//.test(href),
+    );
+
+    for (const anchor of externalAnchors) {
+      const relTokens = new Set((anchor.rel ?? "").split(/\s+/).filter(Boolean));
+      assert(
+        anchor.target === "_blank",
+        `${anchor.href} must use target="_blank"`,
+      );
+      assert(
+        relTokens.has("noopener") && relTokens.has("noreferrer"),
+        `${anchor.href} must use rel="noopener noreferrer"`,
+      );
+    }
+  });
 }
 
 for (const [route, html] of pages) {
@@ -358,6 +376,6 @@ if (failures.length) {
   process.exitCode = 1;
 } else {
   console.log(
-    `Wayfinding contract passed: ${checksPassed} checks across ${pages.size} pages; consolidated descriptive desktop/mobile navigation, complete header route coverage, exact sitemap footer states, section-only Library footer links, deferred breadcrumbs/local contents navigation, the retained deck rail, and 6 stable agent groups.`,
+    `Wayfinding contract passed: ${checksPassed} checks across ${pages.size} pages; consolidated descriptive desktop/mobile navigation, complete header route coverage, exact sitemap footer states, section-only Library footer links, safe new-tab external links, deferred breadcrumbs/local contents navigation, the retained deck rail, and 6 stable agent groups.`,
   );
 }

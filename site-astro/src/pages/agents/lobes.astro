@@ -44,7 +44,17 @@ import {
             >
               <span class="fact-label muted">{fact.label}</span>
               <span class="fact-value">
-                {fact.href ? <a href={fact.href}>{fact.value}</a> : fact.value}
+                {fact.href ? (
+                  <a
+                    href={fact.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {fact.value}
+                  </a>
+                ) : (
+                  fact.value
+                )}
               </span>
             </li>
           ))
@@ -166,7 +176,11 @@ import {
           Explicit flags always win — <code>--max-model-len</code>,{" "}
           <code>--gpu-mem-util</code>, or a new machine profile of your own.
           Full tables and measured numbers:{" "}
-          <a href="https://github.com/agentculture/lobes-cli/blob/main/docs/tuning-profiles.md">docs/tuning-profiles.md</a>.
+          <a
+            href="https://github.com/agentculture/lobes-cli/blob/main/docs/tuning-profiles.md"
+            target="_blank"
+            rel="noopener noreferrer"
+          >docs/tuning-profiles.md</a>.
         </p>
       </div>
     </div>
@@ -233,7 +247,12 @@ import {
               data-reveal
               style={`--reveal-delay: ${Math.min(i * 0.08, 0.32)}s`}
             >
-              <a class="card bench-card" href={link.url}>
+              <a
+                class="card bench-card"
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <h3>{link.title}</h3>
                 <p class="muted">{link.description}</p>
               </a>

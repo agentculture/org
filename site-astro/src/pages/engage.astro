@@ -18,7 +18,12 @@ const { engage, hero } = site;
         {
           engage.channels.map((channel, i) => (
             <li data-reveal style={`--reveal-delay: ${Math.min(i * 0.1, 0.3)}s`}>
-              <a class="card channel" href={channel.url}>
+              <a
+                class="card channel"
+                href={channel.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <span class="glyph" aria-hidden="true">
                   <svg width="34" height="34" viewBox="0 0 40 40" fill="none">
                     <circle cx="20" cy="23" r="3.2" fill="currentColor" />

@@ -10,6 +10,7 @@ interface Props {
 const { agent } = Astro.props;
 const isAgentPage = agent.url?.startsWith("/agents/") ?? false;
 const isLearn = agent.url === learnNavigation.href;
+const opensInNewTab = !isAgentPage;
 const destination = isAgentPage
   ? "Agent page"
   : isLearn
@@ -22,8 +23,8 @@ const destination = isAgentPage
     <a
       class:list={["card", "entry", isAgentPage && "is-agent-page", isLearn && "is-product"]}
       href={agent.url}
-      target={isLearn ? "_blank" : undefined}
-      rel={isLearn ? "noopener noreferrer" : undefined}
+      target={opensInNewTab ? "_blank" : undefined}
+      rel={opensInNewTab ? "noopener noreferrer" : undefined}
     >
       <span class="entry-heading">
         <h3>{agent.name}</h3>
@@ -34,7 +35,7 @@ const destination = isAgentPage
         <span class="repo muted">{agent.repo}</span>
         <span class="destination">
           {destination}
-          {isLearn && <span class="sr-only"> (opens in a new tab)</span>}
+          {opensInNewTab && <span class="sr-only"> (opens in a new tab)</span>}
           {isAgentPage && <span aria-hidden="true"> →</span>}
         </span>
       </span>

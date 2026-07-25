@@ -44,18 +44,23 @@ const { name, paragraphs, actions } = Astro.props;
       {paragraphs.map((paragraph) => <p class="lede">{paragraph}</p>)}
       <p class="cta-row" data-reveal style="--reveal-delay: 0.15s">
         {
-          actions.map((action) => (
-            <a
-              class:list={["cta", action.treatment === "code" && "cta-code"]}
-              href={action.href}
-            >
-              {action.treatment === "code" ? (
-                <code>{action.label}</code>
-              ) : (
-                <>{action.label} →</>
-              )}
-            </a>
-          ))
+          actions.map((action) => {
+            const opensInNewTab = /^https?:\/\//.test(action.href);
+            return (
+              <a
+                class:list={["cta", action.treatment === "code" && "cta-code"]}
+                href={action.href}
+                target={opensInNewTab ? "_blank" : undefined}
+                rel={opensInNewTab ? "noopener noreferrer" : undefined}
+              >
+                {action.treatment === "code" ? (
+                  <code>{action.label}</code>
+                ) : (
+                  <>{action.label} →</>
+                )}
+              </a>
+            );
+          })
         }
       </p>
     </div>

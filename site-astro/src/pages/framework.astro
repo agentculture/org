@@ -28,7 +28,13 @@ const { framework, hero } = site;
                   <h2>{pillar.name}</h2>
                   <span class="repo muted">
                     {pillar.url ? (
-                      <a href={pillar.url}>{pillar.repo}</a>
+                      <a
+                        href={pillar.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {pillar.repo}
+                      </a>
                     ) : (
                       pillar.repo
                     )}
