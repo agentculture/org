@@ -43,6 +43,8 @@
 import Layout from "../../layouts/Layout.astro";
 import PageHero from "../../components/PageHero.astro";
 import ClosingBand from "../../components/ClosingBand.astro";
+import SectionIntro from "../../components/SectionIntro.astro";
+import StructuredCard from "../../components/StructuredCard.astro";
 import ReachyDiagram from "../../components/ReachyDiagram.astro";
 import ReachyTerminal from "../../components/ReachyTerminal.astro";
 import site from "../../data/site";
@@ -71,37 +73,17 @@ import {
 const sdkOwnerCaption =
   "Two single resources, one owner each: the in-process SDK client (fed by the mic array) and the serial motion queue (driving the head). The five sdk-sense nouns fan out of one for sense and converge into the other for motion — which is why only one can own the robot at a time, and why the two composition escapes exist.";
 
-const breadcrumbs = [
-  { label: "Home", href: "/" },
-  { label: "Agents", href: "/agents/" },
-  { label: reachy.hero.title },
-] as const;
-
-const sections = [
-  { id: "body", label: "The body" },
-  { id: "noun-map", label: "Noun map" },
-  { id: "sdk-owner", label: "SDK ownership" },
-  { id: "live-senses", label: "Live senses" },
-  { id: "thinking", label: "Thinking" },
-  { id: "agent-first", label: "Agent-first" },
-  { id: "whats-next", label: "What's next" },
-] as const;
 ---
 
 <Layout
   title={`reachy-mini-cli · Agents · ${site.hero.title}`}
   description={reachy.hero.metaDescription}
 >
-  <PageHero
-    title={reachy.hero.title}
-    intro={reachy.hero.intro}
-    breadcrumbs={breadcrumbs}
-    sections={sections}
-  />
+  <PageHero title={reachy.hero.title} intro={reachy.hero.intro} />
 
   <!-- fast facts -->
   <section class="section facts-section" aria-label="Fast facts">
-    <div class="container wide-rail">
+    <div class="container page-rail">
       <ul class="facts">
         {
           reachy.facts.map((fact, i) => (
@@ -122,24 +104,22 @@ const sections = [
   </section>
 
   <!-- the body: every capability is a verb you can type -->
-  <section id="body" class="section" aria-label="The body">
+  <section id="body" class="section" aria-labelledby="body-title">
     <div class="container wide-rail">
-      <span class="eyebrow" data-reveal>{reachy.capabilities.eyebrow}</span>
-      <h2 data-reveal>{reachy.capabilities.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {reachy.capabilities.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
-      <ul class="cap-cards">
+      <SectionIntro
+        eyebrow={reachy.capabilities.eyebrow}
+        title={reachy.capabilities.headline}
+        titleId="body-title"
+        intro={reachy.capabilities.intro}
+      />
+      <ul class="structured-card-grid">
         {
           reachy.capabilities.cards.map((card, i) => (
-            <li
-              class="card cap-card"
-              data-reveal
-              style={`--reveal-delay: ${Math.min(i * 0.05, 0.4)}s`}
-            >
-              <h3 class="cap-name">{card.name}</h3>
-              <p class="cap-detail muted">{card.detail}</p>
-            </li>
+            <StructuredCard
+              title={card.name}
+              body={card.detail}
+              revealDelay={Math.min(i * 0.05, 0.4)}
+            />
           ))
         }
       </ul>
@@ -164,13 +144,14 @@ const sections = [
   </section>
 
   <!-- the noun map: the whole robot surface, faithfully -->
-  <section id="noun-map" class="section" aria-label="The noun map">
+  <section id="noun-map" class="section" aria-labelledby="noun-map-title">
     <div class="container wide-rail">
-      <span class="eyebrow" data-reveal>{reachy.nounMap.eyebrow}</span>
-      <h2 data-reveal>{reachy.nounMap.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {reachy.nounMap.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
+      <SectionIntro
+        eyebrow={reachy.nounMap.eyebrow}
+        title={reachy.nounMap.headline}
+        titleId="noun-map-title"
+        intro={reachy.nounMap.intro}
+      />
       <div
         class="table-wrap card"
         data-reveal
@@ -216,27 +197,25 @@ const sections = [
   </section>
 
   <!-- the single-SDK-owner model: the one thing to learn -->
-  <section id="sdk-owner" class="section" aria-label="The single-SDK-owner model">
+  <section id="sdk-owner" class="section" aria-labelledby="sdk-owner-title">
     <div class="container wide-rail">
-      <span class="eyebrow" data-reveal>{reachy.sdkOwner.eyebrow}</span>
-      <h2 data-reveal>{reachy.sdkOwner.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {reachy.sdkOwner.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
+      <SectionIntro
+        eyebrow={reachy.sdkOwner.eyebrow}
+        title={reachy.sdkOwner.headline}
+        titleId="sdk-owner-title"
+        intro={reachy.sdkOwner.intro}
+      />
       <div class="diagram-wrap" data-reveal>
         <ReachyDiagram caption={sdkOwnerCaption} />
       </div>
-      <ul class="model-cards">
+      <ul class="structured-card-grid">
         {
           reachy.sdkOwner.cards.map((card, i) => (
-            <li
-              class="card model-card"
-              data-reveal
-              style={`--reveal-delay: ${Math.min(i * 0.07, 0.35)}s`}
-            >
-              <h3 class="model-name">{card.name}</h3>
-              <p class="model-detail muted">{card.detail}</p>
-            </li>
+            <StructuredCard
+              title={card.name}
+              body={card.detail}
+              revealDelay={Math.min(i * 0.07, 0.35)}
+            />
           ))
         }
       </ul>
@@ -255,24 +234,22 @@ const sections = [
   </section>
 
   <!-- the senses, live: one process, every sense -->
-  <section id="live-senses" class="section" aria-label="The senses, live">
-    <div class="container wide-rail">
-      <span class="eyebrow" data-reveal>{reachy.senses.eyebrow}</span>
-      <h2 data-reveal>{reachy.senses.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {reachy.senses.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
-      <ul class="sense-cards">
+  <section id="live-senses" class="section" aria-labelledby="live-senses-title">
+    <div class="container page-rail">
+      <SectionIntro
+        eyebrow={reachy.senses.eyebrow}
+        title={reachy.senses.headline}
+        titleId="live-senses-title"
+        intro={reachy.senses.intro}
+      />
+      <ul class="structured-card-grid">
         {
           reachy.senses.cards.map((card, i) => (
-            <li
-              class="card sense-card"
-              data-reveal
-              style={`--reveal-delay: ${Math.min(i * 0.07, 0.35)}s`}
-            >
-              <h3 class="sense-name">{card.name}</h3>
-              <p class="sense-detail muted">{card.detail}</p>
-            </li>
+            <StructuredCard
+              title={card.name}
+              body={card.detail}
+              revealDelay={Math.min(i * 0.07, 0.35)}
+            />
           ))
         }
       </ul>
@@ -287,13 +264,14 @@ const sections = [
   </section>
 
   <!-- thinking out loud: the cognition loop, the fallback voice, the feed -->
-  <section id="thinking" class="section" aria-label="Thinking out loud">
+  <section id="thinking" class="section" aria-labelledby="thinking-title">
     <div class="container wide-rail">
-      <span class="eyebrow" data-reveal>{reachy.think.eyebrow}</span>
-      <h2 data-reveal>{reachy.think.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {reachy.think.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
+      <SectionIntro
+        eyebrow={reachy.think.eyebrow}
+        title={reachy.think.headline}
+        titleId="thinking-title"
+        intro={reachy.think.intro}
+      />
       <!-- the scripted demo ran to completion beside the full expression
            vocabulary it draws its gestures from -->
       <div class="term-grid">
@@ -331,24 +309,22 @@ const sections = [
   </section>
 
   <!-- agent-first, all the way down -->
-  <section id="agent-first" class="section" aria-label="Agent-first">
-    <div class="container wide-rail">
-      <span class="eyebrow" data-reveal>{reachy.agentFirst.eyebrow}</span>
-      <h2 data-reveal>{reachy.agentFirst.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {reachy.agentFirst.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
-      <ul class="surface-cards">
+  <section id="agent-first" class="section" aria-labelledby="agent-first-title">
+    <div class="container page-rail">
+      <SectionIntro
+        eyebrow={reachy.agentFirst.eyebrow}
+        title={reachy.agentFirst.headline}
+        titleId="agent-first-title"
+        intro={reachy.agentFirst.intro}
+      />
+      <ul class="structured-card-grid">
         {
           reachy.agentFirst.cards.map((card, i) => (
-            <li
-              class="card surface-card"
-              data-reveal
-              style={`--reveal-delay: ${Math.min(i * 0.07, 0.35)}s`}
-            >
-              <h3 class="surface-name">{card.name}</h3>
-              <p class="surface-detail muted">{card.detail}</p>
-            </li>
+            <StructuredCard
+              title={card.name}
+              body={card.detail}
+              revealDelay={Math.min(i * 0.07, 0.35)}
+            />
           ))
         }
       </ul>
@@ -356,13 +332,14 @@ const sections = [
   </section>
 
   <!-- what's next, from the open tracker -->
-  <section id="whats-next" class="section" aria-label="What's next">
-    <div class="container wide-rail">
-      <span class="eyebrow" data-reveal>{reachy.whatsNext.eyebrow}</span>
-      <h2 data-reveal>{reachy.whatsNext.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {reachy.whatsNext.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
+  <section id="whats-next" class="section" aria-labelledby="whats-next-title">
+    <div class="container page-rail">
+      <SectionIntro
+        eyebrow={reachy.whatsNext.eyebrow}
+        title={reachy.whatsNext.headline}
+        titleId="whats-next-title"
+        intro={reachy.whatsNext.intro}
+      />
       <ul class="themes">
         {
           reachy.whatsNext.themes.map((theme, i) => (
@@ -456,51 +433,6 @@ const sections = [
       white-space: normal;
       overflow-wrap: anywhere;
     }
-  }
-
-  /* the card grids — one shape across every section: an accent mono name over
-     a muted detail paragraph */
-  .cap-cards,
-  .model-cards,
-  .sense-cards,
-  .surface-cards {
-    list-style: none;
-    margin-top: 2.2rem;
-    display: grid;
-    gap: 1.1rem;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
-  }
-
-  .cap-card,
-  .model-card,
-  .sense-card,
-  .surface-card {
-    padding: 1.4rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-  }
-
-  .cap-name,
-  .model-name,
-  .sense-name,
-  .surface-name {
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: var(--ac-type-card-title);
-    line-height: var(--ac-leading-ui);
-    font-weight: 600;
-    letter-spacing: var(--ac-tracking-flat);
-    color: var(--accent);
-  }
-
-  .cap-detail,
-  .model-detail,
-  .sense-detail,
-  .surface-detail {
-    font-size: 1rem;
-    line-height: var(--ac-leading-card);
-    margin-top: 0.1rem;
   }
 
   /* a single narrow terminal, centered — the same idiom as .diagram-wrap,

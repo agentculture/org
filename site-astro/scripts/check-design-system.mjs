@@ -73,6 +73,18 @@ for (const file of authoredFiles) {
     );
     checks += 1;
   }
+
+  for (const match of source.matchAll(/class="([^"]*)"/g)) {
+    const classes = match[1];
+    if (/\b(?:page-rail|wide-rail|page-content-inset)\b/.test(classes)) {
+      assert.doesNotMatch(
+        classes,
+        /\b(?:prose|heading-measure)\b/,
+        `${fileURLToPath(file)} combines outer rail geometry with a readable measure: ${match[0]}. Nest the measured content so its left edge remains on the rail.`,
+      );
+      checks += 1;
+    }
+  }
 }
 
 const [header, footer, pageHero, deck] = await Promise.all([
@@ -86,7 +98,7 @@ assert.match(header, /container shell-rail bar/);
 assert.match(header, /max-width:\s*51\.99rem/);
 assert.match(footer, /container shell-rail/);
 assert.match(pageHero, /container page-rail/);
-assert.equal((deck.match(/container deck-content-rail/g) ?? []).length, 6);
+assert.equal((deck.match(/container deck-content-rail/g) ?? []).length, 7);
 checks += 5;
 
 for (const path of [
@@ -104,4 +116,4 @@ for (const path of [
   checks += 5;
 }
 
-console.log(`Design-system contract passed: ${checks} checks across tokens, assigned rails, the responsive shell, the six-slide deck, and four terminal components.`);
+console.log(`Design-system contract passed: ${checks} checks across tokens, assigned rails, the responsive shell, the seven-slide deck, and four terminal components.`);

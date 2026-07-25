@@ -39,9 +39,6 @@
 // deck-authored keyframes. :global() is used only where a rule must reach a
 // child component's injected markup (the diagram viewport sizing).
 import Layout from "../../layouts/Layout.astro";
-import Breadcrumbs, {
-  type BreadcrumbItem,
-} from "../../components/Breadcrumbs.astro";
 import {
   mindNervousSystemBodySlides,
   robotLabel,
@@ -103,11 +100,6 @@ const slideViews = slides.map((slide, index) => {
   return { slide, index, sectionRobot, headingId: `${slide.id}-headline` };
 });
 
-const breadcrumbs = [
-  { label: "Home", href: "/" },
-  { label: "Presentations", href: "/presentations/" },
-  { label: card.title },
-] satisfies readonly BreadcrumbItem[];
 ---
 
 <Layout
@@ -145,7 +137,6 @@ const breadcrumbs = [
           {slide.kind === "bridge" && (
             <div class="container deck-content-rail slide-grid bridge-grid">
               <div class="slide-copy">
-                <Breadcrumbs items={breadcrumbs} />
                 <span class="eyebrow" data-reveal>
                   {slide.eyebrow}
                 </span>
@@ -404,7 +395,7 @@ const breadcrumbs = [
           )}
 
           {slide.kind === "next" && (
-            <div class="container stack-flow next-flow">
+            <div class="container deck-content-rail stack-flow next-flow">
               <div class="slide-head">
                 <span class="eyebrow" data-reveal>
                   {slide.eyebrow}

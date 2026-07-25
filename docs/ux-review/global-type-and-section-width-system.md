@@ -1,13 +1,15 @@
 # Global typography and section-width system
 
-> **Status:** Implemented in the current `ux-review` working tree on 22 July
-> 2026 and awaiting user visual review. The work is uncommitted: no push, PR,
-> deployment, route change, or Learn source/deployment change has been made.
+> **Status:** Implemented on the local `ux-review` branch on 22 July 2026 and
+> awaiting user visual review. The implementation is committed locally at
+> `b12762e`; no push, PR, deployment, route change, or Learn source/deployment
+> change has been made. Breadcrumbs and local “On this page” navigation were
+> removed from the review branch on 23 July and are explicitly deferred.
 
-> **Audit baseline:** the current `ux-review` working tree at `2cb8101`, plus
-> its uncommitted information-architecture and navigation work. That worktree
+> **Audit baseline:** the current `ux-review` working tree at `b12762e`, plus
+> the uncommitted removal of the deferred wayfinding features. The worktree
 > contains 12 owned routes, the six-item primary navigation ending in
-> **Open Learn**, breadcrumbs, local section navigation, and the grouped footer.
+> **Open Learn**, and the grouped footer.
 
 ## Adopted direction in one paragraph
 
@@ -57,14 +59,14 @@ this initiative:
 The retained mock began from the production build at `d71a719`, then changed in
 a scratchpad and was retained at `cea730b`. The local `ux-review-spacing` branch
 currently points to `35cdfd3`. Neither baseline contains the current header,
-footer, breadcrumbs, route inventory, or navigation behaviour.
+footer, route inventory, or navigation behaviour.
 
 ### Dated documents that must not silently govern this work
 
 | Document or artefact | Dated assumption | Treatment here |
 |---|---|---|
 | [`README.md`](README.md) and [`findings.md`](findings.md) | Audit `d71a719`, `site-astro@0.0.1`, and eight routes. | Retain measured historical evidence; do not use their route count or current-state claims. |
-| [`current-direction.md`](current-direction.md) | Says no proposal in the folder has been applied to `site-astro/`. | That describes an earlier worktree and does not describe the current uncommitted IA/navigation implementation. |
+| [`current-direction.md`](current-direction.md) | Says no proposal in the folder has been applied to `site-astro/`. | That describes an earlier worktree and does not describe the current local IA/navigation implementation. |
 | [`design-system.md`](design-system.md) | Freezes the 68rem container, treats Devague as opt-in only, and records four failures in a 20-check presentation baseline. | Its ownership and regression principles remain useful. Its containment decision is the question now being reopened; its test status is stale. The current presentation checker passes 21 checks. |
 | [`spacing-type-system.html`](spacing-type-system.html) | Shows a 36px display role, four-column operator-skills layout, grid outdent, 32–96px gutter, 68rem container, and 17px prose. | Use its type-role rationale, not its example layout as the final mock. |
 | Retained mock HTML/CSS | Uses an old four-link header and flat footer; contains generated selectors and layered prototype overrides. | Use rendered appearance and measurements only. Never copy `_astro` output into source. |
@@ -256,7 +258,7 @@ controls the header, footer, `PageHero`, all route families, and every slide in
 the current deck. Replacing its declaration would simultaneously:
 
 - change shell fit and the mobile-menu threshold;
-- rewrap breadcrumbs and “On this page” links;
+- rewrap any compact wayfinding that may be reintroduced later;
 - reduce several four-column grids to three and several three-column grids to
   two;
 - narrow fixed two-column agent/profile arrangements;
@@ -283,9 +285,9 @@ cannot establish the system safely.
 | [`Layout.astro`](../../site-astro/src/layouts/Layout.astro) | Imports the global sheet and renders shell components for every route. | Makes every base-selector change site-wide. No new document-shell behaviour is needed. |
 | [`Header.astro`](../../site-astro/src/components/Header.astro) and [`PrimaryNavigation.astro`](../../site-astro/src/components/PrimaryNavigation.astro) | Current rail, 48rem menu breakpoint, 1.22rem wordmark, `.92rem` links and Open Learn CTA. | Assign shell rail and UI roles together. Keep Open Learn last, green, new-tab, and outside current-section matching. Re-test exact breakpoint fit. |
 | [`Footer.astro`](../../site-astro/src/components/Footer.astro) | Current rail plus several local text sizes and grouped navigation. | Assign shell rail and supporting/meta roles; verify group wrapping and external-link cues in both themes. |
-| [`PageHero.astro`](../../site-astro/src/components/PageHero.astro) | Global h1, lede, prose, and container inherited by nine routes. | First shared editorial consumer. A title or rail change immediately affects nine route openings, breadcrumbs, intros, and local section navigation. |
-| [`Breadcrumbs.astro`](../../site-astro/src/components/Breadcrumbs.astro) | `.82rem` text and wrapping inside heroes/deck opening. | Map to compact UI without reducing the 44px interactive target context; test long current-page labels at 320px. |
-| [`SectionNav.astro`](../../site-astro/src/components/SectionNav.astro) | `.72rem` caps label and `.82rem` links. | Map label to caps/meta and links to compact UI; verify wrapping and focus order after rail changes. |
+| [`PageHero.astro`](../../site-astro/src/components/PageHero.astro) | Global h1, lede, prose, and container inherited by nine routes. | First shared editorial consumer. A title or rail change immediately affects nine route openings and intros. Breadcrumbs and local contents navigation are deferred. |
+| [`SectionIntro.astro`](../../site-astro/src/components/SectionIntro.astro) | Shared eyebrow → h2 → introduction grammar, using the adopted 44rem heading and 42rem prose measures. | Extracted from the retained Devague composition for 27 agent sections and the eight article beats. Page-owned diagrams, terminals, tables, cards, and source notes remain outside it; the presentation deck opts out. |
+| [`StructuredCard.astro`](../../site-astro/src/components/StructuredCard.astro) | Shared metadata → serif title → body → compact footer grammar, with a 52rem 3 → 2 → 1 grid. | Extracted from the retained Devague mock for 77 simple informational cards across the four agent profiles. Directory/library links, article evidence, terminals, tables, measured stats, human-gate rows, and presentation cards remain semantically distinct. |
 | [`AgentDirectoryCard.astro`](../../site-astro/src/components/AgentDirectoryCard.astro) | Local title, role, repository, and destination sizes. | Map by semantic role. The role paragraph is reading copy and should not be reduced to the compact `.92rem` default merely because it sits in a card. |
 
 ### Route families
@@ -300,17 +302,18 @@ cannot establish the system safely.
 | `/agents/lobes/` | Shared hero, method/capability grids, diagrams, code surfaces, and terminals. | 13.5–15rem grids can lose columns. Keep diagram typography isolated from editorial roles. |
 | `/agents/reachy-mini-cli/` | Shared hero, runtime diagram, agent/robot facts, terminal evidence, and 2:3 evidence layout. | Physical-system diagrams and wide terminal evidence require wide-rail review; its 2:3 layout already collapses at 52rem, which may collide with a new shell breakpoint. |
 | `/articles/` | Shared hero and 20rem minimum library cards. | A 58rem usable width changes the likely wide layout from three cards to two. Map topic/source metadata separately from summaries. |
-| `/articles/mind-nervous-system-body/` | Bespoke 2.8–6rem talk title, breadcrumbs, section nav, 47rem intro, 46rem narrative blocks, beat grid, evidence grid, diagram, and closing links. | Treat the talk title as an editorial-feature role, not the normal page-title token. Test long-form measure, heading wrapping, beat numbering, evidence cards, and sticky/jump offsets. |
+| `/articles/mind-nervous-system-body/` | Bespoke 2.8–6rem talk title, 47rem intro, 46rem narrative blocks, beat grid, evidence grid, diagram, and closing links. | Treat the talk title as an editorial-feature role, not the normal page-title token. Test long-form measure, heading wrapping, beat numbering, and evidence cards. |
 | `/presentations/` | Shared hero, 20rem library cards, thumbnail pairs, metadata, and summaries. | Same three-to-two-column risk as Articles, plus thumbnail legibility. |
-| `/presentations/mind-nervous-system-body/` | Six full-viewport slides use `.container`, many local clamps, 26–58rem content caps, responsive multi-column layouts, and presentation breadcrumbs. | Must receive an explicit deck rail and retain its own type scale. Only shared breadcrumbs/shell tokens should migrate automatically. Global `.container`, h1, h2, or body changes must not resize slide art by inheritance. |
+| `/presentations/mind-nervous-system-body/` | Six full-viewport slides use `.container`, many local clamps, 26–58rem content caps, responsive multi-column layouts, and a dedicated slide rail. | Must receive an explicit deck rail and retain its own type scale. Global `.container`, h1, h2, or body changes must not resize slide art by inheritance. |
 | `/engage/` | Shared hero and 46rem channel list. | Standard-page candidate; verify icon/title alignment and 44px interactive targets after type mapping. |
 
 ### Component classes that need containment
 
 1. **Editorial text:** `PageHero`, article narrative, framework, directory
    summaries, card summaries. These should consume the new global roles.
-2. **Shell/UI text:** header, footer, breadcrumbs, local navigation, tags, and
-   destination cues. These use compact roles but retain 44px targets.
+2. **Shell/UI text:** header, footer, tags, and destination cues. These use
+   compact roles but retain 44px targets. Breadcrumbs and local contents
+   navigation are deferred.
 3. **Terminal text:** all four agent terminal components. These need one 13px
    transcript role, flat tracking, nested inheritance, and intentional
    horizontal scrolling.
@@ -344,11 +347,13 @@ Add explicit page, shell, wide, deck, prose, and heading roles. Do not redefine
 `.container`. Add compatibility aliases only where they preserve current
 rendering.
 
-### Phase 3 — migrate shell and shared wayfinding — complete
+### Phase 3 — migrate shell and shared openings — complete
 
-Migrate Header, PrimaryNavigation, Footer, Breadcrumbs, SectionNav, and
-PageHero. If shell option A is approved, change and test the menu breakpoint in
-this phase with the rail; never as a later incidental fix.
+Migrate Header, PrimaryNavigation, Footer, and PageHero. Breadcrumbs and
+SectionNav were initially included, then removed from the review branch on
+23 July so their information architecture can be reconsidered separately. If
+shell option A is approved, change and test the menu breakpoint in this phase
+with the rail; never as a later incidental fix.
 
 ### Phase 4 — migrate standard/index routes — complete
 
@@ -359,13 +364,19 @@ decisions rather than generic responsive fallout.
 ### Phase 5 — migrate long-form editorial content — complete
 
 Migrate the article detail route, preserving its feature-title role and 42rem
-reading measure. Review every section heading at actual copy length.
+reading measure. Review every section heading at actual copy length. Its eight
+beats now render their opener through `SectionIntro`, while definitions,
+paragraph-level reveals, evidence notes, and the beat grid remain article-owned.
 
 ### Phase 6 — migrate agent profiles one at a time — complete
 
 Use Devague first to prove the roles, then Colleague, Lobes, and Reachy. Assign
 page versus wide rails section by section. Consolidate terminal typography as
-a component change, not repeated page overrides.
+a component change, not repeated page overrides. Their 27 section openers use
+`SectionIntro`; each parent section is labelled by the component's stable
+heading ID. Thirteen simple data-driven card families now use
+`StructuredCard`, rendering 77 cards through the retained mock's editorial
+hierarchy without applying that pattern to semantically different surfaces.
 
 ### Phase 7 — contain and verify the deck — complete
 
@@ -385,8 +396,16 @@ aliased. Cleanup is not part of the first visual migration.
 - `npm run build` produces all 12 routes.
 - `npm run test:navigation` retains exact order, descendant matching, false-
   prefix rejection, and Open Learn metadata.
-- `npm run check:wayfinding` retains breadcrumbs, structured data, anchors,
-  footer groups, and new-tab cues.
+- `npm run check:wayfinding` retains header order, current-section matching,
+  footer groups, agent-directory anchors, and new-tab cues, while confirming
+  breadcrumbs and local contents navigation remain absent until reconsidered.
+- `npm run check:section-intros` pins the component contract, 28 authored
+  calls, 35 rendered openers, stable section labels, article slot/reveal order,
+  and the six-slide deck exclusion.
+- `npm run check:structured-cards` pins 13 authored calls, 77 rendered cards,
+  metadata/title/body/footer order, the 52rem 3 → 2 → 1 grid, the absence of
+  copy controls, and the exclusion of index, article, and presentation card
+  families.
 - `npm run check:presentations` remains green; add geometry-oriented deck
   assertions because content contracts cannot detect a narrowed slide.
 - Link checking remains green and no Learn source/deployment is touched.
@@ -410,7 +429,7 @@ Verify:
 - 11–12px metadata is non-essential, high-contrast, and legible at zoom;
 - every interactive target remains at least 44px;
 - directory and library column-count changes look intentional;
-- breadcrumbs and local section navigation wrap without collisions;
+- page openings remain balanced without the deferred wayfinding controls;
 - terminal transcript text computes to 13px and nested code inherits;
 - terminals scroll internally where necessary without causing page overflow;
 - bespoke diagrams retain label fit and accessible descriptions; and
@@ -423,6 +442,7 @@ Verify:
 | Body/prose size | Keep 17px; reject the mock's 15.2px section override as a global role. | Adopted |
 | Shared page-title size | Adopt `clamp(2.4rem, 6vw, 3.6rem)` for normal page titles. | Adopted |
 | Home/article/deck titles | Keep explicit feature roles; review them separately rather than inheriting the normal page title. | Adopted |
+| Breadcrumbs and local contents navigation | Remove from the review branch and reconsider later as a separate information-architecture decision. | Adopted 23 July |
 | Section h2 | Keep the final responsive 25.6–33.6px rule, 1.14 leading, `-0.01em` tracking, and 44rem measure. | Adopted |
 | Display tracking | Use the retained rendered `-0.015em`, not the earlier `-0.02em` intention. | Adopted |
 | Caps tracking | Normalize ordinary uppercase metadata to `0.12em`; keep identity exceptions local. | Adopted |
@@ -435,22 +455,36 @@ Verify:
 
 ## Implementation boundary and verification
 
-Implementation remains confined to this `org` repository and uncommitted. It
-does not modify or deploy Learn. The existing information-architecture work,
-grouped site footer, and four-profile `ClosingBand` treatment remain separate
-semantic surfaces and are preserved by dedicated contracts.
+Implementation remains confined to this `org` repository. It is committed
+locally at `b12762e`, with the deferred-wayfinding removal still under review
+in the working tree alongside the uncommitted `SectionIntro` extraction;
+nothing has been pushed or submitted. It does not modify or deploy Learn. The
+remaining information-architecture work, grouped site footer, and four-profile
+`ClosingBand` treatment remain separate semantic surfaces and are preserved by
+dedicated contracts.
 
 The current working tree has passed:
 
 - a 12-route production build and local link check with zero broken links;
-- 7 navigation tests and 38 wayfinding checks;
+- 7 navigation tests and 39 wayfinding checks, including the explicit absence
+  of deferred breadcrumbs and local contents navigation;
 - the 4-route closing-band contract, including all 7 reviewed actions;
 - 103 design-system checks, including explicit wrapper roles, shell geometry,
   six deck content rails, and four terminal inheritance contracts;
+- the section-intro contract: 28 authored calls rendering 35 openers across the
+  four profiles and article, with the presentation explicitly excluded;
+- the structured-card contract: 13 authored calls rendering 77 informational
+  cards across four profiles, while index, article, and presentation card
+  families remain local;
 - 21 presentation checks and 17 slide-data tests; and
 - a rendered route matrix in both themes at 320, 375, 768, 832, 833, 1024,
   and 1440px, with reduced motion, JavaScript disabled, 200% text sizing,
   terminal inheritance, 44px Open Learn targets, and horizontal overflow
   checks.
+
+The structured-card addition was also checked directly at 1440, 768, and
+375px: its grids render three, two, and one column respectively on all four
+profiles, keep 16px body copy, add no command-copy control, and introduce no
+horizontal overflow.
 
 Manual visual and keyboard review remains appropriate before any commit or PR.

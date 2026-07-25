@@ -7,6 +7,8 @@
 import Layout from "../../layouts/Layout.astro";
 import PageHero from "../../components/PageHero.astro";
 import ClosingBand from "../../components/ClosingBand.astro";
+import SectionIntro from "../../components/SectionIntro.astro";
+import StructuredCard from "../../components/StructuredCard.astro";
 import LobesDiagram from "../../components/LobesDiagram.astro";
 import LobesTerminal from "../../components/LobesTerminal.astro";
 import site from "../../data/site";
@@ -21,35 +23,17 @@ import {
   meshAsk,
 } from "../../data/lobes-captures";
 
-const breadcrumbs = [
-  { label: "Home", href: "/" },
-  { label: "Agents", href: "/agents/" },
-  { label: lobes.hero.title },
-] as const;
-
-const sections = [
-  { id: "lobes", label: "The lobes" },
-  { id: "command", label: "The command" },
-  { id: "profiles", label: "Profiles" },
-  { id: "mesh-brain", label: "Mesh-brain" },
-  { id: "benchmarks", label: "Benchmarks" },
-] as const;
 ---
 
 <Layout
   title={`lobes · Agents · ${site.hero.title}`}
   description={lobes.hero.metaDescription}
 >
-  <PageHero
-    title={lobes.hero.title}
-    intro={lobes.hero.intro}
-    breadcrumbs={breadcrumbs}
-    sections={sections}
-  />
+  <PageHero title={lobes.hero.title} intro={lobes.hero.intro} />
 
   <!-- fast facts -->
   <section class="section facts-section" aria-label="Fast facts">
-    <div class="container wide-rail">
+    <div class="container page-rail">
       <ul class="facts">
         {
           lobes.facts.map((fact, i) => (
@@ -70,25 +54,23 @@ const sections = [
   </section>
 
   <!-- what lobes serves -->
-  <section id="lobes" class="section" aria-label="The lobes">
-    <div class="container wide-rail">
-      <span class="eyebrow" data-reveal>the lobes</span>
-      <h2 data-reveal>One machine serves a small fleet of minds</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {lobes.story.what.map((p) => <p class="muted">{p}</p>)}
-      </div>
-      <ul class="roles">
+  <section id="lobes" class="section" aria-labelledby="lobes-title">
+    <div class="container page-rail">
+      <SectionIntro
+        eyebrow="the lobes"
+        title="One machine serves a small fleet of minds"
+        titleId="lobes-title"
+        intro={lobes.story.what}
+      />
+      <ul class="structured-card-grid">
         {
           lobes.roles.map((lobe, i) => (
-            <li
-              class="card role-card"
-              data-reveal
-              style={`--reveal-delay: ${Math.min(i * 0.07, 0.35)}s`}
-            >
-              <h3 class="role-name">{lobe.role}</h3>
-              <p class="role-duty muted">{lobe.duty}</p>
-              <span class="repo muted">{lobe.model}</span>
-            </li>
+            <StructuredCard
+              title={lobe.role}
+              body={lobe.duty}
+              footer={lobe.model}
+              revealDelay={Math.min(i * 0.07, 0.35)}
+            />
           ))
         }
       </ul>
@@ -96,13 +78,14 @@ const sections = [
   </section>
 
   <!-- the command, replayed for real -->
-  <section id="command" class="section" aria-label="The command">
+  <section id="command" class="section" aria-labelledby="command-title">
     <div class="container wide-rail">
-      <span class="eyebrow" data-reveal>the command</span>
-      <h2 data-reveal>Watch it run — these are real captures</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {lobes.story.commands.map((p) => <p class="muted">{p}</p>)}
-      </div>
+      <SectionIntro
+        eyebrow="the command"
+        title="Watch it run — these are real captures"
+        titleId="command-title"
+        intro={lobes.story.commands}
+      />
       <div class="term-grid">
         <div data-reveal>
           <LobesTerminal session={singleMachine} />
@@ -115,13 +98,14 @@ const sections = [
   </section>
 
   <!-- profiles -->
-  <section id="profiles" class="section" aria-label="Profiles">
+  <section id="profiles" class="section" aria-labelledby="profiles-title">
     <div class="container wide-rail">
-      <span class="eyebrow" data-reveal>profiles</span>
-      <h2 data-reveal>Tuned by purpose × machine, open to override</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {lobes.profiles.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
+      <SectionIntro
+        eyebrow="profiles"
+        title="Tuned by purpose × machine, open to override"
+        titleId="profiles-title"
+        intro={lobes.profiles.intro}
+      />
       <div class="tables">
         <div
           class="table-wrap card"
@@ -177,23 +161,26 @@ const sections = [
           </table>
         </div>
       </div>
-      <p class="table-note muted" data-reveal>
-        Explicit flags always win — <code>--max-model-len</code>,{" "}
-        <code>--gpu-mem-util</code>, or a new machine profile of your own.
-        Full tables and measured numbers:{" "}
-        <a href="https://github.com/agentculture/lobes-cli/blob/main/docs/tuning-profiles.md">docs/tuning-profiles.md</a>.
-      </p>
+      <div class="page-content-inset">
+        <p class="table-note muted" data-reveal>
+          Explicit flags always win — <code>--max-model-len</code>,{" "}
+          <code>--gpu-mem-util</code>, or a new machine profile of your own.
+          Full tables and measured numbers:{" "}
+          <a href="https://github.com/agentculture/lobes-cli/blob/main/docs/tuning-profiles.md">docs/tuning-profiles.md</a>.
+        </p>
+      </div>
     </div>
   </section>
 
   <!-- the mesh-brain -->
-  <section id="mesh-brain" class="section" aria-label="The Mesh-brain">
+  <section id="mesh-brain" class="section" aria-labelledby="mesh-brain-title">
     <div class="container wide-rail">
-      <span class="eyebrow" data-reveal>the mesh-brain</span>
-      <h2 data-reveal>The brain shape you choose</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {lobes.meshBrain.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
+      <SectionIntro
+        eyebrow="the mesh-brain"
+        title="The brain shape you choose"
+        titleId="mesh-brain-title"
+        intro={lobes.meshBrain.intro}
+      />
       <div class="term-grid">
         <div data-reveal>
           <LobesTerminal session={shapeTax} />
@@ -219,23 +206,26 @@ const sections = [
       <div class="ask-wrap" data-reveal>
         <LobesTerminal session={meshAsk} start={0.5} wrap />
       </div>
-      <div class="prose endstate" data-reveal>
-        {lobes.meshBrain.endState.map((p) => <p class="muted">{p}</p>)}
+      <div class="page-content-inset">
+        <div class="prose endstate" data-reveal>
+          {lobes.meshBrain.endState.map((p) => <p class="muted">{p}</p>)}
+        </div>
+        <p class="next-step muted" data-reveal>
+          {lobes.meshBrain.nextStep}
+        </p>
       </div>
-      <p class="next-step muted" data-reveal>
-        {lobes.meshBrain.nextStep}
-      </p>
     </div>
   </section>
 
   <!-- benchmarks -->
-  <section id="benchmarks" class="section" aria-label="Benchmarks">
-    <div class="container wide-rail">
-      <span class="eyebrow" data-reveal>benchmarks</span>
-      <h2 data-reveal>Measured, and reproducible from the repo</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {lobes.benchmarks.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
+  <section id="benchmarks" class="section" aria-labelledby="benchmarks-title">
+    <div class="container page-rail">
+      <SectionIntro
+        eyebrow="benchmarks"
+        title="Measured, and reproducible from the repo"
+        titleId="benchmarks-title"
+        intro={lobes.benchmarks.intro}
+      />
       <ul class="bench-grid">
         {
           lobes.benchmarks.links.map((link, i) => (
@@ -317,42 +307,6 @@ const sections = [
       white-space: normal;
       overflow-wrap: anywhere;
     }
-  }
-
-  /* roles */
-  .roles {
-    list-style: none;
-    margin-top: 2.2rem;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(13.5rem, 1fr));
-    gap: 1.1rem;
-  }
-
-  .role-card {
-    padding: 1.4rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-  }
-
-  .role-name {
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: var(--ac-type-card-title);
-    line-height: var(--ac-leading-ui);
-    font-weight: 600;
-    letter-spacing: var(--ac-tracking-flat);
-    color: var(--accent);
-  }
-
-  .role-duty {
-    font-size: 1rem;
-    line-height: var(--ac-leading-card);
-    flex-grow: 1;
-  }
-
-  .role-card .repo {
-    font-size: var(--ac-type-meta);
   }
 
   /* terminals */

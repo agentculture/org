@@ -1,23 +1,17 @@
 ---
 // Sub-page opening: title, a short hand-drawn thread (two agents, one line —
 // the smallest possible echo of the hero mesh), then the page's own
-// introduction from the data layer. Nested routes can add their hierarchy
-// and a compact table of contents without rebuilding this opening per page.
-import Breadcrumbs, { type BreadcrumbItem } from "./Breadcrumbs.astro";
-import SectionNav, { type SectionNavItem } from "./SectionNav.astro";
+// introduction from the data layer.
 
 interface Props {
   title: string;
   intro: string[];
-  breadcrumbs?: readonly BreadcrumbItem[];
-  sections?: readonly SectionNavItem[];
 }
-const { title, intro, breadcrumbs = [], sections = [] } = Astro.props;
+const { title, intro } = Astro.props;
 ---
 
 <section class="page-hero">
   <div class="container page-rail">
-    {breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
     <h1 data-reveal>{title}</h1>
     <svg
       class="flourish"
@@ -51,7 +45,6 @@ const { title, intro, breadcrumbs = [], sections = [] } = Astro.props;
         ))
       }
     </div>
-    {sections.length > 0 && <SectionNav items={sections} />}
   </div>
 </section>
 

@@ -340,6 +340,12 @@ svg {
   max-width: var(--ac-rail-wide);
 }
 
+.page-content-inset {
+  width: 100%;
+  max-width: calc(var(--ac-rail-page) - (2 * var(--ac-page-gutter)));
+  margin-inline: auto;
+}
+
 .deck-content-rail {
   width: min(100% - 3rem, var(--ac-rail-deck));
   max-width: none;

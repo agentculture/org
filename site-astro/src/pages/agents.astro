@@ -22,7 +22,7 @@ const groups = agents.groups
 >
   <PageHero title="Agents" intro={agents.intro} />
 
-  <nav class="group-nav container wide-rail" aria-label="Browse agents by area">
+  <nav class="group-nav container page-rail" aria-label="Browse agents by area">
     <span class="group-nav-label">Browse by area</span>
     <ul>
       {
@@ -43,7 +43,7 @@ const groups = agents.groups
   {
     groups.map((group) => (
       <section id={group.id} class="group" aria-labelledby={`${group.id}-title`}>
-        <div class="container wide-rail">
+        <div class="container page-rail">
           <h2 id={`${group.id}-title`} class="group-label" data-reveal>
             {group.label}
           </h2>

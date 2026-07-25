@@ -1,7 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import HeroMesh from "../components/HeroMesh.astro";
-import { sectionNavigation } from "../data/navigation";
+import { siteSections } from "../data/navigation";
 import site from "../data/site";
 
 const { hero } = site;
@@ -30,7 +30,7 @@ const teaserDetails = {
   },
 } as const;
 
-const teasers = sectionNavigation.map((item) => ({
+const teasers = siteSections.map((item) => ({
   ...item,
   ...teaserDetails[item.href],
 }));
@@ -55,19 +55,21 @@ const teasers = sectionNavigation.map((item) => ({
   </section>
 
   <section class="section" aria-label="About">
-    <div class="container page-rail prose">
-      {
-        hero.intro.map((paragraph, i) => (
-          <p class={i === 0 ? "lede" : undefined} data-reveal>
-            {paragraph}
-          </p>
-        ))
-      }
+    <div class="container page-rail">
+      <div class="prose">
+        {
+          hero.intro.map((paragraph, i) => (
+            <p class={i === 0 ? "lede" : undefined} data-reveal>
+              {paragraph}
+            </p>
+          ))
+        }
+      </div>
     </div>
   </section>
 
   <section class="section explore" aria-label="Explore">
-    <div class="container wide-rail">
+    <div class="container page-rail">
       <ul class="teasers">
         {
           teasers.map(({ href, label, copy, glyph }, i) => (

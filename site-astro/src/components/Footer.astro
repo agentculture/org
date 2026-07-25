@@ -134,9 +134,18 @@ const year = new Date().getFullYear();
   }
 
   nav a[aria-current="page"] {
-    text-decoration: underline;
-    text-decoration-color: var(--accent);
-    text-underline-offset: 0.28em;
+    text-decoration: none;
+  }
+
+  /* Match the header's current-section cue, but keep the node inline with
+     the footer label instead of positioning it underneath. */
+  nav a[aria-current="page"]::after {
+    content: "";
+    width: 5px;
+    height: 5px;
+    flex: 0 0 5px;
+    border-radius: 50%;
+    background: var(--accent);
   }
 
   .note {

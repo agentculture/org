@@ -4,9 +4,9 @@ import Mark from "./Mark.astro";
 import PrimaryNavigation from "./PrimaryNavigation.astro";
 ---
 
-<header class="site-header">
+<header class="site-header" data-site-navigation>
   <div class="container shell-rail bar">
-    <a class="wordmark" href="/">
+    <a class="wordmark" href="/" aria-label="AgentCulture home">
       <Mark />
       <span>{site.hero.title}</span>
     </a>
@@ -15,17 +15,315 @@ import PrimaryNavigation from "./PrimaryNavigation.astro";
       <PrimaryNavigation variant="desktop" />
     </div>
 
-    <details class="site-menu">
-      <summary aria-controls="mobile-primary-navigation">
-        <span>Menu</span>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+    <details class="site-menu" data-mobile-navigation>
+      <summary
+        aria-controls="mobile-primary-navigation"
+        aria-expanded="false"
+        data-mobile-trigger
+      >
+        <span class="menu-label menu-label-open">Menu</span>
+        <span class="menu-label menu-label-close">Close</span>
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            d="m4 6 4 4 4-4"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </svg>
       </summary>
       <PrimaryNavigation variant="mobile" />
     </details>
   </div>
 </header>
+
+<script is:inline>
+  (() => {
+    const header = document.querySelector("[data-site-navigation]");
+    if (!header || header.dataset.navigationReady === "true") return;
+    header.dataset.navigationReady = "true";
+
+    const mobileShell = header.querySelector("[data-mobile-navigation]");
+    const mobileTrigger = header.querySelector("[data-mobile-trigger]");
+    const mobileNavigation = header.querySelector(
+      '[data-primary-navigation="mobile"]',
+    );
+    const desktopNavigation = header.querySelector(
+      '[data-primary-navigation="desktop"]',
+    );
+    const desktopMenus = Array.from(
+      header.querySelectorAll(
+        '[data-primary-navigation="desktop"] [data-nav-details]',
+      ),
+    );
+    const mobileMenus = Array.from(
+      header.querySelectorAll(
+        '[data-primary-navigation="mobile"] [data-nav-details]',
+      ),
+    );
+    const finePointer = window.matchMedia(
+      "(hover: hover) and (pointer: fine)",
+    );
+    const mobileViewport = window.matchMedia("(max-width: 51.99rem)");
+    let lastPointerDown = -Infinity;
+    let mobileRootScroll = 0;
+    let suppressMobileToggle = false;
+    let restoringDesktopFocus = false;
+    const closeTimers = new WeakMap();
+
+    const summaryFor = (details) =>
+      details.querySelector(":scope > summary");
+
+    const syncExpanded = (details) => {
+      const summary = summaryFor(details);
+      if (summary) {
+        summary.setAttribute("aria-expanded", String(details.open));
+      }
+    };
+
+    const closeDesktopMenus = (except) => {
+      desktopMenus.forEach((details) => {
+        if (details !== except && details.open) details.open = false;
+      });
+    };
+
+    const openDesktopMenu = (details) => {
+      closeDesktopMenus(details);
+      details.open = true;
+    };
+
+    const cancelClose = (details) => {
+      const timer = closeTimers.get(details);
+      if (timer) window.clearTimeout(timer);
+      closeTimers.delete(details);
+    };
+
+    const scheduleClose = (details) => {
+      cancelClose(details);
+      closeTimers.set(
+        details,
+        window.setTimeout(() => {
+          if (!details.matches(":focus-within")) details.open = false;
+        }, 180),
+      );
+    };
+
+    desktopMenus.forEach((details) => {
+      const summary = summaryFor(details);
+      syncExpanded(details);
+
+      details.addEventListener("toggle", () => {
+        syncExpanded(details);
+        if (details.open) closeDesktopMenus(details);
+      });
+
+      details.addEventListener("pointerenter", () => {
+        if (!finePointer.matches) return;
+        cancelClose(details);
+        window.setTimeout(() => {
+          if (details.matches(":hover")) openDesktopMenu(details);
+        }, 70);
+      });
+
+      details.addEventListener("pointerleave", () => {
+        if (finePointer.matches) scheduleClose(details);
+      });
+
+      details.addEventListener("focusin", () => {
+        cancelClose(details);
+        if (
+          !restoringDesktopFocus &&
+          performance.now() - lastPointerDown > 160
+        ) {
+          openDesktopMenu(details);
+        }
+      });
+
+      details.addEventListener("focusout", () => {
+        window.setTimeout(() => {
+          if (!details.matches(":focus-within")) details.open = false;
+        }, 0);
+      });
+
+      summary?.addEventListener("click", () => {
+        cancelClose(details);
+      });
+    });
+
+    desktopNavigation?.addEventListener("focusin", (event) => {
+      desktopMenus.forEach((details) => {
+        if (!details.contains(event.target)) details.open = false;
+      });
+    });
+
+    const setMobileRootAvailable = (activeDetails) => {
+      const rootList = mobileNavigation?.querySelector(":scope > .root-list");
+      if (!rootList) return;
+
+      Array.from(rootList.children).forEach((item) => {
+        item.inert = Boolean(activeDetails && !item.contains(activeDetails));
+      });
+    };
+
+    const clearMobilePanelState = () => {
+      setMobileRootAvailable(null);
+      mobileNavigation?.removeAttribute("data-active-menu");
+      mobileMenus.forEach((details) => {
+        summaryFor(details)?.removeAttribute("tabindex");
+      });
+    };
+
+    const closeMobilePanel = (details, restoreFocus = true) => {
+      const summary = summaryFor(details);
+      suppressMobileToggle = true;
+      details.open = false;
+      clearMobilePanelState();
+      if (mobileNavigation) mobileNavigation.scrollTop = mobileRootScroll;
+      if (restoreFocus) summary?.focus();
+      queueMicrotask(() => {
+        suppressMobileToggle = false;
+      });
+    };
+
+    const enterMobilePanel = (details) => {
+      mobileRootScroll = mobileNavigation?.scrollTop ?? 0;
+
+      mobileMenus.forEach((candidate) => {
+        if (candidate !== details && candidate.open) {
+          suppressMobileToggle = true;
+          candidate.open = false;
+        }
+      });
+      queueMicrotask(() => {
+        suppressMobileToggle = false;
+      });
+
+      setMobileRootAvailable(details);
+      const summary = summaryFor(details);
+      summary?.setAttribute("tabindex", "-1");
+      mobileNavigation?.setAttribute(
+        "data-active-menu",
+        details.dataset.navDetails || "",
+      );
+      window.setTimeout(() => {
+        details.querySelector("[data-nav-back]")?.focus();
+      }, 0);
+    };
+
+    mobileNavigation?.classList.add("is-enhanced");
+
+    mobileMenus.forEach((details) => {
+      syncExpanded(details);
+      details.addEventListener("toggle", () => {
+        syncExpanded(details);
+        if (suppressMobileToggle) return;
+        if (details.open) {
+          enterMobilePanel(details);
+        } else if (
+          mobileNavigation?.dataset.activeMenu === details.dataset.navDetails
+        ) {
+          closeMobilePanel(details);
+        }
+      });
+
+      details.querySelector("[data-nav-back]")?.addEventListener("click", () => {
+        closeMobilePanel(details);
+      });
+
+      details
+        .querySelector("[data-nav-close]")
+        ?.addEventListener("click", () => {
+          suppressMobileToggle = true;
+          details.open = false;
+          clearMobilePanelState();
+          mobileShell.open = false;
+          mobileTrigger?.focus();
+          queueMicrotask(() => {
+            suppressMobileToggle = false;
+          });
+        });
+    });
+
+    const resetMobileNavigation = () => {
+      suppressMobileToggle = true;
+      mobileMenus.forEach((details) => {
+        details.open = false;
+        syncExpanded(details);
+      });
+      clearMobilePanelState();
+      document.documentElement.classList.remove("nav-open");
+      queueMicrotask(() => {
+        suppressMobileToggle = false;
+      });
+    };
+
+    if (mobileShell) {
+      syncExpanded(mobileShell);
+      mobileShell.addEventListener("toggle", () => {
+        syncExpanded(mobileShell);
+        if (mobileShell.open) {
+          document.documentElement.classList.add("nav-open");
+        } else {
+          resetMobileNavigation();
+        }
+      });
+    }
+
+    header.addEventListener("pointerdown", () => {
+      lastPointerDown = performance.now();
+    });
+
+    header.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape") return;
+
+      if (mobileViewport.matches && mobileShell?.open) {
+        const activeMenu = mobileMenus.find(
+          (details) =>
+            details.open &&
+            details.dataset.navDetails ===
+              mobileNavigation?.dataset.activeMenu,
+        );
+
+        if (activeMenu) {
+          closeMobilePanel(activeMenu);
+        } else {
+          mobileShell.open = false;
+          mobileTrigger?.focus();
+        }
+        event.preventDefault();
+        return;
+      }
+
+      const activeDesktopMenu = desktopMenus.find((details) => details.open);
+      if (activeDesktopMenu) {
+        activeDesktopMenu.open = false;
+        restoringDesktopFocus = true;
+        summaryFor(activeDesktopMenu)?.focus();
+        queueMicrotask(() => {
+          restoringDesktopFocus = false;
+        });
+        event.preventDefault();
+      }
+    });
+
+    document.addEventListener("pointerdown", (event) => {
+      if (header.contains(event.target)) return;
+      closeDesktopMenus();
+      if (mobileShell?.open) mobileShell.open = false;
+    });
+
+    mobileViewport.addEventListener("change", (event) => {
+      if (!event.matches && mobileShell?.open) mobileShell.open = false;
+    });
+  })();
+</script>
 
 <style>
   .site-header {
@@ -69,13 +367,16 @@ import PrimaryNavigation from "./PrimaryNavigation.astro";
     display: none;
   }
 
+  :global(html.nav-open) {
+    overflow: hidden;
+  }
+
   @media (max-width: 51.99rem) {
     .desktop-menu {
       display: none;
     }
 
     .site-menu {
-      position: relative;
       display: block;
       flex: 0 0 auto;
       margin-left: auto;
@@ -103,8 +404,26 @@ import PrimaryNavigation from "./PrimaryNavigation.astro";
       display: none;
     }
 
+    .menu-label-close {
+      display: none;
+    }
+
+    .site-menu[open] .menu-label-open {
+      display: none;
+    }
+
+    .site-menu[open] .menu-label-close {
+      display: inline;
+    }
+
     .site-menu[open] > summary svg {
       transform: rotate(180deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .site-menu > summary svg {
+      transition: transform 0.2s var(--ease-out);
     }
   }
 </style>

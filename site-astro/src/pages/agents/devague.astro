@@ -20,6 +20,8 @@
 import Layout from "../../layouts/Layout.astro";
 import PageHero from "../../components/PageHero.astro";
 import ClosingBand from "../../components/ClosingBand.astro";
+import SectionIntro from "../../components/SectionIntro.astro";
+import StructuredCard from "../../components/StructuredCard.astro";
 import DevagueFlow from "../../components/DevagueFlow.astro";
 import DevagueTerminal from "../../components/DevagueTerminal.astro";
 import site from "../../data/site";
@@ -37,32 +39,13 @@ import {
   challengeAdjudicateReexport,
 } from "../../data/devague-captures";
 
-const breadcrumbs = [
-  { label: "Home", href: "/" },
-  { label: "Agents", href: "/agents/" },
-  { label: devague.hero.title },
-] as const;
-
-const sections = [
-  { id: "pipeline", label: "Pipeline" },
-  { id: "method", label: "Method" },
-  { id: "human-gate", label: "Human gate" },
-  { id: "operator-skills", label: "Operator skills" },
-  { id: "real-captures", label: "Real captures" },
-  { id: "whats-next", label: "What's next" },
-] as const;
 ---
 
 <Layout
   title={`devague · Agents · ${site.hero.title}`}
   description={devague.hero.metaDescription}
 >
-  <PageHero
-    title={devague.hero.title}
-    intro={devague.hero.intro}
-    breadcrumbs={breadcrumbs}
-    sections={sections}
-  />
+  <PageHero title={devague.hero.title} intro={devague.hero.intro} />
 
   <!-- fast facts -->
   <section class="section facts-section" aria-label="Fast facts">
@@ -87,31 +70,29 @@ const sections = [
   </section>
 
   <!-- the pipeline — with the method arc as the centerpiece -->
-  <section id="pipeline" class="section" aria-label="The pipeline">
+  <section id="pipeline" class="section" aria-labelledby="pipeline-title">
     <div class="container page-rail">
-      <span class="eyebrow" data-reveal>{devague.pipeline.eyebrow}</span>
-      <h2 data-reveal>{devague.pipeline.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {devague.pipeline.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
+      <SectionIntro
+        eyebrow={devague.pipeline.eyebrow}
+        title={devague.pipeline.headline}
+        titleId="pipeline-title"
+        intro={devague.pipeline.intro}
+      />
       <div class="flow-wrap" data-reveal>
         <DevagueFlow
           caption="The whole arc in one pass: claims arrive proposed, a human confirms them, and the converge gate stays shut until the frame closes — then the spec exports. A challenge pass hunts its blind spots and a human adjudicates what it finds, and the re-exported spec fans out into the waves a workforce builds. Where the build must leave that plan, the run stops and the approved departure lands on the deviate ledger; the closing summary reconciles planned against actual — the accountability artifact."
         />
       </div>
-      <ul class="stages">
+      <ul class="structured-card-grid">
         {
           devague.pipeline.stages.map((stage, i) => (
-            <li
-              class="card stage-card"
-              data-reveal
-              style={`--reveal-delay: ${Math.min(i * 0.07, 0.35)}s`}
-            >
-              <h3 class="stage-name">{stage.name}</h3>
-              <span class="stage-engine muted">{stage.engine}</span>
-              <p class="stage-detail muted">{stage.detail}</p>
-              <span class="stage-verbs muted">{stage.verbs}</span>
-            </li>
+            <StructuredCard
+              meta={stage.engine}
+              title={stage.name}
+              body={stage.detail}
+              footerItems={stage.verbs.split(" · ")}
+              revealDelay={Math.min(i * 0.07, 0.35)}
+            />
           ))
         }
       </ul>
@@ -119,28 +100,24 @@ const sections = [
   </section>
 
   <!-- the announcement-frame method -->
-  <section id="method" class="section" aria-label="The method">
+  <section id="method" class="section" aria-labelledby="method-title">
     <div class="container page-rail">
-      <span class="eyebrow" data-reveal>{devague.method.eyebrow}</span>
-      <h2 data-reveal>{devague.method.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {devague.method.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
-      <ol class="moves">
+      <SectionIntro
+        eyebrow={devague.method.eyebrow}
+        title={devague.method.headline}
+        titleId="method-title"
+        intro={devague.method.intro}
+      />
+      <ol class="structured-card-grid">
         {
           devague.method.moves.map((move, i) => (
-            <li
-              class="card move-card"
-              data-reveal
-              style={`--reveal-delay: ${Math.min(i * 0.07, 0.35)}s`}
-            >
-              <span class="move-step muted" aria-hidden="true">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <h3 class="move-verb">{move.verb}</h3>
-              <p class="move-ask">{move.ask}</p>
-              <p class="move-detail muted">{move.detail}</p>
-            </li>
+            <StructuredCard
+              meta={`${String(i + 1).padStart(2, "0")} · ${move.verb}`}
+              title={move.ask}
+              body={move.detail}
+              featured={i === 0}
+              revealDelay={Math.min(i * 0.07, 0.35)}
+            />
           ))
         }
       </ol>
@@ -148,13 +125,14 @@ const sections = [
   </section>
 
   <!-- the human review loop -->
-  <section id="human-gate" class="section" aria-label="The human gate">
+  <section id="human-gate" class="section" aria-labelledby="human-gate-title">
     <div class="container page-rail">
-      <span class="eyebrow" data-reveal>{devague.reviewLoop.eyebrow}</span>
-      <h2 data-reveal>{devague.reviewLoop.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {devague.reviewLoop.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
+      <SectionIntro
+        eyebrow={devague.reviewLoop.eyebrow}
+        title={devague.reviewLoop.headline}
+        titleId="human-gate-title"
+        intro={devague.reviewLoop.intro}
+      />
       <ul class="gate-steps">
         {
           devague.reviewLoop.steps.map((step, i) => (
@@ -173,25 +151,28 @@ const sections = [
   </section>
 
   <!-- the operator skills -->
-  <section id="operator-skills" class="section" aria-label="The operator skills">
+  <section
+    id="operator-skills"
+    class="section"
+    aria-labelledby="operator-skills-title"
+  >
     <div class="container page-rail">
-      <span class="eyebrow" data-reveal>{devague.skills.eyebrow}</span>
-      <h2 data-reveal>{devague.skills.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {devague.skills.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
-      <ul class="skills">
+      <SectionIntro
+        eyebrow={devague.skills.eyebrow}
+        title={devague.skills.headline}
+        titleId="operator-skills-title"
+        intro={devague.skills.intro}
+      />
+      <ul class="structured-card-grid">
         {
           devague.skills.cards.map((card, i) => (
-            <li
-              class="card skill-card"
-              data-reveal
-              style={`--reveal-delay: ${Math.min(i * 0.07, 0.35)}s`}
-            >
-              <h3 class="skill-name">{card.name}</h3>
-              <span class="skill-leg muted">{card.leg}</span>
-              <p class="skill-duty muted">{card.duty}</p>
-            </li>
+            <StructuredCard
+              meta={card.leg}
+              title={card.name}
+              titleKind="code"
+              body={card.duty}
+              revealDelay={Math.min(i * 0.07, 0.35)}
+            />
           ))
         }
       </ul>
@@ -199,13 +180,14 @@ const sections = [
   </section>
 
   <!-- real captures: the dogfood loop, replayed -->
-  <section id="real-captures" class="section" aria-label="Real captures">
+  <section id="real-captures" class="section" aria-labelledby="real-captures-title">
     <div class="container page-rail">
-      <span class="eyebrow" data-reveal>{devague.captures.eyebrow}</span>
-      <h2 data-reveal>{devague.captures.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {devague.captures.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
+      <SectionIntro
+        eyebrow={devague.captures.eyebrow}
+        title={devague.captures.headline}
+        titleId="real-captures-title"
+        intro={devague.captures.intro}
+      />
       <!-- story one, the original run — the frame leg opens: the
            announcement, then the mid-session shift -->
       <div class="term-grid">
@@ -263,13 +245,14 @@ const sections = [
   </section>
 
   <!-- what's next, from the open tracker -->
-  <section id="whats-next" class="section" aria-label="What's next">
+  <section id="whats-next" class="section" aria-labelledby="whats-next-title">
     <div class="container page-rail">
-      <span class="eyebrow" data-reveal>{devague.whatsNext.eyebrow}</span>
-      <h2 data-reveal>{devague.whatsNext.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {devague.whatsNext.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
+      <SectionIntro
+        eyebrow={devague.whatsNext.eyebrow}
+        title={devague.whatsNext.headline}
+        titleId="whats-next-title"
+        intro={devague.whatsNext.intro}
+      />
       <ul class="themes">
         {
           devague.whatsNext.themes.map((theme, i) => (
@@ -365,113 +348,6 @@ const sections = [
     margin-inline: auto;
   }
 
-  .stages {
-    list-style: none;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
-    gap: 1.1rem;
-  }
-
-  .stage-card {
-    padding: 1.4rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-  }
-
-  .stage-name {
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: var(--ac-type-card-title);
-    line-height: var(--ac-leading-ui);
-    font-weight: 600;
-    letter-spacing: var(--ac-tracking-flat);
-    color: var(--accent);
-  }
-
-  .stage-engine {
-    font-size: var(--ac-type-meta);
-    font-weight: 640;
-    line-height: var(--ac-leading-ui);
-    letter-spacing: var(--ac-tracking-caps);
-    text-transform: uppercase;
-  }
-
-  .stage-detail {
-    font-size: 1rem;
-    line-height: var(--ac-leading-card);
-    flex-grow: 1;
-    margin-top: 0.35rem;
-  }
-
-  .stage-verbs {
-    font-family: var(--font-mono);
-    font-size: var(--ac-type-meta);
-    letter-spacing: var(--ac-tracking-flat);
-  }
-
-  /* the method moves */
-  .moves {
-    list-style: none;
-    margin-top: 2.2rem;
-    display: grid;
-    /* 18rem floor lands three tracks on desktop. The seven moves read in
-       spoken order: scope — the opening move, ahead of the frame — takes
-       the full first row, and the frame's six keep their two rows of three
-       underneath: new/capture/interrogate, park/converge/export */
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
-    gap: 1.1rem;
-  }
-
-  .moves .move-card:first-child {
-    grid-column: 1 / -1;
-  }
-
-  /* full-row card, prose-width text — the lead move shouldn't run edge
-     to edge */
-  .moves .move-card:first-child .move-ask,
-  .moves .move-card:first-child .move-detail {
-    max-width: var(--ac-measure-prose);
-  }
-
-  .move-card {
-    padding: 1.4rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  .move-step {
-    font-family: var(--font-mono);
-    font-size: var(--ac-type-micro);
-    line-height: var(--ac-leading-ui);
-    letter-spacing: var(--ac-tracking-caps);
-  }
-
-  .move-verb {
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: var(--ac-type-card-title);
-    line-height: var(--ac-leading-ui);
-    font-weight: 600;
-    letter-spacing: var(--ac-tracking-flat);
-    color: var(--accent);
-  }
-
-  .move-ask {
-    font-style: italic;
-    font-size: 1rem;
-    line-height: var(--ac-leading-card);
-    font-weight: 500;
-    color: var(--ink);
-    margin: 0.25rem 0 0.35rem;
-  }
-
-  .move-detail {
-    font-size: 1rem;
-    line-height: var(--ac-leading-card);
-  }
-
   /* the review loop */
   .gate-steps {
     list-style: none;
@@ -505,47 +381,6 @@ const sections = [
     .gate-step {
       grid-template-columns: 1fr;
     }
-  }
-
-  /* the operator skills */
-  .skills {
-    list-style: none;
-    margin-top: 2.2rem;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
-    gap: 1.1rem;
-  }
-
-  .skill-card {
-    padding: 1.4rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-  }
-
-  .skill-name {
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: var(--ac-type-component-title);
-    line-height: 1.3;
-    font-weight: 600;
-    letter-spacing: var(--ac-tracking-flat);
-    color: var(--accent);
-  }
-
-  .skill-leg {
-    font-size: var(--ac-type-micro);
-    font-weight: 640;
-    line-height: var(--ac-leading-ui);
-    letter-spacing: var(--ac-tracking-caps);
-    text-transform: uppercase;
-    font-family: var(--font-mono);
-  }
-
-  .skill-duty {
-    font-size: 1rem;
-    line-height: var(--ac-leading-card);
-    margin-top: 0.35rem;
   }
 
   /* captures */

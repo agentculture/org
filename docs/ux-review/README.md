@@ -2,7 +2,7 @@
 
 This folder began as an outside UX review of the built site. It now contains a
 mixture of historical proposals, retained visual evidence, and the current
-review record for work implemented in the uncommitted `ux-review` working tree.
+review record for work implemented on the local `ux-review` branch.
 Each artefact states its date and method so it can be checked rather than taken
 on trust.
 
@@ -10,7 +10,8 @@ on trust.
 > [`global-type-and-section-width-system.md`](global-type-and-section-width-system.md)
 > audits the present 12-route `ux-review` worktree and the retained Devague
 > mock, records the adopted global typography and rail decisions, and reports
-> their current verification status. The eight-route baseline and earlier
+> their current verification status, including the shared section-opener and
+> structured-card migrations. The eight-route baseline and earlier
 > adoption-status statements below remain historical.
 
 The original review baseline was a local production build at commit `d71a719`
@@ -32,6 +33,10 @@ at the time it was written.
 renders the proposed foundations, layout roles, responsive pipeline,
 components, interactions, ownership boundaries, and migration gate without
 changing the Astro site.
+
+Its compact “On this page” example is retained as historical visual evidence.
+Breadcrumbs and local contents navigation are not present in the current Astro
+review branch and will be reconsidered separately.
 
 The original [`findings.md`](findings.md) remains the evidence baseline: seven
 findings with measurements and re-run recipes, plus the accessibility,
@@ -130,7 +135,9 @@ browser from the rendered DOM rather than asserting it, and independently arrive
 at the same 4% figure quoted in the audit.
 
 **Current Astro status** — the global typography/rail system and related IA
-work are implemented only in the uncommitted `ux-review` working tree. The
+work are implemented on the local `ux-review` branch. The main implementation
+is committed locally at `b12762e`; the removal of breadcrumbs and local
+contents navigation remains an uncommitted review change. The
 standalone HTML artefacts remain historical review surfaces rather than source
 components. Older statements that no proposal has touched Astro describe their
 own earlier baselines, not the current working tree.
@@ -151,8 +158,8 @@ problems should not carry away a defect that does not exist.
 
 ## Current constraints
 
-- **Site files are changed locally for review.** Nothing has been committed,
-  pushed, deployed, or submitted as a PR.
+- **Site files are changed locally for review.** The main implementation is
+  committed locally. Nothing has been pushed, deployed, or submitted as a PR.
 - **Learn is untouched.** The separate Learn source and deployment are outside
   this migration.
 - **Version bump.** The repo's `version-check` CI job fails any PR whose

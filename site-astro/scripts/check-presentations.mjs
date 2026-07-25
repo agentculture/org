@@ -828,50 +828,74 @@ check("current nav state per surface", () => {
     {
       label: "articles index",
       html: articlesIndexHtml,
-      activeLabel: "Articles",
-      activeHref: articlesRoute,
+      exactHref: articlesRoute,
+      footerLabel: "Articles",
+      footerHref: articlesRoute,
     },
     {
       label: "article",
       html: articleHtml,
-      activeLabel: "Articles",
-      activeHref: articlesRoute,
+      exactHref: articleRoute,
+      footerLabel: "Articles",
+      footerHref: articlesRoute,
     },
     {
       label: "presentations index",
       html: presentationsIndexHtml,
-      activeLabel: "Presentations",
-      activeHref: presentationsRoute,
+      exactHref: presentationsRoute,
+      footerLabel: "Presentations",
+      footerHref: presentationsRoute,
     },
     {
       label: "deck",
       html: deckHtml,
-      activeLabel: "Presentations",
-      activeHref: presentationsRoute,
+      exactHref: deckRoute,
+      footerLabel: "Presentations",
+      footerHref: presentationsRoute,
     },
   ];
-  for (const { label, html, activeLabel, activeHref } of surfaces) {
+  for (const {
+    label,
+    html,
+    exactHref,
+    footerLabel,
+    footerHref,
+  } of surfaces) {
     const header = requireRegion(html, "header", "site-header", label);
     const footer = requireRegion(html, "footer", "site-footer", label);
-    for (const [regionLabel, region] of [
-      ["Header", header],
-      ["Footer", footer],
-    ]) {
-      const current = anchors(region.outer).filter(
-        (anchor) => anchor.attrs["aria-current"] === "page",
-      );
-      assert(
-        current.length === (regionLabel === "Header" ? 2 : 1),
-        `${label} ${regionLabel} has the wrong number of responsive current links: ${current.length}`,
-      );
-      assert(
-        current.every(
-          (anchor) =>
-            anchor.attrs.href === activeHref && anchor.text === activeLabel,
+
+    const currentHeaderOwners = openings(header.outer, "li").filter(
+      (item) => item["data-nav-current"] === "true",
+    );
+    assert(
+      currentHeaderOwners.length === 2 &&
+        currentHeaderOwners.every(
+          (item) => item["data-nav-item"] === "Library",
         ),
-        `${label} ${regionLabel} current link must be ${activeLabel}`,
-      );
-    }
+      `${label} must be owned by Library in both responsive Header navs`,
+    );
+
+    const currentHeaderLinks = anchors(header.outer).filter(
+      (anchor) => anchor.attrs["aria-current"] === "page",
+    );
+    assert(
+      currentHeaderLinks.length === 2 &&
+        currentHeaderLinks.every(
+          (anchor) => anchor.attrs.href === exactHref,
+        ),
+      `${label} Header must mark ${exactHref} as the exact current destination`,
+    );
+
+    const currentFooterLinks = anchors(footer.outer).filter(
+      (anchor) => anchor.attrs["aria-current"] === "page",
+    );
+    assert(
+      currentFooterLinks.length === 1 &&
+        currentFooterLinks[0].attrs.href === footerHref &&
+        currentFooterLinks[0].text === footerLabel,
+      `${label} Footer current link must be ${footerLabel}`,
+    );
+
     const pageCurrent = anchors(html).filter(
       (anchor) => anchor.attrs["aria-current"] === "page",
     );

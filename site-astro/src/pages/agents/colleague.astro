@@ -34,6 +34,8 @@
 import Layout from "../../layouts/Layout.astro";
 import PageHero from "../../components/PageHero.astro";
 import ClosingBand from "../../components/ClosingBand.astro";
+import SectionIntro from "../../components/SectionIntro.astro";
+import StructuredCard from "../../components/StructuredCard.astro";
 import ColleagueDiagram from "../../components/ColleagueDiagram.astro";
 import ColleagueTerminal from "../../components/ColleagueTerminal.astro";
 import site from "../../data/site";
@@ -66,39 +68,17 @@ const dogfood = {
   ],
 };
 
-const breadcrumbs = [
-  { label: "Home", href: "/" },
-  { label: "Agents", href: "/agents/" },
-  { label: colleague.hero.title },
-] as const;
-
-const sections = [
-  { id: "paradigm", label: "Paradigm" },
-  { id: "tiers", label: "Three tiers" },
-  { id: "work-loop", label: "Work loop" },
-  { id: "workforce", label: "Workforce" },
-  { id: "cortex-senses", label: "Cortex & senses" },
-  { id: "memory", label: "Memory" },
-  { id: "more-surfaces", label: "More surfaces" },
-  { id: "dogfood", label: "Dogfood" },
-  { id: "whats-next", label: "What's next" },
-] as const;
 ---
 
 <Layout
   title={`colleague · Agents · ${site.hero.title}`}
   description={colleague.hero.metaDescription}
 >
-  <PageHero
-    title={colleague.hero.title}
-    intro={colleague.hero.intro}
-    breadcrumbs={breadcrumbs}
-    sections={sections}
-  />
+  <PageHero title={colleague.hero.title} intro={colleague.hero.intro} />
 
   <!-- fast facts -->
   <section class="section facts-section" aria-label="Fast facts">
-    <div class="container wide-rail">
+    <div class="container page-rail">
       <ul class="facts">
         {
           colleague.facts.map((fact, i) => (
@@ -119,27 +99,25 @@ const sections = [
   </section>
 
   <!-- the paradigm -->
-  <section id="paradigm" class="section" aria-label="The paradigm">
-    <div class="container wide-rail">
-      <span class="eyebrow" data-reveal>{colleague.paradigm.eyebrow}</span>
-      <h2 data-reveal>{colleague.paradigm.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {colleague.paradigm.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
+  <section id="paradigm" class="section" aria-labelledby="paradigm-title">
+    <div class="container page-rail">
+      <SectionIntro
+        eyebrow={colleague.paradigm.eyebrow}
+        title={colleague.paradigm.headline}
+        titleId="paradigm-title"
+        intro={colleague.paradigm.intro}
+      />
       <div class="diagram-wrap" data-reveal>
         <ColleagueDiagram caption="One runtime, many minds, in one glance: the top band is one CockpitState rendered three honest ways; the bottom band is cortex and senses, resolved by role from the lobes gateway. Two facts, joined by the one runtime that consumes one and renders the other." />
       </div>
-      <ul class="paradigm-cards">
+      <ul class="structured-card-grid">
         {
           colleague.paradigm.cards.map((card, i) => (
-            <li
-              class="card paradigm-card"
-              data-reveal
-              style={`--reveal-delay: ${Math.min(i * 0.07, 0.28)}s`}
-            >
-              <h3 class="paradigm-name">{card.name}</h3>
-              <p class="paradigm-detail muted">{card.detail}</p>
-            </li>
+            <StructuredCard
+              title={card.name}
+              body={card.detail}
+              revealDelay={Math.min(i * 0.07, 0.28)}
+            />
           ))
         }
       </ul>
@@ -150,26 +128,24 @@ const sections = [
   </section>
 
   <!-- three tiers -->
-  <section id="tiers" class="section" aria-label="Three tiers">
-    <div class="container wide-rail">
-      <span class="eyebrow" data-reveal>{colleague.tiers.eyebrow}</span>
-      <h2 data-reveal>{colleague.tiers.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {colleague.tiers.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
-      <ul class="tier-cards">
+  <section id="tiers" class="section" aria-labelledby="tiers-title">
+    <div class="container page-rail">
+      <SectionIntro
+        eyebrow={colleague.tiers.eyebrow}
+        title={colleague.tiers.headline}
+        titleId="tiers-title"
+        intro={colleague.tiers.intro}
+      />
+      <ul class="structured-card-grid">
         {
           colleague.tiers.cards.map((tier, i) => (
-            <li
-              class="card tier-card"
-              data-reveal
-              style={`--reveal-delay: ${Math.min(i * 0.08, 0.24)}s`}
-            >
-              <h3 class="tier-name">{tier.name}</h3>
-              <span class="tier-surface muted">{tier.surface}</span>
-              <p class="tier-detail muted">{tier.detail}</p>
-              <code class="tier-commands">{tier.commands}</code>
-            </li>
+            <StructuredCard
+              meta={tier.surface}
+              title={tier.name}
+              body={tier.detail}
+              footerItems={tier.commands.split(" · ")}
+              revealDelay={Math.min(i * 0.08, 0.24)}
+            />
           ))
         }
       </ul>
@@ -182,25 +158,23 @@ const sections = [
   </section>
 
   <!-- the work loop -->
-  <section id="work-loop" class="section" aria-label="The work loop">
+  <section id="work-loop" class="section" aria-labelledby="work-loop-title">
     <div class="container wide-rail">
-      <span class="eyebrow" data-reveal>{colleague.work.eyebrow}</span>
-      <h2 data-reveal>{colleague.work.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {colleague.work.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
-      <ul class="work-cards">
+      <SectionIntro
+        eyebrow={colleague.work.eyebrow}
+        title={colleague.work.headline}
+        titleId="work-loop-title"
+        intro={colleague.work.intro}
+      />
+      <ul class="structured-card-grid">
         {
           colleague.work.cards.map((card, i) => (
-            <li
-              class="card work-card"
-              data-reveal
-              style={`--reveal-delay: ${Math.min(i * 0.07, 0.35)}s`}
-            >
-              <h3 class="work-name">{card.name}</h3>
-              <code class="work-verbs">{card.verbs}</code>
-              <p class="work-detail muted">{card.detail}</p>
-            </li>
+            <StructuredCard
+              title={card.name}
+              body={card.detail}
+              footer={card.verbs}
+              revealDelay={Math.min(i * 0.07, 0.35)}
+            />
           ))
         }
       </ul>
@@ -219,13 +193,14 @@ const sections = [
   </section>
 
   <!-- the workforce -->
-  <section id="workforce" class="section" aria-label="The workforce">
+  <section id="workforce" class="section" aria-labelledby="workforce-title">
     <div class="container wide-rail">
-      <span class="eyebrow" data-reveal>{colleague.subagents.eyebrow}</span>
-      <h2 data-reveal>{colleague.subagents.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {colleague.subagents.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
+      <SectionIntro
+        eyebrow={colleague.subagents.eyebrow}
+        title={colleague.subagents.headline}
+        titleId="workforce-title"
+        intro={colleague.subagents.intro}
+      />
       <div
         class="table-wrap card"
         data-reveal
@@ -274,25 +249,27 @@ const sections = [
   </section>
 
   <!-- cortex & senses -->
-  <section id="cortex-senses" class="section" aria-label="Cortex and senses">
+  <section
+    id="cortex-senses"
+    class="section"
+    aria-labelledby="cortex-senses-title"
+  >
     <div class="container wide-rail">
-      <span class="eyebrow" data-reveal>{colleague.cortexSenses.eyebrow}</span>
-      <h2 data-reveal>{colleague.cortexSenses.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {colleague.cortexSenses.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
-      <ul class="minds">
+      <SectionIntro
+        eyebrow={colleague.cortexSenses.eyebrow}
+        title={colleague.cortexSenses.headline}
+        titleId="cortex-senses-title"
+        intro={colleague.cortexSenses.intro}
+      />
+      <ul class="structured-card-grid">
         {
           colleague.cortexSenses.cards.map((card, i) => (
-            <li
-              class="card mind-card"
-              data-reveal
-              style={`--reveal-delay: ${Math.min(i * 0.08, 0.24)}s`}
-            >
-              <h3 class="mind-name">{card.name}</h3>
-              <span class="mind-role muted">{card.role}</span>
-              <p class="mind-detail muted">{card.detail}</p>
-            </li>
+            <StructuredCard
+              meta={card.role}
+              title={card.name}
+              body={card.detail}
+              revealDelay={Math.min(i * 0.08, 0.24)}
+            />
           ))
         }
       </ul>
@@ -310,13 +287,14 @@ const sections = [
   </section>
 
   <!-- eidetic memory -->
-  <section id="memory" class="section" aria-label="Eidetic memory">
-    <div class="container wide-rail">
-      <span class="eyebrow" data-reveal>{colleague.memory.eyebrow}</span>
-      <h2 data-reveal>{colleague.memory.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {colleague.memory.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
+  <section id="memory" class="section" aria-labelledby="memory-title">
+    <div class="container page-rail">
+      <SectionIntro
+        eyebrow={colleague.memory.eyebrow}
+        title={colleague.memory.headline}
+        titleId="memory-title"
+        intro={colleague.memory.intro}
+      />
       <div class="measured-grid">
         {
           colleague.memory.measured.map((leg, i) => (
@@ -356,24 +334,26 @@ const sections = [
   </section>
 
   <!-- more surfaces -->
-  <section id="more-surfaces" class="section" aria-label="More surfaces">
-    <div class="container wide-rail">
-      <span class="eyebrow" data-reveal>{colleague.moreSurfaces.eyebrow}</span>
-      <h2 data-reveal>{colleague.moreSurfaces.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {colleague.moreSurfaces.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
-      <ul class="surfaces">
+  <section
+    id="more-surfaces"
+    class="section"
+    aria-labelledby="more-surfaces-title"
+  >
+    <div class="container page-rail">
+      <SectionIntro
+        eyebrow={colleague.moreSurfaces.eyebrow}
+        title={colleague.moreSurfaces.headline}
+        titleId="more-surfaces-title"
+        intro={colleague.moreSurfaces.intro}
+      />
+      <ul class="structured-card-grid">
         {
           colleague.moreSurfaces.cards.map((card, i) => (
-            <li
-              class="card surface-card"
-              data-reveal
-              style={`--reveal-delay: ${Math.min(i * 0.05, 0.4)}s`}
-            >
-              <h3 class="surface-name">{card.name}</h3>
-              <p class="surface-detail muted">{card.detail}</p>
-            </li>
+            <StructuredCard
+              title={card.name}
+              body={card.detail}
+              revealDelay={Math.min(i * 0.05, 0.4)}
+            />
           ))
         }
       </ul>
@@ -381,13 +361,14 @@ const sections = [
   </section>
 
   <!-- dogfood: real captures proving the whole page on colleague's own work -->
-  <section id="dogfood" class="section" aria-label="Dogfood — real work, including its own">
+  <section id="dogfood" class="section" aria-labelledby="dogfood-title">
     <div class="container wide-rail">
-      <span class="eyebrow" data-reveal>{dogfood.eyebrow}</span>
-      <h2 data-reveal>{dogfood.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {dogfood.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
+      <SectionIntro
+        eyebrow={dogfood.eyebrow}
+        title={dogfood.headline}
+        titleId="dogfood-title"
+        intro={dogfood.intro}
+      />
       <!-- ported: the self-build drive, a committed public artifact -->
       <div class="term-grid">
         <div data-reveal>
@@ -417,13 +398,14 @@ const sections = [
   </section>
 
   <!-- what's next, from the open tracker -->
-  <section id="whats-next" class="section" aria-label="What's next">
-    <div class="container wide-rail">
-      <span class="eyebrow" data-reveal>{colleague.whatsNext.eyebrow}</span>
-      <h2 data-reveal>{colleague.whatsNext.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {colleague.whatsNext.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
+  <section id="whats-next" class="section" aria-labelledby="whats-next-title">
+    <div class="container page-rail">
+      <SectionIntro
+        eyebrow={colleague.whatsNext.eyebrow}
+        title={colleague.whatsNext.headline}
+        titleId="whats-next-title"
+        intro={colleague.whatsNext.intro}
+      />
       <ul class="themes">
         {
           colleague.whatsNext.themes.map((theme, i) => (
@@ -526,53 +508,6 @@ const sections = [
     margin-inline: auto;
   }
 
-  .paradigm-cards,
-  .tier-cards,
-  .work-cards,
-  .minds,
-  .surfaces {
-    list-style: none;
-    margin-top: 2.2rem;
-    display: grid;
-    gap: 1.1rem;
-  }
-
-  .paradigm-cards {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
-  }
-
-  .paradigm-card,
-  .tier-card,
-  .work-card,
-  .mind-card,
-  .surface-card {
-    padding: 1.4rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-  }
-
-  .paradigm-name,
-  .tier-name,
-  .work-name,
-  .mind-name,
-  .surface-name {
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: var(--ac-type-card-title);
-    line-height: var(--ac-leading-ui);
-    font-weight: 600;
-    letter-spacing: var(--ac-tracking-flat);
-    color: var(--accent);
-  }
-
-  .paradigm-detail,
-  .surface-detail {
-    font-size: 1rem;
-    line-height: var(--ac-leading-card);
-    margin-top: 0.1rem;
-  }
-
   /* a single narrow terminal, centered — the same idiom as .diagram-wrap
      above, sized for a short, six-line identity probe rather than a full
      term-grid column */
@@ -580,51 +515,6 @@ const sections = [
     margin-top: 2.2rem;
     max-width: 28rem;
     margin-inline: auto;
-  }
-
-  /* three tiers */
-  .tier-cards {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
-  }
-
-  .tier-surface {
-    font-size: var(--ac-type-meta);
-    font-weight: 640;
-    line-height: var(--ac-leading-ui);
-    letter-spacing: var(--ac-tracking-caps);
-    text-transform: uppercase;
-  }
-
-  .tier-detail {
-    font-size: 1rem;
-    line-height: var(--ac-leading-card);
-    flex-grow: 1;
-    margin-top: 0.15rem;
-  }
-
-  .tier-commands {
-    font-family: var(--font-mono);
-    font-size: var(--ac-type-meta);
-    letter-spacing: var(--ac-tracking-flat);
-    overflow-wrap: anywhere;
-  }
-
-  /* the work loop */
-  .work-cards {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
-  }
-
-  .work-verbs {
-    font-family: var(--font-mono);
-    font-size: var(--ac-type-meta);
-    letter-spacing: var(--ac-tracking-flat);
-    overflow-wrap: anywhere;
-  }
-
-  .work-detail {
-    font-size: 1rem;
-    line-height: var(--ac-leading-card);
-    margin-top: 0.15rem;
   }
 
   /* the workforce: roles table + the live capture beneath it */
@@ -695,25 +585,6 @@ const sections = [
   .access-full {
     color: var(--ink-soft);
     border: 1px dashed var(--line);
-  }
-
-  /* cortex & senses */
-  .minds {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
-  }
-
-  .mind-role {
-    font-size: var(--ac-type-meta);
-    font-weight: 640;
-    line-height: var(--ac-leading-ui);
-    letter-spacing: var(--ac-tracking-caps);
-    text-transform: uppercase;
-  }
-
-  .mind-detail {
-    font-size: 1rem;
-    line-height: var(--ac-leading-card);
-    margin-top: 0.15rem;
   }
 
   /* eidetic memory: the measured pair */

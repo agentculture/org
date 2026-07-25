@@ -65,23 +65,55 @@ const pages = new Map(
   }),
 );
 
-const headerHrefs = [
+const primaryLabels = [
+  "Framework",
+  "Agents",
+  "Library",
+  "Engage",
+  "Learn",
+];
+const ownedHeaderRoutes = [
   "/framework/",
   "/agents/",
+  "/agents/colleague/",
+  "/agents/lobes/",
+  "/agents/devague/",
+  "/agents/reachy-mini-cli/",
   "/articles/",
+  "/articles/mind-nervous-system-body/",
   "/presentations/",
+  "/presentations/mind-nervous-system-body/",
   "/engage/",
-  "https://agentculture.org/learn/",
 ];
-const sectionForRoute = (route) =>
-  headerHrefs.slice(0, 5).find((href) => route.startsWith(href));
+const agentRoutes = ownedHeaderRoutes.filter((href) =>
+  href.startsWith("/agents/"),
+);
+const libraryRoutes = ownedHeaderRoutes.filter(
+  (href) =>
+    href.startsWith("/articles/") || href.startsWith("/presentations/"),
+);
+const agentGroupHrefs = site.agents.groups.map(
+  ({ id }) => `/agents/#${id}`,
+);
+const sectionForRoute = (route) => {
+  if (route.startsWith("/framework/")) return "Framework";
+  if (route.startsWith("/agents/")) return "Agents";
+  if (
+    route.startsWith("/articles/") ||
+    route.startsWith("/presentations/")
+  ) {
+    return "Library";
+  }
+  if (route.startsWith("/engage/")) return "Engage";
+  return undefined;
+};
 
 check("all 12 owned routes were built", () => {
   assert(pages.size === 12, `expected 12 pages, found ${pages.size}`);
 });
 
 for (const [route, html] of pages) {
-  check(`${route} header order and Learn contract`, () => {
+  check(`${route} consolidated header route coverage and contracts`, () => {
     const header = region(html, "header", "site-header");
     const navRegions = [...header.matchAll(
       /<nav\b([^>]*)>[\s\S]*?<\/nav>/gi,
@@ -91,29 +123,125 @@ for (const [route, html] of pages) {
     assert(navRegions.length === 2, "header needs one desktop and one mobile primary nav");
 
     for (const nav of navRegions) {
-      const navAnchors = openings(nav, "a").filter(({ href }) =>
-        headerHrefs.includes(href),
+      const rootItems = openings(nav, "li").filter(
+        (attributes) => attributes["data-nav-item"],
       );
       assert(
-        JSON.stringify(navAnchors.map(({ href }) => href)) ===
-          JSON.stringify(headerHrefs),
-        "primary links are missing or out of order",
+        JSON.stringify(rootItems.map((item) => item["data-nav-item"])) ===
+          JSON.stringify(primaryLabels),
+        "top-level labels are missing or out of order",
       );
 
-      const learn = navAnchors.at(-1);
-      assert(learn.class?.split(/\s+/).includes("primary-cta"), "Learn is not the primary CTA");
+      const navAnchors = openings(nav, "a");
+      for (const ownedRoute of ownedHeaderRoutes) {
+        const matches = navAnchors.filter(({ href }) => href === ownedRoute);
+        assert(
+          matches.length === 1,
+          `${ownedRoute} must appear exactly once in each primary nav`,
+        );
+      }
+
+      const learn = navAnchors.find(
+        ({ href }) => href === "https://agentculture.org/learn/",
+      );
+      assert(learn, "Learn is missing");
+      assert(
+        !learn.class?.split(/\s+/).includes("primary-cta"),
+        "Learn must use the same visual treatment as the other links",
+      );
       assert(learn.target === "_blank", "Learn must open in a new tab");
       assert(learn.rel === "noopener noreferrer", "Learn is missing its safe rel");
       assert(!learn["aria-current"], "Learn must never be current");
 
-      const current = navAnchors.filter((anchor) => anchor["aria-current"] === "page");
+      const currentRootItems = rootItems.filter(
+        (item) => item["data-nav-current"] === "true",
+      );
       const expected = sectionForRoute(route);
-      assert(current.length === (expected ? 1 : 0), "wrong number of current header links");
-      if (expected) assert(current[0].href === expected, `expected ${expected} to be current`);
+      assert(
+        currentRootItems.length === (expected ? 1 : 0),
+        "wrong number of current top-level items",
+      );
+      if (expected) {
+        assert(
+          currentRootItems[0]["data-nav-item"] === expected,
+          `expected ${expected} to own ${route}`,
+        );
+      }
+
+      const currentDestinations = navAnchors.filter(
+        (anchor) => anchor["aria-current"] === "page",
+      );
+      assert(
+        currentDestinations.length === (route === "/" ? 0 : 1),
+        "wrong number of exact current destinations",
+      );
+      if (route !== "/") {
+        assert(
+          currentDestinations[0].href === route,
+          `${route} must mark its exact destination current`,
+        );
+      }
+
+      const triggers = openings(nav, "summary").filter(
+        (summary) => summary["data-nav-trigger"],
+      );
+      assert(triggers.length === 2, "Agents and Library need menu triggers");
+      for (const trigger of triggers) {
+        assert(trigger["aria-controls"], "menu trigger is missing aria-controls");
+        assert(
+          trigger["aria-expanded"] === "false",
+          "menu trigger must declare its initial collapsed state",
+        );
+      }
+
+      const agentsStart = nav.indexOf('data-nav-panel="agents"');
+      const libraryStart = nav.indexOf('data-nav-panel="library"');
+      assert(
+        agentsStart >= 0 && libraryStart > agentsStart,
+        "ordered Agents and Library panels are missing",
+      );
+      const agentsPanel = nav.slice(agentsStart, libraryStart);
+      const libraryPanel = nav.slice(libraryStart);
+
+      for (const href of [...agentRoutes, ...agentGroupHrefs]) {
+        assert(
+          agentsPanel.includes(`href="${href}"`),
+          `${href} is missing from the Agents panel`,
+        );
+      }
+      for (const href of libraryRoutes) {
+        assert(
+          libraryPanel.includes(`href="${href}"`),
+          `${href} is missing from the Library panel`,
+        );
+      }
+
+      for (const groupId of [
+        "agent-pages",
+        "agent-areas",
+        "articles",
+        "presentations",
+      ]) {
+        assert(
+          nav.includes(`data-nav-group="${groupId}"`),
+          `${groupId} navigation group is missing`,
+        );
+      }
+
+      assert(
+        (nav.match(/class="destination-description"/g) ?? []).length >= 15,
+        "descriptive destination copy is missing",
+      );
     }
 
     assert(header.includes("external-link-icon"), "Learn is missing the visible SVG cue");
     assert(header.includes("opens in a new tab"), "Learn is missing assistive new-tab text");
+    assert(header.includes("data-nav-back"), "mobile drill-down Back control is missing");
+    assert(header.includes("data-nav-close"), "mobile drill-down Close control is missing");
+    assert(
+      html.includes("navigationReady"),
+      "first-party navigation enhancement is missing",
+    );
   });
 
   check(`${route} grouped footer contract`, () => {
@@ -134,56 +262,27 @@ for (const [route, html] of pages) {
   });
 }
 
-const detailRoutes = [
-  "/agents/colleague/",
-  "/agents/devague/",
-  "/agents/lobes/",
-  "/agents/reachy-mini-cli/",
-  "/articles/mind-nervous-system-body/",
-  "/presentations/mind-nervous-system-body/",
-];
-
-for (const route of detailRoutes) {
-  check(`${route} semantic breadcrumb and structured data`, () => {
-    const html = pages.get(route);
-    assert(html, "route was not built");
-    const breadcrumb = region(html, "nav", "breadcrumbs");
-    assert(breadcrumb.includes('aria-label="Breadcrumb"'), "breadcrumb has no accessible label");
-    assert(openings(breadcrumb, "li").length === 3, "breadcrumb must contain three levels");
-    assert(openings(breadcrumb, "a").length === 2, "only ancestors should be linked");
-    assert(breadcrumb.includes('aria-current="page"'), "current breadcrumb is not announced");
+for (const [route, html] of pages) {
+  check(`${route} defers breadcrumbs and local contents navigation`, () => {
+    assert(!html.includes('aria-label="Breadcrumb"'), "breadcrumb is still rendered");
+    assert(!html.includes('class="breadcrumbs"'), "breadcrumb markup is still rendered");
+    assert(!html.includes('aria-label="On this page"'), "local contents navigation is still rendered");
+    assert(!html.includes('class="section-nav"'), "local contents markup is still rendered");
 
     const structuredData = [...html.matchAll(
       /<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g,
     )]
-      .map((match) => JSON.parse(match[1]))
-      .find((item) => item["@type"] === "BreadcrumbList");
-    assert(structuredData, "BreadcrumbList structured data is missing");
-    assert(structuredData.itemListElement.length === 3, "structured breadcrumb must contain three levels");
+      .map((match) => JSON.parse(match[1]));
     assert(
-      structuredData.itemListElement.every((item, index) => item.position === index + 1),
-      "structured breadcrumb positions are invalid",
+      !structuredData.some((item) => item["@type"] === "BreadcrumbList"),
+      "BreadcrumbList structured data is still rendered",
     );
   });
 }
 
-for (const route of detailRoutes.slice(0, 5)) {
-  check(`${route} local section navigation resolves`, () => {
-    const html = pages.get(route);
-    const localNav = region(html, "nav", "section-nav");
-    assert(localNav.includes('aria-label="On this page"'), "On this page label is missing");
-    const targets = openings(localNav, "a").map(({ href }) => href?.slice(1));
-    assert(targets.length >= 4, "section navigation is unexpectedly short");
-    for (const id of targets) {
-      assert(html.includes(`id="${id}"`), `#${id} has no target`);
-    }
-  });
-}
-
-check("the deck retains its slide rail instead of duplicating On this page", () => {
+check("the deck retains its dedicated slide rail", () => {
   const html = pages.get("/presentations/mind-nervous-system-body/");
   assert(html.includes('class="deck-rail"'), "slide rail is missing");
-  assert(!html.includes('aria-label="On this page"'), "deck must not duplicate its slide rail");
 });
 
 check("the agents directory has stable groups, counts, and whole-card links", () => {
@@ -212,6 +311,6 @@ if (failures.length) {
   process.exitCode = 1;
 } else {
   console.log(
-    `Wayfinding contract passed: ${checksPassed} checks across ${pages.size} pages; ordered header CTA, descendant current states, grouped footer, 6 breadcrumb trails, 5 section navigations, and 6 stable agent groups.`,
+    `Wayfinding contract passed: ${checksPassed} checks across ${pages.size} pages; consolidated descriptive desktop/mobile navigation, complete owned-route coverage, grouped footer, deferred breadcrumbs/local contents navigation, the retained deck rail, and 6 stable agent groups.`,
   );
 }
