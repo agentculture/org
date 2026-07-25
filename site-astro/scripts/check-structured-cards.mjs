@@ -80,7 +80,10 @@ for (const route of routes) {
     `${route.source} has the wrong authored StructuredCard count`,
   );
   assert.equal(
-    count(source, /class="structured-card-grid"/g),
+    count(
+      source,
+      /<(?:ul|ol)\b[^>]*class="[^"]*\bstructured-card-grid\b[^"]*"/g,
+    ),
     route.grids,
     `${route.source} has the wrong structured-card grid count`,
   );
@@ -96,7 +99,10 @@ for (const route of routes) {
     `${route.built} has the wrong rendered StructuredCard count`,
   );
   assert.equal(
-    count(built, /<(?:ul|ol) class="structured-card-grid"/g),
+    count(
+      built,
+      /<(?:ul|ol)\b[^>]*class="[^"]*\bstructured-card-grid\b[^"]*"/g,
+    ),
     route.grids,
     `${route.built} has the wrong rendered grid count`,
   );
@@ -123,8 +129,19 @@ for (const route of routes) {
 }
 
 const devague = await readBuilt("agents/devague/index.html");
+const devagueSource = await readSource("pages/agents/devague.astro");
 const colleague = await readBuilt("agents/colleague/index.html");
 const lobes = await readBuilt("agents/lobes/index.html");
+assert.match(
+  devagueSource,
+  /<ol class="structured-card-grid method-moves">/,
+  "Devague's method grid must retain its review-mock layout hook",
+);
+assert.match(
+  devagueSource,
+  /\.structured-card-grid\.method-moves\s*\{[\s\S]*?repeat\(auto-fit,\s*minmax\(min\(100%,\s*18rem\),\s*1fr\)\)[\s\S]*?grid-auto-rows:\s*auto[\s\S]*?gap:\s*1\.1rem/,
+  "Devague's method grid must retain the mock's natural rows and responsive columns",
+);
 assert.equal(
   count(devague, /class="card structured-card is-featured"/g),
   1,

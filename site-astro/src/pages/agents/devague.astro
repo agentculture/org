@@ -118,7 +118,7 @@ import {
         titleId="method-title"
         intro={devague.method.intro}
       />
-      <ol class="structured-card-grid">
+      <ol class="structured-card-grid method-moves">
         {
           devague.method.moves.map((move, i) => (
             <StructuredCard
@@ -360,6 +360,37 @@ import {
     margin-block: 2.8rem 3rem;
     max-width: 56rem;
     margin-inline: auto;
+  }
+
+  /* the method — retain the review mock's compact, naturally sized
+     composition instead of inheriting the shared equal-height card grid */
+  .structured-card-grid.method-moves {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    grid-auto-rows: auto;
+    gap: 1.1rem;
+    margin-block: 2.2rem 0;
+  }
+
+  .structured-card-grid.method-moves :global(.structured-card) {
+    padding: 1.4rem 1.5rem;
+  }
+
+  .structured-card-grid.method-moves :global(.structured-card__meta) {
+    margin-bottom: 0;
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.7;
+  }
+
+  .structured-card-grid.method-moves :global(.structured-card__title) {
+    margin-block: 0.75rem;
+    font-size: 1.15rem;
+    line-height: 1.35;
+  }
+
+  .structured-card-grid.method-moves :global(.structured-card__body) {
+    font-size: 0.92rem;
+    line-height: 1.55;
   }
 
   /* the review loop */

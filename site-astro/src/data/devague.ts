@@ -168,40 +168,40 @@ const devague = {
     moves: [
       {
         verb: "scope",
-        ask: "what does this idea actually touch?",
+        ask: "What does this idea actually touch?",
         detail:
           "survey the surfaces before framing — findings land on the frame, each citing what was read",
       },
       {
         verb: "new",
-        ask: "what are we saying shipped?",
+        ask: "What are we saying shipped?",
         detail: "start a frame from the announcement",
       },
       {
         verb: "capture",
-        ask: "what does the announcement claim?",
+        ask: "What does the announcement claim?",
         detail:
           "record and classify a claim — audience, after-state, boundary, success signal",
       },
       {
         verb: "interrogate",
-        ask: "what must be true for this to be honest?",
+        ask: "What must be true for this to be honest?",
         detail: "attach honesty conditions and hard questions to a claim",
       },
       {
         verb: "park",
-        ask: "what do we honestly not know yet?",
+        ask: "What do we honestly not know yet?",
         detail:
           "record open vagueness as first-class state instead of forcing an answer",
       },
       {
         verb: "converge",
-        ask: "is this solid enough to build from?",
+        ask: "Is this solid enough to build from?",
         detail: "list every gap still standing between the frame and a spec",
       },
       {
         verb: "export",
-        ask: "then, and only then —",
+        ask: "Then, and only then —",
         detail: "write the buildable spec; refused until converge passes",
       },
     ] satisfies MethodMove[],
