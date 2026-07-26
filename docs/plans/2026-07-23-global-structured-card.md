@@ -1,64 +1,50 @@
 # Build Plan — global-structured-card
 
-slug: `global-structured-card` · status: `complete locally`
+slug: `global-structured-card` · status: `delivered in draft PR #30`
 
-> Extract the retained Devague information-card style and migrate every simple
-> agent-profile card family that matches its metadata/title/body/footer
-> contract.
+> Migrate metadata-led agent-profile information cards to one semantic
+> component while preserving different card families.
 
 ## Tasks
 
-### t1 — Build the shared card and grid
+### t1 — Add the shared card and grid
 
-- instruction: add `StructuredCard.astro` with optional metadata/footer,
-  command-title semantics, and namespaced shared grid styles
-- acceptance:
-  - metadata → title → body → footer order
-  - 16px body copy with approved card leading
-  - 3 → 2 → 1 responsive grid capped at 52rem
-  - no copy control or client-side card script
+- create `StructuredCard.astro` with optional metadata/footer, code-title
+  semantics, featured span, reveal timing, and namespaced grid styles
+- acceptance: metadata → title → body → footer order, 16px body copy, 52rem
+  three-to-two-to-one grid, and no client-side copy behavior
 
 ### t2 — Migrate Devague
 
-- instruction: migrate stages, method moves, and operator skills; preserve the
-  lead method card and command semantics
-- acceptance:
-  - 3 authored calls render 21 cards
-  - method questions become serif card titles
-  - skill titles remain semantic code without becoming controls
+- migrate method moves and operator skills
+- keep the lead method card featured and command titles semantic
+- acceptance: 2 authored calls render 14 cards; the pipeline remains a separate
+  ruled reference list
 
 ### t3 — Migrate Colleague
 
-- instruction: migrate paradigm, tiers, work loop, minds, and surfaces
-- acceptance:
-  - 5 authored calls render 25 cards
-  - tier/mind metadata moves above the title
-  - commands/verbs remain compact footers
+- migrate paradigm, tiers, work loop, minds, and surfaces
+- keep tier/mind context as metadata and command strings as compact footers
+- acceptance: 5 authored calls render 25 cards
 
-### t4 — Migrate Reachy and Lobes
+### t4 — Migrate Reachy Mini CLI and Lobes
 
-- instruction: migrate four Reachy families and the Lobes role family
-- acceptance:
-  - 5 authored calls render 31 cards
-  - source copy and repository/model strings remain intact
+- migrate four Reachy families and the Lobes role family
+- preserve source copy, repository/model strings, and page order
+- acceptance: 5 authored calls render 31 cards
 
-### t5 — Contract, documentation, and validation
+### t5 — Pin inclusion and exclusion
 
-- instruction: add a built/source contract, wire it into CI, update the global
-  design-system record, build all routes, run existing checks, and visually
-  review representative pages
-- acceptance:
-  - source/render count is 13 / 77
-  - excluded card families remain outside the component
-  - build and existing navigation/wayfinding/design/presentation contracts pass
-  - no commit, push, PR, deployment, or Learn change
+- add source/built checks for counts, semantic order, responsive grid rules,
+  command titles, footer chips, absent copy controls, and excluded routes
+- wire the check into the site-build workflow
+- acceptance: 12 authored calls render 70 cards and every excluded family stays
+  local
 
 ## Risks
 
-- long command titles must wrap without pushing the card grid beyond its rail
-- global component CSS can be silently absent from Astro output; pin the built
-  selector as well as the source
-- equal-height desktop rows can create dead space on mobile; disable equal-row
-  sizing in the one-column layout
-- moving metadata above titles changes reading order intentionally; verify
-  every mapped field still means “context for this title”
+- long command titles can overflow narrow columns; allow semantic code to wrap
+- equal-height desktop rows can create dead space on mobile; use natural rows at
+  the one-column layout
+- later pipeline changes can invalidate recorded counts; treat the executable
+  contract and delivery record as authoritative

@@ -17,7 +17,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Unified the site header, primary navigation, grouped footer, agent directory, and library destinations, including a sticky header and clearer internal and external link treatments.
 - Migrated the four agent profiles and current library, article, and presentation surfaces onto reusable patterns while preserving their bespoke compositions.
-- Retired superseded static UX prototypes after their decisions moved into Astro source or retained Markdown evidence; automatic future-page adoption remains deferred.
+- Consolidated the UX review into current spec, plan, and delivery records; removed generated review snapshots and superseded decision material; automatic future-page adoption remains deferred.
 
 ### Fixed
 

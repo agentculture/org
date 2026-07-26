@@ -51,7 +51,7 @@
   --font-body: "Albert Sans Variable", -apple-system, "Segoe UI", system-ui, sans-serif;
   --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
 
-  /* type roles — extracted from the retained Devague review mock */
+  /* shared type roles — enforced by the design-system contract */
   --ac-type-page-title: clamp(2.4rem, 6vw, 3.6rem);
   --ac-type-section-title: clamp(1.6rem, 3vw, 2.1rem);
   --ac-type-card-title: 1.25rem;

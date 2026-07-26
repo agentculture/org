@@ -135,12 +135,12 @@ const lobes = await readBuilt("agents/lobes/index.html");
 assert.match(
   devagueSource,
   /<ol class="structured-card-grid method-moves">/,
-  "Devague's method grid must retain its review-mock layout hook",
+  "Devague's method grid must retain its dedicated layout hook",
 );
 assert.match(
   devagueSource,
   /\.structured-card-grid\.method-moves\s*\{[\s\S]*?repeat\(auto-fit,\s*minmax\(min\(100%,\s*18rem\),\s*1fr\)\)[\s\S]*?grid-auto-rows:\s*auto[\s\S]*?gap:\s*1\.1rem/,
-  "Devague's method grid must retain the mock's natural rows and responsive columns",
+  "Devague's method grid must retain natural rows and responsive columns",
 );
 assert.match(
   devagueSource,

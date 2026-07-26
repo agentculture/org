@@ -1,71 +1,49 @@
 # Build Plan — global-section-opener
 
-slug: `global-section-opener` · status: `implemented locally; awaiting review`
+slug: `global-section-opener` · status: `delivered in draft PR #30`
 
-> Extract the retained Devague section-opener grammar into the global design
-> system, then migrate the four long agent profiles and the long-form article
-> without changing their page-owned compositions.
+> Extract the repeated long-form opening grammar without changing page-owned
+> content or composition.
 
 ## Tasks
 
-### t1 — Add the shared `SectionIntro` component
+### t1 — Add the shared component
 
-- instruction: create a semantic component for eyebrow, stable `h2`, optional
-  post-title content, and introductory paragraphs; use only existing global
-  type, colour, measure, and reveal roles
-- acceptance:
-  - heading measure is `--ac-measure-heading`
-  - introduction measure is `--ac-measure-prose`
-  - agent pages can reveal the introduction as a group
-  - the article can reveal its paragraphs individually and render definitions
-    between heading and prose
+- create `SectionIntro.astro` with eyebrow, stable `h2`, optional post-title
+  content, introduction paragraphs, title-spacing choice, and reveal choice
+- use the shared heading and prose measures
+- acceptance: source and built output contain the component's semantic markers,
+  measures, and reduced-motion-safe reveal behavior
 
-### t2 — Migrate agent-profile openers
+### t2 — Migrate the agent profiles
 
-- instruction: replace the repeated opener markup in Devague, Colleague,
-  Lobes, and Reachy Mini CLI; change each migrated parent section from an
-  ad-hoc label to `aria-labelledby`
-- acceptance:
-  - source counts are 6, 9, 5, and 7 respectively
-  - all existing copy, IDs, reveal timing, and downstream content remain
-  - fast-facts sections remain unchanged
+- replace repeated opening markup in Devague, Colleague, Lobes, and Reachy Mini
+  CLI
+- label each migrated parent section with its component heading
+- acceptance: authored calls are 6, 9, 5, and 7; existing copy, section IDs,
+  reveal timing, and downstream content remain
 
-### t3 — Migrate the article beat opener
+### t3 — Migrate the article beats
 
-- instruction: use one component call inside the existing eight-beat loop;
-  preserve optional definitions, first-paragraph lede styling, paragraph reveal
-  timing, evidence notes, and beat grid
-- acceptance:
-  - all eight rendered headings retain `${beat.id}-title`
-  - definitions still precede prose when present
-  - source notes and article-only layouts remain unchanged
+- use one component call inside the existing eight-beat loop
+- preserve optional definitions, the first-paragraph lede, paragraph-level
+  reveals, evidence notes, and beat layout
+- acceptance: all eight rendered headings keep their stable IDs and definitions
+  remain between title and prose
 
-### t4 — Pin the contract and document delivery
+### t4 — Pin the contract
 
-- instruction: extend the design-system check to verify component semantics,
-  token use, migration counts, absence of copied opener markup, and the
-  presentation exclusion; record actual delivery and evidence
-- acceptance:
-  - the check fails if a migrated page reintroduces a copied opener
-  - the check fails if the component stops using either measure token
-  - the presentation retains its six local slide eyebrows
-
-### t5 — Validate behavior and appearance
-
-- instruction: build the site, run all navigation/wayfinding/design-system/
-  presentation checks, and compare representative agent and article pages at
-  375, 768, 1024, and 1440 pixels
-- acceptance:
-  - build and all relevant checks pass
-  - no horizontal overflow, gutter widening, heading-order regression, or
-    hidden reduced-motion content
-  - no commit, push, pull request, or deployment is made
+- add a source/built check for semantics, measures, counts, copied markup,
+  article order, and the presentation exclusion
+- wire the check into the site-build workflow
+- acceptance: `npm run check:section-intros` reports 28 authored calls and 35
+  rendered openings
 
 ## Risks
 
-- scoped component styles could fail to reach the component's own dynamic
-  markup; verify the built CSS and computed measures
-- article definitions could move relative to prose during extraction; pin and
-  inspect their order
-- generic design-system recommendations could overwrite the retained
-  AgentCulture identity; existing tokens remain authoritative
+- boolean false attributes can render as literal HTML attributes; use explicit
+  template branches for optional reveal markers
+- Astro scoped styles can miss component-generated markup; inspect built CSS,
+  not source alone
+- article definitions can move during extraction; pin their position in built
+  output
