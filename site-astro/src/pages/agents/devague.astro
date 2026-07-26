@@ -263,7 +263,9 @@ import { sessions } from "../../data/devague-story";
                       rel="noopener noreferrer"
                     >
                       <span class="issue-num">#{issue.number}</span>{" "}
-                      <span data-inline-code-exempt>{issue.title}</span>
+                      <span data-inline-code-exempt>
+                        {issue.title.replaceAll("`", "")}
+                      </span>
                     </a>
                   </li>
                 ))}

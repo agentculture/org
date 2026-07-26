@@ -18,9 +18,28 @@ async function htmlFiles(directory) {
 }
 
 const failures = [];
+const linkedChipFailures = [];
 
 for (const file of await htmlFiles(distRoot)) {
   const html = await readFile(file, "utf8");
+  const page = file.pathname.slice(distRoot.pathname.length);
+
+  for (const link of html.match(/<a\b[^>]*>[\s\S]*?<\/a>/gi) ?? []) {
+    const text = link
+      .replace(/<[^>]+>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    const hasInlineCodeChip =
+      /\bclass=(?:"[^"]*\binline-code-chip\b[^"]*"|'[^']*\binline-code-chip\b[^']*')/i.test(link);
+
+    if (hasInlineCodeChip || text.includes("`")) {
+      linkedChipFailures.push({
+        page,
+        text,
+      });
+    }
+  }
+
   const visibleText = html
     .replace(/<(script|style|pre|code)\b[^>]*>[\s\S]*?<\/\1>/gi, " ")
     .replace(
@@ -34,11 +53,17 @@ for (const file of await htmlFiles(distRoot)) {
 
   if (tokens.length > 0) {
     failures.push({
-      page: file.pathname.slice(distRoot.pathname.length),
+      page,
       tokens,
     });
   }
 }
+
+assert.deepEqual(
+  linkedChipFailures,
+  [],
+  `Links must keep one continuous visual treatment rather than embedding inline code chips:\n${JSON.stringify(linkedChipFailures, null, 2)}`,
+);
 
 assert.deepEqual(
   failures,
@@ -47,5 +72,5 @@ assert.deepEqual(
 );
 
 console.log(
-  "Inline-code contract passed: no unapproved CLI flags, operator-skill commands, or branch templates remain as plain text.",
+  "Inline-code contract passed: links contain no inline code chips, and no unapproved CLI flags, operator-skill commands, or branch templates remain as plain text.",
 );

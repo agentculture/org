@@ -118,9 +118,11 @@ for (const path of [
   checks += 5;
 }
 
-const [colleaguePage, lobesTerminal] = await Promise.all([
+const [colleaguePage, lobesTerminal, reachyPage, reachyTerminal] = await Promise.all([
   readSource("pages/agents/colleague.astro"),
   readSource("components/LobesTerminal.astro"),
+  readSource("pages/agents/reachy-mini-cli.astro"),
+  readSource("components/ReachyTerminal.astro"),
 ]);
 assert.match(
   colleaguePage,
@@ -137,7 +139,37 @@ assert.match(
   /\.term\.wrap pre\s*\{[^}]*overflow-x:\s*hidden[^}]*white-space:\s*pre-wrap[^}]*overflow-wrap:\s*anywhere/s,
   "Wrapped Lobes terminals must not require horizontal scrolling",
 );
-checks += 3;
+assert.match(
+  reachyPage,
+  /The identity probe uses the same full-width terminal row[\s\S]*?<div class="term-grid">[\s\S]*?<ReachyTerminal pane=\{identityWhoami\}/,
+  "The Reachy identity terminal must use the shared full-width terminal row",
+);
+assert.doesNotMatch(
+  reachyPage,
+  /term-narrow/,
+  "The Reachy page must not reintroduce a bespoke narrow terminal wrapper",
+);
+assert.match(
+  reachyTerminal,
+  /\.rterm\s*\{[^}]*width:\s*100%[^}]*max-width:\s*none[^}]*background:\s*#10142b[^}]*border:\s*1px solid rgba\(233,\s*236,\s*248,\s*0\.12\)/s,
+  "Reachy terminals must fill their row and keep the shared fixed dark surface in both themes",
+);
+assert.match(
+  reachyTerminal,
+  /\.rterm-head\s*\{[^}]*color:\s*#a9b0cf/s,
+  "Reachy terminal chrome must use the shared fixed dark-surface palette",
+);
+assert.match(
+  reachyTerminal,
+  /pre\s*\{[^}]*color:\s*#c7cde8/s,
+  "Reachy transcripts must use the shared fixed dark-surface foreground",
+);
+assert.doesNotMatch(
+  reachyTerminal,
+  /background:\s*var\(--surface\)|color:\s*var\(--ink(?:-soft)?\)|color:\s*var\(--accent\)/,
+  "Reachy terminal colors must not switch with the surrounding page theme",
+);
+checks += 8;
 
 for (const [path, wrapper] of [
   ["pages/agents/devague.astro", "flow-wrap"],

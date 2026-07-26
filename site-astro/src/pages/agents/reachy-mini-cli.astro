@@ -134,11 +134,12 @@ const sdkOwnerCaption =
           ))
         }
       </ul>
-      <!-- the identity probe: one narrow, centered glance at the CLI's own
-           self-report, needing no robot — the same idiom as the diagram-wrap
-           below, sized for a short six-line pane -->
-      <div class="term-narrow" data-reveal>
-        <ReachyTerminal pane={identityWhoami} />
+      <!-- The identity probe uses the same full-width terminal row as every
+           other captured terminal on this page. -->
+      <div class="term-grid">
+        <div data-reveal>
+          <ReachyTerminal pane={identityWhoami} />
+        </div>
       </div>
       <!-- The short doctor report and long real-mode quickstart stack on the
            same reading rail, preserving their sequence and legibility. -->
@@ -366,9 +367,10 @@ const sdkOwnerCaption =
                       href={issue.url}
                       target="_blank"
                       rel="noopener noreferrer"
+                      data-inline-code-exempt
                     >
                       <span class="issue-num">#{issue.number}</span>{" "}
-                      <InlineCodeText text={issue.title} />
+                      {issue.title.replaceAll("`", "")}
                     </a>
                   </li>
                 ))}
@@ -446,14 +448,6 @@ const sdkOwnerCaption =
       white-space: normal;
       overflow-wrap: anywhere;
     }
-  }
-
-  /* a single narrow terminal, centered — the same idiom as .diagram-wrap,
-     sized for a short pane rather than a full term-grid column */
-  .term-narrow {
-    margin-top: 2.2rem;
-    max-width: 28rem;
-    margin-inline: auto;
   }
 
   /* the single-SDK-owner diagram */
