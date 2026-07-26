@@ -92,6 +92,7 @@
   --section-pad: clamp(4.5rem, 10vh, 8rem);
   --ac-space-diagram-before: clamp(4.5rem, 6vw, 5.5rem);
   --ac-space-diagram-after: clamp(5.5rem, 7vw, 6.5rem);
+  --ac-sticky-header-offset: 7.5rem;
   --radius: 1.25rem;
 }
 
@@ -423,7 +424,7 @@ a.card:hover {
 }
 
 :target {
-  scroll-margin-block-start: 2rem;
+  scroll-margin-block-start: var(--ac-sticky-header-offset);
 }
 
 /* ---------- reveal system ----------

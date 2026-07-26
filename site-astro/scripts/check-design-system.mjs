@@ -48,6 +48,7 @@ const expectedTokens = new Map([
   ["--ac-measure-prose", "42rem"],
   ["--ac-space-diagram-before", "clamp(4.5rem, 6vw, 5.5rem)"],
   ["--ac-space-diagram-after", "clamp(5.5rem, 7vw, 6.5rem)"],
+  ["--ac-sticky-header-offset", "7.5rem"],
 ]);
 
 let checks = 0;
@@ -98,10 +99,25 @@ const [header, footer, pageHero, deck] = await Promise.all([
 
 assert.match(header, /container shell-rail bar/);
 assert.match(header, /max-width:\s*51\.99rem/);
+assert.match(
+  header,
+  /\.site-header\s*\{[^}]*position:\s*sticky[^}]*top:\s*0[^}]*z-index:\s*20[^}]*background:\s*var\(--bg\)/s,
+  "The shared site header must remain sticky with an opaque fallback surface",
+);
+assert.match(
+  header,
+  /backdrop-filter:\s*blur\(16px\) saturate\(1\.08\)/,
+  "The sticky header must retain legible separation from scrolling content",
+);
+assert.match(
+  globalCss,
+  /:target\s*\{[^}]*scroll-margin-block-start:\s*var\(--ac-sticky-header-offset\)/s,
+  "In-page destinations must clear the sticky site header",
+);
 assert.match(footer, /container wide-rail/);
 assert.match(pageHero, /container page-rail/);
 assert.equal((deck.match(/container deck-content-rail/g) ?? []).length, 7);
-checks += 5;
+checks += 8;
 
 for (const path of [
   "components/ColleagueTerminal.astro",

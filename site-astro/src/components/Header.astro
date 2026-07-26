@@ -376,9 +376,24 @@ import PrimaryNavigation from "./PrimaryNavigation.astro";
 
 <style>
   .site-header {
-    position: relative;
+    position: sticky;
+    top: 0;
     z-index: 20;
     padding-block: 1.4rem;
+    border-bottom: 1px solid var(--line-soft);
+    background: var(--bg);
+    isolation: isolate;
+  }
+
+  @supports (
+    (backdrop-filter: blur(1px)) or
+      (-webkit-backdrop-filter: blur(1px))
+  ) {
+    .site-header {
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      -webkit-backdrop-filter: blur(16px) saturate(1.08);
+      backdrop-filter: blur(16px) saturate(1.08);
+    }
   }
 
   .bar {
