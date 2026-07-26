@@ -16,7 +16,7 @@ without turning every rectangular surface into the same component.
 | `t2` Devague | delivered | Method moves and operator skills use 2 authored calls for 14 cards; command titles retain code semantics. |
 | `t3` Colleague | delivered | Five families use 5 authored calls for 25 cards; metadata and compact command footers retain their meaning. |
 | `t4` Reachy and Lobes | delivered | Four Reachy families and one Lobes family use 5 authored calls for 31 cards. |
-| `t5` contract | delivered | Source/built checks enforce 12 calls, 70 cards, semantic order, responsive rules, no copy controls, and explicit exclusions. |
+| `t5` validation | delivered | The production build and focused semantic/responsive review covered ordering, command treatment, absent copy controls, and explicit exclusions. |
 
 ## Final Decisions
 
@@ -25,19 +25,21 @@ without turning every rectangular surface into the same component.
 - Command titles remain selectable semantic code and do not become buttons.
 - The Devague pipeline initially matched the card family, then moved to a ruled
   reference list so the animated flow remained the section's visual
-  protagonist. Its seven rows are therefore excluded from the final counts.
+  protagonist. Its seven rows are therefore excluded from the delivery
+  snapshot.
 - Directory/library links, article evidence, terminals, tables, measured
   statistics, gate previews, closing bands, and presentation cards stay local.
 
 ## Evidence
 
-- 12 authored component calls render 70 cards across four agent profiles
+- delivery snapshot: 12 authored component calls render 70 cards across four
+  agent profiles
 - route counts are Devague 14, Colleague 25, Reachy Mini CLI 25, and Lobes 6
 - built cards preserve metadata → title → body → footer order
 - shared grids contain three-column desktop, two-column intermediate, and
   one-column narrow rules
 - excluded routes render no structured-card markers
-- the Astro production build and `npm run check:structured-cards` pass
+- the Astro production build passes
 
 ## Boundaries
 

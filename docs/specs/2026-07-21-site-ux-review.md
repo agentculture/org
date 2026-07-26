@@ -1,6 +1,6 @@
 # site-ux-review
 
-> Turn the measured July 2026 UX review into shared, tested site contracts
+> Turn the measured July 2026 UX review into shared site patterns
 > without flattening the page-specific compositions that give AgentCulture its
 > character.
 
@@ -27,7 +27,7 @@ branch:
 | 4 | Six agent groups had no stable wayfinding. | Give every group a stable fragment and expose grouped navigation. |
 | 5 | Learn looked internal even though this repository did not build `/learn/`. | Model Learn as an external product destination. |
 | 6 | Four agent pages repeated shared presentation decisions independently. | Extract semantic patterns where the pages genuinely agree; keep bespoke compositions local. |
-| 7 | External destinations had no consistent visual or assistive cue. | Apply one safe external-link contract. |
+| 7 | External destinations had no consistent visual or assistive cue. | Apply one safe external-link behavior. |
 
 ## Requirements
 
@@ -58,7 +58,7 @@ branch:
   information cards, closing bands, inline code, and external-link cues.
 - Agent-specific diagrams, page order, terminal content, article beats, and
   presentation slide layouts remain page-owned.
-- Terminal components retain their different content contracts while sharing
+- Terminal components retain their different content shapes while sharing
   legible type, spacing, overflow, and fixed dark-surface rules.
 
 ### Devague experience
@@ -81,7 +81,7 @@ branch:
 - complete no-JavaScript and reduced-motion renderings
 - no page-level horizontal overflow at narrow widths
 - static output with no client-side network dependency
-- verbatim transcript and provenance contracts
+- verbatim transcript and provenance requirements
 - bespoke diagrams and presentation compositions
 
 ## Boundaries
@@ -98,11 +98,11 @@ branch:
 
 ## Success signals
 
-- All twelve built routes use the typed navigation and explicit rail contracts.
-- The shared component checks fail when a migrated route copies a component's
-  contract or violates an intentional exclusion.
-- Devague story anchors resolve from the capture source, and all full
-  transcripts remain reachable.
-- The implementation, tests, and
+- All twelve routes build with the typed navigation and explicit rail roles.
+- Shared components own repeated markup while intentional exclusions remain
+  page-local and reviewable.
+- Devague story anchors resolve from the capture source during the build, and
+  all full transcripts remain reachable.
+- The implementation, focused tests, and
   [delivery record](../deliveries/2026-07-21-site-ux-review.md) agree about
-  counts, exclusions, and deferred work.
+  semantics, exclusions, and deferred work.

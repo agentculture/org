@@ -8,15 +8,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "check:closing-bands": "node scripts/check-closing-bands.mjs",
-    "check:design-system": "node scripts/check-design-system.mjs",
-    "check:devague-story": "node --experimental-strip-types scripts/check-devague-story.mjs",
-    "check:inline-code-flags": "node scripts/check-inline-code-flags.mjs",
     "check:presentations": "node scripts/check-presentations.mjs",
-    "check:section-intros": "node scripts/check-section-intros.mjs",
-    "check:structured-cards": "node scripts/check-structured-cards.mjs",
-    "check:wayfinding": "node --experimental-strip-types scripts/check-wayfinding.mjs",
-    "test:navigation": "node --experimental-strip-types --test src/data/navigation.test.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },

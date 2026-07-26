@@ -11,7 +11,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Reusable Astro design-system foundations: named layout and typography roles plus shared section-intro, destination-card, structured-card, closing-band, and terminal patterns.
 - A guided three-session Devague capture story with accessible transcript evidence, human-gate previews, and a reshaped pipeline reference.
-- CI contracts for navigation, wayfinding, closing bands, design-system rules, inline code, section intros, structured cards, presentations, and Devague story data.
+- Focused regression coverage for navigation and presentations, with Devague story anchors validated when the site builds.
 
 ### Changed
 

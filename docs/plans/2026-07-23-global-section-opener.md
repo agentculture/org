@@ -20,8 +20,8 @@ slug: `global-section-opener` · status: `delivered in draft PR #30`
 - replace repeated opening markup in Devague, Colleague, Lobes, and Reachy Mini
   CLI
 - label each migrated parent section with its component heading
-- acceptance: authored calls are 6, 9, 5, and 7; existing copy, section IDs,
-  reveal timing, and downstream content remain
+- acceptance: existing copy, section IDs, reveal timing, accessible labels, and
+  downstream content remain
 
 ### t3 — Migrate the article beats
 
@@ -31,19 +31,18 @@ slug: `global-section-opener` · status: `delivered in draft PR #30`
 - acceptance: all eight rendered headings keep their stable IDs and definitions
   remain between title and prose
 
-### t4 — Pin the contract
+### t4 — Document and validate the migration
 
-- add a source/built check for semantics, measures, counts, copied markup,
-  article order, and the presentation exclusion
-- wire the check into the site-build workflow
-- acceptance: `npm run check:section-intros` reports 28 authored calls and 35
-  rendered openings
+- record the adopted surfaces, semantic requirements, article ordering, and
+  presentation exclusion
+- build the site and review representative agent and article output
+- acceptance: the production build passes; semantic order, readable measures,
+  reduced-motion behavior, and the presentation exclusion survive review
 
 ## Risks
 
 - boolean false attributes can render as literal HTML attributes; use explicit
   template branches for optional reveal markers
-- Astro scoped styles can miss component-generated markup; inspect built CSS,
+- Astro scoped styles can miss component-generated markup; inspect built output,
   not source alone
-- article definitions can move during extraction; pin their position in built
-  output
+- article definitions can move during extraction; verify their rendered order

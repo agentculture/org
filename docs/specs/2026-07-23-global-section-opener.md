@@ -32,7 +32,7 @@
 - seven Reachy Mini CLI sections
 - one article loop rendering eight beat openings
 
-This is 28 authored component calls and 35 rendered openings.
+At delivery, this was 28 authored component calls and 35 rendered openings.
 
 ## Boundaries
 
@@ -49,5 +49,5 @@ This is 28 authored component calls and 35 rendered openings.
 - all parent regions and component headings retain matching accessible IDs
 - article definitions remain between the heading and prose
 - no `data-reveal="false"` attributes appear in built output
-- `npm run check:section-intros` reports 28 authored calls and 35 rendered
-  openings
+- the Astro build succeeds and representative agent/article pages pass semantic,
+  visual, keyboard, and reduced-motion review

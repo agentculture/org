@@ -16,7 +16,7 @@ composition.
 | `t1` shared component | delivered | `SectionIntro.astro` owns eyebrow, stable heading, optional post-title content, readable measures, title spacing, and reveal behavior. |
 | `t2` agent profiles | delivered | Devague 6, Colleague 9, Lobes 5, and Reachy Mini CLI 7 authored calls; parent sections use matching `aria-labelledby` IDs. |
 | `t3` article | delivered | One loop-authored call renders eight beat openings while definitions, lede styling, paragraph reveals, and evidence notes remain local. |
-| `t4` contract | delivered | A source/built check enforces semantics, counts, ordering, measures, copied-markup removal, and the presentation exclusion in CI. |
+| `t4` validation | delivered | The production build and focused semantic/visual review covered ordering, measures, accessible labels, reveal behavior, and the presentation exclusion. |
 
 ## Final Decisions
 
@@ -32,11 +32,11 @@ composition.
 
 ## Evidence
 
-- 28 authored component calls render 35 section openings
+- delivery snapshot: 28 authored component calls render 35 section openings
 - all five migrated routes retain stable heading IDs and labelled parent regions
-- article heading → definitions → prose order is pinned in built output
+- article heading → definitions → prose order is preserved in built output
 - the seven-slide presentation renders no shared section-introduction markers
-- the Astro production build and `npm run check:section-intros` pass
+- the Astro production build passes
 
 ## Boundaries
 

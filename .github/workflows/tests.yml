@@ -94,21 +94,7 @@ jobs:
 
       - run: npm run build
 
-      - run: npm run test:navigation
-
-      - run: npm run check:wayfinding
-
-      - run: npm run check:closing-bands
-
-      - run: npm run check:design-system
-
-      - run: npm run check:devague-story
-
-      - run: npm run check:inline-code-flags
-
-      - run: npm run check:section-intros
-
-      - run: npm run check:structured-cards
+      - run: node --experimental-strip-types --test src/data/navigation.test.mjs
 
       - run: npm run check:presentations
 

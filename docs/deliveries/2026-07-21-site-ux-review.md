@@ -5,7 +5,7 @@ plan: `site-ux-review` · run: `complete` · date: `2026-07-26` · draft PR:
 
 ## Intent
 
-Turn a measured review of the original site into reusable, enforced foundations
+Turn a measured review of the original site into reusable foundations
 for the current twelve-route Astro build. Preserve the site's visual identity
 and bespoke page compositions while making navigation, wayfinding, destination
 cues, long-form openings, information cards, terminal treatments, and Devague
@@ -15,11 +15,11 @@ evidence easier to understand and maintain.
 
 | Plan task | Status | What landed |
 |---|---|---|
-| `t1` shared system | delivered | Named type, leading, tracking, rail, measure, diagram-spacing, and sticky-header roles; explicit container ownership; built/source design-system contract. |
+| `t1` shared system | delivered | Named type, leading, tracking, rail, measure, diagram-spacing, and sticky-header roles with explicit container ownership. |
 | `t2` navigation and destinations | delivered | Typed grouped header, grouped sitemap footer, stable agent groups, capped Library features, external Learn product, whole-card destinations, and safe external cues. |
 | `t3` agent-page patterns | delivered | Shared `SectionIntro`, `StructuredCard`, `DestinationCard`, `ClosingBand`, and inline-code treatments; aligned terminal and diagram rules; bespoke compositions retained. |
 | `t4` Devague | delivered | Three guided sessions, fourteen source-anchored excerpts, accessible full transcripts, read-only gate previews, repaired flow sequence, and a ruled seven-stage pipeline reference. |
-| `t5` reconciliation | delivered | Breadcrumbs/local navigation experiments removed, formal contracts wired into CI, version advanced to `0.19.0`, and review artifacts consolidated into this record set. |
+| `t5` reconciliation | delivered | Breadcrumbs/local navigation experiments removed, focused navigation and presentation coverage retained, version advanced to `0.19.0`, and review artifacts consolidated into this record set. |
 
 ## Final Decisions
 
@@ -34,33 +34,31 @@ evidence easier to understand and maintain.
 | Generic `AgentPage` and `Terminal` components | deferred | The four pages share design rules but still have meaningfully different structures and terminal contracts. |
 | Breadcrumbs and local contents navigation | deferred | They were removed from this PR pending a separate information-architecture decision. |
 | Automatic adoption by future pages | deferred | New pages must choose semantic components deliberately. |
-| Generated review pages and static snapshots | retired | Source, contracts, and these records now contain the accepted decisions. |
+| Generated review pages and static snapshots | retired | Source and these records now contain the accepted decisions. |
 
 ## Evidence
 
 - Astro production build: twelve static routes
-- navigation: 15 tests
-- wayfinding: 52 checks across twelve pages
-- closing bands: four adopted routes, eight unchanged routes, seven actions
-- design system: 182 source and built-output checks
-- section introductions: 28 authored calls, 35 rendered openers
-- structured cards: 12 authored calls, 70 rendered cards
-- Devague story: three sessions, fourteen anchored excerpts
+- navigation: six focused behavior tests
+- delivered inventory: 28 authored section-introduction calls render 35
+  openings; 12 structured-card calls render 70 cards
+- Devague build input: three sessions and fourteen source-anchored excerpts
 - presentations: 23 built-page checks and 20 slide-data tests
 - Python test, coverage, formatting, lint, security, Markdown, local-link, and
   strict repository-doctor lanes pass on the final branch
 
 ## Source of Truth
 
-The implementation and its executable contracts are authoritative for current
-behavior. This delivery records the final PR state. The matching
+The implementation is authoritative for current behavior. The Astro build,
+focused navigation tests, and retained presentation tests cover durable
+regressions; this delivery records the final PR state. The matching
 [spec](../specs/2026-07-21-site-ux-review.md) preserves accepted requirements,
 and the [plan](../plans/2026-07-21-site-ux-review.md) preserves the delivery
 sequence.
 
 Focused records cover the shared
 [section introduction](2026-07-23-global-section-opener.md) and
-[structured card](2026-07-23-global-structured-card.md) contracts.
+[structured card](2026-07-23-global-structured-card.md) patterns.
 
 ## Remaining Work
 

@@ -29,7 +29,7 @@
   4 calls, 25 cards
 - Lobes roles: 1 call, 6 cards
 
-This is 12 authored calls and 70 rendered cards.
+At delivery, this was 12 authored calls and 70 rendered cards.
 
 ## Boundaries
 
@@ -46,5 +46,5 @@ This is 12 authored calls and 70 rendered cards.
 - all card grids reflow without page overflow
 - only Devague's command titles use code semantics
 - excluded routes render no structured-card markers
-- `npm run check:structured-cards` reports 12 authored calls and 70 rendered
-  cards
+- the Astro build succeeds and representative card families pass semantic,
+  visual, keyboard, and responsive review

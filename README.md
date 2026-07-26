@@ -59,7 +59,9 @@ is operator-owned, so cutover is coordinated, not self-serve.
 The adopted navigation, design-system, agent-page, and Devague decisions are
 summarized in the
 [`site-ux-review` delivery record](docs/deliveries/2026-07-21-site-ux-review.md).
-Use that record and the executable site checks as the current source of truth.
+Use that record and the implementation as the current source of truth; the
+Astro build plus focused navigation and presentation tests provide regression
+coverage.
 
 Two things worth knowing if you're extending it: the sibling repos'
 `publish.yml` are all **PyPI** workflows, not deploy templates — this repo's

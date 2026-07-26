@@ -18,33 +18,33 @@ slug: `global-structured-card` · status: `delivered in draft PR #30`
 
 - migrate method moves and operator skills
 - keep the lead method card featured and command titles semantic
-- acceptance: 2 authored calls render 14 cards; the pipeline remains a separate
-  ruled reference list
+- acceptance: method and operator-skill cards preserve their content and
+  semantics; the pipeline remains a separate ruled reference list
 
 ### t3 — Migrate Colleague
 
 - migrate paradigm, tiers, work loop, minds, and surfaces
 - keep tier/mind context as metadata and command strings as compact footers
-- acceptance: 5 authored calls render 25 cards
+- acceptance: every migrated field retains its meaning and reading order
 
 ### t4 — Migrate Reachy Mini CLI and Lobes
 
 - migrate four Reachy families and the Lobes role family
 - preserve source copy, repository/model strings, and page order
-- acceptance: 5 authored calls render 31 cards
+- acceptance: source copy, repository/model strings, and page order remain
 
-### t5 — Pin inclusion and exclusion
+### t5 — Document and validate inclusion and exclusion
 
-- add source/built checks for counts, semantic order, responsive grid rules,
-  command titles, footer chips, absent copy controls, and excluded routes
-- wire the check into the site-build workflow
-- acceptance: 12 authored calls render 70 cards and every excluded family stays
-  local
+- record the adopted families, semantic order, responsive behavior, command
+  treatment, absent copy controls, and intentional exclusions
+- build the site and review representative card families at narrow and wide
+  viewports
+- acceptance: the production build passes and excluded families remain local
 
 ## Risks
 
 - long command titles can overflow narrow columns; allow semantic code to wrap
 - equal-height desktop rows can create dead space on mobile; use natural rows at
   the one-column layout
-- later pipeline changes can invalidate recorded counts; treat the executable
-  contract and delivery record as authoritative
+- later pipeline changes can invalidate recorded counts; treat counts as a
+  delivery snapshot and review current source for present inventory
