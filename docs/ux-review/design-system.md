@@ -1,9 +1,11 @@
 # Design-system adoption plan
 
-> **Status:** Current working agreement, 22 July 2026. Audited on branch
-> `ux-review` at `ef392d9`, after merging `origin/main` at `aea608b`. This is a
-> documentation-only plan: no file under `site-astro/` has been changed.
-
+> **Status:** Historical pre-implementation plan, 22 July 2026. The plan was
+> audited on branch `ux-review` at `ef392d9`, after merging `origin/main` at
+> `aea608b`. The implementation and current verification record now live in
+> [`global-type-and-section-width-system.md`](global-type-and-section-width-system.md).
+> Future-page scaffolding and automatic adoption are outside the current PR.
+>
 > **Visual review companion:** open [`design-system.html`](design-system.html)
 > to inspect the token roles, layout rails, responsive pipeline, candidate
 > components, interaction contracts, and adoption boundary described here. It
@@ -510,7 +512,7 @@ Every design-system PR should answer these questions in its description:
   regression proof.
 - Dormant comparison variants do not enter the production system.
 
-### Human decisions still required before their phase
+### Deferred follow-up questions
 
 1. Whether the pipeline copy reductions listed in
    [`current-direction.md`](current-direction.md) are accepted.
@@ -519,6 +521,6 @@ Every design-system PR should answer these questions in its description:
 3. Whether the raw spacing scale eventually becomes global or remains expressed
    through component-owned semantic tokens.
 
-Those choices do not block establishing the opt-in system or migrating Devague
-as its first consumer. They do block later global promotion and the migration of
-other routes.
+Those choices do not block the current branch. They belong to later global
+promotion or migration work; future-page scaffolding and automatic adoption are
+explicitly not goals of this PR.

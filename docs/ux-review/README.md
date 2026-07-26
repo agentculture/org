@@ -2,13 +2,13 @@
 
 This folder began as an outside UX review of the built site. It now contains a
 mixture of historical proposals, retained visual evidence, and the current
-review record for work implemented on the local `ux-review` branch.
+review record for work implemented on `feat/ux-review-consolidated`.
 Each artefact states its date and method so it can be checked rather than taken
 on trust.
 
-> **Current working-tree implementation record:**
+> **Current branch implementation record:**
 > [`global-type-and-section-width-system.md`](global-type-and-section-width-system.md)
-> audits the present 12-route `ux-review` worktree and the retained Devague
+> audits the present 12-route feature branch and the retained Devague
 > mock, records the adopted global typography and rail decisions, and reports
 > their current verification status, including the shared section-opener and
 > structured-card migrations. The eight-route baseline and earlier
@@ -66,7 +66,6 @@ across all 8 routes:
 | File | Kind | Covers |
 |------|------|--------|
 | [`findings.md`](findings.md) | Markdown | The full audit — findings 1–7, method, and what is already right |
-| [`agents-directory.html`](agents-directory.html) | Interactive | Findings 1–4. Live before/after on real data, three options measured |
 | [`agent-page-scaling.md`](agent-page-scaling.md) | Markdown | Finding 6 in full, with a proposed component API and sequencing |
 
 **Section-level** — spacing, type rhythm and layout, measured against
@@ -75,10 +74,14 @@ across all 8 routes:
 | File | Kind | Covers |
 |------|------|--------|
 | [`spacing-type-and-captures.md`](spacing-type-and-captures.md) | Markdown | Supporting spacing, leading, tracking, and legibility evidence; its captures recommendation is superseded |
-| [`spacing-type-system.html`](spacing-type-system.html) | Interactive | Spacing and type tokens, with the operator-skills section rendered live from them |
-| [`captures-layout.html`](captures-layout.html) | Historical interactive exploration | Four measured gallery layouts; option D was later superseded by the guided-session direction |
 
-The HTML review artefacts are self-contained. To review the visual system with
+Three standalone prototypes—`agents-directory.html`,
+`spacing-type-system.html`, and `captures-layout.html`—were retired from the
+working tree after their useful decisions moved into the Astro implementation
+or the surviving Markdown evidence. Their original bytes remain recoverable
+from Git history.
+
+The remaining HTML review artefact is self-contained. To review the visual system with
 its local fonts and links intact, serve this folder as the HTTP root:
 
 ```bash
@@ -116,9 +119,9 @@ For a maintainer or an agent picking this up cold:
 6. `captures-story-plan.md` and `pipeline-layout-plan.md` — the implementation
    handoffs, including the pipeline work requested after the final mock render.
 7. `findings.md` — the measured baseline and verified strengths.
-8. `agents-directory.html` and `agent-page-scaling.md` — independent site-wide
-   proposals not superseded by the Devague work.
-9. The spacing/type and captures explorations when their rationale is needed.
+8. `agent-page-scaling.md` — the remaining longer-term site-wide proposal.
+9. `spacing-type-and-captures.md` — the retained rationale from the retired
+   spacing/type and captures explorations.
 
 The site-wide audit finds the pattern library drifting because it is copied per
 page (`agent-page-scaling.md`); the section-level work finds spacing drifting
@@ -130,23 +133,22 @@ into a concrete page direction without making either diagnosis obsolete.
 
 **Verified by measurement** — every number in `findings.md` was taken from the
 built site or the source, and the command that produced it is quoted alongside.
-The `agents-directory.html` demo re-derives its central measurement live in the
-browser from the rendered DOM rather than asserting it, and independently arrives
-at the same 4% figure quoted in the audit.
+The 4% directory-card measurement and its re-run method remain in that audit;
+the retired interactive prototype is recoverable from Git history if its
+original comparison surface is ever needed.
 
 **Current Astro status** — the global typography/rail system and related IA
-work are implemented on the local `ux-review` branch. The main implementation
-is committed locally at `b12762e`; the removal of breadcrumbs and local
-contents navigation remains an uncommitted review change. The
-standalone HTML artefacts remain historical review surfaces rather than source
-components. Older statements that no proposal has touched Astro describe their
-own earlier baselines, not the current working tree.
+work are implemented on `feat/ux-review-consolidated`, including the removal of
+breadcrumbs and local contents navigation. The remaining HTML artefacts are
+historical review surfaces rather than source components. Older statements
+that no proposal has touched Astro describe their own earlier baselines, not
+the current branch.
 
-The review documents pass Markdown lint and local-link checks. A future Astro
-implementation must still pass `npm run build`, `org site link-check`, the
-responsive and accessibility suites, and the SonarCloud quality gate. The
-component API sketched in `agent-page-scaling.md` remains a proposal rather than
-tested source; treat it as a starting shape to argue with, not a specification.
+The review documents pass Markdown lint and local-link checks. The Astro
+implementation has build and source-contract coverage; the draft PR must still
+clear its hosted CI, deploy-preview, and SonarCloud gates. The component API
+sketched in `agent-page-scaling.md` remains a proposal rather than tested
+source; treat it as a starting shape to argue with, not a specification.
 
 **One correction worth surfacing** — an earlier pass of this review recorded a
 scroll-reveal bug on `/agents/`, where elements sat at `opacity: 0` inside the
@@ -158,15 +160,18 @@ problems should not carry away a defect that does not exist.
 
 ## Current constraints
 
-- **Site files are changed locally for review.** The main implementation is
-  committed locally. Nothing has been pushed, deployed, or submitted as a PR.
+- **The draft-PR candidate is local.** Nothing has been pushed, deployed, or
+  submitted as a PR yet.
 - **Learn is untouched.** The separate Learn source and deployment are outside
   this migration.
 - **Version bump.** The repo's `version-check` CI job fails any PR whose
-  `pyproject.toml` version matches `main`'s, including docs-only changes. That
-  bump has not been made because no PR is being prepared yet.
-- **`main` is protected.** The current work remains on `ux-review` for local
-  review.
+  `pyproject.toml` version matches `main`'s, including docs-only changes. Draft
+  PR preparation therefore includes a minor bump from `0.18.2` to `0.19.0`.
+- **`main` is protected.** The current work remains on
+  `feat/ux-review-consolidated` for review.
+- **Future-page automation is deferred.** This branch establishes reusable
+  foundations and migrates the current site; it does not add scaffolding or
+  automatic design-system adoption for future pages.
 
 ## Scope
 

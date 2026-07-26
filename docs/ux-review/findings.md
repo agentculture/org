@@ -31,8 +31,11 @@ Then evaluate the snippets quoted in each finding against the served page.
 | 6 | Agent pages are structural clones — the pattern does not scale | `/agents/*` | Structural |
 | 7 | 92 outbound links, no "leaves the site" affordance | all pages | Low |
 
-Findings 1–4 are one page and are worth fixing together; a worked, interactive
-proposal for all four is in [`agents-directory.html`](agents-directory.html).
+Findings 1–4 are one page and were worth fixing together. Their shared-card and
+stable-group-anchor direction now lives in the implemented
+[`agents.astro`](../../site-astro/src/pages/agents.astro) page and
+[`AgentDirectoryCard.astro`](../../site-astro/src/components/AgentDirectoryCard.astro)
+component; the retired interactive comparison remains available in Git history.
 Finding 6 is the one that compounds — see
 [`agent-page-scaling.md`](agent-page-scaling.md).
 
@@ -70,8 +73,10 @@ console.log(urls.length, urls.filter(u=>u.startsWith("/")).length,
 **Suggested direction.** The data layer already knows which is which — `url`
 starting with `/` is in-site. The distinction can be derived, with no new field
 and no content edit. Rendering it is the whole fix: a "Read the page →" action on
-the four, a repo glyph on the rest. Worked in
-[`agents-directory.html`](agents-directory.html), option A.
+the four, a repo glyph on the rest. The current implementation expresses this
+through the shared
+[`DestinationCard.astro`](../../site-astro/src/components/DestinationCard.astro)
+contract.
 
 ## 2 — The clickable region is 4% of the card
 
@@ -139,7 +144,9 @@ At 30 entries this is friction. The org is visibly still growing.
 **Suggested direction.** A sticky group jump-list, and `id` anchors on group
 headings so `/agents/#edge-robotics` is linkable. A text filter is proposed as a
 progressive enhancement only — it must not become the only way to find something.
-Worked in [`agents-directory.html`](agents-directory.html), option B.
+Stable group anchors are implemented in
+[`agents.astro`](../../site-astro/src/pages/agents.astro); the richer jump-list
+and filter exploration was retired with the standalone prototype.
 
 ## 5 — `Learn` is in the primary nav and 404s in this build
 
@@ -289,11 +296,14 @@ reveal system degrades to nothing rather than to blank content.
 > confirmed the content painted at `opacity: 1` throughout. The reveal system is
 > sound.
 
-## Artefacts in this folder
+## Related evidence
 
 | File | What it is |
 |------|------------|
-| [`agents-directory.html`](agents-directory.html) | Interactive. Findings 1–4, live before/after, three options measured |
 | [`agent-page-scaling.md`](agent-page-scaling.md) | Finding 6 in full, with a proposed component API |
-| [`spacing-type-system.html`](spacing-type-system.html) | Interactive. Spacing and type tokens for the operator-skills section |
-| [`captures-layout.html`](captures-layout.html) | Interactive. Four layouts for the captures section, measured — expand-in-place recommended |
+| [`spacing-type-and-captures.md`](spacing-type-and-captures.md) | Supporting spacing, type, transcript-legibility, and captures-layout measurements |
+
+The standalone directory, spacing/type, and captures-layout prototypes were
+retired after implementation. Their original files remain recoverable from Git
+history; the measurements and conclusions needed for maintenance remain in the
+documents above.

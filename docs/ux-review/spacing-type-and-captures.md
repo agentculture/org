@@ -8,16 +8,12 @@
 A UX/UI contribution for `/agents/devague/`. Two areas: a **spacing and type token
 system**, and the **captures section layout**.
 
-Everything here is additive. No existing file in this repo has been modified — this
-folder contains only new documents. Colour, copy and content are unchanged throughout;
-the proposals touch spacing, line-height, letter-spacing and layout only.
-
-| File | What it is |
-| --- | --- |
-| [`spacing-type-system.html`](./spacing-type-system.html) | The token proposal, with the operator-skills section rendered live from those tokens |
-| [`captures-layout.html`](./captures-layout.html) | Four layout options for the captures section, each built with the real transcripts |
-
-Both are self-contained — open them in a browser, no build step, no network.
+This document began as the rationale for two standalone interactive prototypes:
+one demonstrating the token proposal and one comparing four captures layouts
+using the real transcripts. Those HTML files were retired after the token system
+and guided capture sessions were implemented. Their original bytes remain in
+Git history; this document retains the measurements, alternatives, and
+trade-offs needed to understand the decisions.
 
 **How this was measured.** Values were read from the live page at
 `https://agentculture.org/agents/devague/` via computed styles and bounding boxes, at a
@@ -241,12 +237,13 @@ Verified in-browser via computed styles and bounding boxes:
   `aria-expanded` and `aria-controls` wired; expanding spans 541px → 1106px and shows the
   full transcript; visual order still 1–10 with a card open; collapse restores exactly
 
-**Not verified visually.** Screenshot capture returns blank for `file://` pages in the
-tooling used, so these are geometric and computed-style checks, not a human looking at the
-result. Please open both files before acting on them — particularly to judge the 30rem
-preview cap in Option D and the gutter width, which are taste calls that measurement
-cannot settle.
+**Not verified visually at the time.** Screenshot capture returned blank for
+`file://` pages in the tooling used, so these were geometric and computed-style
+checks rather than a human review. The retired prototypes remain available in
+Git history, but any renewed visual judgement should be made against the current
+Astro build.
 
-**Fonts.** Fraunces and Albert Sans are declared exactly as the site declares them but are
-not loaded in these standalone files, so they fall back to system faces. Spacing, metrics
-and layout are accurate; the letterforms are not.
+**Fonts.** The retired prototypes declared Fraunces and Albert Sans exactly as
+the site did but did not load them, so their measurements used system
+letterforms. The current Astro implementation loads the project fonts and is the
+authoritative visual surface.

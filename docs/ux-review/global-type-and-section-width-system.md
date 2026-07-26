@@ -1,15 +1,13 @@
 # Global typography and section-width system
 
-> **Status:** Implemented on the local `ux-review` branch on 22 July 2026 and
-> awaiting user visual review. The implementation is committed locally at
-> `b12762e`; no push, PR, deployment, route change, or Learn source/deployment
-> change has been made. Breadcrumbs and local “On this page” navigation were
-> removed from the review branch on 23 July and are explicitly deferred.
-
-> **Audit baseline:** the current `ux-review` working tree at `b12762e`, plus
-> the uncommitted removal of the deferred wayfinding features. The worktree
-> contains 12 owned routes, the six-item primary navigation ending in
-> **Open Learn**, and the grouped footer.
+> **Status:** Implemented on `feat/ux-review-consolidated` and being prepared
+> locally as a draft-PR candidate. Nothing has been pushed or deployed, and
+> Learn remains untouched. Breadcrumbs and local “On this page” navigation
+> were removed from the feature branch on 23 July and are explicitly deferred.
+>
+> **Audit baseline:** the current feature branch, which contains 12 owned
+> routes, the six-item primary navigation ending in **Open Learn**, and the
+> grouped footer.
 
 ## Adopted direction in one paragraph
 
@@ -53,7 +51,7 @@ this initiative:
 |---:|---|---|
 | 1 | Current authored Astro source under [`site-astro/src`](../../site-astro/src) | The source of truth for today's structure, inheritance, components, breakpoints, and blast radius. |
 | 2 | The retained [Devague full-page mock](mocks/devague/2026-07-21-review-style/README.md), judged from its rendered computed styles | Visual evidence for the desired density and hierarchy. It is not source code to transplant. |
-| 3 | [`spacing-type-system.html`](spacing-type-system.html) and [`spacing-type-and-captures.md`](spacing-type-and-captures.md) | The rationale behind the role model and the terminal-legibility fix. |
+| 3 | [`spacing-type-and-captures.md`](spacing-type-and-captures.md) | The retained rationale behind the role model and terminal-legibility fix, including results originally demonstrated in the retired prototype. |
 | 4 | Earlier UX-review status and adoption documents | Historical context only where they agree with the current source and this reviewed proposal. |
 
 The retained mock began from the production build at `d71a719`, then changed in
@@ -68,7 +66,7 @@ footer, route inventory, or navigation behaviour.
 | [`README.md`](README.md) and [`findings.md`](findings.md) | Audit `d71a719`, `site-astro@0.0.1`, and eight routes. | Retain measured historical evidence; do not use their route count or current-state claims. |
 | [`current-direction.md`](current-direction.md) | Says no proposal in the folder has been applied to `site-astro/`. | That describes an earlier worktree and does not describe the current local IA/navigation implementation. |
 | [`design-system.md`](design-system.md) | Freezes the 68rem container, treats Devague as opt-in only, and records four failures in a 20-check presentation baseline. | Its ownership and regression principles remain useful. Its containment decision is the question now being reopened; its test status is stale. The current presentation checker passes 21 checks. |
-| [`spacing-type-system.html`](spacing-type-system.html) | Shows a 36px display role, four-column operator-skills layout, grid outdent, 32–96px gutter, 68rem container, and 17px prose. | Use its type-role rationale, not its example layout as the final mock. |
+| Retired spacing/type prototype (Git history) | Showed a 36px display role, four-column operator-skills layout, grid outdent, 32–96px gutter, 68rem container, and 17px prose. | Its retained rationale lives in [`spacing-type-and-captures.md`](spacing-type-and-captures.md); do not treat the historical example layout as the final mock. |
 | Retained mock HTML/CSS | Uses an old four-link header and flat footer; contains generated selectors and layered prototype overrides. | Use rendered appearance and measurements only. Never copy `_astro` output into source. |
 
 This document is the review surface for the implemented migration. It does not
@@ -326,9 +324,8 @@ cannot establish the system safely.
 
 ## Implementation sequence and current status
 
-Each stage remains a reviewable working-tree change. No PR or handoff is
-implied. Phases 1–7 are implemented; phase 8 remains intentionally deferred
-until visual review confirms the migration.
+Each stage was kept as a reviewable branch change. Phases 1–7 are implemented;
+phase 8 remains intentionally deferred and is not required for this PR.
 
 ### Phase 0 — record decisions — complete
 
@@ -455,13 +452,11 @@ Verify:
 
 ## Implementation boundary and verification
 
-Implementation remains confined to this `org` repository. It is committed
-locally at `b12762e`, with the deferred-wayfinding removal still under review
-in the working tree alongside the uncommitted `SectionIntro` extraction;
-nothing has been pushed or submitted. It does not modify or deploy Learn. The
-remaining information-architecture work, grouped site footer, and four-profile
-`ClosingBand` treatment remain separate semantic surfaces and are preserved by
-dedicated contracts.
+Implementation remains confined to this `org` repository and the consolidated
+feature branch; nothing has been pushed, submitted, or deployed. It does not
+modify or deploy Learn. The information architecture, grouped site footer, and
+four-profile `ClosingBand` treatment remain separate semantic surfaces and are
+preserved by dedicated contracts.
 
 The current working tree has passed:
 
@@ -487,4 +482,5 @@ The structured-card addition was also checked directly at 1440, 768, and
 profiles, keep 16px body copy, add no command-copy control, and introduce no
 horizontal overflow.
 
-Manual visual and keyboard review remains appropriate before any commit or PR.
+Manual visual and keyboard review remains appropriate before merge; it may
+continue on the draft PR and its deploy preview.

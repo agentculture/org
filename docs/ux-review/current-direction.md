@@ -1,8 +1,9 @@
 # UX direction after the Devague mock
 
-> **Status:** Current decision map, 22 July 2026. This file is additive. It
-> does not replace the original audit, alter an existing mock, or authorize a
-> change to the live site.
+> **Status:** Historical pre-implementation decision map, 22 July 2026. Use
+> [`global-type-and-section-width-system.md`](global-type-and-section-width-system.md)
+> for the current implementation and verification record. This file preserves
+> the reasoning without replacing the original audit.
 
 The first UX review measured the site at commit `d71a719`. Later work on the
 Devague page moved several solutions forward, especially the pipeline and real
@@ -29,8 +30,8 @@ When two documents disagree, use this order:
    [`pipeline-layout-plan.md`](pipeline-layout-plan.md).
 6. The original audit for measured evidence:
    [`findings.md`](findings.md).
-7. Earlier interactive explorations for rationale, not implementation
-   authority.
+7. The surviving Markdown rationale from retired interactive explorations, not
+   their historical implementation details.
 
 The full-page Devague review mock is retained in this worktree. Its HTML and
 assets match the final successful Claude render; its page CSS contains one
@@ -49,11 +50,9 @@ evidence and the handoff as the intended implementation direction.
 | [Devague full-page mock](mocks/devague/2026-07-21-review-style/README.md) | Latest retained mock | Review the complete composition, interactions, and responsive diagram repair. The manifest records the final pipeline requests that did not land in the Claude render. |
 | [`captures-story-plan.md`](captures-story-plan.md) | Current handoff | Governs the Devague real-captures redesign. |
 | [`pipeline-layout-plan.md`](pipeline-layout-plan.md) | Current handoff | Governs the Devague pipeline layout and animation fixes. |
-| [`agents-directory.html`](agents-directory.html) | Current independent proposal | The directory affordance and wayfinding work remains valid; the Devague mock does not supersede it. |
 | [`agent-page-scaling.md`](agent-page-scaling.md) | Active longer-term direction | Use when consolidating shared agent-page and terminal patterns, not as a prerequisite for the Devague page. |
 | [`spacing-type-and-captures.md`](spacing-type-and-captures.md) | Supporting diagnosis; partly superseded | Its spacing, leading, tracking, and transcript-legibility measurements remain evidence. Its recommended captures layout is no longer the end state. |
-| [`spacing-type-system.html`](spacing-type-system.html) | Supporting prototype | Demonstrates the proposed rhythm system; it is not an approved global token migration by itself. |
-| [`captures-layout.html`](captures-layout.html) | Superseded exploration | Retain the four-option comparison and measurements as rationale. Do not implement option D as the final captures experience. |
+| Retired standalone prototypes | Historical, in Git only | The directory, spacing/type, and captures-layout HTML comparisons were removed after their relevant decisions moved into Astro or the surviving Markdown. |
 | [`findings.md`](findings.md) | Baseline snapshot | A measured audit of `d71a719`, not a current backlog in priority order. |
 | [`README.md`](README.md) | Master index | Inventory, reading order, and run instructions for the complete UX-review branch. |
 
@@ -178,19 +177,21 @@ plan:
 
 ## Implementation boundary
 
-No proposal in this folder has been applied to `site-astro/` in this worktree.
-The original Devague page and its capture data remain unchanged. Adding this
-document does not change that boundary.
+This document originally set a pre-implementation boundary: no proposal in the
+folder had then been applied to `site-astro/`. The current feature branch has
+since crossed that boundary. Treat the sequence below as historical rationale,
+and use
+[`global-type-and-section-width-system.md`](global-type-and-section-width-system.md)
+for the implemented state.
 
-The delivery order is now fixed: establish and prove the opt-in system against
-an isolated reference specimen first; migrate Devague as its first production
-consumer second; then plan migration of the remaining routes separately. The
-system-first phase must not alter a current public route or redefine a current
-global primitive.
+The intended delivery order was to establish and prove the opt-in system
+against an isolated reference specimen first, migrate Devague as its first
+production consumer second, then plan migration of remaining routes
+separately. Automatic adoption by future pages is not part of the current PR.
 
-If implementation is requested later, begin with the current handoffs, preserve
-the safeguards above, and then run the repository's build, link, lint,
-accessibility, responsive, theme, no-JavaScript, and reduced-motion checks.
+Any later migration should preserve the safeguards above and run the
+repository's build, link, lint, accessibility, responsive, theme,
+no-JavaScript, and reduced-motion checks.
 
 ## Suggested reading order
 
