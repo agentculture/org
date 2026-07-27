@@ -18,7 +18,6 @@ import PrimaryNavigation from "./PrimaryNavigation.astro";
     <details class="site-menu" data-mobile-navigation>
       <summary
         aria-controls="mobile-primary-navigation"
-        aria-expanded="false"
         data-mobile-trigger
       >
         <span class="menu-label menu-label-open">Menu</span>
@@ -85,13 +84,6 @@ import PrimaryNavigation from "./PrimaryNavigation.astro";
     const summaryFor = (details) =>
       details.querySelector(":scope > summary");
 
-    const syncExpanded = (details) => {
-      const summary = summaryFor(details);
-      if (summary) {
-        summary.setAttribute("aria-expanded", String(details.open));
-      }
-    };
-
     const closeDesktopMenus = (except) => {
       desktopMenus.forEach((details) => {
         if (details !== except && details.open) details.open = false;
@@ -137,10 +129,8 @@ import PrimaryNavigation from "./PrimaryNavigation.astro";
       const grid = details.querySelector(
         ":scope > .menu-panel > .menu-grid",
       );
-      syncExpanded(details);
 
       details.addEventListener("toggle", () => {
-        syncExpanded(details);
         if (details.open) {
           closeDesktopMenus(details);
           restartDesktopPanelAnimation(details);
@@ -267,9 +257,7 @@ import PrimaryNavigation from "./PrimaryNavigation.astro";
     mobileNavigation?.classList.add("is-enhanced");
 
     mobileMenus.forEach((details) => {
-      syncExpanded(details);
       details.addEventListener("toggle", () => {
-        syncExpanded(details);
         if (suppressMobileToggle) return;
         if (details.open) {
           enterMobilePanel(details);
@@ -304,7 +292,6 @@ import PrimaryNavigation from "./PrimaryNavigation.astro";
       suppressMobileToggle = true;
       mobileMenus.forEach((details) => {
         details.open = false;
-        syncExpanded(details);
       });
       clearMobilePanelState();
       document.documentElement.classList.remove("nav-open");
@@ -314,9 +301,7 @@ import PrimaryNavigation from "./PrimaryNavigation.astro";
     };
 
     if (mobileShell) {
-      syncExpanded(mobileShell);
       mobileShell.addEventListener("toggle", () => {
-        syncExpanded(mobileShell);
         if (mobileShell.open) {
           document.documentElement.classList.add("nav-open");
         } else {
@@ -436,6 +421,12 @@ import PrimaryNavigation from "./PrimaryNavigation.astro";
   }
 
   @media (max-width: 51.99rem) {
+    .site-header {
+      background: var(--bg);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+
     .desktop-menu {
       display: none;
     }
