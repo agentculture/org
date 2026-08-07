@@ -1,0 +1,456 @@
+---
+import DevagueTerminal from "./DevagueTerminal.astro";
+import {
+  getCapturePane,
+  sessions,
+} from "../data/devague-story";
+
+const paneOrder = sessions.flatMap(({ paneIds }) => paneIds);
+---
+
+<div class="capture-modal" data-capture-modal hidden>
+  <button
+    class="capture-modal-backdrop"
+    type="button"
+    aria-label="Close full transcript"
+    data-capture-modal-backdrop
+  ></button>
+  <div
+    class="capture-modal-panel"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Captured transcript"
+  >
+    <button
+      class="capture-modal-close"
+      type="button"
+      aria-label="Close full transcript"
+      data-capture-modal-close
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <div class="capture-modal-body" data-capture-modal-body></div>
+    <nav class="capture-modal-nav" aria-label="Browse captured transcripts">
+      <button
+        type="button"
+        class="capture-modal-nav-btn capture-modal-prev"
+        data-capture-modal-prev
+      >
+        <span class="capture-modal-nav-arrow" aria-hidden="true"></span>
+        Previous
+      </button>
+      <span
+        class="capture-modal-nav-position"
+        aria-live="polite"
+        data-capture-modal-position
+      ></span>
+      <button
+        type="button"
+        class="capture-modal-nav-btn capture-modal-next"
+        data-capture-modal-next
+      >
+        Next
+        <span class="capture-modal-nav-arrow" aria-hidden="true"></span>
+      </button>
+    </nav>
+  </div>
+</div>
+
+<div class="capture-sources" hidden aria-hidden="true">
+  {
+    paneOrder.map((paneId) => {
+      const pane = getCapturePane(paneId);
+      const session = sessions.find(({ paneIds }) => paneIds.includes(paneId));
+      return (
+        <div
+          data-capture-source={paneId}
+          data-session-label={
+            session
+              ? `Session ${session.n} · ${session.date} · ${session.version} — ${session.title}`
+              : ""
+          }
+        >
+          <DevagueTerminal pane={pane} />
+        </div>
+      );
+    })
+  }
+</div>
+
+<style>
+  .capture-modal[hidden] {
+    display: none;
+  }
+
+  .capture-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+  }
+
+  .capture-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: rgba(9, 12, 26, 0.72);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+    cursor: default;
+  }
+
+  .capture-modal-panel {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background:
+      radial-gradient(95% 70% at 12% -12%, var(--sky-upper), transparent 58%),
+      radial-gradient(85% 62% at 88% -6%, var(--sky-mist), transparent 60%),
+      var(--bg);
+  }
+
+  .capture-modal-close {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 2;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    box-shadow: var(--shadow);
+    font-size: 1.35rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .capture-modal-close:hover,
+  .capture-modal-close:focus-visible {
+    border-color: var(--accent);
+  }
+
+  .capture-modal-close:focus-visible,
+  .capture-modal-nav-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .capture-modal-body {
+    min-height: 0;
+    flex: 1;
+    padding: 4.5rem 2rem 5.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    justify-content: safe center;
+    overflow: auto;
+  }
+
+  .capture-modal-body :global(.capture-modal-context),
+  .capture-modal-body :global(.capture-modal-caption) {
+    width: min(58rem, 100%);
+    margin-inline: auto;
+  }
+
+  .capture-modal-body :global(.capture-modal-context) {
+    margin-block: 0 0.85rem;
+    padding-right: 6rem;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  .capture-modal-body :global(.capture-modal-caption) {
+    margin-block: 1.2rem 0.4rem;
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+
+  .capture-modal-body :global(.capture-modal-caption code) {
+    padding: 0.05em 0.35em;
+    color: var(--ink);
+    background: var(--line-soft);
+    border-radius: 0.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.92em;
+  }
+
+  .capture-modal-body :global(.capture-modal-caption strong) {
+    color: var(--ink);
+    font-weight: 650;
+  }
+
+  .capture-modal-body :global(.term) {
+    width: min(58rem, 100%);
+    min-height: min(22rem, 55vh);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    border-top-width: 1px;
+    border-top-color: rgba(233, 236, 248, 0.12);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .capture-modal-body :global(.term pre) {
+    min-height: 0;
+    flex: 1;
+    overflow: visible;
+    font-size: 0.8125rem;
+    line-height: 1.55;
+  }
+
+  .capture-modal-nav {
+    position: fixed;
+    bottom: 1rem;
+    left: 50%;
+    z-index: 3;
+    padding: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    box-shadow: var(--shadow-lift);
+    transform: translateX(-50%);
+  }
+
+  .capture-modal-nav-btn {
+    min-height: 44px;
+    padding: 0.55rem 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--ink);
+    background: transparent;
+    border: 0;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 650;
+    cursor: pointer;
+  }
+
+  .capture-modal-nav-btn:hover:not(:disabled) {
+    background: var(--line-soft);
+  }
+
+  .capture-modal-nav-btn:disabled {
+    color: var(--ink-soft);
+    opacity: 0.45;
+    cursor: default;
+  }
+
+  .capture-modal-nav-position {
+    min-width: 4.2rem;
+    padding-inline: 0.35rem;
+    color: var(--ink-soft);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .capture-modal-nav-arrow {
+    width: 0.5rem;
+    height: 0.5rem;
+    flex: none;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+  }
+
+  .capture-modal-prev .capture-modal-nav-arrow {
+    transform: rotate(135deg);
+  }
+
+  .capture-modal-next .capture-modal-nav-arrow {
+    transform: rotate(-45deg);
+  }
+
+  @media (max-width: 40rem) {
+    .capture-modal-body {
+      padding: 4.5rem 1.25rem 5.5rem;
+    }
+
+    .capture-modal-body :global(.capture-modal-context) {
+      padding-right: 4.8rem;
+      font-size: 0.74rem;
+    }
+
+    .capture-modal-body :global(.term pre) {
+      font-size: 0.76rem;
+    }
+
+    .capture-modal-nav-position {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .capture-modal *,
+    .capture-modal *::before,
+    .capture-modal *::after {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+</style>
+
+<script is:inline define:vars={{ paneOrder }}>
+  (() => {
+    const section = document.querySelector("#real-captures");
+    const modal = section?.querySelector("[data-capture-modal]");
+    if (!(section instanceof HTMLElement) || !(modal instanceof HTMLElement)) return;
+
+    const panel = modal.querySelector(".capture-modal-panel");
+    const body = modal.querySelector("[data-capture-modal-body]");
+    const closeButton = modal.querySelector("[data-capture-modal-close]");
+    const previousButton = modal.querySelector("[data-capture-modal-prev]");
+    const nextButton = modal.querySelector("[data-capture-modal-next]");
+    const position = modal.querySelector("[data-capture-modal-position]");
+    const backdrop = modal.querySelector("[data-capture-modal-backdrop]");
+    if (
+      !(panel instanceof HTMLElement) ||
+      !(body instanceof HTMLElement) ||
+      !(closeButton instanceof HTMLButtonElement) ||
+      !(previousButton instanceof HTMLButtonElement) ||
+      !(nextButton instanceof HTMLButtonElement) ||
+      !(position instanceof HTMLElement) ||
+      !(backdrop instanceof HTMLButtonElement)
+    ) return;
+
+    let currentIndex = -1;
+    let returnFocus = null;
+    let previousOverflow = "";
+
+    const updateNavigation = () => {
+      previousButton.disabled = currentIndex <= 0;
+      nextButton.disabled =
+        currentIndex < 0 || currentIndex >= paneOrder.length - 1;
+      position.textContent =
+        currentIndex >= 0 ? `${currentIndex + 1} of ${paneOrder.length}` : "";
+    };
+
+    const showPane = (paneId) => {
+      const source = section.querySelector(
+        `[data-capture-source="${CSS.escape(paneId)}"]`,
+      );
+      const terminal = source?.querySelector(".term");
+      if (!(source instanceof HTMLElement) || !(terminal instanceof HTMLElement)) return;
+
+      const clone = terminal.cloneNode(true);
+      if (!(clone instanceof HTMLElement)) return;
+      clone.classList.remove("is-playing");
+      clone.removeAttribute("data-reveal");
+
+      const title = terminal.querySelector(".title")?.textContent?.trim();
+      panel.setAttribute("aria-label", title || "Captured transcript");
+      const context = document.createElement("p");
+      context.className = "capture-modal-context";
+      context.textContent = source.dataset.sessionLabel || "";
+      const caption = document.createElement("p");
+      caption.className = "capture-modal-caption";
+      caption.innerHTML =
+        'Full, unedited transcript. Lines starting with <code>$</code> were typed by a person or the AI; grey lines are the tool’s reply. <strong>proposed</strong> means the AI suggests — <strong>confirmed</strong> means a human decided.';
+
+      body.replaceChildren(context, clone, caption);
+      body.scrollTop = 0;
+      currentIndex = paneOrder.indexOf(paneId);
+      updateNavigation();
+
+      if (matchMedia("(prefers-reduced-motion: no-preference)").matches) {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => clone.classList.add("is-playing"));
+        });
+      }
+    };
+
+    const closeModal = () => {
+      modal.hidden = true;
+      document.documentElement.style.overflow = previousOverflow;
+      body.replaceChildren();
+      document.removeEventListener("keydown", onKeydown);
+      if (returnFocus instanceof HTMLElement) returnFocus.focus();
+      returnFocus = null;
+      currentIndex = -1;
+    };
+
+    const openModal = (paneId, trigger) => {
+      returnFocus = trigger;
+      previousOverflow = document.documentElement.style.overflow;
+      showPane(paneId);
+      modal.hidden = false;
+      document.documentElement.style.overflow = "hidden";
+      closeButton.focus();
+      document.addEventListener("keydown", onKeydown);
+    };
+
+    const move = (offset) => {
+      const paneId = paneOrder[currentIndex + offset];
+      if (paneId) showPane(paneId);
+    };
+
+    function onKeydown(event) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeModal();
+        return;
+      }
+      if (event.key === "ArrowLeft" && !previousButton.disabled) {
+        event.preventDefault();
+        move(-1);
+        return;
+      }
+      if (event.key === "ArrowRight" && !nextButton.disabled) {
+        event.preventDefault();
+        move(1);
+        return;
+      }
+      if (event.key !== "Tab") return;
+
+      const focusable = [
+        ...modal.querySelectorAll(
+          'button:not(:disabled), [href], [tabindex]:not([tabindex="-1"])',
+        ),
+      ].filter((item) => item instanceof HTMLElement && !item.hidden);
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+
+    section.querySelectorAll("[data-pane-ref]").forEach((trigger) => {
+      if (!(trigger instanceof HTMLButtonElement)) return;
+      trigger.addEventListener("click", () => {
+        const paneId = trigger.dataset.paneRef;
+        if (paneId) openModal(paneId, trigger);
+      });
+    });
+    closeButton.addEventListener("click", closeModal);
+    backdrop.addEventListener("click", closeModal);
+    previousButton.addEventListener("click", () => move(-1));
+    nextButton.addEventListener("click", () => move(1));
+    updateNavigation();
+  })();
+</script>

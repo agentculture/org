@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/). This project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.19.0] - 2026-07-26
+
+### Added
+
+- Reusable Astro design-system foundations: named layout and typography roles plus shared section-intro, destination-card, structured-card, closing-band, and terminal patterns.
+- A guided three-session Devague capture story with accessible transcript evidence, human-gate previews, and a reshaped pipeline reference.
+- Focused regression coverage for navigation and presentations, with Devague story anchors validated when the site builds.
+
+### Changed
+
+- Unified the site header, primary navigation, grouped footer, agent directory, and library destinations, including a sticky header and clearer internal and external link treatments.
+- Migrated the four agent profiles and current library, article, and presentation surfaces onto reusable patterns while preserving their bespoke compositions.
+- Consolidated the UX review into current spec, plan, and delivery records; removed generated review snapshots and superseded decision material; automatic future-page adoption remains deferred.
+
+### Fixed
+
+- Improved diagram spacing, agent-page code and terminal treatments, destination clarity, and presentation contract coverage across responsive layouts.
+
 ## [0.18.2] - 2026-07-22
 
 ### Changed

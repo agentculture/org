@@ -1,0 +1,64 @@
+---
+import CaptureSessionHeader from "./CaptureSessionHeader.astro";
+import CaptureStoryBeat from "./CaptureStoryBeat.astro";
+import DevagueTerminal from "./DevagueTerminal.astro";
+import {
+  getCapturePane,
+  type SessionStory,
+} from "../data/devague-story";
+
+interface Props {
+  session: SessionStory;
+}
+
+const { session } = Astro.props;
+const titleId = `capture-session-${session.n}-title`;
+const beatsId = `capture-session-${session.n}-beats`;
+const heroPane = getCapturePane(session.heroPaneId);
+const sessionPanes = session.paneIds.map((paneId) => getCapturePane(paneId));
+---
+
+<div class="session-row" aria-labelledby={titleId}>
+  <article class="session-block" data-reveal>
+    <CaptureSessionHeader session={session} titleId={titleId} />
+    <button
+      type="button"
+      class="session-toggle"
+      aria-expanded="false"
+      aria-controls={beatsId}
+      data-session-toggle
+      hidden
+    >
+      <span class="session-toggle-icon" aria-hidden="true"></span>
+      <span data-session-toggle-label>Walk through this session</span>
+    </button>
+    <div class="session-beats-wrap" id={beatsId}>
+      <ol class="beats">
+        {session.beats.map((beat) => <CaptureStoryBeat beat={beat} />)}
+      </ol>
+    </div>
+    <div class="session-more" data-session-more hidden>
+      <p class="session-more-label">Read the full session</p>
+      <div class="session-more-buttons">
+        {
+          sessionPanes.map((pane) => (
+            <button
+              type="button"
+              class="pane-link-btn"
+              data-pane-ref={pane.id}
+            >
+              {pane.title}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+  </article>
+  <div
+    class="session-term-preview"
+    data-reveal
+    style="--reveal-delay: 0.12s"
+  >
+    <DevagueTerminal pane={heroPane} />
+  </div>
+</div>

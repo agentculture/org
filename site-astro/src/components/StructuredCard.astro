@@ -1,0 +1,184 @@
+---
+import InlineCodeText from "./InlineCodeText.astro";
+
+interface Props {
+  title: string;
+  body: string;
+  meta?: string;
+  footer?: string;
+  footerItems?: readonly string[];
+  titleKind?: "text" | "code";
+  featured?: boolean;
+  revealDelay?: number;
+}
+
+const {
+  title,
+  body,
+  meta,
+  footer,
+  footerItems,
+  titleKind = "text",
+  featured = false,
+  revealDelay,
+} = Astro.props;
+---
+
+<li
+  class:list={["card", "structured-card", featured && "is-featured"]}
+  data-structured-card
+  data-reveal
+  style={revealDelay === undefined ? undefined : `--reveal-delay: ${revealDelay}s`}
+>
+  {meta && <span class="structured-card__meta">{meta}</span>}
+
+  <h3 class="structured-card__title">
+    {
+      titleKind === "code"
+        ? <code class="structured-card__title-code">{title}</code>
+        : <InlineCodeText text={title} />
+    }
+  </h3>
+
+  <p class="structured-card__body muted">
+    <InlineCodeText text={body} />
+  </p>
+
+  {
+    footerItems && footerItems.length > 0 ? (
+      <ul
+        class="structured-card__footer structured-card__footer-chips muted"
+        data-code-chip-footer
+      >
+        {
+          footerItems.map((item) => (
+            <li>
+              <code data-code-chip>{item}</code>
+            </li>
+          ))
+        }
+      </ul>
+    ) : footer ? (
+      <code class="structured-card__footer muted">{footer}</code>
+    ) : null
+  }
+</li>
+
+<style is:global>
+  .structured-card-grid {
+    width: 100%;
+    max-width: 52rem;
+    margin-block: 3rem 0;
+    margin-inline: auto;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-rows: 1fr;
+    gap: 1.5rem;
+    list-style: none;
+  }
+
+  .structured-card {
+    min-width: 0;
+    height: 100%;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .structured-card.is-featured {
+    grid-column: 1 / -1;
+  }
+
+  .structured-card.is-featured .structured-card__title,
+  .structured-card.is-featured .structured-card__body {
+    max-width: var(--ac-measure-prose);
+  }
+
+  .structured-card__meta {
+    display: block;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: var(--ac-type-micro);
+    font-weight: 500;
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-caps);
+    text-transform: uppercase;
+  }
+
+  .structured-card__title {
+    margin: 0 0 0.75rem;
+    font-family: var(--font-display);
+    font-size: var(--ac-type-component-title);
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: var(--ac-tracking-heading);
+    color: var(--ink);
+    text-wrap: wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .structured-card__title-code {
+    padding: 0;
+    border-radius: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    letter-spacing: inherit;
+  }
+
+  .structured-card__body {
+    margin: 0;
+    font-size: 1rem;
+    line-height: var(--ac-leading-card);
+  }
+
+  .structured-card__footer {
+    display: block;
+    margin-top: auto;
+    padding-top: 0.9rem;
+    font-size: var(--ac-type-meta);
+    line-height: var(--ac-leading-card);
+    letter-spacing: var(--ac-tracking-flat);
+    overflow-wrap: anywhere;
+  }
+
+  .structured-card__footer-chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0.35rem;
+    margin-bottom: 0;
+    padding-inline-start: 0;
+    list-style: none;
+  }
+
+  .structured-card__footer-chips code {
+    display: inline-block;
+    max-width: 100%;
+    padding: 0.1em 0.45em;
+    border-radius: 0.25rem;
+    background: var(--line-soft);
+    color: var(--ink-soft);
+    font-family: var(--font-mono);
+    font-size: var(--ac-type-meta);
+    line-height: var(--ac-leading-card);
+    letter-spacing: var(--ac-tracking-flat);
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+
+  @media (max-width: 68rem) {
+    .structured-card-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 42.5rem) {
+    .structured-card-grid {
+      grid-template-columns: minmax(0, 1fr);
+      grid-auto-rows: auto;
+    }
+  }
+</style>

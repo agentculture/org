@@ -288,8 +288,8 @@ check("site-wide Articles + Presentations wayfinding", () => {
     const footer = requireRegion(html, "footer", "site-footer", path);
     for (const route of [articlesRoute, presentationsRoute]) {
       assert(
-        linksTo(header.outer, route).length === 1,
-        `${path} header must contain exactly one ${route} link`,
+        linksTo(header.outer, route).length === 2,
+        `${path} header must contain desktop and mobile ${route} links`,
       );
       assert(
         linksTo(footer.outer, route).length === 1,
@@ -828,53 +828,83 @@ check("current nav state per surface", () => {
     {
       label: "articles index",
       html: articlesIndexHtml,
-      activeLabel: "Articles",
-      activeHref: articlesRoute,
+      exactHref: articlesRoute,
+      footerLabel: "Articles",
+      footerHref: articlesRoute,
     },
     {
       label: "article",
       html: articleHtml,
-      activeLabel: "Articles",
-      activeHref: articlesRoute,
+      exactHref: articleRoute,
+      footerLabel: undefined,
+      footerHref: undefined,
     },
     {
       label: "presentations index",
       html: presentationsIndexHtml,
-      activeLabel: "Presentations",
-      activeHref: presentationsRoute,
+      exactHref: presentationsRoute,
+      footerLabel: "Presentations",
+      footerHref: presentationsRoute,
     },
     {
       label: "deck",
       html: deckHtml,
-      activeLabel: "Presentations",
-      activeHref: presentationsRoute,
+      exactHref: deckRoute,
+      footerLabel: undefined,
+      footerHref: undefined,
     },
   ];
-  for (const { label, html, activeLabel, activeHref } of surfaces) {
+  for (const {
+    label,
+    html,
+    exactHref,
+    footerLabel,
+    footerHref,
+  } of surfaces) {
     const header = requireRegion(html, "header", "site-header", label);
     const footer = requireRegion(html, "footer", "site-footer", label);
-    for (const [regionLabel, region] of [
-      ["Header", header],
-      ["Footer", footer],
-    ]) {
-      const current = anchors(region.outer).filter(
-        (anchor) => anchor.attrs["aria-current"] === "page",
-      );
-      assert(
-        current.length === 1,
-        `${label} ${regionLabel} needs exactly one current link, found ${current.length}`,
-      );
-      assert(
-        current[0].attrs.href === activeHref && current[0].text === activeLabel,
-        `${label} ${regionLabel} current link must be ${activeLabel}`,
-      );
-    }
+
+    const currentHeaderOwners = openings(header.outer, "li").filter(
+      (item) => item["data-nav-current"] === "true",
+    );
+    assert(
+      currentHeaderOwners.length === 2 &&
+        currentHeaderOwners.every(
+          (item) => item["data-nav-item"] === "Library",
+        ),
+      `${label} must be owned by Library in both responsive Header navs`,
+    );
+
+    const currentHeaderLinks = anchors(header.outer).filter(
+      (anchor) => anchor.attrs["aria-current"] === "page",
+    );
+    assert(
+      currentHeaderLinks.length === 2 &&
+        currentHeaderLinks.every(
+          (anchor) => anchor.attrs.href === exactHref,
+        ),
+      `${label} Header must mark ${exactHref} as the exact current destination`,
+    );
+
+    const currentFooterLinks = anchors(footer.outer).filter(
+      (anchor) => anchor.attrs["aria-current"] === "page",
+    );
+    assert(
+      currentFooterLinks.length === (footerHref ? 1 : 0) &&
+        (!footerHref ||
+          (currentFooterLinks[0].attrs.href === footerHref &&
+            currentFooterLinks[0].text === footerLabel)),
+      footerHref
+        ? `${label} Footer current link must be ${footerLabel}`
+        : `${label} Footer must not fall back to its Library index`,
+    );
+
     const pageCurrent = anchors(html).filter(
       (anchor) => anchor.attrs["aria-current"] === "page",
     );
     assert(
-      pageCurrent.length === 2,
-      `${label} must have current state in Header and Footer only; found ${pageCurrent.length}`,
+      pageCurrent.length === (footerHref ? 3 : 2),
+      `${label} must have exact current state only where its destination is rendered; found ${pageCurrent.length}`,
     );
   }
 });

@@ -1,0 +1,91 @@
+---
+import InlineCodeText from "./InlineCodeText.astro";
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  titleId: string;
+  intro: readonly string[];
+  firstParagraph?: "muted" | "lede";
+  revealMode?: "group" | "paragraphs";
+  proseClass?: string;
+  titleSpacing?: "standard" | "relaxed";
+}
+
+const {
+  eyebrow,
+  title,
+  titleId,
+  intro,
+  firstParagraph = "muted",
+  revealMode = "group",
+  proseClass,
+  titleSpacing = "standard",
+} = Astro.props;
+
+const revealParagraphs = revealMode === "paragraphs";
+---
+
+<header
+  class="section-intro"
+  data-section-intro
+  data-title-spacing={titleSpacing}
+>
+  <span class="eyebrow" data-reveal>{eyebrow}</span>
+  <h2 id={titleId} data-reveal>{title}</h2>
+
+  <slot name="after-title" />
+
+  {
+    revealParagraphs ? (
+      <div class:list={["section-intro-prose", "prose", proseClass]}>
+        {intro.map((paragraph, index) => (
+          <p
+            class={index === 0 ? firstParagraph : "muted"}
+            data-reveal
+            style={`--reveal-delay: ${Math.min(0.08 + index * 0.06, 0.2)}s`}
+          >
+            <InlineCodeText text={paragraph} />
+          </p>
+        ))}
+      </div>
+    ) : (
+      <div
+        class:list={["section-intro-prose", "prose", proseClass]}
+        data-reveal
+        style="--reveal-delay: 0.1s"
+      >
+        {intro.map((paragraph, index) => (
+          <p class={index === 0 ? firstParagraph : "muted"}>
+            <InlineCodeText text={paragraph} />
+          </p>
+        ))}
+      </div>
+    )
+  }
+</header>
+
+<style is:global>
+  .section-intro {
+    width: 100%;
+    max-width: calc(var(--ac-rail-page) - (2 * var(--ac-page-gutter)));
+    margin-inline: auto;
+  }
+
+  .section-intro > h2 {
+    max-width: var(--ac-measure-heading);
+    margin-bottom: 0.6em;
+    font-size: var(--ac-type-section-title);
+    line-height: var(--ac-leading-heading);
+    letter-spacing: var(--ac-tracking-heading);
+    text-wrap: wrap;
+  }
+
+  .section-intro[data-title-spacing="relaxed"] > h2 {
+    margin-bottom: 1em;
+  }
+
+  .section-intro-prose {
+    max-width: var(--ac-measure-prose);
+  }
+</style>

@@ -1,114 +1,157 @@
 import assert from "node:assert/strict";
-import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-const navigationUrl = new URL("./navigation.ts", import.meta.url);
-const headerUrl = new URL("../components/Header.astro", import.meta.url);
-const footerUrl = new URL("../components/Footer.astro", import.meta.url);
-const homeUrl = new URL("../pages/index.astro", import.meta.url);
+import site from "./site.ts";
+import {
+  agentsNavigation,
+  footerNavigation,
+  isFooterNavCurrent,
+  isNavigationDestinationCurrent,
+  isPrimaryNavCurrent,
+  learnNavigation,
+  LIBRARY_FEATURED_LIMIT,
+  libraryNavigation,
+  primaryNavigation,
+} from "./navigation.ts";
 
-const navigation = existsSync(navigationUrl)
-  ? await import(navigationUrl.href)
-  : undefined;
+const labelsCurrentAt = (pathname) =>
+  primaryNavigation
+    .filter((item) => isPrimaryNavCurrent(pathname, item))
+    .map(({ label }) => label);
 
-test("the shared primary navigation has exactly six expected links", () => {
-  assert.ok(navigation, "src/data/navigation.ts must centralize primary navigation");
-  assert.deepEqual(navigation.primaryNavigation, [
-    { href: "/learn/", label: "Learn" },
-    { href: "/framework/", label: "Framework" },
-    { href: "/agents/", label: "Agents" },
-    { href: "/articles/", label: "Articles", match: "section" },
-    { href: "/presentations/", label: "Presentations", match: "section" },
-    { href: "/engage/", label: "Engage" },
-  ]);
-});
-
-test("Articles alone owns its index and descendant article routes", () => {
-  assert.ok(navigation, "src/data/navigation.ts must export the current-route matcher");
-
-  for (const pathname of [
-    "/articles",
-    "/articles/",
-    "/articles/mind-nervous-system-body/",
-  ]) {
-    const current = navigation.primaryNavigation.filter((item) =>
-      navigation.isPrimaryNavCurrent(pathname, item),
-    );
-    assert.deepEqual(current.map(({ label }) => label), ["Articles"]);
-  }
-
-  const falsePrefix = navigation.primaryNavigation.filter((item) =>
-    navigation.isPrimaryNavCurrent("/articles-old/", item),
+test("the top-level navigation keeps its owned sections and external Learn action", () => {
+  assert.deepEqual(
+    primaryNavigation.map(({ kind, label }) => [kind, label]),
+    [
+      ["link", "Framework"],
+      ["menu", "Agents"],
+      ["menu", "Library"],
+      ["link", "Engage"],
+      ["cta", "Learn"],
+    ],
   );
-  assert.deepEqual(falsePrefix, []);
+
+  assert.equal(learnNavigation.href, "https://agentculture.org/learn/");
+  assert.equal(learnNavigation.newTab, true);
 });
 
-test("Presentations alone owns its index and descendant deck routes", () => {
-  assert.ok(navigation, "src/data/navigation.ts must export the current-route matcher");
-
-  for (const pathname of [
-    "/presentations",
-    "/presentations/",
-    "/presentations/mind-nervous-system-body/",
-  ]) {
-    const current = navigation.primaryNavigation.filter((item) =>
-      navigation.isPrimaryNavCurrent(pathname, item),
-    );
-    assert.deepEqual(current.map(({ label }) => label), ["Presentations"]);
-  }
-
-  const falsePrefix = navigation.primaryNavigation.filter((item) =>
-    navigation.isPrimaryNavCurrent("/presentations-old/", item),
+test("Agents exposes hosted pages, stable group fragments, and explicit destination kinds", () => {
+  assert.deepEqual(
+    agentsNavigation.groups.map(({ id }) => id),
+    ["agent-pages", "agent-areas"],
   );
-  assert.deepEqual(falsePrefix, []);
+
+  const [pages, areas] = agentsNavigation.groups;
+  assert.equal(pages.items[0].href, "/agents/");
+  assert.ok(
+    areas.items.every(({ href }) => /^\/agents\/#[a-z0-9-]+$/.test(href)),
+  );
+  assert.equal(
+    new Set(areas.items.map(({ href }) => href)).size,
+    areas.items.length,
+  );
+
+  const linkedEntries = site.agents.entries.filter(({ url }) => url);
+  assert.ok(
+    linkedEntries.every(({ destinationKind }) =>
+      ["agent-page", "site", "repository"].includes(destinationKind)),
+  );
+
+  const hostedPages = linkedEntries
+    .filter(({ destinationKind }) => destinationKind === "agent-page")
+    .map(({ url }) => url)
+    .sort();
+  const menuPages = pages.items
+    .slice(1)
+    .map(({ href }) => href)
+    .sort();
+  assert.deepEqual(menuPages, hostedPages);
 });
 
-test("existing exact-route behavior remains stable", () => {
-  assert.ok(navigation, "src/data/navigation.ts must export the current-route matcher");
+test("Library keeps browse-all links and caps featured destinations", () => {
+  assert.equal(LIBRARY_FEATURED_LIMIT, 2);
+  assert.deepEqual(
+    libraryNavigation.groups.map(({ id }) => id),
+    ["articles", "presentations"],
+  );
 
+  for (const group of libraryNavigation.groups) {
+    assert.match(group.items[0].label, /^Browse all /);
+    assert.ok(group.items[0].href.endsWith("/"));
+    assert.ok(group.items.length <= LIBRARY_FEATURED_LIMIT + 1);
+    assert.ok(
+      group.items
+        .slice(1)
+        .every(({ badge }) => badge?.startsWith("Featured ")),
+    );
+  }
+});
+
+test("current-state helpers respect ownership, exact destinations, and fragments", () => {
   for (const [pathname, expected] of [
-    ["/learn", "Learn"],
-    ["/framework/", "Framework"],
-    ["/agents/", "Agents"],
-    ["/engage", "Engage"],
+    ["/framework/", ["Framework"]],
+    ["/framework/principles/", ["Framework"]],
+    ["/agents/colleague/", ["Agents"]],
+    ["/articles/example/", ["Library"]],
+    ["/presentations/example/", ["Library"]],
+    ["/engage/", ["Engage"]],
+    ["/articles-old/", []],
+    ["/learn/", []],
   ]) {
-    const current = navigation.primaryNavigation.filter((item) =>
-      navigation.isPrimaryNavCurrent(pathname, item),
-    );
-    assert.deepEqual(current.map(({ label }) => label), [expected]);
+    assert.deepEqual(labelsCurrentAt(pathname), expected);
   }
 
-  for (const pathname of ["/agents/reachy-mini-cli/", "/agent/", "/engagement/"]) {
-    const current = navigation.primaryNavigation.filter((item) =>
-      navigation.isPrimaryNavCurrent(pathname, item),
-    );
-    assert.deepEqual(current, []);
+  const agentPage = agentsNavigation.groups[0].items.find(
+    ({ href }) => href === "/agents/colleague/",
+  );
+  const agentArea = agentsNavigation.groups[1].items[0];
+  assert.equal(
+    isNavigationDestinationCurrent("/agents/colleague", agentPage),
+    true,
+  );
+  assert.equal(isNavigationDestinationCurrent("/agents/", agentArea), false);
+
+  const framework = footerNavigation[0].items.find(
+    ({ href }) => href === "/framework/",
+  );
+  const external = footerNavigation.at(-1).items[0];
+  assert.equal(isFooterNavCurrent("/framework", framework), true);
+  assert.equal(isFooterNavCurrent("/framework/child/", framework), false);
+  assert.equal(isFooterNavCurrent("/learn/", external), false);
+});
+
+test("the footer stays grouped, unique, and explicit about external destinations", () => {
+  assert.deepEqual(
+    footerNavigation.map(({ id }) => id),
+    ["explore", "agents", "library", "ecosystem"],
+  );
+
+  const items = footerNavigation.flatMap(({ items }) => items);
+  assert.equal(new Set(items.map(({ href }) => href)).size, items.length);
+
+  for (const item of items) {
+    if (item.kind === "internal") {
+      assert.ok(item.href.startsWith("/"));
+    } else {
+      assert.match(item.href, /^https:\/\//);
+      assert.equal(item.newTab, true);
+    }
   }
 });
 
-test("Header and Footer share navigation and accessible current-state semantics", async () => {
-  const [header, footer] = await Promise.all([
-    readFile(headerUrl, "utf8"),
-    readFile(footerUrl, "utf8"),
-  ]);
+test("external destination cards keep visible and assistive safe-new-tab cues", async () => {
+  const component = await readFile(
+    new URL("../components/DestinationCard.astro", import.meta.url),
+    "utf8",
+  );
 
-  for (const component of [header, footer]) {
-    assert.match(component, /primaryNavigation\.map/);
-    assert.match(component, /isPrimaryNavCurrent/);
-    assert.match(component, /aria-current=/);
-    assert.match(component, /flex-wrap:\s*wrap/);
-  }
-});
-
-test("the home Explore surface links Articles and Presentations exactly once each", async () => {
-  const home = await readFile(homeUrl, "utf8");
-  const articleLinks = home.match(/href:\s*["']\/articles\/["']/g) ?? [];
-  const presentationLinks = home.match(/href:\s*["']\/presentations\/["']/g) ?? [];
-
-  assert.equal(articleLinks.length, 1);
-  assert.match(home, /label:\s*["']Articles["']/);
-
-  assert.equal(presentationLinks.length, 1);
-  assert.match(home, /label:\s*["']Presentations["']/);
+  assert.match(component, /target=\{opensInNewTab \? "_blank"/);
+  assert.match(
+    component,
+    /rel=\{opensInNewTab \? "noopener noreferrer"/,
+  );
+  assert.match(component, /<ExternalLinkIcon/);
+  assert.match(component, /class="sr-only"> \(opens in a new tab\)<\/span>/);
+  assert.match(component, /data-destination-kind=/);
 });

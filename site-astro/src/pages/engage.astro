@@ -13,12 +13,17 @@ const { engage, hero } = site;
   <PageHero title="Engage" intro={engage.intro} />
 
   <section class="section" aria-label="Channels">
-    <div class="container">
+    <div class="container page-rail">
       <ul class="channels">
         {
           engage.channels.map((channel, i) => (
             <li data-reveal style={`--reveal-delay: ${Math.min(i * 0.1, 0.3)}s`}>
-              <a class="card channel" href={channel.url}>
+              <a
+                class="card channel"
+                href={channel.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <span class="glyph" aria-hidden="true">
                   <svg width="34" height="34" viewBox="0 0 40 40" fill="none">
                     <circle cx="20" cy="23" r="3.2" fill="currentColor" />
@@ -80,12 +85,15 @@ const { engage, hero } = site;
   }
 
   .channel h2 {
-    font-size: 1.35rem;
+    font-size: var(--ac-type-card-title);
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-heading);
     margin-bottom: 0.3em;
   }
 
   .channel p {
-    font-size: 0.98rem;
+    font-size: 1rem;
+    line-height: var(--ac-leading-card);
     margin-bottom: 0.9em;
   }
 
@@ -95,7 +103,7 @@ const { engage, hero } = site;
     gap: 0.45rem;
     color: var(--accent);
     font-weight: 560;
-    font-size: 0.95rem;
+    font-size: var(--ac-type-ui);
   }
 
   @media (prefers-reduced-motion: no-preference) {

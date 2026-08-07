@@ -94,6 +94,8 @@ jobs:
 
       - run: npm run build
 
+      - run: node --experimental-strip-types --test src/data/navigation.test.mjs
+
       - run: npm run check:presentations
 
       - run: node --experimental-strip-types --test src/data/mind-nervous-system-body-slides.test.mjs

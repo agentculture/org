@@ -1,122 +1,484 @@
 ---
 import site from "../data/site";
-import {
-  isPrimaryNavCurrent,
-  primaryNavigation,
-} from "../data/navigation";
 import Mark from "./Mark.astro";
+import PrimaryNavigation from "./PrimaryNavigation.astro";
 ---
 
-<header class="site-header">
-  <div class="container bar">
-    <a class="wordmark" href="/">
+<header class="site-header" data-site-navigation>
+  <div class="container shell-rail bar">
+    <a class="wordmark" href="/" aria-label="AgentCulture home">
       <Mark />
       <span>{site.hero.title}</span>
     </a>
-    <nav aria-label="Primary">
-      <ul>
-        {
-          primaryNavigation.map((item) => (
-            <li>
-              <a
-                href={item.href}
-                aria-current={isPrimaryNavCurrent(Astro.url.pathname, item)
-                  ? "page"
-                  : undefined}
-              >
-                {item.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
+
+    <div class="desktop-menu">
+      <PrimaryNavigation variant="desktop" />
+    </div>
+
+    <details class="site-menu" data-mobile-navigation>
+      <summary
+        aria-controls="mobile-primary-navigation"
+        data-mobile-trigger
+      >
+        <span class="menu-label menu-label-open">Menu</span>
+        <span class="menu-label menu-label-close">Close</span>
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            d="m4 6 4 4 4-4"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </summary>
+      <PrimaryNavigation variant="mobile" />
+    </details>
   </div>
 </header>
 
+<script is:inline>
+  (() => {
+    const header = document.querySelector("[data-site-navigation]");
+    if (!header || header.dataset.navigationReady === "true") return;
+    header.dataset.navigationReady = "true";
+
+    const mobileShell = header.querySelector("[data-mobile-navigation]");
+    const mobileTrigger = header.querySelector("[data-mobile-trigger]");
+    const mobileNavigation = header.querySelector(
+      '[data-primary-navigation="mobile"]',
+    );
+    const desktopNavigation = header.querySelector(
+      '[data-primary-navigation="desktop"]',
+    );
+    const desktopMenus = Array.from(
+      header.querySelectorAll(
+        '[data-primary-navigation="desktop"] [data-nav-details]',
+      ),
+    );
+    const mobileMenus = Array.from(
+      header.querySelectorAll(
+        '[data-primary-navigation="mobile"] [data-nav-details]',
+      ),
+    );
+    const finePointer = window.matchMedia(
+      "(hover: hover) and (pointer: fine)",
+    );
+    const mobileViewport = window.matchMedia("(max-width: 51.99rem)");
+    const mobilePanelMotion = window.matchMedia(
+      "(prefers-reduced-motion: no-preference)",
+    );
+    let lastPointerDown = -Infinity;
+    let mobileRootScroll = 0;
+    let mobilePanelCloseTimer = 0;
+    let suppressMobileToggle = false;
+    let restoringDesktopFocus = false;
+    const closeTimers = new WeakMap();
+
+    const summaryFor = (details) =>
+      details.querySelector(":scope > summary");
+
+    const closeDesktopMenus = (except) => {
+      desktopMenus.forEach((details) => {
+        if (details !== except && details.open) details.open = false;
+      });
+    };
+
+    const restartDesktopPanelAnimation = (details) => {
+      const grid = details.querySelector(":scope > .menu-panel > .menu-grid");
+      if (!grid) return;
+
+      grid.classList.remove("is-entering-forward", "is-entering-backward");
+      void grid.offsetWidth;
+      grid.classList.add(
+        details.dataset.navDetails === "library"
+          ? "is-entering-forward"
+          : "is-entering-backward",
+      );
+    };
+
+    const openDesktopMenu = (details) => {
+      closeDesktopMenus(details);
+      details.open = true;
+    };
+
+    const cancelClose = (details) => {
+      const timer = closeTimers.get(details);
+      if (timer) window.clearTimeout(timer);
+      closeTimers.delete(details);
+    };
+
+    const scheduleClose = (details) => {
+      cancelClose(details);
+      closeTimers.set(
+        details,
+        window.setTimeout(() => {
+          if (!details.matches(":focus-within")) details.open = false;
+        }, 180),
+      );
+    };
+
+    desktopMenus.forEach((details) => {
+      const summary = summaryFor(details);
+      const grid = details.querySelector(
+        ":scope > .menu-panel > .menu-grid",
+      );
+
+      details.addEventListener("toggle", () => {
+        if (details.open) {
+          closeDesktopMenus(details);
+          restartDesktopPanelAnimation(details);
+        }
+      });
+
+      grid?.addEventListener("animationend", (event) => {
+        if (event.target !== grid) return;
+        grid.classList.remove("is-entering-forward", "is-entering-backward");
+      });
+
+      details.addEventListener("pointerenter", () => {
+        if (!finePointer.matches) return;
+        cancelClose(details);
+        window.setTimeout(() => {
+          if (details.matches(":hover")) openDesktopMenu(details);
+        }, 70);
+      });
+
+      details.addEventListener("pointerleave", () => {
+        if (finePointer.matches) scheduleClose(details);
+      });
+
+      details.addEventListener("focusin", () => {
+        cancelClose(details);
+        if (
+          !restoringDesktopFocus &&
+          performance.now() - lastPointerDown > 160
+        ) {
+          openDesktopMenu(details);
+        }
+      });
+
+      details.addEventListener("focusout", () => {
+        window.setTimeout(() => {
+          if (!details.matches(":focus-within")) details.open = false;
+        }, 0);
+      });
+
+      summary?.addEventListener("click", () => {
+        cancelClose(details);
+      });
+    });
+
+    desktopNavigation?.addEventListener("focusin", (event) => {
+      desktopMenus.forEach((details) => {
+        if (!details.contains(event.target)) details.open = false;
+      });
+    });
+
+    const setMobileRootAvailable = (activeDetails) => {
+      const rootList = mobileNavigation?.querySelector(":scope > .root-list");
+      if (!rootList) return;
+
+      Array.from(rootList.children).forEach((item) => {
+        item.inert = Boolean(activeDetails && !item.contains(activeDetails));
+      });
+    };
+
+    const clearMobilePanelState = () => {
+      setMobileRootAvailable(null);
+      mobileNavigation?.removeAttribute("data-active-menu");
+      mobileMenus.forEach((details) => {
+        summaryFor(details)?.removeAttribute("tabindex");
+      });
+    };
+
+    const cancelMobilePanelClose = () => {
+      if (!mobilePanelCloseTimer) return;
+      window.clearTimeout(mobilePanelCloseTimer);
+      mobilePanelCloseTimer = 0;
+    };
+
+    const closeMobilePanel = (details, restoreFocus = true) => {
+      cancelMobilePanelClose();
+      const summary = summaryFor(details);
+      mobileNavigation?.removeAttribute("data-active-menu");
+
+      const finishClose = () => {
+        mobilePanelCloseTimer = 0;
+        suppressMobileToggle = true;
+        details.open = false;
+        clearMobilePanelState();
+        if (mobileNavigation) mobileNavigation.scrollTop = mobileRootScroll;
+        if (restoreFocus) summary?.focus();
+        queueMicrotask(() => {
+          suppressMobileToggle = false;
+        });
+      };
+
+      if (mobilePanelMotion.matches) {
+        mobilePanelCloseTimer = window.setTimeout(finishClose, 600);
+      } else {
+        finishClose();
+      }
+    };
+
+    const enterMobilePanel = (details) => {
+      cancelMobilePanelClose();
+      mobileRootScroll = mobileNavigation?.scrollTop ?? 0;
+
+      mobileMenus.forEach((candidate) => {
+        if (candidate !== details && candidate.open) {
+          suppressMobileToggle = true;
+          candidate.open = false;
+        }
+      });
+      queueMicrotask(() => {
+        suppressMobileToggle = false;
+      });
+
+      setMobileRootAvailable(details);
+      const summary = summaryFor(details);
+      summary?.setAttribute("tabindex", "-1");
+      mobileNavigation?.setAttribute(
+        "data-active-menu",
+        details.dataset.navDetails || "",
+      );
+      window.setTimeout(() => {
+        details.querySelector("[data-nav-back]")?.focus();
+      }, 0);
+    };
+
+    mobileNavigation?.classList.add("is-enhanced");
+
+    mobileMenus.forEach((details) => {
+      details.addEventListener("toggle", () => {
+        if (suppressMobileToggle) return;
+        if (details.open) {
+          enterMobilePanel(details);
+        } else if (
+          mobileNavigation?.dataset.activeMenu === details.dataset.navDetails
+        ) {
+          closeMobilePanel(details);
+        }
+      });
+
+      details.querySelector("[data-nav-back]")?.addEventListener("click", () => {
+        closeMobilePanel(details);
+      });
+
+      details
+        .querySelector("[data-nav-close]")
+        ?.addEventListener("click", () => {
+          cancelMobilePanelClose();
+          suppressMobileToggle = true;
+          details.open = false;
+          clearMobilePanelState();
+          mobileShell.open = false;
+          mobileTrigger?.focus();
+          queueMicrotask(() => {
+            suppressMobileToggle = false;
+          });
+        });
+    });
+
+    const resetMobileNavigation = () => {
+      cancelMobilePanelClose();
+      suppressMobileToggle = true;
+      mobileMenus.forEach((details) => {
+        details.open = false;
+      });
+      clearMobilePanelState();
+      document.documentElement.classList.remove("nav-open");
+      queueMicrotask(() => {
+        suppressMobileToggle = false;
+      });
+    };
+
+    if (mobileShell) {
+      mobileShell.addEventListener("toggle", () => {
+        if (mobileShell.open) {
+          document.documentElement.classList.add("nav-open");
+        } else {
+          resetMobileNavigation();
+        }
+      });
+    }
+
+    header.addEventListener("pointerdown", () => {
+      lastPointerDown = performance.now();
+    });
+
+    header.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape") return;
+
+      if (mobileViewport.matches && mobileShell?.open) {
+        const activeMenu = mobileMenus.find(
+          (details) =>
+            details.open &&
+            details.dataset.navDetails ===
+              mobileNavigation?.dataset.activeMenu,
+        );
+
+        if (activeMenu) {
+          closeMobilePanel(activeMenu);
+        } else {
+          mobileShell.open = false;
+          mobileTrigger?.focus();
+        }
+        event.preventDefault();
+        return;
+      }
+
+      const activeDesktopMenu = desktopMenus.find((details) => details.open);
+      if (activeDesktopMenu) {
+        activeDesktopMenu.open = false;
+        restoringDesktopFocus = true;
+        summaryFor(activeDesktopMenu)?.focus();
+        queueMicrotask(() => {
+          restoringDesktopFocus = false;
+        });
+        event.preventDefault();
+      }
+    });
+
+    document.addEventListener("pointerdown", (event) => {
+      if (header.contains(event.target)) return;
+      closeDesktopMenus();
+      if (mobileShell?.open) mobileShell.open = false;
+    });
+
+    mobileViewport.addEventListener("change", (event) => {
+      if (!event.matches && mobileShell?.open) mobileShell.open = false;
+    });
+  })();
+</script>
+
 <style>
   .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
     padding-block: 1.4rem;
+    border-bottom: 1px solid var(--line-soft);
+    background: var(--bg);
+    isolation: isolate;
+  }
+
+  @supports (
+    (backdrop-filter: blur(1px)) or
+      (-webkit-backdrop-filter: blur(1px))
+  ) {
+    .site-header {
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      -webkit-backdrop-filter: blur(16px) saturate(1.08);
+      backdrop-filter: blur(16px) saturate(1.08);
+    }
   }
 
   .bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
     gap: 0.75rem 1.5rem;
   }
 
   .wordmark {
     display: inline-flex;
     align-items: center;
+    flex: 1 1 auto;
+    min-width: 0;
     gap: 0.6rem;
-    text-decoration: none;
     color: var(--ink);
     font-family: var(--font-display);
     font-variation-settings: "SOFT" 75, "WONK" 0;
-    font-weight: 520;
     font-size: 1.22rem;
+    font-weight: 520;
     letter-spacing: -0.01em;
-  }
-
-  nav ul {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: clamp(1.1rem, 3vw, 2.2rem);
-    list-style: none;
-  }
-
-  nav a {
-    position: relative;
-    display: inline-block;
-    padding-block: 0.35rem;
-    color: var(--ink-soft);
     text-decoration: none;
-    font-weight: 500;
-    font-size: 0.95rem;
   }
 
-  nav a:hover {
-    color: var(--ink);
+  .wordmark span {
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 
-  /* the current page carries its own small node on the thread */
-  nav a::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    bottom: -0.2rem;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--accent);
-    transform: translateX(-50%) scale(0);
+  .wordmark :global(.mark) {
+    flex: 0 0 auto;
   }
 
-  nav a[aria-current="page"] {
-    color: var(--ink);
+  .site-menu {
+    display: none;
   }
 
-  nav a[aria-current="page"]::after {
-    transform: translateX(-50%) scale(1);
+  :global(html.nav-open) {
+    overflow: hidden;
+  }
+
+  @media (max-width: 51.99rem) {
+    .site-header {
+      background: var(--bg);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+
+    .desktop-menu {
+      display: none;
+    }
+
+    .site-menu {
+      display: block;
+      flex: 0 0 auto;
+      margin-left: auto;
+    }
+
+    .site-menu > summary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      min-height: 2.75rem;
+      padding-inline: 0.85rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--ink);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      font-size: var(--ac-type-ui);
+      font-weight: 600;
+      list-style: none;
+    }
+
+    .site-menu > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .menu-label-close {
+      display: none;
+    }
+
+    .site-menu[open] .menu-label-open {
+      display: none;
+    }
+
+    .site-menu[open] .menu-label-close {
+      display: inline;
+    }
+
+    .site-menu[open] > summary svg {
+      transform: rotate(180deg);
+    }
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    nav a::after {
-      transition: transform 0.35s var(--ease-out);
-    }
-  }
-
-  @media (max-width: 34rem) {
-    nav {
-      width: 100%;
-    }
-
-    nav ul {
-      justify-content: center;
-      gap: 0.35rem 1rem;
+    .site-menu > summary svg {
+      transition: transform 0.2s var(--ease-out);
     }
   }
 </style>

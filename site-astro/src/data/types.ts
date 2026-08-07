@@ -1,7 +1,6 @@
 // The content contract between the data layer (src/data/site.ts) and the
-// page/component layer. Frozen for the wave-3 build: the content task owns
-// site.ts values, the design task consumes this shape — neither edits this
-// file. Widen it only in a follow-up where both sides move together.
+// page/component layer. Navigation uses stable group ids so published
+// /agents/#... anchors do not drift when a display label changes.
 
 export interface Hero {
   /** The site's one-line identity, e.g. "AgentCulture". */
@@ -25,17 +24,26 @@ export interface Pillar {
   points: string[];
 }
 
+export interface AgentGroup {
+  /** Stable fragment id used by the directory jump navigation. */
+  id: string;
+  /** Human-readable group heading. */
+  label: string;
+}
+
 export interface AgentEntry {
   /** Display name, usually the repo token. */
   name: string;
   /** owner/repo. */
   repo: string;
-  /** Public URL, or null when the repo is private. */
+  /** Primary public destination, or null when it is private. */
   url: string | null;
+  /** What the directory card links to and how its CTA is labelled. */
+  destinationKind: "agent-page" | "site" | "repository";
   /** One-line role description. */
   role: string;
-  /** Grouping key — must be one of agents.groups. */
-  group: string;
+  /** Stable grouping key — must match one agents.groups id. */
+  groupId: string;
 }
 
 export interface EngageChannel {
@@ -55,8 +63,8 @@ export interface SiteData {
   };
   agents: {
     intro: string[];
-    /** Ordered group labels; every entry's group must appear here. */
-    groups: string[];
+    /** Ordered groups; every entry's groupId must appear here. */
+    groups: AgentGroup[];
     entries: AgentEntry[];
   };
   engage: {

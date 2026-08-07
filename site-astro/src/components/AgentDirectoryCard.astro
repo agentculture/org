@@ -1,0 +1,57 @@
+---
+import type { AgentEntry } from "../data/types";
+import DestinationCard from "./DestinationCard.astro";
+
+interface Props {
+  agent: AgentEntry;
+}
+
+const { agent } = Astro.props;
+const destinationLabels = {
+  "agent-page": "Agent page",
+  site: "Visit site",
+  repository: "Repository",
+} as const;
+const destination = destinationLabels[agent.destinationKind];
+---
+
+{
+  agent.url ? (
+    <DestinationCard
+      href={agent.url}
+      title={agent.name}
+      description={agent.role}
+      destinationLabel={destination}
+      className="entry"
+    />
+  ) : (
+    <div class="card entry">
+      <h3>{agent.name}</h3>
+      <p class="muted">{agent.role}</p>
+    </div>
+  )
+}
+
+<style>
+  .entry {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    height: 100%;
+    padding: 1.5rem 1.6rem;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: var(--ac-type-card-title);
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-heading);
+  }
+
+  p {
+    flex-grow: 1;
+    margin: 0;
+    font-size: 1rem;
+    line-height: var(--ac-leading-card);
+  }
+</style>

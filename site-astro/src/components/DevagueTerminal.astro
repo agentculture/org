@@ -135,7 +135,7 @@ const rendered = pane.lines
     <span class="dot" aria-hidden="true"></span>
     <span class="leg-tag">{legLabel[leg]}</span>
     <span class="title">{pane.title}</span>
-    <span class="context muted-ctx">{pane.context}</span>
+    <span class="context muted-ctx" data-inline-code-exempt>{pane.context}</span>
     <span class="stamp">devague {pane.devagueVersion} &middot; captured {pane.capturedDate}</span>
   </figcaption>
   <pre
@@ -198,8 +198,9 @@ const rendered = pane.lines
     padding: 0.7rem 1.15rem;
     border-bottom: 1px solid rgba(233, 236, 248, 0.1);
     font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.03em;
+    font-size: var(--ac-type-meta);
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-flat);
     color: #a9b0cf;
     flex-wrap: wrap;
     row-gap: 0.35rem;
@@ -248,9 +249,10 @@ const rendered = pane.lines
     border-radius: 999px;
     border: 1px solid currentColor;
     font-weight: 650;
-    letter-spacing: 0.06em;
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-caps);
     text-transform: uppercase;
-    font-size: 0.62rem;
+    font-size: var(--ac-type-micro);
   }
 
   .leg-frame .leg-tag {
@@ -306,9 +308,16 @@ const rendered = pane.lines
     padding: 1.05rem 1.15rem 1.2rem;
     overflow-x: auto;
     font-family: var(--font-mono);
-    font-size: 0.78rem;
-    line-height: 1.7;
+    font-size: var(--ac-type-terminal);
+    line-height: var(--ac-leading-card);
+    letter-spacing: var(--ac-tracking-flat);
     color: #c7cde8;
+  }
+
+  pre > code {
+    font-size: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
   }
 
   /* NOTE on :global() below: the transcript (.tl / .tl-cmd / .tl-out /
@@ -350,7 +359,8 @@ const rendered = pane.lines
     align-items: baseline;
     color: #8790b8;
     font-style: italic;
-    font-size: 0.85em;
+    font-size: var(--ac-type-meta);
+    line-height: var(--ac-leading-card);
   }
 
   .term :global(.cut-mark) {

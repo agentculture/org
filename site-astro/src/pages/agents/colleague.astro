@@ -33,6 +33,9 @@
 // placeholder for it — no invented transcript ever stood in for it.
 import Layout from "../../layouts/Layout.astro";
 import PageHero from "../../components/PageHero.astro";
+import ClosingBand from "../../components/ClosingBand.astro";
+import SectionIntro from "../../components/SectionIntro.astro";
+import StructuredCard from "../../components/StructuredCard.astro";
 import ColleagueDiagram from "../../components/ColleagueDiagram.astro";
 import ColleagueTerminal from "../../components/ColleagueTerminal.astro";
 import site from "../../data/site";
@@ -64,6 +67,7 @@ const dogfood = {
     "The other three are this very page. While it was being specced, colleague explored its own repo as ask-colleague's second, independent mind, and that run was graded through the same ROI loop described above. Then, before this page's pull request opened, colleague reviewed the diff itself — its one real catch shipped, recorded as a first-class deviation on the plan's ledger.",
   ],
 };
+
 ---
 
 <Layout
@@ -74,7 +78,7 @@ const dogfood = {
 
   <!-- fast facts -->
   <section class="section facts-section" aria-label="Fast facts">
-    <div class="container">
+    <div class="container page-rail">
       <ul class="facts">
         {
           colleague.facts.map((fact, i) => (
@@ -85,7 +89,17 @@ const dogfood = {
             >
               <span class="fact-label muted">{fact.label}</span>
               <span class="fact-value">
-                {fact.href ? <a href={fact.href}>{fact.value}</a> : fact.value}
+                {fact.href ? (
+                  <a
+                    href={fact.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {fact.value}
+                  </a>
+                ) : (
+                  fact.value
+                )}
               </span>
             </li>
           ))
@@ -95,27 +109,25 @@ const dogfood = {
   </section>
 
   <!-- the paradigm -->
-  <section class="section" aria-label="The paradigm">
-    <div class="container">
-      <span class="eyebrow" data-reveal>{colleague.paradigm.eyebrow}</span>
-      <h2 data-reveal>{colleague.paradigm.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {colleague.paradigm.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
+  <section id="paradigm" class="section" aria-labelledby="paradigm-title">
+    <div class="container page-rail">
+      <SectionIntro
+        eyebrow={colleague.paradigm.eyebrow}
+        title={colleague.paradigm.headline}
+        titleId="paradigm-title"
+        intro={colleague.paradigm.intro}
+      />
       <div class="diagram-wrap" data-reveal>
         <ColleagueDiagram caption="One runtime, many minds, in one glance: the top band is one CockpitState rendered three honest ways; the bottom band is cortex and senses, resolved by role from the lobes gateway. Two facts, joined by the one runtime that consumes one and renders the other." />
       </div>
-      <ul class="paradigm-cards">
+      <ul class="structured-card-grid">
         {
           colleague.paradigm.cards.map((card, i) => (
-            <li
-              class="card paradigm-card"
-              data-reveal
-              style={`--reveal-delay: ${Math.min(i * 0.07, 0.28)}s`}
-            >
-              <h3 class="paradigm-name">{card.name}</h3>
-              <p class="paradigm-detail muted">{card.detail}</p>
-            </li>
+            <StructuredCard
+              title={card.name}
+              body={card.detail}
+              revealDelay={Math.min(i * 0.07, 0.28)}
+            />
           ))
         }
       </ul>
@@ -126,26 +138,24 @@ const dogfood = {
   </section>
 
   <!-- three tiers -->
-  <section class="section" aria-label="Three tiers">
-    <div class="container">
-      <span class="eyebrow" data-reveal>{colleague.tiers.eyebrow}</span>
-      <h2 data-reveal>{colleague.tiers.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {colleague.tiers.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
-      <ul class="tier-cards">
+  <section id="tiers" class="section" aria-labelledby="tiers-title">
+    <div class="container page-rail">
+      <SectionIntro
+        eyebrow={colleague.tiers.eyebrow}
+        title={colleague.tiers.headline}
+        titleId="tiers-title"
+        intro={colleague.tiers.intro}
+      />
+      <ul class="structured-card-grid">
         {
           colleague.tiers.cards.map((tier, i) => (
-            <li
-              class="card tier-card"
-              data-reveal
-              style={`--reveal-delay: ${Math.min(i * 0.08, 0.24)}s`}
-            >
-              <h3 class="tier-name">{tier.name}</h3>
-              <span class="tier-surface muted">{tier.surface}</span>
-              <p class="tier-detail muted">{tier.detail}</p>
-              <code class="tier-commands">{tier.commands}</code>
-            </li>
+            <StructuredCard
+              meta={tier.surface}
+              title={tier.name}
+              body={tier.detail}
+              footerItems={tier.commands.split(" · ")}
+              revealDelay={Math.min(i * 0.08, 0.24)}
+            />
           ))
         }
       </ul>
@@ -158,32 +168,30 @@ const dogfood = {
   </section>
 
   <!-- the work loop -->
-  <section class="section" aria-label="The work loop">
-    <div class="container">
-      <span class="eyebrow" data-reveal>{colleague.work.eyebrow}</span>
-      <h2 data-reveal>{colleague.work.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {colleague.work.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
-      <ul class="work-cards">
+  <section id="work-loop" class="section" aria-labelledby="work-loop-title">
+    <div class="container page-rail">
+      <SectionIntro
+        eyebrow={colleague.work.eyebrow}
+        title={colleague.work.headline}
+        titleId="work-loop-title"
+        intro={colleague.work.intro}
+      />
+      <ul class="structured-card-grid">
         {
           colleague.work.cards.map((card, i) => (
-            <li
-              class="card work-card"
-              data-reveal
-              style={`--reveal-delay: ${Math.min(i * 0.07, 0.35)}s`}
-            >
-              <h3 class="work-name">{card.name}</h3>
-              <code class="work-verbs">{card.verbs}</code>
-              <p class="work-detail muted">{card.detail}</p>
-            </li>
+            <StructuredCard
+              title={card.name}
+              body={card.detail}
+              footerItems={card.verbs.split(" · ")}
+              revealDelay={Math.min(i * 0.07, 0.35)}
+            />
           ))
         }
       </ul>
-      <!-- the dirty-tree refusal is four lines on purpose — it takes the
-           narrow column beside the full flight-piloted run, same seam idiom
-           as devague.astro's execution-seam row -->
-      <div class="term-grid seam">
+      <!-- The short refusal and full flight run share the same reading rail.
+           Stacking keeps both captures legible without breaking the section
+           edge established by the heading above. -->
+      <div class="term-grid">
         <div data-reveal>
           <ColleagueTerminal pane={workDirtyRefusal} />
         </div>
@@ -195,13 +203,14 @@ const dogfood = {
   </section>
 
   <!-- the workforce -->
-  <section class="section" aria-label="The workforce">
-    <div class="container">
-      <span class="eyebrow" data-reveal>{colleague.subagents.eyebrow}</span>
-      <h2 data-reveal>{colleague.subagents.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {colleague.subagents.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
+  <section id="workforce" class="section" aria-labelledby="workforce-title">
+    <div class="container page-rail">
+      <SectionIntro
+        eyebrow={colleague.subagents.eyebrow}
+        title={colleague.subagents.headline}
+        titleId="workforce-title"
+        intro={colleague.subagents.intro}
+      />
       <div
         class="table-wrap card"
         data-reveal
@@ -250,30 +259,32 @@ const dogfood = {
   </section>
 
   <!-- cortex & senses -->
-  <section class="section" aria-label="Cortex and senses">
-    <div class="container">
-      <span class="eyebrow" data-reveal>{colleague.cortexSenses.eyebrow}</span>
-      <h2 data-reveal>{colleague.cortexSenses.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {colleague.cortexSenses.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
-      <ul class="minds">
+  <section
+    id="cortex-senses"
+    class="section"
+    aria-labelledby="cortex-senses-title"
+  >
+    <div class="container page-rail">
+      <SectionIntro
+        eyebrow={colleague.cortexSenses.eyebrow}
+        title={colleague.cortexSenses.headline}
+        titleId="cortex-senses-title"
+        intro={colleague.cortexSenses.intro}
+      />
+      <ul class="structured-card-grid">
         {
           colleague.cortexSenses.cards.map((card, i) => (
-            <li
-              class="card mind-card"
-              data-reveal
-              style={`--reveal-delay: ${Math.min(i * 0.08, 0.24)}s`}
-            >
-              <h3 class="mind-name">{card.name}</h3>
-              <span class="mind-role muted">{card.role}</span>
-              <p class="mind-detail muted">{card.detail}</p>
-            </li>
+            <StructuredCard
+              meta={card.role}
+              title={card.name}
+              body={card.detail}
+              revealDelay={Math.min(i * 0.08, 0.24)}
+            />
           ))
         }
       </ul>
-      <!-- the mesh pair: one brain split across two machines — spark
-           carries cortex, Thor carries senses -->
+      <!-- The mesh pair stays sequential on the reading rail: spark carries
+           cortex, then Thor carries senses. -->
       <div class="term-grid">
         <div data-reveal>
           <ColleagueTerminal pane={lobesSparkCortex} />
@@ -286,13 +297,14 @@ const dogfood = {
   </section>
 
   <!-- eidetic memory -->
-  <section class="section" aria-label="Eidetic memory">
-    <div class="container">
-      <span class="eyebrow" data-reveal>{colleague.memory.eyebrow}</span>
-      <h2 data-reveal>{colleague.memory.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {colleague.memory.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
+  <section id="memory" class="section" aria-labelledby="memory-title">
+    <div class="container page-rail">
+      <SectionIntro
+        eyebrow={colleague.memory.eyebrow}
+        title={colleague.memory.headline}
+        titleId="memory-title"
+        intro={colleague.memory.intro}
+      />
       <div class="measured-grid">
         {
           colleague.memory.measured.map((leg, i) => (
@@ -332,24 +344,26 @@ const dogfood = {
   </section>
 
   <!-- more surfaces -->
-  <section class="section" aria-label="More surfaces">
-    <div class="container">
-      <span class="eyebrow" data-reveal>{colleague.moreSurfaces.eyebrow}</span>
-      <h2 data-reveal>{colleague.moreSurfaces.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {colleague.moreSurfaces.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
-      <ul class="surfaces">
+  <section
+    id="more-surfaces"
+    class="section"
+    aria-labelledby="more-surfaces-title"
+  >
+    <div class="container page-rail">
+      <SectionIntro
+        eyebrow={colleague.moreSurfaces.eyebrow}
+        title={colleague.moreSurfaces.headline}
+        titleId="more-surfaces-title"
+        intro={colleague.moreSurfaces.intro}
+      />
+      <ul class="structured-card-grid">
         {
           colleague.moreSurfaces.cards.map((card, i) => (
-            <li
-              class="card surface-card"
-              data-reveal
-              style={`--reveal-delay: ${Math.min(i * 0.05, 0.4)}s`}
-            >
-              <h3 class="surface-name">{card.name}</h3>
-              <p class="surface-detail muted">{card.detail}</p>
-            </li>
+            <StructuredCard
+              title={card.name}
+              body={card.detail}
+              revealDelay={Math.min(i * 0.05, 0.4)}
+            />
           ))
         }
       </ul>
@@ -357,13 +371,14 @@ const dogfood = {
   </section>
 
   <!-- dogfood: real captures proving the whole page on colleague's own work -->
-  <section class="section" aria-label="Dogfood — real work, including its own">
-    <div class="container">
-      <span class="eyebrow" data-reveal>{dogfood.eyebrow}</span>
-      <h2 data-reveal>{dogfood.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {dogfood.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
+  <section id="dogfood" class="section" aria-labelledby="dogfood-title">
+    <div class="container page-rail">
+      <SectionIntro
+        eyebrow={dogfood.eyebrow}
+        title={dogfood.headline}
+        titleId="dogfood-title"
+        intro={dogfood.intro}
+      />
       <!-- ported: the self-build drive, a committed public artifact -->
       <div class="term-grid">
         <div data-reveal>
@@ -393,13 +408,14 @@ const dogfood = {
   </section>
 
   <!-- what's next, from the open tracker -->
-  <section class="section" aria-label="What's next">
-    <div class="container">
-      <span class="eyebrow" data-reveal>{colleague.whatsNext.eyebrow}</span>
-      <h2 data-reveal>{colleague.whatsNext.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {colleague.whatsNext.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
+  <section id="whats-next" class="section" aria-labelledby="whats-next-title">
+    <div class="container page-rail">
+      <SectionIntro
+        eyebrow={colleague.whatsNext.eyebrow}
+        title={colleague.whatsNext.headline}
+        titleId="whats-next-title"
+        intro={colleague.whatsNext.intro}
+      />
       <ul class="themes">
         {
           colleague.whatsNext.themes.map((theme, i) => (
@@ -413,7 +429,11 @@ const dogfood = {
               <ul class="theme-issues">
                 {theme.issues.map((issue) => (
                   <li>
-                    <a href={issue.url}>
+                    <a
+                      href={issue.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <span class="issue-num">#{issue.number}</span>{" "}
                       {issue.title}
                     </a>
@@ -427,22 +447,21 @@ const dogfood = {
     </div>
   </section>
 
-  <!-- closing -->
-  <section class="section closing" aria-label="Closing">
-    <div class="container">
-      <div class="prose" data-reveal>
-        {colleague.closing.paragraphs.map((p) => <p class="lede">{p}</p>)}
-        <p class="cta-row" data-reveal style="--reveal-delay: 0.15s">
-          <a class="cta" href={colleague.closing.repoUrl}
-            >{colleague.closing.repoCta} →</a
-          >
-          <a class="cta" href={colleague.closing.pypiUrl}
-            ><code>{colleague.closing.pypiCta}</code></a
-          >
-        </p>
-      </div>
-    </div>
-  </section>
+  <ClosingBand
+    name={colleague.hero.title}
+    paragraphs={colleague.closing.paragraphs}
+    actions={[
+      {
+        href: colleague.closing.repoUrl,
+        label: colleague.closing.repoCta,
+      },
+      {
+        href: colleague.closing.pypiUrl,
+        label: colleague.closing.pypiCta,
+        treatment: "code",
+      },
+    ]}
+  />
 </Layout>
 
 <style>
@@ -471,20 +490,21 @@ const dogfood = {
     border: 1px solid var(--line-soft);
     border-radius: 999px;
     box-shadow: var(--shadow);
-    font-size: 0.85rem;
+    font-size: var(--ac-type-ui);
   }
 
   .fact-label {
-    font-size: 0.72rem;
+    font-size: var(--ac-type-meta);
     font-weight: 640;
-    letter-spacing: 0.12em;
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-caps);
     text-transform: uppercase;
     white-space: nowrap;
   }
 
   .fact-value {
     font-family: var(--font-mono);
-    font-size: 0.82rem;
+    font-size: var(--ac-type-ui);
     white-space: nowrap;
   }
 
@@ -497,108 +517,19 @@ const dogfood = {
 
   /* the paradigm */
   .diagram-wrap {
-    margin-block: 2.6rem 2.8rem;
+    margin-block:
+      var(--ac-space-diagram-before)
+      var(--ac-space-diagram-after);
     max-width: 46rem;
     margin-inline: auto;
   }
 
-  .paradigm-cards,
-  .tier-cards,
-  .work-cards,
-  .minds,
-  .surfaces {
-    list-style: none;
-    margin-top: 2.2rem;
-    display: grid;
-    gap: 1.1rem;
-  }
-
-  .paradigm-cards {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
-  }
-
-  .paradigm-card,
-  .tier-card,
-  .work-card,
-  .mind-card,
-  .surface-card {
-    padding: 1.4rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-  }
-
-  .paradigm-name,
-  .tier-name,
-  .work-name,
-  .mind-name,
-  .surface-name {
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: 1.02rem;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-    color: var(--accent);
-  }
-
-  .paradigm-detail,
-  .surface-detail {
-    font-size: 0.92rem;
-    line-height: 1.55;
-    margin-top: 0.1rem;
-  }
-
-  /* a single narrow terminal, centered — the same idiom as .diagram-wrap
-     above, sized for a short, six-line identity probe rather than a full
-     term-grid column */
+  /* The identity probe uses the full reading rail, matching the terminal
+     captures in the sections below. */
   .term-narrow {
+    width: 100%;
+    max-width: none;
     margin-top: 2.2rem;
-    max-width: 28rem;
-    margin-inline: auto;
-  }
-
-  /* three tiers */
-  .tier-cards {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
-  }
-
-  .tier-surface {
-    font-size: 0.7rem;
-    font-weight: 640;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
-  .tier-detail {
-    font-size: 0.92rem;
-    line-height: 1.55;
-    flex-grow: 1;
-    margin-top: 0.15rem;
-  }
-
-  .tier-commands {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.01em;
-    overflow-wrap: anywhere;
-  }
-
-  /* the work loop */
-  .work-cards {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
-  }
-
-  .work-verbs {
-    font-family: var(--font-mono);
-    font-size: 0.76rem;
-    letter-spacing: 0.01em;
-    overflow-wrap: anywhere;
-  }
-
-  .work-detail {
-    font-size: 0.92rem;
-    line-height: 1.55;
-    margin-top: 0.15rem;
   }
 
   /* the workforce: roles table + the live capture beneath it */
@@ -611,15 +542,16 @@ const dogfood = {
   table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.86rem;
-    line-height: 1.5;
+    font-size: var(--ac-type-ui);
+    line-height: var(--ac-leading-card);
   }
 
   th {
     text-align: left;
     font-weight: 620;
-    font-size: 0.72rem;
-    letter-spacing: 0.1em;
+    font-size: var(--ac-type-meta);
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-caps);
     text-transform: uppercase;
     color: var(--ink-soft);
     padding: 0.35rem 1rem 0.55rem 0;
@@ -639,12 +571,12 @@ const dogfood = {
 
   .tools-cell,
   .use-cell {
-    font-size: 0.84rem;
+    font-size: var(--ac-type-ui);
   }
 
   .tools-cell {
     font-family: var(--font-mono);
-    font-size: 0.78rem;
+    font-size: var(--ac-type-meta);
     min-width: 20rem;
   }
 
@@ -653,9 +585,10 @@ const dogfood = {
     white-space: nowrap;
     padding: 0.1rem 0.6rem;
     border-radius: 999px;
-    font-size: 0.72rem;
+    font-size: var(--ac-type-meta);
     font-weight: 620;
-    letter-spacing: 0.06em;
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-caps);
   }
 
   .access-readonly {
@@ -667,24 +600,6 @@ const dogfood = {
   .access-full {
     color: var(--ink-soft);
     border: 1px dashed var(--line);
-  }
-
-  /* cortex & senses */
-  .minds {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
-  }
-
-  .mind-role {
-    font-size: 0.72rem;
-    font-weight: 640;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
-  .mind-detail {
-    font-size: 0.92rem;
-    line-height: 1.55;
-    margin-top: 0.15rem;
   }
 
   /* eidetic memory: the measured pair */
@@ -704,16 +619,17 @@ const dogfood = {
 
   .measured-leg {
     font-family: var(--font-mono);
-    font-size: 1.05rem;
+    font-size: var(--ac-type-component-title);
+    line-height: var(--ac-leading-ui);
     font-weight: 600;
-    letter-spacing: 0.02em;
+    letter-spacing: var(--ac-tracking-flat);
     text-transform: uppercase;
     color: var(--accent);
   }
 
   .measured-workitem {
     font-family: var(--font-mono);
-    font-size: 0.76rem;
+    font-size: var(--ac-type-meta);
   }
 
   .measured-stats {
@@ -730,9 +646,10 @@ const dogfood = {
   }
 
   .measured-stats dt {
-    font-size: 0.68rem;
+    font-size: var(--ac-type-micro);
     font-weight: 640;
-    letter-spacing: 0.1em;
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-caps);
     text-transform: uppercase;
     color: var(--ink-soft);
   }
@@ -740,15 +657,15 @@ const dogfood = {
   .measured-stats dd {
     margin: 0;
     font-family: var(--font-mono);
-    font-size: 0.95rem;
+    font-size: 1rem;
     font-weight: 600;
   }
 
   .measured-note {
     margin-top: 1.6rem;
-    max-width: 42rem;
-    font-size: 0.95rem;
-    line-height: 1.6;
+    max-width: var(--ac-measure-prose);
+    font-size: 1rem;
+    line-height: var(--ac-leading-lede);
     padding-left: 1rem;
     border-left: 2px solid var(--accent);
   }
@@ -762,27 +679,17 @@ const dogfood = {
   .term-grid {
     margin-top: 2.2rem;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+    grid-template-columns: minmax(0, 1fr);
     gap: 1.3rem;
     align-items: start;
   }
 
+  .term-grid > * {
+    min-width: 0;
+  }
+
   .term-grid + .term-grid {
     margin-top: 1.3rem;
-  }
-
-  /* the seam row: the deliberately short dirty-tree refusal takes the
-     narrow column, the full flight-piloted run the wide one; below the
-     sibling grids' natural two-column width it stacks like every other
-     row — same idiom as devague.astro's .seam */
-  .term-grid.seam {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
-  }
-
-  @media (max-width: 52rem) {
-    .term-grid.seam {
-      grid-template-columns: 1fr;
-    }
   }
 
   /* what's next */
@@ -802,9 +709,9 @@ const dogfood = {
   }
 
   .theme-direction {
-    font-size: 0.95rem;
-    line-height: 1.6;
-    max-width: 46rem;
+    font-size: 1rem;
+    line-height: var(--ac-leading-card);
+    max-width: var(--ac-measure-prose);
   }
 
   .theme-issues {
@@ -815,30 +722,14 @@ const dogfood = {
   }
 
   .theme-issues li {
-    font-size: 0.88rem;
-    line-height: 1.5;
+    font-size: 1rem;
+    line-height: var(--ac-leading-card);
   }
 
   .issue-num {
     font-family: var(--font-mono);
-    font-size: 0.82rem;
+    font-size: var(--ac-type-meta);
     font-weight: 600;
   }
 
-  /* closing */
-  .closing {
-    padding-bottom: clamp(4rem, 9vh, 6.5rem);
-  }
-
-  .cta-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem 1.8rem;
-    align-items: baseline;
-  }
-
-  .cta {
-    font-weight: 560;
-    white-space: nowrap;
-  }
 </style>

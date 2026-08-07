@@ -40,6 +40,7 @@ export interface MachineProfile {
 export interface BenchLink {
   title: string;
   description: string;
+  destination: string;
   url: string;
 }
 
@@ -195,30 +196,35 @@ const lobes = {
         title: "tuning-profiles.md",
         description:
           "The purpose × machine × model layering, and the measured numbers behind the shipped defaults.",
+        destination: "GitHub · document",
         url: "https://github.com/agentculture/lobes-cli/blob/main/docs/tuning-profiles.md",
       },
       {
         title: "machine-profiles.md",
         description:
           "The per-chip strategy registry and per-role budgets — the substrate the deployment shapes compose on.",
+        destination: "GitHub · document",
         url: "https://github.com/agentculture/lobes-cli/blob/main/docs/machine-profiles.md",
       },
       {
         title: "per-model docs",
         description:
           "One doc per runtime model — how to run it, live assess/benchmark results, caveats.",
+        destination: "GitHub · docs directory",
         url: "https://github.com/agentculture/lobes-cli/tree/main/docs",
       },
       {
         title: "lobes/templates/",
         description:
           "The compose templates lobes init scaffolds — the exact deployment this page's captures ran on.",
+        destination: "GitHub · templates directory",
         url: "https://github.com/agentculture/lobes-cli/tree/main/lobes/templates",
       },
       {
         title: "shahizat's NVFP4 benchmark",
         description:
           "The cross-machine reference (DGX Spark / Jetson Thor / Blackwell 6000 Pro) the throughput flags follow.",
+        destination: "NVIDIA Developer Forums",
         url: "https://forums.developer.nvidia.com/t/benchmark-report-qwen3-6-35b-a3b-nvfp4-on-nvidia-dgx-spark-jetson-thor-blackwell-6000-pro/371810",
       },
     ] satisfies BenchLink[],

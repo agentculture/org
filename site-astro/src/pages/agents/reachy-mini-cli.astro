@@ -42,6 +42,10 @@
 //                  sayTtsRefusal, sayHarmonic
 import Layout from "../../layouts/Layout.astro";
 import PageHero from "../../components/PageHero.astro";
+import ClosingBand from "../../components/ClosingBand.astro";
+import InlineCodeText from "../../components/InlineCodeText.astro";
+import SectionIntro from "../../components/SectionIntro.astro";
+import StructuredCard from "../../components/StructuredCard.astro";
 import ReachyDiagram from "../../components/ReachyDiagram.astro";
 import ReachyTerminal from "../../components/ReachyTerminal.astro";
 import site from "../../data/site";
@@ -69,6 +73,7 @@ import {
 // the two composition escapes the diagram traces.
 const sdkOwnerCaption =
   "Two single resources, one owner each: the in-process SDK client (fed by the mic array) and the serial motion queue (driving the head). The five sdk-sense nouns fan out of one for sense and converge into the other for motion — which is why only one can own the robot at a time, and why the two composition escapes exist.";
+
 ---
 
 <Layout
@@ -79,7 +84,7 @@ const sdkOwnerCaption =
 
   <!-- fast facts -->
   <section class="section facts-section" aria-label="Fast facts">
-    <div class="container">
+    <div class="container page-rail">
       <ul class="facts">
         {
           reachy.facts.map((fact, i) => (
@@ -90,7 +95,17 @@ const sdkOwnerCaption =
             >
               <span class="fact-label muted">{fact.label}</span>
               <span class="fact-value">
-                {fact.href ? <a href={fact.href}>{fact.value}</a> : fact.value}
+                {fact.href ? (
+                  <a
+                    href={fact.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {fact.value}
+                  </a>
+                ) : (
+                  fact.value
+                )}
               </span>
             </li>
           ))
@@ -100,37 +115,35 @@ const sdkOwnerCaption =
   </section>
 
   <!-- the body: every capability is a verb you can type -->
-  <section class="section" aria-label="The body">
-    <div class="container">
-      <span class="eyebrow" data-reveal>{reachy.capabilities.eyebrow}</span>
-      <h2 data-reveal>{reachy.capabilities.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {reachy.capabilities.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
-      <ul class="cap-cards">
+  <section id="body" class="section" aria-labelledby="body-title">
+    <div class="container page-rail">
+      <SectionIntro
+        eyebrow={reachy.capabilities.eyebrow}
+        title={reachy.capabilities.headline}
+        titleId="body-title"
+        intro={reachy.capabilities.intro}
+      />
+      <ul class="structured-card-grid">
         {
           reachy.capabilities.cards.map((card, i) => (
-            <li
-              class="card cap-card"
-              data-reveal
-              style={`--reveal-delay: ${Math.min(i * 0.05, 0.4)}s`}
-            >
-              <h3 class="cap-name">{card.name}</h3>
-              <p class="cap-detail muted">{card.detail}</p>
-            </li>
+            <StructuredCard
+              title={card.name}
+              body={card.detail}
+              revealDelay={Math.min(i * 0.05, 0.4)}
+            />
           ))
         }
       </ul>
-      <!-- the identity probe: one narrow, centered glance at the CLI's own
-           self-report, needing no robot — the same idiom as the diagram-wrap
-           below, sized for a short six-line pane -->
-      <div class="term-narrow" data-reveal>
-        <ReachyTerminal pane={identityWhoami} />
+      <!-- The identity probe uses the same full-width terminal row as every
+           other captured terminal on this page. -->
+      <div class="term-grid">
+        <div data-reveal>
+          <ReachyTerminal pane={identityWhoami} />
+        </div>
       </div>
-      <!-- the deliberately short doctor report takes the narrow column beside
-           the long real-mode quickstart, the same seam idiom as
-           colleague.astro's work-loop row -->
-      <div class="term-grid seam">
+      <!-- The short doctor report and long real-mode quickstart stack on the
+           same reading rail, preserving their sequence and legibility. -->
+      <div class="term-grid">
         <div data-reveal>
           <ReachyTerminal pane={doctor} />
         </div>
@@ -142,13 +155,14 @@ const sdkOwnerCaption =
   </section>
 
   <!-- the noun map: the whole robot surface, faithfully -->
-  <section class="section" aria-label="The noun map">
-    <div class="container">
-      <span class="eyebrow" data-reveal>{reachy.nounMap.eyebrow}</span>
-      <h2 data-reveal>{reachy.nounMap.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {reachy.nounMap.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
+  <section id="noun-map" class="section" aria-labelledby="noun-map-title">
+    <div class="container page-rail">
+      <SectionIntro
+        eyebrow={reachy.nounMap.eyebrow}
+        title={reachy.nounMap.headline}
+        titleId="noun-map-title"
+        intro={reachy.nounMap.intro}
+      />
       <div
         class="table-wrap card"
         data-reveal
@@ -172,7 +186,9 @@ const sdkOwnerCaption =
                   <td>
                     <code>{row.noun}</code>
                   </td>
-                  <td class="does-cell muted">{row.does}</td>
+                  <td class="does-cell muted">
+                    <InlineCodeText text={row.does} />
+                  </td>
                   <td class="transport-cell muted">{row.transport}</td>
                 </tr>
               ))
@@ -194,34 +210,30 @@ const sdkOwnerCaption =
   </section>
 
   <!-- the single-SDK-owner model: the one thing to learn -->
-  <section class="section" aria-label="The single-SDK-owner model">
-    <div class="container">
-      <span class="eyebrow" data-reveal>{reachy.sdkOwner.eyebrow}</span>
-      <h2 data-reveal>{reachy.sdkOwner.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {reachy.sdkOwner.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
+  <section id="sdk-owner" class="section" aria-labelledby="sdk-owner-title">
+    <div class="container page-rail">
+      <SectionIntro
+        eyebrow={reachy.sdkOwner.eyebrow}
+        title={reachy.sdkOwner.headline}
+        titleId="sdk-owner-title"
+        intro={reachy.sdkOwner.intro}
+      />
       <div class="diagram-wrap" data-reveal>
         <ReachyDiagram caption={sdkOwnerCaption} />
       </div>
-      <ul class="model-cards">
+      <ul class="structured-card-grid">
         {
           reachy.sdkOwner.cards.map((card, i) => (
-            <li
-              class="card model-card"
-              data-reveal
-              style={`--reveal-delay: ${Math.min(i * 0.07, 0.35)}s`}
-            >
-              <h3 class="model-name">{card.name}</h3>
-              <p class="model-detail muted">{card.detail}</p>
-            </li>
+            <StructuredCard
+              title={card.name}
+              body={card.detail}
+              revealDelay={Math.min(i * 0.07, 0.35)}
+            />
           ))
         }
       </ul>
-      <!-- the seam: the two-line move wake takes the narrow column beside the
-           long two-tier listen run — one queued motion next to the full
-           orient-to-sound loop -->
-      <div class="term-grid seam">
+      <!-- One queued motion, followed by the full orient-to-sound loop. -->
+      <div class="term-grid">
         <div data-reveal>
           <ReachyTerminal pane={moveWake} />
         </div>
@@ -233,24 +245,22 @@ const sdkOwnerCaption =
   </section>
 
   <!-- the senses, live: one process, every sense -->
-  <section class="section" aria-label="The senses, live">
-    <div class="container">
-      <span class="eyebrow" data-reveal>{reachy.senses.eyebrow}</span>
-      <h2 data-reveal>{reachy.senses.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {reachy.senses.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
-      <ul class="sense-cards">
+  <section id="live-senses" class="section" aria-labelledby="live-senses-title">
+    <div class="container page-rail">
+      <SectionIntro
+        eyebrow={reachy.senses.eyebrow}
+        title={reachy.senses.headline}
+        titleId="live-senses-title"
+        intro={reachy.senses.intro}
+      />
+      <ul class="structured-card-grid">
         {
           reachy.senses.cards.map((card, i) => (
-            <li
-              class="card sense-card"
-              data-reveal
-              style={`--reveal-delay: ${Math.min(i * 0.07, 0.35)}s`}
-            >
-              <h3 class="sense-name">{card.name}</h3>
-              <p class="sense-detail muted">{card.detail}</p>
-            </li>
+            <StructuredCard
+              title={card.name}
+              body={card.detail}
+              revealDelay={Math.min(i * 0.07, 0.35)}
+            />
           ))
         }
       </ul>
@@ -265,13 +275,14 @@ const sdkOwnerCaption =
   </section>
 
   <!-- thinking out loud: the cognition loop, the fallback voice, the feed -->
-  <section class="section" aria-label="Thinking out loud">
-    <div class="container">
-      <span class="eyebrow" data-reveal>{reachy.think.eyebrow}</span>
-      <h2 data-reveal>{reachy.think.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {reachy.think.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
+  <section id="thinking" class="section" aria-labelledby="thinking-title">
+    <div class="container page-rail">
+      <SectionIntro
+        eyebrow={reachy.think.eyebrow}
+        title={reachy.think.headline}
+        titleId="thinking-title"
+        intro={reachy.think.intro}
+      />
       <!-- the scripted demo ran to completion beside the full expression
            vocabulary it draws its gestures from -->
       <div class="term-grid">
@@ -282,11 +293,9 @@ const sdkOwnerCaption =
           <ReachyTerminal pane={thinkExpressions} start={1.4} />
         </div>
       </div>
-      <!-- the honest story of live cognition: today's bounded run was a clean
-           zero-turn no-op (narrow, left) beside the ported worked example of
-           what the loop actually says when it has something to say (wide,
-           right) — the ported pane's archival chrome is distinct on purpose -->
-      <div class="term-grid seam">
+      <!-- Today's bounded zero-turn no-op precedes the ported worked example;
+           the ported pane's archival chrome remains distinct on purpose. -->
+      <div class="term-grid">
         <div data-reveal>
           <ReachyTerminal pane={thinkRunNoop} />
         </div>
@@ -294,10 +303,9 @@ const sdkOwnerCaption =
           <ReachyTerminal pane={thinkPorted} start={1.4} />
         </div>
       </div>
-      <!-- the voice seam: the TTS refusal (the error:/hint: contract, narrow
-           left) beside the harmonic voice actually answering (wide right) —
-           the second voice for when the first is unreachable -->
-      <div class="term-grid seam">
+      <!-- The TTS refusal precedes the harmonic fallback voice that answers
+           when the first voice is unreachable. -->
+      <div class="term-grid">
         <div data-reveal>
           <ReachyTerminal pane={sayTtsRefusal} />
         </div>
@@ -309,24 +317,22 @@ const sdkOwnerCaption =
   </section>
 
   <!-- agent-first, all the way down -->
-  <section class="section" aria-label="Agent-first">
-    <div class="container">
-      <span class="eyebrow" data-reveal>{reachy.agentFirst.eyebrow}</span>
-      <h2 data-reveal>{reachy.agentFirst.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {reachy.agentFirst.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
-      <ul class="surface-cards">
+  <section id="agent-first" class="section" aria-labelledby="agent-first-title">
+    <div class="container page-rail">
+      <SectionIntro
+        eyebrow={reachy.agentFirst.eyebrow}
+        title={reachy.agentFirst.headline}
+        titleId="agent-first-title"
+        intro={reachy.agentFirst.intro}
+      />
+      <ul class="structured-card-grid">
         {
           reachy.agentFirst.cards.map((card, i) => (
-            <li
-              class="card surface-card"
-              data-reveal
-              style={`--reveal-delay: ${Math.min(i * 0.07, 0.35)}s`}
-            >
-              <h3 class="surface-name">{card.name}</h3>
-              <p class="surface-detail muted">{card.detail}</p>
-            </li>
+            <StructuredCard
+              title={card.name}
+              body={card.detail}
+              revealDelay={Math.min(i * 0.07, 0.35)}
+            />
           ))
         }
       </ul>
@@ -334,13 +340,14 @@ const sdkOwnerCaption =
   </section>
 
   <!-- what's next, from the open tracker -->
-  <section class="section" aria-label="What's next">
-    <div class="container">
-      <span class="eyebrow" data-reveal>{reachy.whatsNext.eyebrow}</span>
-      <h2 data-reveal>{reachy.whatsNext.headline}</h2>
-      <div class="prose" data-reveal style="--reveal-delay: 0.1s">
-        {reachy.whatsNext.intro.map((p) => <p class="muted">{p}</p>)}
-      </div>
+  <section id="whats-next" class="section" aria-labelledby="whats-next-title">
+    <div class="container page-rail">
+      <SectionIntro
+        eyebrow={reachy.whatsNext.eyebrow}
+        title={reachy.whatsNext.headline}
+        titleId="whats-next-title"
+        intro={reachy.whatsNext.intro}
+      />
       <ul class="themes">
         {
           reachy.whatsNext.themes.map((theme, i) => (
@@ -350,13 +357,20 @@ const sdkOwnerCaption =
               style={`--reveal-delay: ${Math.min(i * 0.08, 0.24)}s`}
             >
               <h3 class="theme-name">{theme.name}</h3>
-              <p class="theme-direction muted">{theme.direction}</p>
+              <p class="theme-direction muted">
+                <InlineCodeText text={theme.direction} />
+              </p>
               <ul class="theme-issues">
                 {theme.issues.map((issue) => (
                   <li>
-                    <a href={issue.url}>
+                    <a
+                      href={issue.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      data-inline-code-exempt
+                    >
                       <span class="issue-num">#{issue.number}</span>{" "}
-                      {issue.title}
+                      {issue.title.replaceAll("`", "")}
                     </a>
                   </li>
                 ))}
@@ -368,22 +382,21 @@ const sdkOwnerCaption =
     </div>
   </section>
 
-  <!-- closing -->
-  <section class="section closing" aria-label="Closing">
-    <div class="container">
-      <div class="prose" data-reveal>
-        {reachy.closing.paragraphs.map((p) => <p class="lede">{p}</p>)}
-        <p class="cta-row" data-reveal style="--reveal-delay: 0.15s">
-          <a class="cta" href={reachy.closing.repoUrl}
-            >{reachy.closing.repoCta} →</a
-          >
-          <a class="cta" href={reachy.closing.pypiUrl}
-            ><code>{reachy.closing.pypiCta}</code></a
-          >
-        </p>
-      </div>
-    </div>
-  </section>
+  <ClosingBand
+    name={reachy.hero.title}
+    paragraphs={reachy.closing.paragraphs}
+    actions={[
+      {
+        href: reachy.closing.repoUrl,
+        label: reachy.closing.repoCta,
+      },
+      {
+        href: reachy.closing.pypiUrl,
+        label: reachy.closing.pypiCta,
+        treatment: "code",
+      },
+    ]}
+  />
 </Layout>
 
 <style>
@@ -412,20 +425,21 @@ const sdkOwnerCaption =
     border: 1px solid var(--line-soft);
     border-radius: 999px;
     box-shadow: var(--shadow);
-    font-size: 0.85rem;
+    font-size: var(--ac-type-ui);
   }
 
   .fact-label {
-    font-size: 0.72rem;
+    font-size: var(--ac-type-meta);
     font-weight: 640;
-    letter-spacing: 0.12em;
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-caps);
     text-transform: uppercase;
     white-space: nowrap;
   }
 
   .fact-value {
     font-family: var(--font-mono);
-    font-size: 0.82rem;
+    font-size: var(--ac-type-ui);
     white-space: nowrap;
   }
 
@@ -436,61 +450,11 @@ const sdkOwnerCaption =
     }
   }
 
-  /* the card grids — one shape across every section: an accent mono name over
-     a muted detail paragraph */
-  .cap-cards,
-  .model-cards,
-  .sense-cards,
-  .surface-cards {
-    list-style: none;
-    margin-top: 2.2rem;
-    display: grid;
-    gap: 1.1rem;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
-  }
-
-  .cap-card,
-  .model-card,
-  .sense-card,
-  .surface-card {
-    padding: 1.4rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-  }
-
-  .cap-name,
-  .model-name,
-  .sense-name,
-  .surface-name {
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: 1.02rem;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-    color: var(--accent);
-  }
-
-  .cap-detail,
-  .model-detail,
-  .sense-detail,
-  .surface-detail {
-    font-size: 0.92rem;
-    line-height: 1.55;
-    margin-top: 0.1rem;
-  }
-
-  /* a single narrow terminal, centered — the same idiom as .diagram-wrap,
-     sized for a short pane rather than a full term-grid column */
-  .term-narrow {
-    margin-top: 2.2rem;
-    max-width: 28rem;
-    margin-inline: auto;
-  }
-
   /* the single-SDK-owner diagram */
   .diagram-wrap {
-    margin-block: 2.6rem 2.8rem;
+    margin-block:
+      var(--ac-space-diagram-before)
+      var(--ac-space-diagram-after);
     max-width: 46rem;
     margin-inline: auto;
   }
@@ -506,15 +470,16 @@ const sdkOwnerCaption =
   table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.86rem;
-    line-height: 1.5;
+    font-size: var(--ac-type-ui);
+    line-height: var(--ac-leading-card);
   }
 
   th {
     text-align: left;
     font-weight: 620;
-    font-size: 0.72rem;
-    letter-spacing: 0.1em;
+    font-size: var(--ac-type-meta);
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-caps);
     text-transform: uppercase;
     color: var(--ink-soft);
     padding: 0.35rem 1rem 0.55rem 0;
@@ -534,18 +499,18 @@ const sdkOwnerCaption =
 
   td code {
     font-family: var(--font-mono);
-    font-size: 0.78rem;
+    font-size: var(--ac-type-meta);
     overflow-wrap: anywhere;
   }
 
   .does-cell {
-    font-size: 0.84rem;
+    font-size: var(--ac-type-ui);
     min-width: 18rem;
   }
 
   .transport-cell {
     font-family: var(--font-mono);
-    font-size: 0.78rem;
+    font-size: var(--ac-type-meta);
     white-space: nowrap;
   }
 
@@ -566,9 +531,9 @@ const sdkOwnerCaption =
   }
 
   .theme-direction {
-    font-size: 0.95rem;
-    line-height: 1.6;
-    max-width: 46rem;
+    font-size: 1rem;
+    line-height: var(--ac-leading-card);
+    max-width: var(--ac-measure-prose);
   }
 
   .theme-issues {
@@ -579,13 +544,13 @@ const sdkOwnerCaption =
   }
 
   .theme-issues li {
-    font-size: 0.88rem;
-    line-height: 1.5;
+    font-size: 1rem;
+    line-height: var(--ac-leading-card);
   }
 
   .issue-num {
     font-family: var(--font-mono);
-    font-size: 0.82rem;
+    font-size: var(--ac-type-meta);
     font-weight: 600;
   }
 
@@ -593,42 +558,17 @@ const sdkOwnerCaption =
   .term-grid {
     margin-top: 2.2rem;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+    grid-template-columns: minmax(0, 1fr);
     gap: 1.3rem;
     align-items: start;
+  }
+
+  .term-grid > * {
+    min-width: 0;
   }
 
   .term-grid + .term-grid {
     margin-top: 1.3rem;
   }
 
-  /* the seam row: a deliberately short pane takes the narrow column, the long
-     one the wide column; below the two-column threshold it stacks like every
-     other row — the same idiom as colleague.astro's / devague.astro's .seam */
-  .term-grid.seam {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
-  }
-
-  @media (max-width: 52rem) {
-    .term-grid.seam {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  /* closing */
-  .closing {
-    padding-bottom: clamp(4rem, 9vh, 6.5rem);
-  }
-
-  .cta-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem 1.8rem;
-    align-items: baseline;
-  }
-
-  .cta {
-    font-weight: 560;
-    white-space: nowrap;
-  }
 </style>

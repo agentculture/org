@@ -1,0 +1,100 @@
+---
+import ExternalLinkIcon from "./ExternalLinkIcon.astro";
+
+interface Props {
+  href: string;
+  title: string;
+  description: string;
+  destinationLabel: string;
+  titleStyle?: "display" | "mono";
+  className?: string;
+}
+
+const {
+  href,
+  title,
+  description,
+  destinationLabel,
+  titleStyle = "display",
+  className,
+} = Astro.props;
+const opensInNewTab = /^https?:\/\//.test(href);
+---
+
+<a
+  class:list={[
+    "card",
+    "destination-card",
+    titleStyle === "mono" && "has-mono-title",
+    className,
+  ]}
+  href={href}
+  target={opensInNewTab ? "_blank" : undefined}
+  rel={opensInNewTab ? "noopener noreferrer" : undefined}
+  data-destination-card
+  data-destination-kind={opensInNewTab ? "external" : "internal"}
+>
+  <h3 class="destination-card__title">{title}</h3>
+  <p class="destination-card__description muted">{description}</p>
+  <span class="destination-card__destination">
+    <span>{destinationLabel}</span>
+    {
+      opensInNewTab ? (
+        <>
+          <ExternalLinkIcon size={13} />
+          <span class="sr-only"> (opens in a new tab)</span>
+        </>
+      ) : (
+        <span aria-hidden="true"> →</span>
+      )
+    }
+  </span>
+</a>
+
+<style>
+  .destination-card {
+    height: 100%;
+    padding: 1.5rem 1.6rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .destination-card__title {
+    margin: 0;
+    color: var(--ink);
+    font-size: var(--ac-type-card-title);
+    font-weight: 600;
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-heading);
+    overflow-wrap: anywhere;
+  }
+
+  .has-mono-title .destination-card__title {
+    font-family: var(--font-mono);
+  }
+
+  .destination-card__description {
+    flex-grow: 1;
+    margin: 0;
+    font-size: 1rem;
+    line-height: var(--ac-leading-card);
+  }
+
+  .destination-card__destination {
+    display: block;
+    max-width: 100%;
+    margin-top: 0.35rem;
+    color: var(--accent);
+    font-size: var(--ac-type-ui);
+    font-weight: 650;
+    line-height: var(--ac-leading-ui);
+  }
+
+  .destination-card__destination :global(.external-link-icon) {
+    display: inline-block;
+    margin-left: 0.3rem;
+    vertical-align: -0.1em;
+  }
+</style>

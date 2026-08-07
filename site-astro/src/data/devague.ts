@@ -38,10 +38,14 @@ export interface MethodMove {
   detail: string;
 }
 
+export type ReviewEffectPart = string | { code: string };
+
 /** One command of the human review loop and what it guarantees. */
 export interface ReviewStep {
+  kind: string;
+  title: string;
   cmd: string;
-  effect: string;
+  effect: ReviewEffectPart[];
 }
 
 /** One operator skill and the pipeline leg it drives. */
@@ -168,40 +172,40 @@ const devague = {
     moves: [
       {
         verb: "scope",
-        ask: "what does this idea actually touch?",
+        ask: "What does this idea actually touch?",
         detail:
           "survey the surfaces before framing — findings land on the frame, each citing what was read",
       },
       {
         verb: "new",
-        ask: "what are we saying shipped?",
+        ask: "What are we saying shipped?",
         detail: "start a frame from the announcement",
       },
       {
         verb: "capture",
-        ask: "what does the announcement claim?",
+        ask: "What does the announcement claim?",
         detail:
           "record and classify a claim — audience, after-state, boundary, success signal",
       },
       {
         verb: "interrogate",
-        ask: "what must be true for this to be honest?",
+        ask: "What must be true for this to be honest?",
         detail: "attach honesty conditions and hard questions to a claim",
       },
       {
         verb: "park",
-        ask: "what do we honestly not know yet?",
+        ask: "What do we honestly not know yet?",
         detail:
           "record open vagueness as first-class state instead of forcing an answer",
       },
       {
         verb: "converge",
-        ask: "is this solid enough to build from?",
+        ask: "Is this solid enough to build from?",
         detail: "list every gap still standing between the frame and a spec",
       },
       {
         verb: "export",
-        ask: "then, and only then —",
+        ask: "Then, and only then —",
         detail: "write the buildable spec; refused until converge passes",
       },
     ] satisfies MethodMove[],
@@ -219,33 +223,56 @@ const devague = {
     ],
     steps: [
       {
+        kind: "review",
+        title: "Review what's proposed",
         cmd: "devague review",
-        effect:
-          "writes .devague/reviews/<slug>.md — a durable artifact of every proposal awaiting a human decision",
+        effect: [
+          "writes ",
+          { code: ".devague/reviews/<slug>.md" },
+          " — a durable artifact of every proposal awaiting a human decision",
+        ],
       },
       {
+        kind: "confirm",
+        title: "Confirm a batch of claims",
         cmd: "devague confirm c2 h1 h3",
-        effect:
+        effect: [
           "transactional — one bad id in the batch and nothing changes at all",
+        ],
       },
       {
+        kind: "confirm",
+        title: "Confirm from an edited file",
         cmd: "devague confirm --from-review <file>",
-        effect: "applies the confirm/reject decisions from an edited review file",
+        effect: [
+          "applies the confirm/reject decisions from an edited review file",
+        ],
       },
       {
+        kind: "reject",
+        title: "Reject a claim",
         cmd: "devague reject c3",
-        effect:
+        effect: [
           "the other half of the gate — a rejected claim stays on the record as rejected, not deleted",
+        ],
       },
       {
+        kind: "deviate",
+        title: "Flag a deviation from plan",
         cmd: 'devague deviate "…" --task t3 --origin llm',
-        effect:
+        effect: [
           "mid-build, the same rule — an agent-raised deviation lands as proposed, with a reason and a classification, never as approved",
+        ],
       },
       {
+        kind: "deviate",
+        title: "Confirm a deviation",
         cmd: "devague deviate --confirm d1",
-        effect:
-          "user-only, like every confirm — you approve that specific departure, or --reject it; either way it stays on the ledger",
+        effect: [
+          "user-only, like every confirm — you approve that specific departure, or ",
+          { code: "--reject" },
+          " it; either way it stays on the ledger",
+        ],
       },
     ] satisfies ReviewStep[],
   },
@@ -304,10 +331,7 @@ const devague = {
     eyebrow: "real captures",
     headline: "This page specced itself — three times now",
     intro: [
-      "The sessions replayed below are not staged, and by now they tell three true stories. The first is the original run — the real frame and plan that specced and planned this very page, announcement to converge to export, then the plan leg through its dependency waves.",
-      "The second is the first catch-up, and it is a period piece now: it ran before the challenge leg existed, so its transcript honestly announces the method as it then stood — one leg shorter. When the page had to catch up with the tool, the tool ran its full arc on it: a scope survey before the frame, the convergence gate refusing an incomplete frame live, a user decision landing mid-session, a deviation put on the ledger, and the delivery-summary skeleton closing the loop.",
-      "The third is this update — the first to run the new seventh leg on its own frame. A lightweight challenge pass swept the exported spec for blind spots and surfaced one unstated assumption — the grid row the seventh skill card lands on — which the human confirmed on the record. The clean lenses went down as examined surfaces, the residual uncertainty was parked, and the same dated spec file was re-exported.",
-      "The gate has earned its keep in all three. In the first run, reality changed while the frame was open — and claims that were no longer true were rejected and re-captured, on the record. The human gate is real, not ceremony.",
+      "Three real working sessions are replayed below — recorded live, never edited, never reworded. Each is told twice: first the story in plain language, then the terminal record it comes from. The human gate is real, not ceremony.",
     ],
     provenance:
       "Transcripts are stored verbatim in a data module and replayed as text — the page never runs devague in your browser, and nothing is invented.",

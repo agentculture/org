@@ -6,7 +6,7 @@
 // at build time, an escaped-string transcript injected with set:html, every
 // animated property opacity/transform only — but it is written fresh here
 // and kept deliberately UNSHARED: it owns its own `r`-prefixed classes, its
-// own theme-token palette, its own provenance accent scheme, its own
+// own fixed terminal palette, its own provenance accent scheme, its own
 // `data-reachy-term` marker, and its own IntersectionObserver script. It
 // shares no code, no selector, no class, no state, and no script with any
 // sibling terminal, even when several ship on the same page.
@@ -23,11 +23,9 @@
 //
 // No JS or reduced motion -> the completed transcript renders immediately,
 // fully visible and still (the hidden states are gated behind html.js +
-// prefers-reduced-motion: no-preference, the site-wide convention). Colours
-// ride global.css theme tokens (var(--surface), var(--ink), var(--ink-soft),
-// var(--accent), var(--line), var(--font-mono), var(--radius), var(--shadow),
-// var(--ease-out)) so the pane is legible and correct in BOTH dawn themes —
-// no hardcoded colour that would break light or dark.
+// prefers-reduced-motion: no-preference, the site-wide convention). Like the
+// sibling replay components, the terminal keeps one fixed pre-dawn palette
+// in both site themes so captured sessions always read as the same surface.
 import type { CapturePane } from "../data/reachy-mini-cli-captures";
 
 interface Props {
@@ -145,9 +143,9 @@ const rendered = pane.lines
     <span class="rdot" aria-hidden="true"></span>
     <span class="rprov-tag">{provLabel[provenance]}</span>
     <span class="rtitle">{pane.title}</span>
-    <span class="rcontext">{pane.context}</span>
+    <span class="rcontext" data-inline-code-exempt>{pane.context}</span>
     <span class="rstamp">reachy-mini-cli {pane.cliVersion} &middot; captured {pane.capturedDate}</span>
-    <span class="rsource">{pane.source}</span>
+    <span class="rsource" data-inline-code-exempt>{pane.source}</span>
   </figcaption>
   <pre
     tabindex="0"
@@ -157,14 +155,16 @@ const rendered = pane.lines
 </figure>
 
 <style>
-  /* One terminal, both dawn themes: the ground rides var(--surface), the ink
-     rides var(--ink)/--ink-soft, the accent rides var(--accent) — so the
-     pane recomposes correctly for light and dark rather than pinning a fixed
-     ground. All text pairs are AA on --surface in both themes. */
+  /* One terminal, both themes: the same fixed pre-dawn ground as the
+     Colleague, Devague, and Lobes replay components. The page theme can
+     change around it without turning captured terminal evidence into a
+     different visual surface. */
   .rterm {
+    width: 100%;
+    max-width: none;
     margin: 0;
-    background: var(--surface);
-    border: 1px solid var(--line);
+    background: #10142b;
+    border: 1px solid rgba(233, 236, 248, 0.12);
     border-top-width: 3px;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
@@ -175,14 +175,13 @@ const rendered = pane.lines
      ported pane reads as visibly distinct from the live fresh-run batch
      before a single word is read. Fresh runs wear the live accent teal;
      the ported pane wears a quieter, dashed, muted treatment — the archival
-     exception, not the live rig. Both colours are theme tokens, so each
-     flips correctly between the light and dark accent. */
+     exception, not the live rig. */
   .rterm.prov-fresh {
-    border-top-color: var(--accent);
+    border-top-color: #7fdcc9;
   }
 
   .rterm.prov-ported {
-    border-top-color: var(--ink-soft);
+    border-top-color: #a9b0cf;
   }
 
   .rterm-head {
@@ -190,11 +189,12 @@ const rendered = pane.lines
     align-items: baseline;
     gap: 0.6rem;
     padding: 0.7rem 1.15rem;
-    border-bottom: 1px solid var(--line);
+    border-bottom: 1px solid rgba(233, 236, 248, 0.1);
     font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.03em;
-    color: var(--ink-soft);
+    font-size: var(--ac-type-meta);
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-flat);
+    color: #a9b0cf;
     flex-wrap: wrap;
     row-gap: 0.35rem;
   }
@@ -209,12 +209,12 @@ const rendered = pane.lines
 
   /* fresh: a filled live dot. ported: a hollow ring — not a live capture. */
   .prov-fresh .rdot {
-    background: var(--accent);
+    background: #7fdcc9;
   }
 
   .prov-ported .rdot {
     background: transparent;
-    box-shadow: inset 0 0 0 1.5px var(--ink-soft);
+    box-shadow: inset 0 0 0 1.5px #a9b0cf;
   }
 
   .rprov-tag {
@@ -223,29 +223,30 @@ const rendered = pane.lines
     border-radius: 999px;
     border: 1px solid currentColor;
     font-weight: 650;
-    letter-spacing: 0.06em;
+    line-height: var(--ac-leading-ui);
+    letter-spacing: var(--ac-tracking-caps);
     text-transform: uppercase;
-    font-size: 0.62rem;
+    font-size: var(--ac-type-micro);
   }
 
   .prov-fresh .rprov-tag {
-    color: var(--accent);
+    color: #7fdcc9;
   }
 
   /* ported: dashed outline reinforces "not from today's live batch". */
   .prov-ported .rprov-tag {
-    color: var(--ink-soft);
+    color: #a9b0cf;
     border-style: dashed;
   }
 
   .rtitle {
-    color: var(--ink);
+    color: #e9ecf8;
     font-weight: 600;
   }
 
   .rcontext {
     flex-basis: 100%;
-    color: var(--ink-soft);
+    color: #a9b0cf;
     opacity: 0.85;
   }
 
@@ -260,9 +261,9 @@ const rendered = pane.lines
      fade that could push it under AA at this size. */
   .rsource {
     flex-basis: 100%;
-    font-size: 0.9em;
-    letter-spacing: 0.01em;
-    color: var(--ink-soft);
+    font-size: var(--ac-type-micro);
+    letter-spacing: var(--ac-tracking-flat);
+    color: #8790b8;
   }
 
   pre {
@@ -270,10 +271,16 @@ const rendered = pane.lines
     padding: 1.05rem 1.15rem 1.2rem;
     overflow-x: auto;
     font-family: var(--font-mono);
-    font-size: 0.78rem;
-    line-height: 1.7;
-    /* Output lines: a calm foreground, a touch softer than a heading. */
-    color: color-mix(in srgb, var(--ink) 88%, var(--ink-soft));
+    font-size: var(--ac-type-terminal);
+    line-height: var(--ac-leading-card);
+    letter-spacing: var(--ac-tracking-flat);
+    color: #c7cde8;
+  }
+
+  pre > code {
+    font-size: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
   }
 
   /* NOTE on :global() below — the reason this component works where a naive
@@ -306,12 +313,12 @@ const rendered = pane.lines
   }
 
   .rterm :global(.rline-cmd) {
-    color: var(--ink);
+    color: #e9ecf8;
     font-weight: 600;
   }
 
   .rterm :global(.rprompt) {
-    color: var(--accent);
+    color: #7fdcc9;
     font-weight: 600;
   }
 
@@ -322,9 +329,10 @@ const rendered = pane.lines
     display: flex;
     align-items: baseline;
     gap: 0.55rem;
-    color: var(--ink-soft);
+    color: #8790b8;
     font-style: italic;
-    font-size: 0.86em;
+    font-size: var(--ac-type-meta);
+    line-height: var(--ac-leading-card);
   }
 
   .rterm :global(.rcut-rule) {

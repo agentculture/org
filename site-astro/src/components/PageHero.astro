@@ -2,6 +2,7 @@
 // Sub-page opening: title, a short hand-drawn thread (two agents, one line —
 // the smallest possible echo of the hero mesh), then the page's own
 // introduction from the data layer.
+
 interface Props {
   title: string;
   intro: string[];
@@ -10,7 +11,7 @@ const { title, intro } = Astro.props;
 ---
 
 <section class="page-hero">
-  <div class="container">
+  <div class="container page-rail">
     <h1 data-reveal>{title}</h1>
     <svg
       class="flourish"
