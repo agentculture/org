@@ -250,7 +250,12 @@ import PrimaryNavigation from "./PrimaryNavigation.astro";
         details.dataset.navDetails || "",
       );
       window.setTimeout(() => {
-        details.querySelector("[data-nav-back]")?.focus();
+        const backButton = details.querySelector("[data-nav-back]");
+        backButton?.focus({ preventScroll: true });
+
+        // iOS Safari can still scroll an overflow-hidden container when focus
+        // moves into a panel that is transitioning in from off canvas.
+        if (mobileNavigation) mobileNavigation.scrollLeft = 0;
       }, 0);
     };
 
