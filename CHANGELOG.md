@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/). This project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.19.1] - 2026-09-24
+
+### Fixed
+
+- Keep mobile navigation submenus aligned while focus moves to the Back button during their slide-in animation.
+
 ## [0.19.0] - 2026-07-26
 
 ### Added
